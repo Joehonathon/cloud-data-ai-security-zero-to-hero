@@ -4,7 +4,7 @@
 
 <a href="https://noblerworks.com/"><img src="./assets/brand/nobler-works-banner.jpg" alt="Nobler Works" width="240"></a>
 
-### Built by [Patrick Wiloak](https://patrickwiloak.com) at [Nobler Works](https://noblerworks.com/)
+### Built by [Patrick Wiloak](https://patricklukewilson.com) at [Nobler Works](https://noblerworks.com/)
 
 We build custom software and products at Nobler Works. Open source projects and training like this one are our way of giving back - we're nothing without the community that supports us.<br>
 If you need custom software built, [get in touch](https://noblerworks.com/).
@@ -394,13 +394,13 @@ If these materials helped you pass a certification or advance your career, pleas
 
 ### 👨‍💻 About the Author
 
-Created and maintained by **[Patrick Wiloak](https://patrickwiloak.com)**
+Created and maintained by **[Patrick Wiloak](https://patricklukewilson.com)**
 
 **18x Multi Cloud Certified** | **60 Certifications & Accreditations** | **Prev @ AWS** | **12x AWS Certified** | **4x GCP** | **2x Azure**
 
 🎥 **[YouTube: @patrickwiloak](https://youtube.com/@patrickwiloak)** - Cloud certification tips and tutorials
 💼 **[LinkedIn: Patrick Luke Wilson](https://www.linkedin.com/in/patricklukewilson/)** - Let's connect
-🌐 **[Portfolio: patrickwiloak.com](https://patrickwiloak.com)**
+🌐 **[Portfolio: patricklukewilson.com](https://patricklukewilson.com)**
 
 If this repository helped you, please ⭐ star it and share with others.
 

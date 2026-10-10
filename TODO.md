@@ -29,7 +29,7 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
 - [x] ~~Decide what to do with the 480 unrepairable links~~ ✅ done 2026-09-18: each repaired by hand to the
       closest live page on the same subject; 6 Amazon QLDB links point at pinned Internet Archive snapshots.
 - [x] ~~Your own blog link is dead~~ ✅ done 2026-09-18: the post went with the blog on 2026-09-05. README
-      mentions dropped, site footer now links to patrickwiloak.com.
+      mentions dropped, site footer now links to patricklukewilson.com.
 - [x] **Judge by 2026-09-22**: the first repaired weekly link check runs Monday 06:00 UTC. The after-repair run on
       2026-09-18 counted 895 errors across 21,983 checks before this last batch; expect far fewer. Whatever it still
       opens an issue for should be rate limits and bot walls (the 62 below), not removed pages. Open the issue and
@@ -103,8 +103,8 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
 - [ ] **2026-10-28 judge**: re-pull `gh api repos/PatrickWiloak/cloud-data-ai-security-zero-to-hero/traffic/popular/referrers`.
       Target: Google + Bing referrals above 11 per 14 days (baseline above), and new pages showing in
       Search Console → Pages → Indexed (if the property exists by then).
-- [ ] **Decide: custom domain?** e.g. `zerotohero.patrickwiloak.com`. It would be covered by the existing
-      `sc-domain:patrickwiloak.com` Search Console property (the reporting SA is already a Full user there),
+- [ ] **Decide: custom domain?** e.g. `zerotohero.patricklukewilson.com`. It would be covered by the existing
+      `sc-domain:patricklukewilson.com` Search Console property (the reporting SA is already a Full user there),
       allow a real `robots.txt` with a `Sitemap:` line (a `github.io/<repo>` subpath cannot have one), and
       build authority on your own domain. GitHub Pages redirects the old URLs. Cost: one CNAME + `site_url` change.
 - [x] ~~CompTIA A+ (220-1201/1202)~~ ✅ done 2026-09-28 - the biggest-search-volume gap.

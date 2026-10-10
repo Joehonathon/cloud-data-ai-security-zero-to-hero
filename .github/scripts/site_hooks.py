@@ -346,7 +346,7 @@ def on_page_context(context, page, config, nav, **kwargs):
             "url": site,
             "description": config.site_description.strip(),
             "inLanguage": "en",
-            "author": {"@type": "Person", "name": config.site_author, "url": "https://patrickwiloak.com"},
+            "author": {"@type": "Person", "name": config.site_author, "url": "https://patricklukewilson.com"},
             "publisher": {"@type": "Organization", "name": "Nobler Works", "url": "https://noblerworks.com/"},
         })
     if graph:
