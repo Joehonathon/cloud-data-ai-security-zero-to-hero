@@ -4,6 +4,10 @@ Working task list for **cloud-data-ai-security-zero-to-hero**. Read this at the 
 
 ---
 
+## Dependabot sweep (2026-10-13)
+
+- [x] 2026-10-13: site toolchain bumped to Pygments 2.21.0, Markdown 3.11, pymdown-extensions 12.1 (#3, #8, #9). Both old and new pins build `--strict` clean; the rendered diff is `&quot;` -> `"` inside code blocks plus small lexer re-tokenisation in 11 pages (shell `case`); no `<em>`/`<strong>` changed despite pymdown 12's BetterEm rewrite.
+
 ## Refactor audit (2026-10-01) - found, not started
 
 Read-only fleet audit (9 agents, nothing changed). Each line: effort S (<half day) / M (1-3 days) / L, and the risk of making the fix. 🔴 = a live bug or safety hole.
