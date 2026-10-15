@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What does Packer produce?
 
-A. Running infrastructure
-B. Machine images (AMIs, VM images, container images) built from a template
-C. Kubernetes manifests
-D. Terraform state
+A. Machine images (AMIs, VM images, container images) built from a template
+B. Kubernetes manifests
+C. Terraform state
+D. Running infrastructure
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Packer builds artifacts; Terraform provisions infrastructure from them. Keeping that split clear is the point of the immutable infrastructure workflow: bake the image once, then deploy it many times without configuring machines after launch.
 </details>
@@ -50,15 +50,15 @@ D. Run Packer twice manually
 ### Question 3
 **Scenario:** Software must be installed into the image during the build.
 
-A. A provisioner block, such as shell, file, Ansible, or PowerShell
+A. A variable
 B. A post-processor
-C. A source block
-D. A variable
+C. A provisioner block, such as shell, file, Ansible, or PowerShell
+D. A source block
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Provisioners run inside the temporary build instance. Post-processors act on the resulting artifact, for example tagging, compressing, or uploading it. Source blocks define what to start from and where to build.
 </details>
@@ -68,15 +68,15 @@ D. A variable
 ### Question 4
 **Scenario:** Which HCL block defines the plugins a template requires?
 
-A. `packer { required_plugins { ... } }`
+A. `source`
 B. `build`
-C. `source`
-D. `locals`
+C. `locals`
+D. `packer { required_plugins { ... } }`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Since plugins were split out of the core binary, templates declare what they need with version constraints, and `packer init` installs them. Forgetting this block is the most common first error when moving a template from an older Packer version.
 </details>
@@ -86,15 +86,15 @@ D. `locals`
 ### Question 5
 **Scenario:** A secret must be passed into a build without appearing in the template.
 
-A. Hard-code it
-B. A sensitive variable supplied by environment variable, a var file outside version control, or fetched from Vault
-C. A comment
+A. A comment
+B. Hard-code it
+C. A sensitive variable supplied by environment variable, a var file outside version control, or fetched from Vault
 D. A local value
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Marking a variable `sensitive = true` keeps it out of Packer's log output, and sourcing it from the environment or Vault keeps it out of the repository. Anything written into the template is in git history forever.
 </details>
@@ -104,15 +104,15 @@ D. A local value
 ### Question 6
 **Scenario:** Build credentials should not be baked into the image.
 
-A. They will be removed automatically
-B. Clean up build-time credentials, SSH keys, and history in a final provisioner step, and verify the resulting image
+A. Clean up build-time credentials, SSH keys, and history in a final provisioner step, and verify the resulting image
+B. Encrypt the image only
 C. Ignore it
-D. Encrypt the image only
+D. They will be removed automatically
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Anything present on disk at snapshot time ships in the image and to everyone who launches it. Cloud-init and sysprep handle some of this, but build artifacts such as temporary keys, package caches, and shell history need explicit removal.
 </details>
@@ -122,15 +122,15 @@ D. Encrypt the image only
 ### Question 7
 **Scenario:** The same image must be validated before it is published.
 
-A. `packer validate` for syntax, plus a test provisioner or an external tool such as InSpec or Goss to verify the built image
-B. Only `packer build`
-C. Manual login
-D. Nothing is available
+A. Nothing is available
+B. Manual login
+C. Only `packer build`
+D. `packer validate` for syntax, plus a test provisioner or an external tool such as InSpec or Goss to verify the built image
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** `validate` catches template errors before spending build time, but it says nothing about whether the software actually installed. Running a compliance or smoke test as the last provisioner is what turns "the build succeeded" into "the image is correct."
 </details>
@@ -140,15 +140,15 @@ D. Nothing is available
 ### Question 8
 **Scenario:** Build output should be tagged and registered so downstream Terraform can find it.
 
-A. A manifest post-processor writing artifact IDs, or HCP Packer registry with channels
+A. Use `latest` tags
 B. Copy the ID by hand
-C. Hard-code the AMI ID in Terraform
-D. Use `latest` tags
+C. A manifest post-processor writing artifact IDs, or HCP Packer registry with channels
+D. Hard-code the AMI ID in Terraform
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** HCP Packer tracks image versions and channels, and Terraform's HCP Packer data source resolves a channel such as `production` to a concrete image ID. Hard-coded IDs are how estates end up running images nobody can rebuild.
 </details>
@@ -159,14 +159,14 @@ D. Use `latest` tags
 **Scenario:** A build fails halfway and leaves a running instance.
 
 A. It always cleans up
-B. Packer normally cleans up on failure; use `-on-error=abort` or `ask` to keep the instance for debugging, and check for orphans after crashes
-C. Terminate the whole account
-D. Nothing can be done
+B. Nothing can be done
+C. Packer normally cleans up on failure; use `-on-error=abort` or `ask` to keep the instance for debugging, and check for orphans after crashes
+D. Terminate the whole account
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The default cleanup is what keeps builds from leaking resources, but it also destroys the evidence. `-on-error=ask` pauses so you can SSH in and see what the provisioner actually hit, which is the fastest way to debug a failing step.
 </details>
@@ -176,15 +176,15 @@ D. Nothing can be done
 ### Question 10
 **Scenario:** Multiple similar images differ only in a version number.
 
-A. Duplicate the template
-B. Use input variables and locals, with `-var` or a `.pkrvars.hcl` file per variant
-C. Edit the template each time
-D. Use separate repositories
+A. Use input variables and locals, with `-var` or a `.pkrvars.hcl` file per variant
+B. Use separate repositories
+C. Duplicate the template
+D. Edit the template each time
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Parameterization keeps one template as the source of truth. Duplicated templates drift, and the drift is usually discovered when one variant fails to build months later for a reason the other one already fixed.
 </details>
@@ -194,15 +194,15 @@ D. Use separate repositories
 ### Question 11
 **Scenario:** What is the benefit of immutable infrastructure built with Packer?
 
-A. Cheaper storage
-B. Servers are replaced rather than modified, so configuration drift is eliminated and rollback means redeploying a previous image
-C. No monitoring needed
-D. Faster networking
+A. Servers are replaced rather than modified, so configuration drift is eliminated and rollback means redeploying a previous image
+B. No monitoring needed
+C. Faster networking
+D. Cheaper storage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Configuration drift is the thing that makes long-lived servers unreproducible, and replacing rather than patching removes the cause. Rollback also becomes trivial, because the previous image still exists and is known good.
 </details>
@@ -230,15 +230,15 @@ D. Use a larger instance only
 ### Question 13
 **Scenario:** A shell provisioner needs to run as root.
 
-A. `execute_command` with sudo, or the `elevated_user` settings on Windows
-B. Run Packer as root locally
+A. Change the source image
+B. `execute_command` with sudo, or the `elevated_user` settings on Windows
 C. It cannot be done
-D. Change the source image
+D. Run Packer as root locally
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Privilege applies inside the build instance, not on the workstation running Packer. The `execute_command` setting controls how the script is invoked there, and on Windows the elevated user settings serve the same purpose for tasks needing full privileges.
 </details>
@@ -248,15 +248,15 @@ D. Change the source image
 ### Question 14
 **Scenario:** Golden images must be patched on a regular cadence.
 
-A. Patch running servers instead
-B. Rebuild images on a schedule in CI, run the validation suite, publish to a channel, and roll instances onto the new version
-C. Rebuild only when something breaks
-D. Ignore patching
+A. Rebuild only when something breaks
+B. Ignore patching
+C. Patch running servers instead
+D. Rebuild images on a schedule in CI, run the validation suite, publish to a channel, and roll instances onto the new version
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** In an immutable model the pipeline is the patching mechanism, which means the rebuild has to be automated and routine or the estate falls behind. Publishing to a channel decouples building the image from adopting it.
 </details>
@@ -268,8 +268,8 @@ D. Ignore patching
 
 A. They are alternatives
 B. Packer builds the image, Terraform provisions infrastructure that uses it, with the image ID passed by data source or variable
-C. Terraform builds images
-D. Packer deploys infrastructure
+C. Packer deploys infrastructure
+D. Terraform builds images
 
 <details>
 <summary>Answer</summary>

@@ -32,15 +32,15 @@ D. Enable idempotence
 ### Question 2
 **Scenario:** A producer must not lose messages if the leader broker fails.
 
-A. `acks=0`
-B. `acks=all` with `min.insync.replicas` set to at least 2 and a replication factor of 3
-C. `acks=1`
-D. More retries
+A. `acks=1`
+B. `acks=0`
+C. More retries
+D. `acks=all` with `min.insync.replicas` set to at least 2 and a replication factor of 3
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** `acks=all` alone is not enough: without `min.insync.replicas`, a topic down to one in-sync replica still acknowledges. The pairing of replication factor 3 with `min.insync.replicas` 2 tolerates one broker loss while still refusing to acknowledge unreplicated writes.
 </details>
@@ -51,14 +51,14 @@ D. More retries
 **Scenario:** A producer retries and creates duplicate messages.
 
 A. Accept duplicates
-B. Enable idempotence with `enable.idempotence=true`, which deduplicates retries per producer session and partition
+B. Use `acks=1`
 C. Reduce retries to zero
-D. Use `acks=1`
+D. Enable idempotence with `enable.idempotence=true`, which deduplicates retries per producer session and partition
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The producer stamps a sequence number that the broker uses to reject duplicates. Idempotence is on by default in current clients, and it covers retries within a session; exactly-once across a read-process-write cycle additionally needs transactions.
 </details>
@@ -68,10 +68,10 @@ D. Use `acks=1`
 ### Question 4
 **Scenario:** A consumer group has 4 consumers and the topic has 3 partitions.
 
-A. Each consumer gets a share of every partition
+A. The group fails
 B. Three consumers each own one partition and the fourth is idle
-C. The group fails
-D. Partitions are split
+C. Partitions are split
+D. Each consumer gets a share of every partition
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Partitions are split
 ### Question 5
 **Scenario:** A consumer must not reprocess messages after a restart.
 
-A. Set `auto.offset.reset=earliest`
+A. Use a new group ID
 B. Commit offsets, ideally after processing rather than before, choosing manual commits when at-least-once matters
-C. Disable offsets
-D. Use a new group ID
+C. Set `auto.offset.reset=earliest`
+D. Disable offsets
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Use a new group ID
 ### Question 6
 **Scenario:** Schema changes must not break existing consumers.
 
-A. Version the topic
+A. Recreate the topic
 B. Schema Registry with a compatibility mode: backward compatibility lets new consumers read old data, which is the common default for consumer-first upgrades
-C. Send JSON without a schema
-D. Recreate the topic
+C. Version the topic
+D. Send JSON without a schema
 
 <details>
 <summary>Answer</summary>
@@ -122,15 +122,15 @@ D. Recreate the topic
 ### Question 7
 **Scenario:** A topic must retain only the latest value per key indefinitely.
 
-A. `cleanup.policy=delete` with long retention
-B. `cleanup.policy=compact`, which keeps the most recent value per key
+A. `cleanup.policy=compact`, which keeps the most recent value per key
+B. A short retention window
 C. A single partition
-D. A short retention window
+D. `cleanup.policy=delete` with long retention
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Compaction is what makes a topic usable as a changelog or state store, and it is how Kafka Streams backs its state. A null value is the tombstone that marks a key for deletion, and keyless messages cannot be compacted at all.
 </details>
@@ -140,15 +140,15 @@ D. A short retention window
 ### Question 8
 **Scenario:** A stream must be joined to a lookup table of reference data.
 
-A. Query a database per record
-B. A KStream-KTable join in Kafka Streams, with the table materialized from a compacted topic and co-partitioned with the stream
-C. Two consumers
-D. A window join
+A. A window join
+B. Query a database per record
+C. A KStream-KTable join in Kafka Streams, with the table materialized from a compacted topic and co-partitioned with the stream
+D. Two consumers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Co-partitioning is the requirement people miss: both sides need the same key and the same partition count, or the join silently produces incomplete results. A GlobalKTable avoids co-partitioning by replicating the whole table to every instance, which suits small reference data.
 </details>
@@ -158,9 +158,9 @@ D. A window join
 ### Question 9
 **Scenario:** Which Kafka Streams operation requires a state store?
 
-A. `filter`
+A. `map`
 B. Stateful operations such as `aggregate`, `count`, `reduce`, joins, and windowing
-C. `map`
+C. `filter`
 D. `peek`
 
 <details>
@@ -176,15 +176,15 @@ D. `peek`
 ### Question 10
 **Scenario:** Data must move from a database into Kafka without writing code.
 
-A. A custom producer
-B. Kafka Connect with a source connector, running in distributed mode for fault tolerance
-C. A Streams application
-D. ksqlDB only
+A. A Streams application
+B. ksqlDB only
+C. Kafka Connect with a source connector, running in distributed mode for fault tolerance
+D. A custom producer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Connect handles offsets, restarts, and scaling for you, and Single Message Transforms cover light per-record changes without a separate application. Sink connectors move the other direction, and change-data-capture source connectors read the database log rather than polling.
 </details>
@@ -194,15 +194,15 @@ D. ksqlDB only
 ### Question 11
 **Scenario:** A consumer takes 10 minutes to process a batch and is repeatedly removed from the group.
 
-A. Increase `session.timeout.ms` only
-B. Increase `max.poll.interval.ms` to exceed the processing time, or reduce `max.poll.records` so each batch is smaller
+A. Increase `max.poll.interval.ms` to exceed the processing time, or reduce `max.poll.records` so each batch is smaller
+B. Increase `session.timeout.ms` only
 C. Disable heartbeats
 D. Add consumers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Heartbeats run on a background thread, so `session.timeout.ms` is not what fails here. `max.poll.interval.ms` bounds the time between poll calls, and exceeding it makes the group assume the consumer is stuck and rebalance.
 </details>
@@ -212,15 +212,15 @@ D. Add consumers
 ### Question 12
 **Scenario:** Exactly-once semantics are required across a consume-transform-produce cycle.
 
-A. Idempotence alone
-B. Transactions: a `transactional.id` on the producer, offsets committed inside the transaction, and consumers set to `read_committed`
+A. Transactions: a `transactional.id` on the producer, offsets committed inside the transaction, and consumers set to `read_committed`
+B. Idempotence alone
 C. Manual deduplication
 D. `acks=all`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** All three parts are needed. Committing the consumer's offsets within the same transaction as the output records is what makes the cycle atomic, and `read_committed` is what stops downstream consumers seeing aborted records.
 </details>
@@ -230,15 +230,15 @@ D. `acks=all`
 ### Question 13
 **Scenario:** Messages that repeatedly fail processing must not block the partition.
 
-A. Skip them silently
-B. Route them to a dead letter topic after bounded retries, with enough context to diagnose and replay
-C. Retry forever
+A. Retry forever
+B. Skip them silently
+C. Route them to a dead letter topic after bounded retries, with enough context to diagnose and replay
 D. Delete the topic
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A poison message with unbounded retries halts the partition, so throughput for every other key behind it goes to zero. The dead letter record needs the original headers and error detail, otherwise it is unactionable.
 </details>
@@ -267,14 +267,14 @@ D. Larger messages
 **Scenario:** A stream of events must be aggregated into 5-minute buckets.
 
 A. A global aggregation
-B. A windowed aggregation with a tumbling window, plus a grace period for late-arriving events
-C. A join
-D. A filter
+B. A join
+C. A filter
+D. A windowed aggregation with a tumbling window, plus a grace period for late-arriving events
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Tumbling windows are fixed and non-overlapping; hopping windows overlap; session windows are activity-driven with a gap. Grace period is the key operational setting, since events arriving after it are dropped rather than counted.
 </details>

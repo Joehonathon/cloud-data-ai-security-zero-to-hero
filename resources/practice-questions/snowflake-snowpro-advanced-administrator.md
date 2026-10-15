@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A warehouse's credit consumption must be capped for a business unit.
 
-A. Suspend the warehouse manually
-B. A resource monitor assigned to the warehouse or account, with notify, suspend, and suspend-immediately triggers
-C. A smaller warehouse size
-D. A budget alert only
+A. A budget alert only
+B. Suspend the warehouse manually
+C. A resource monitor assigned to the warehouse or account, with notify, suspend, and suspend-immediately triggers
+D. A smaller warehouse size
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Resource monitors are the only enforcement mechanism: they act on a credit quota per interval and can notify at one threshold then suspend at another. Suspend lets running queries finish; suspend immediately kills them, which is a deliberate choice rather than a default.
 </details>
@@ -32,15 +32,15 @@ D. A budget alert only
 ### Question 2
 **Scenario:** Which role can create other roles and manage account-level objects but should not be used day to day?
 
-A. SYSADMIN
-B. ACCOUNTADMIN, which should be limited to a small number of users with MFA enforced
-C. PUBLIC
-D. USERADMIN
+A. PUBLIC
+B. SYSADMIN
+C. USERADMIN
+D. ACCOUNTADMIN, which should be limited to a small number of users with MFA enforced
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The recommended hierarchy grants object ownership under SYSADMIN and user and role administration under USERADMIN, with SECURITYADMIN managing grants. Reserving ACCOUNTADMIN for billing and account settings limits the damage any one compromised session can do.
 </details>
@@ -50,15 +50,15 @@ D. USERADMIN
 ### Question 3
 **Scenario:** A query ran successfully yesterday but its results must be recovered without rerunning it.
 
-A. Not possible
-B. `RESULT_SCAN` against the query ID, within the 24-hour result cache retention
-C. Time Travel
-D. Fail-safe
+A. `RESULT_SCAN` against the query ID, within the 24-hour result cache retention
+B. Not possible
+C. Fail-safe
+D. Time Travel
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The result cache holds results for 24 hours, extended on reuse up to 31 days, and serves them with no warehouse running at all. Time Travel restores table state rather than query results, and Fail-safe is a Snowflake-managed recovery of last resort.
 </details>
@@ -68,15 +68,15 @@ D. Fail-safe
 ### Question 4
 **Scenario:** A table was dropped an hour ago and must be recovered.
 
-A. Restore from backup
-B. `UNDROP TABLE`, using Time Travel within the retention period
-C. Contact support for Fail-safe
-D. Recreate it
+A. `UNDROP TABLE`, using Time Travel within the retention period
+B. Recreate it
+C. Restore from backup
+D. Contact support for Fail-safe
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Time Travel defaults to one day and extends to 90 on Enterprise editions for permanent objects. Fail-safe adds seven days after Time Travel expires but is only accessible through Snowflake support, so it is a disaster mechanism rather than an operational one. Transient and temporary tables have no Fail-safe.
 </details>
@@ -87,14 +87,14 @@ D. Recreate it
 **Scenario:** Users must not be able to see sensitive column values unless they hold a specific role.
 
 A. A separate table
-B. A dynamic data masking policy on the column, branching on `CURRENT_ROLE` or `IS_ROLE_IN_SESSION`
-C. A view for each role
-D. Revoke SELECT
+B. A view for each role
+C. Revoke SELECT
+D. A dynamic data masking policy on the column, branching on `CURRENT_ROLE` or `IS_ROLE_IN_SESSION`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Masking policies apply at query time wherever the column is referenced, including through views, which is what per-role view proliferation fails to guarantee. Row access policies are the row-level counterpart, and both can be attached to object tags for scaled application.
 </details>
@@ -104,15 +104,15 @@ D. Revoke SELECT
 ### Question 6
 **Scenario:** A multi-cluster warehouse is configured with min 1 and max 5 clusters in auto-scale mode.
 
-A. All five clusters run continuously
-B. Additional clusters start under concurrency pressure and shut down when demand falls, billing only for running clusters
-C. It behaves like a larger warehouse
-D. Queries fail past cluster one
+A. Additional clusters start under concurrency pressure and shut down when demand falls, billing only for running clusters
+B. All five clusters run continuously
+C. Queries fail past cluster one
+D. It behaves like a larger warehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Multi-cluster addresses concurrency, not single-query performance; a larger warehouse size addresses the latter. Maximized mode runs all clusters continuously, which is a deliberate choice for predictable heavy concurrency.
 </details>
@@ -122,10 +122,10 @@ D. Queries fail past cluster one
 ### Question 7
 **Scenario:** Access to Snowflake must be restricted to a corporate network.
 
-A. A firewall
+A. Private connectivity only
 B. A network policy with allowed IP ranges, applied at account or user level, plus network rules for finer control
-C. MFA only
-D. Private connectivity only
+C. A firewall
+D. MFA only
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Private connectivity only
 ### Question 8
 **Scenario:** Data must be shared with an external organization without copying it.
 
-A. Export to S3
+A. An external table
 B. A secure share via Snowflake Secure Data Sharing, or a listing on the Marketplace, where the consumer pays their own compute
 C. A replicated database
-D. An external table
+D. Export to S3
 
 <details>
 <summary>Answer</summary>
@@ -158,9 +158,9 @@ D. An external table
 ### Question 9
 **Scenario:** A query is slow and the Query Profile shows a high percentage of bytes spilled to remote storage.
 
-A. Add clustering
+A. Add a materialized view
 B. The warehouse is too small for the operation's memory needs; increase the size or reduce the data volume being processed
-C. Add a materialized view
+C. Add clustering
 D. Increase the query timeout
 
 <details>
@@ -177,14 +177,14 @@ D. Increase the query timeout
 **Scenario:** A large table's queries filter on a date column that does not match the natural load order.
 
 A. An index
-B. A clustering key on the date column, letting automatic clustering reorganize micro-partitions
-C. A larger warehouse
-D. A materialized view
+B. A materialized view
+C. A clustering key on the date column, letting automatic clustering reorganize micro-partitions
+D. A larger warehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Snowflake prunes micro-partitions by their min and max values, so clustering improves pruning for the chosen filter. Automatic clustering consumes credits continuously, so it earns its cost only on large tables queried often on that key.
 </details>
@@ -194,15 +194,15 @@ D. A materialized view
 ### Question 11
 **Scenario:** Account activity must be audited for the past year.
 
-A. The query history page only
-B. The `SNOWFLAKE.ACCOUNT_USAGE` schema, which retains up to one year with some latency, versus `INFORMATION_SCHEMA` for recent, low-latency data
-C. Warehouse logs
-D. Not available
+A. Not available
+B. The query history page only
+C. The `SNOWFLAKE.ACCOUNT_USAGE` schema, which retains up to one year with some latency, versus `INFORMATION_SCHEMA` for recent, low-latency data
+D. Warehouse logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The trade-off is the point: `ACCOUNT_USAGE` has up to 45 minutes of latency but long retention, while `INFORMATION_SCHEMA` is current but limited to between 7 days and 6 months depending on the view. Choosing the wrong one produces either stale answers or missing history.
 </details>
@@ -212,15 +212,15 @@ D. Not available
 ### Question 12
 **Scenario:** A database must be available in a second region for disaster recovery.
 
-A. Manual export and import
-B. Database or account replication to a secondary region, with failover configured for business continuity
-C. Time Travel
-D. A share
+A. Database or account replication to a secondary region, with failover configured for business continuity
+B. A share
+C. Manual export and import
+D. Time Travel
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Replication keeps a read-only secondary current; failover promotes it to primary. Account-level replication also carries users, roles, and warehouses, which is what makes the secondary usable rather than just a copy of the data.
 </details>
@@ -230,15 +230,15 @@ D. A share
 ### Question 13
 **Scenario:** Credit consumption must be attributed to teams.
 
-A. A single warehouse for everyone
-B. Warehouses per team or workload plus object tagging, reported through `WAREHOUSE_METERING_HISTORY` and tag-based views
-C. Estimation
-D. Query counts
+A. Query counts
+B. Estimation
+C. A single warehouse for everyone
+D. Warehouses per team or workload plus object tagging, reported through `WAREHOUSE_METERING_HISTORY` and tag-based views
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The warehouse is the unit of compute billing, so warehouse boundaries define the attribution you can report on. Tags extend this to storage and to grouping warehouses under a cost center without creating more of them.
 </details>
@@ -266,15 +266,15 @@ D. SSO
 ### Question 15
 **Scenario:** Storage costs are rising faster than data volume.
 
-A. Delete data
-B. Investigate Time Travel retention, Fail-safe on permanent objects, and cloned and stale objects, since retained versions and clones with diverged data all consume storage
-C. Compress the data
+A. Compress the data
+B. Delete data
+C. Investigate Time Travel retention, Fail-safe on permanent objects, and cloned and stale objects, since retained versions and clones with diverged data all consume storage
 D. Move to a smaller warehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Zero-copy clones cost nothing at creation but accumulate storage as the two copies diverge. Long Time Travel retention on a high-churn table multiplies its storage, which is why retention should be set per object rather than globally.
 </details>

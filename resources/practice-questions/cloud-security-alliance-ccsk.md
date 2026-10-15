@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** How does the shared responsibility split change between IaaS and SaaS?
 
-A. It is identical
-B. The provider's share grows as you move from IaaS to PaaS to SaaS, but the customer always retains responsibility for data, identities, and access configuration
-C. The customer is responsible for everything in SaaS
-D. The provider is responsible for everything in IaaS
+A. The provider's share grows as you move from IaaS to PaaS to SaaS, but the customer always retains responsibility for data, identities, and access configuration
+B. It is identical
+C. The provider is responsible for everything in IaaS
+D. The customer is responsible for everything in SaaS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The constants are what CCSK emphasizes: data classification, identity, and entitlement stay with the customer at every service model. What moves is the operating system, runtime, and application layers.
 </details>
@@ -32,15 +32,15 @@ D. The provider is responsible for everything in IaaS
 ### Question 2
 **Scenario:** Which document establishes what a provider is actually contractually obliged to do?
 
-A. The provider's marketing material
-B. The contract and its service level agreements, since the contract is the primary governance tool in cloud
-C. A certification badge
-D. The customer's policy
+A. The customer's policy
+B. The provider's marketing material
+C. The contract and its service level agreements, since the contract is the primary governance tool in cloud
+D. A certification badge
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** CSA's position is that in cloud you govern through the contract, because you cannot directly control the provider's operations. Certifications and audit reports are evidence supporting the contract rather than substitutes for it.
 </details>
@@ -68,10 +68,10 @@ D. An encryption standard
 ### Question 4
 **Scenario:** A cloud provider's data center is in another jurisdiction.
 
-A. Only the customer's country's law applies
+A. No law applies
 B. Multiple jurisdictions may apply, including where data resides, where the provider operates, and where the customer operates, which is why data residency and sovereignty are contract terms
-C. No law applies
-D. Only the provider's country's law applies
+C. Only the provider's country's law applies
+D. Only the customer's country's law applies
 
 <details>
 <summary>Answer</summary>
@@ -86,15 +86,15 @@ D. Only the provider's country's law applies
 ### Question 5
 **Scenario:** Which is the most significant difference in cloud incident response?
 
-A. Nothing changes
-B. Limited forensic access to underlying infrastructure, dependence on provider logs and cooperation, and the need to agree escalation paths in advance
-C. Incidents do not occur
-D. The provider handles everything
+A. Limited forensic access to underlying infrastructure, dependence on provider logs and cooperation, and the need to agree escalation paths in advance
+B. The provider handles everything
+C. Nothing changes
+D. Incidents do not occur
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** You cannot image a hypervisor you do not own, so the provider's logging and support commitments become part of your response capability. Snapshot-based acquisition of your own instances is fast, which is a genuine cloud advantage in the other direction.
 </details>
@@ -104,15 +104,15 @@ D. The provider handles everything
 ### Question 6
 **Scenario:** Which access control model best fits dynamic cloud environments?
 
-A. Static role assignments only
-B. Attribute-based access control with policy conditions, combined with just-in-time elevation and federated identity
-C. Individual accounts per system
-D. Shared credentials
+A. Individual accounts per system
+B. Shared credentials
+C. Attribute-based access control with policy conditions, combined with just-in-time elevation and federated identity
+D. Static role assignments only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Attributes such as tags, time, network path, and device posture express policy that a role list cannot. Federation keeps identity in one authoritative source, which is what avoids the account sprawl that makes deprovisioning unreliable.
 </details>
@@ -123,14 +123,14 @@ D. Shared credentials
 **Scenario:** What is the primary security benefit of infrastructure as code?
 
 A. It is faster
-B. Consistent, reviewable, version-controlled configuration that can be scanned for policy violations before deployment
-C. It eliminates all risk
-D. It removes the need for monitoring
+B. It eliminates all risk
+C. It removes the need for monitoring
+D. Consistent, reviewable, version-controlled configuration that can be scanned for policy violations before deployment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Configuration becomes an artifact you can review, diff, and test, which is what makes prevention possible rather than detection after the fact. The corresponding risk is that a flawed template deploys the same flaw everywhere at once.
 </details>
@@ -141,14 +141,14 @@ D. It removes the need for monitoring
 **Scenario:** Which encryption approach keeps the provider unable to read customer data?
 
 A. Provider-managed keys
-B. Customer-managed or customer-held keys, with client-side encryption being the strongest form
-C. Encryption at rest by default
+B. Encryption at rest by default
+C. Customer-managed or customer-held keys, with client-side encryption being the strongest form
 D. TLS only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Provider-managed encryption protects against physical media loss but not against the provider itself. The trade-off with client-side encryption is loss of provider-side processing and search, plus the full weight of key management on the customer.
 </details>
@@ -158,15 +158,15 @@ D. TLS only
 ### Question 9
 **Scenario:** Which describes the main risk of serverless functions from a security perspective?
 
-A. There is no attack surface
-B. The attack surface shifts to code, dependencies, event sources, and over-permissive function roles rather than to hosts
-C. They cannot be attacked
-D. The provider secures the code
+A. The provider secures the code
+B. They cannot be attacked
+C. There is no attack surface
+D. The attack surface shifts to code, dependencies, event sources, and over-permissive function roles rather than to hosts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Removing the server removes patching but not application risk, and event-driven triggers widen the set of untrusted inputs. Function-level least privilege matters more than in a monolith, because each function's role is a separate blast radius.
 </details>
@@ -176,15 +176,15 @@ D. The provider secures the code
 ### Question 10
 **Scenario:** A container image must be trusted before deployment.
 
-A. Trust the registry
-B. Scan images for vulnerabilities, sign them, verify signatures at admission, and build from minimal trusted base images
+A. Scan images for vulnerabilities, sign them, verify signatures at admission, and build from minimal trusted base images
+B. Use the latest tag
 C. Scan at runtime only
-D. Use the latest tag
+D. Trust the registry
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Supply chain assurance runs from base image to admission control, and `latest` breaks it by making the deployed artifact unidentifiable. Runtime scanning alone finds the problem after it is already running.
 </details>
@@ -194,15 +194,15 @@ D. Use the latest tag
 ### Question 11
 **Scenario:** Which best describes cloud network security compared with traditional?
 
-A. Identical
-B. Software-defined and identity-aware: security groups and micro-segmentation replace the perimeter, and topology is defined by policy rather than by cabling
-C. No network controls exist
-D. Only firewalls matter
+A. Only firewalls matter
+B. No network controls exist
+C. Software-defined and identity-aware: security groups and micro-segmentation replace the perimeter, and topology is defined by policy rather than by cabling
+D. Identical
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Segmentation becomes cheap and granular because it is software, so per-workload policy replaces a small number of network zones. The trade is that a misconfigured rule propagates instantly across everything using that group.
 </details>
@@ -212,15 +212,15 @@ D. Only firewalls matter
 ### Question 12
 **Scenario:** How should cloud misconfiguration be prevented at scale?
 
-A. Manual review
-B. Preventive guardrails through policy as code and organization-level controls, backed by continuous posture management to detect drift
-C. Annual audits
-D. Training only
+A. Training only
+B. Annual audits
+C. Manual review
+D. Preventive guardrails through policy as code and organization-level controls, backed by continuous posture management to detect drift
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Misconfiguration is the leading cause of cloud data exposure, and it appears faster than review cycles can catch it. Prevention at the control plane plus detection for what slips through is the two-layer answer.
 </details>
@@ -230,9 +230,9 @@ D. Training only
 ### Question 13
 **Scenario:** What is the significance of the cloud management plane?
 
-A. It is unimportant
+A. It is the network layer
 B. It is the highest-value target, because control of the management plane means control of every resource regardless of workload-level controls
-C. It is the network layer
+C. It is unimportant
 D. It is the storage layer
 
 <details>
@@ -248,15 +248,15 @@ D. It is the storage layer
 ### Question 14
 **Scenario:** A business unit must be prevented from creating resources in unapproved regions.
 
-A. A policy document
-B. Preventive policy at the organization or account level, such as a service control policy or equivalent, denying actions outside approved regions
-C. A monthly report
-D. Tagging
+A. Preventive policy at the organization or account level, such as a service control policy or equivalent, denying actions outside approved regions
+B. A monthly report
+C. Tagging
+D. A policy document
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Preventive guardrails at the organization level cannot be overridden by an account administrator, which is what makes them a control rather than a guideline. Detective controls only tell you it already happened.
 </details>
@@ -268,8 +268,8 @@ D. Tagging
 
 A. Assume the provider will always be available
 B. Plan for it: understand data export formats and egress costs, avoid unnecessary proprietary coupling where portability matters, and define exit terms contractually
-C. Use multicloud for everything
-D. Keep a copy on premises always
+C. Keep a copy on premises always
+D. Use multicloud for everything
 
 <details>
 <summary>Answer</summary>

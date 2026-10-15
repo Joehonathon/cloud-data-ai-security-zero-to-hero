@@ -1,5 +1,5 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-14
 ---
 
 # Practice Questions Template
@@ -31,6 +31,15 @@ D. Option D
 **Key Concept:** [Link to relevant documentation or notes file]
 </details>
 ```
+
+---
+
+## Authoring Rules
+
+- **Vary the correct letter.** Spread A, B, C and D roughly evenly across a bank. In 2026-10 most banks had B as the answer for nearly every question, which a learner can exploit without knowing the material. Check with `python3 .github/scripts/balance-answer-positions.py --check <file>`. Rebalance with `--write`; it also remaps letters in the explanations and answer-key tables.
+- **Do not make the correct option the longest.** The 2026-10 audit found the correct option was the longest in 88% of questions. Pad the distractors to similar length and specificity, and make at least some wrong answers detailed and plausible.
+- **Avoid "all of the above", "both A and B" and options that reference other options.** They cannot be reordered safely.
+- Refer to options in explanations as `(A)` or `Option A` so the rebalancing tool can remap them.
 
 ---
 

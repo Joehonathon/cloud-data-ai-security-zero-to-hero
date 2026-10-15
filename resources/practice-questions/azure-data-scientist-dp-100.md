@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A training job needs a GPU for four hours a week and nothing the rest of the time.
 
-A. An always-on Compute Instance
+A. Serverless Spark
 B. A Compute Cluster with minimum nodes 0 and a GPU VM size
 C. A Kubernetes online endpoint
-D. Serverless Spark
+D. An always-on Compute Instance
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Serverless Spark
 ### Question 2
 **Scenario:** A model is trained with an experiment tracked in Azure Machine Learning. What is the correct order before serving traffic?
 
-A. Deploy, then register, then evaluate
-B. Evaluate, register the model in the workspace registry, then deploy to an endpoint
-C. Register, deploy, then train
-D. Deploy directly from the run output
+A. Register, deploy, then train
+B. Deploy directly from the run output
+C. Evaluate, register the model in the workspace registry, then deploy to an endpoint
+D. Deploy, then register, then evaluate
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Registration gives the artifact a name, version, and lineage back to the run, which is what makes rollback and audit possible. Deploying straight from run output leaves you without a versioned reference. Evaluation before registration prevents promoting a model that underperforms the incumbent.
 </details>
@@ -50,10 +50,10 @@ D. Deploy directly from the run output
 ### Question 3
 **Scenario:** You need low-latency real-time predictions with autoscaling and no cluster management.
 
-A. Batch endpoint
+A. A scheduled pipeline job
 B. Managed online endpoint
-C. A scheduled pipeline job
-D. A compute instance running a notebook
+C. A compute instance running a notebook
+D. Batch endpoint
 
 <details>
 <summary>Answer</summary>
@@ -68,9 +68,9 @@ D. A compute instance running a notebook
 ### Question 4
 **Scenario:** A new model version should take 10% of live traffic before full rollout.
 
-A. Create a second endpoint
+A. Retrain with 10% of data
 B. Add a second deployment under the same online endpoint and set traffic allocation to 90/10
-C. Retrain with 10% of data
+C. Create a second endpoint
 D. Use a batch endpoint
 
 <details>
@@ -86,15 +86,15 @@ D. Use a batch endpoint
 ### Question 5
 **Scenario:** Training data lives in an Azure Data Lake Storage Gen2 account and must be referenced without credentials in code.
 
-A. Hard-code a SAS token
-B. Register a datastore with identity-based access and use a data asset that points at it
-C. Copy the data into the notebook
-D. Make the container public
+A. Register a datastore with identity-based access and use a data asset that points at it
+B. Hard-code a SAS token
+C. Make the container public
+D. Copy the data into the notebook
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A datastore holds the connection, and identity-based access uses the workspace or user managed identity so no secret lives in code. Data assets add versioning on top. Hard-coded SAS tokens leak through notebooks and git history, and public containers are a data exposure.
 </details>
@@ -104,15 +104,15 @@ D. Make the container public
 ### Question 6
 **Scenario:** You want the best model over a search space of learning rates and batch sizes, stopping unpromising runs early.
 
-A. A single training run
-B. A sweep job with a sampling method and an early termination policy such as bandit or median stopping
+A. A sweep job with a sampling method and an early termination policy such as bandit or median stopping
+B. Manual grid search in a notebook
 C. AutoML featurization only
-D. Manual grid search in a notebook
+D. A single training run
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Sweep jobs define the search space, the sampling strategy (random, grid, or Bayesian), the primary metric to optimize, and a termination policy that kills runs falling behind. That last part is where most of the compute savings come from. Manual search wastes budget and is not reproducible.
 </details>
@@ -122,15 +122,15 @@ D. Manual grid search in a notebook
 ### Question 7
 **Scenario:** A classification model must be explained to a regulator: which features drove a given prediction?
 
-A. The confusion matrix
-B. The Responsible AI dashboard with feature importance, including per-prediction explanations
+A. The Responsible AI dashboard with feature importance, including per-prediction explanations
+B. The learning rate schedule
 C. The ROC curve
-D. The learning rate schedule
+D. The confusion matrix
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The Responsible AI dashboard bundles interpretability (global and local feature importance), error analysis, fairness assessment, and counterfactuals. A confusion matrix and ROC curve describe aggregate performance, not the reasoning behind an individual decision.
 </details>
@@ -140,15 +140,15 @@ D. The learning rate schedule
 ### Question 8
 **Scenario:** A dataset has 5% positive cases and the model reports 95% accuracy.
 
-A. The model is excellent
-B. Accuracy is misleading with imbalance; use precision, recall, F1, or AUC-PR and consider resampling or class weights
-C. Increase the learning rate
-D. Add more features
+A. Add more features
+B. The model is excellent
+C. Accuracy is misleading with imbalance; use precision, recall, F1, or AUC-PR and consider resampling or class weights
+D. Increase the learning rate
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Predicting the majority class every time scores 95% here while catching nothing. Precision and recall on the positive class expose that immediately, and AUC-PR is the more honest summary metric under imbalance than AUC-ROC. Resampling and class weights address the training side.
 </details>
@@ -159,14 +159,14 @@ D. Add more features
 **Scenario:** Multiple steps (prep, train, evaluate, register) must run in sequence with reusable outputs.
 
 A. One long script
-B. A pipeline job composed of components, with outputs passed between steps
-C. Separate manual runs
-D. A cron job
+B. Separate manual runs
+C. A cron job
+D. A pipeline job composed of components, with outputs passed between steps
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Components are versioned, reusable units, and a pipeline wires their inputs and outputs into a DAG that can cache unchanged steps. That caching is the practical payoff: changing only the training step does not force data prep to rerun.
 </details>
@@ -176,15 +176,15 @@ D. A cron job
 ### Question 10
 **Scenario:** A deployed model's accuracy degrades over months while the code is unchanged.
 
-A. The endpoint is misconfigured
-B. Data drift: the input distribution has moved away from the training distribution, so monitor drift and schedule retraining
-C. The model file is corrupt
-D. The compute is undersized
+A. The model file is corrupt
+B. The compute is undersized
+C. The endpoint is misconfigured
+D. Data drift: the input distribution has moved away from the training distribution, so monitor drift and schedule retraining
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Drift is the normal explanation for silent decay. Azure Machine Learning model monitoring compares production inputs against a baseline and can alert on feature drift and data quality, which is what turns retraining from a guess into a triggered action. Concept drift, where the relationship itself changes, is the related second case.
 </details>
@@ -196,8 +196,8 @@ D. The compute is undersized
 
 A. Note the results in a document
 B. Use a registered environment with pinned dependencies, versioned data assets, and logged parameters and metrics per run
-C. Keep the compute instance running
-D. Save the notebook only
+C. Save the notebook only
+D. Keep the compute instance running
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Save the notebook only
 ### Question 12
 **Scenario:** AutoML is used for a tabular classification task. What does it not do for you?
 
-A. Feature engineering
-B. Model selection
+A. Cross-validation
+B. Feature engineering
 C. Decide whether the business problem is well posed and the label is correct
-D. Cross-validation
+D. Model selection
 
 <details>
 <summary>Answer</summary>
@@ -230,15 +230,15 @@ D. Cross-validation
 ### Question 13
 **Scenario:** Scoring 50 million rows nightly with no latency requirement.
 
-A. Managed online endpoint
-B. Batch endpoint with a compute cluster
-C. A single VM script
-D. Real-time streaming
+A. A single VM script
+B. Managed online endpoint
+C. Real-time streaming
+D. Batch endpoint with a compute cluster
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Batch endpoints parallelize scoring across cluster nodes, checkpoint progress, and write outputs to storage, which fits large offline jobs. Sending 50 million rows through a real-time endpoint is slow and expensive because you pay per-request overhead for every record.
 </details>
@@ -249,9 +249,9 @@ D. Real-time streaming
 **Scenario:** A workspace must not expose data over public endpoints.
 
 A. Managed virtual network isolation for the workspace, private endpoints to the workspace and its dependent storage, key vault, and registry
-B. An NSG on the compute subnet only
-C. A firewall rule on the storage account only
-D. Disabling the studio UI
+B. A firewall rule on the storage account only
+C. Disabling the studio UI
+D. An NSG on the compute subnet only
 
 <details>
 <summary>Answer</summary>
@@ -267,14 +267,14 @@ D. Disabling the studio UI
 **Scenario:** A team wants to share a curated model across several workspaces.
 
 A. Copy the file to each workspace
-B. Publish it to an Azure Machine Learning registry, which is cross-workspace and cross-region
-C. Email the pickle file
+B. Email the pickle file
+C. Publish it to an Azure Machine Learning registry, which is cross-workspace and cross-region
 D. Store it in a public blob
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Registries hold models, components, environments, and data assets above the workspace level, so one artifact can be promoted across dev, test, and production workspaces with lineage intact. Copying files loses version history, and a pickle in a public blob is both an integrity and a deserialization risk.
 </details>

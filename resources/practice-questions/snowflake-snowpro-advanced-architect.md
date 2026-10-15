@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Describe Snowflake's three-layer architecture.
 
-A. A single monolithic engine
-B. Cloud services for metadata, security, and optimization; multi-cluster compute as virtual warehouses; and centralized storage in micro-partitions
-C. Compute and storage combined
-D. Storage only
+A. Storage only
+B. Compute and storage combined
+C. Cloud services for metadata, security, and optimization; multi-cluster compute as virtual warehouses; and centralized storage in micro-partitions
+D. A single monolithic engine
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Separating storage from compute is what allows several warehouses to read the same data with no contention and to scale independently. The services layer is where the result cache and the metadata that drives partition pruning live.
 </details>
@@ -33,14 +33,14 @@ D. Storage only
 **Scenario:** What is a micro-partition and why does it matter for query performance?
 
 A. A user-defined partition
-B. An immutable compressed storage unit of roughly 50-500 MB uncompressed, columnar within the partition, with metadata that enables pruning
-C. A table copy
+B. A table copy
+C. An immutable compressed storage unit of roughly 50-500 MB uncompressed, columnar within the partition, with metadata that enables pruning
 D. A cluster key
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Snowflake reads a partition's min and max metadata to skip partitions that cannot match the filter. Immutability is also why zero-copy cloning and Time Travel work: changed data writes new partitions rather than modifying existing ones.
 </details>
@@ -50,15 +50,15 @@ D. A cluster key
 ### Question 3
 **Scenario:** A design must serve a data warehouse, a data lake, and data science on the same platform.
 
-A. Three separate systems
-B. One Snowflake account with separate databases and warehouses per workload, external tables or Iceberg tables for lake data, and Snowpark for data science
-C. A single warehouse for everything
-D. Copy data between systems
+A. A single warehouse for everything
+B. Three separate systems
+C. Copy data between systems
+D. One Snowflake account with separate databases and warehouses per workload, external tables or Iceberg tables for lake data, and Snowpark for data science
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Independent warehouses give workload isolation without copying data, which is the core architectural argument. Iceberg tables extend this to data Snowflake does not own, keeping a single query surface over both.
 </details>
@@ -68,15 +68,15 @@ D. Copy data between systems
 ### Question 4
 **Scenario:** A development environment needs a full copy of a 50 TB production database immediately.
 
-A. `CREATE TABLE AS SELECT`
-B. A zero-copy clone of the database, which is a metadata operation and consumes no additional storage until data diverges
-C. Export and import
-D. Replication
+A. A zero-copy clone of the database, which is a metadata operation and consumes no additional storage until data diverges
+B. Export and import
+C. Replication
+D. `CREATE TABLE AS SELECT`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Cloning is instantaneous regardless of size because it references the same micro-partitions. Storage grows only as either copy changes, which makes clone lifecycle management a real cost concern in a long-lived development environment.
 </details>
@@ -86,10 +86,10 @@ D. Replication
 ### Question 5
 **Scenario:** Data must be loaded continuously from cloud storage as files arrive.
 
-A. Scheduled `COPY INTO`
+A. An external table
 B. Snowpipe with auto-ingest driven by cloud storage event notifications, billed per compute-second on serverless resources
-C. A stream
-D. An external table
+C. Scheduled `COPY INTO`
+D. A stream
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. An external table
 ### Question 6
 **Scenario:** A row-level access requirement must restrict each region's analysts to their own rows.
 
-A. Separate tables per region
-B. A row access policy referencing a mapping table, evaluated against the session's role or user
-C. Separate views
+A. Separate views
+B. Separate tables per region
+C. A row access policy referencing a mapping table, evaluated against the session's role or user
 D. Masking policies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A mapping table keeps the policy itself stable while entitlements change as data. Masking policies control column values rather than row visibility, and the two compose on the same table.
 </details>
@@ -122,15 +122,15 @@ D. Masking policies
 ### Question 7
 **Scenario:** Which design supports a data mesh with domain ownership?
 
-A. One database owned centrally
-B. Separate databases or accounts per domain with data sharing between them, and a common governance layer of tags and policies
-C. One schema
-D. Copy data between domains
+A. Separate databases or accounts per domain with data sharing between them, and a common governance layer of tags and policies
+B. Copy data between domains
+C. One database owned centrally
+D. One schema
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Sharing lets domains publish products without duplicating storage, which is what makes mesh viable rather than a copy sprawl. Consistency comes from centrally defined tags and policies applied across domains rather than from central ownership of the data.
 </details>
@@ -141,14 +141,14 @@ D. Copy data between domains
 **Scenario:** Incremental changes to a table must feed a downstream transformation.
 
 A. Full reload
-B. A stream on the table capturing change data, consumed by a task, or a dynamic table declaring the target state and letting Snowflake handle refresh
-C. A trigger
+B. A trigger
+C. A stream on the table capturing change data, consumed by a task, or a dynamic table declaring the target state and letting Snowflake handle refresh
 D. Time Travel
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Streams plus tasks give explicit control over the pipeline; dynamic tables are declarative, with a target lag rather than a schedule. Consuming a stream in a DML statement advances its offset, which is the behavior to design around.
 </details>
@@ -158,15 +158,15 @@ D. Time Travel
 ### Question 9
 **Scenario:** Query performance must improve for a common aggregation over a very large table.
 
-A. A larger warehouse only
-B. A materialized view, which Snowflake maintains automatically and can substitute into queries that did not name it
-C. A clustering key
-D. Caching
+A. A materialized view, which Snowflake maintains automatically and can substitute into queries that did not name it
+B. A larger warehouse only
+C. Caching
+D. A clustering key
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Automatic maintenance costs serverless credits proportional to base table churn, so materialized views suit tables read far more often than written. The search optimization service is the better fit for selective point lookups instead.
 </details>
@@ -177,14 +177,14 @@ D. Caching
 **Scenario:** Data must not leave a specific region for compliance.
 
 A. A network policy
-B. Deploy the account in that region and control replication targets, since data resides in the account's cloud region
-C. Encryption
-D. A masking policy
+B. Encryption
+C. A masking policy
+D. Deploy the account in that region and control replication targets, since data resides in the account's cloud region
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Residency is an account placement decision made before any data lands. Replication and cross-region shares are the two ways data subsequently leaves, so both need controlling as part of the same requirement.
 </details>
@@ -196,8 +196,8 @@ D. A masking policy
 
 A. Export to a notebook
 B. Snowpark, executing DataFrame operations as SQL and running Python UDFs and stored procedures in a secure sandbox on warehouse compute
-C. An external function
-D. A stored procedure in SQL only
+C. A stored procedure in SQL only
+D. An external function
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. A stored procedure in SQL only
 ### Question 12
 **Scenario:** A high-concurrency BI workload competes with heavy ETL.
 
-A. One large warehouse
-B. Separate warehouses, sizing the ETL warehouse for throughput and configuring the BI warehouse as multi-cluster for concurrency
-C. A bigger warehouse
-D. Query queuing
+A. Query queuing
+B. A bigger warehouse
+C. One large warehouse
+D. Separate warehouses, sizing the ETL warehouse for throughput and configuring the BI warehouse as multi-cluster for concurrency
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The two workloads want different things: ETL wants a large warehouse for a small number of heavy queries, BI wants many small clusters. Isolation also means an ETL job cannot queue a dashboard behind it.
 </details>
@@ -230,9 +230,9 @@ D. Query queuing
 ### Question 13
 **Scenario:** Sensitive data must be classified and governed at scale.
 
-A. Manual review
+A. Column comments
 B. Object tagging with automatic classification, tag-based masking policies, and access history for lineage and audit
-C. Column comments
+C. Manual review
 D. Separate databases
 
 <details>
@@ -248,15 +248,15 @@ D. Separate databases
 ### Question 14
 **Scenario:** A partner must query shared data but is on a different cloud provider.
 
-A. Direct share
-B. Cross-cloud data sharing via replication to an account in the partner's cloud and region, or a listing that handles the replication
-C. Export files
+A. Cross-cloud data sharing via replication to an account in the partner's cloud and region, or a listing that handles the replication
+B. Export files
+C. Direct share
 D. Not possible
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Direct shares only work within the same cloud and region because they reference the provider's storage directly. Replication is what bridges regions, at the cost of storage in both places and a replication lag to plan around.
 </details>
@@ -266,10 +266,10 @@ D. Not possible
 ### Question 15
 **Scenario:** An architecture must minimize cost without hurting user experience.
 
-A. The smallest warehouse everywhere
+A. Run everything on one warehouse
 B. Right-size per workload, set short auto-suspend on interactive warehouses, exploit result and warehouse caching, and reserve clustering and materialized views for tables where the benefit exceeds the maintenance credits
 C. Disable caching
-D. Run everything on one warehouse
+D. The smallest warehouse everywhere
 
 <details>
 <summary>Answer</summary>

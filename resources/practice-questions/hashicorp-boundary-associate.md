@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What problem does Boundary solve compared with a bastion host and a VPN?
 
-A. It replaces the network entirely
-B. It grants identity-based access to specific services without giving network access to the whole subnet, and without distributing credentials
-C. It is a firewall
-D. It stores secrets
+A. It is a firewall
+B. It replaces the network entirely
+C. It stores secrets
+D. It grants identity-based access to specific services without giving network access to the whole subnet, and without distributing credentials
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A VPN puts the user on the network and then relies on downstream controls; Boundary brokers a session to one target and nothing else. Combined with credential injection, the user never sees the credential at all, which is the practical difference from a bastion.
 </details>
@@ -51,8 +51,8 @@ D. Master and replica
 **Scenario:** Boundary's resource hierarchy, from the top.
 
 A. Global scope, organization scopes, project scopes
-B. Project, organization, global
-C. Account, user, role
+B. Account, user, role
+C. Project, organization, global
 D. Host, target, session
 
 <details>
@@ -86,15 +86,15 @@ D. A load balancer only
 ### Question 5
 **Scenario:** A user should connect to a database without ever learning the password.
 
-A. Credential injection from a credential library, with the worker supplying credentials to the session
+A. A shared vault of static passwords
 B. Emailing the password
-C. A shared vault of static passwords
-D. Credential brokering only
+C. Credential brokering only
+D. Credential injection from a credential library, with the worker supplying credentials to the session
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Injection means the credential goes into the protocol session and never to the user's screen, which is the strongest form. Brokering returns the credential to the client, which is still an improvement over static distribution but leaves the secret in the user's hands.
 </details>
@@ -104,15 +104,15 @@ D. Credential brokering only
 ### Question 6
 **Scenario:** Boundary integrates with Vault for credentials.
 
-A. Boundary stores its own passwords only
-B. A Vault credential store with credential libraries issuing dynamic credentials per session
-C. Vault is not supported
-D. Only static credentials are supported
+A. Only static credentials are supported
+B. Vault is not supported
+C. A Vault credential store with credential libraries issuing dynamic credentials per session
+D. Boundary stores its own passwords only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** This pairing is the point: Vault mints a short-lived credential when the session starts, Boundary hands it to the session, and it is revoked when the session ends. Access and secrets are then both temporary and both attributable to a named identity.
 </details>
@@ -122,15 +122,15 @@ D. Only static credentials are supported
 ### Question 7
 **Scenario:** Which authentication methods can Boundary use?
 
-A. Password only
-B. Password, OIDC (for enterprise identity providers), and LDAP
-C. Certificates only
-D. Kerberos only
+A. Certificates only
+B. Kerberos only
+C. Password, OIDC (for enterprise identity providers), and LDAP
+D. Password only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** OIDC is the production choice because it inherits the organization's existing MFA and lifecycle, and managed groups can map IdP claims to Boundary roles. The password method exists mainly for initial setup and break-glass.
 </details>
@@ -140,10 +140,10 @@ D. Kerberos only
 ### Question 8
 **Scenario:** Permissions are assigned to whom in Boundary?
 
-A. Directly to users only
+A. To sessions
 B. Through roles containing grants, assigned to users, groups, or managed groups within a scope
 C. To hosts
-D. To sessions
+D. Directly to users only
 
 <details>
 <summary>Answer</summary>
@@ -159,8 +159,8 @@ D. To sessions
 **Scenario:** An auditor asks who accessed which host last Tuesday.
 
 A. Boundary session recording and audit events, showing principal, target, host, and times
-B. Firewall logs
-C. Host-level logs only
+B. Host-level logs only
+C. Firewall logs
 D. It cannot be determined
 
 <details>
@@ -176,15 +176,15 @@ D. It cannot be determined
 ### Question 10
 **Scenario:** A session must automatically end after a defined period.
 
-A. Set session max seconds and connection limits on the target
+A. Sessions never end
 B. Ask the user to disconnect
-C. Reboot the host
-D. Sessions never end
+C. Set session max seconds and connection limits on the target
+D. Reboot the host
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Targets carry session TTL and connection limits, and administrators can cancel sessions on demand. Bounded sessions matter because they turn access into something that expires by default rather than something that must be remembered and removed.
 </details>
@@ -194,10 +194,10 @@ D. Sessions never end
 ### Question 11
 **Scenario:** Targets live in a private network the controller cannot reach.
 
-A. It cannot work
+A. Use a VPN
 B. Deploy workers inside that network; they connect outward to the controller and proxy sessions to local targets
 C. Expose the targets publicly
-D. Use a VPN
+D. It cannot work
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. Use a VPN
 ### Question 12
 **Scenario:** A host catalog should update automatically as cloud instances change.
 
-A. Static host catalogs updated manually
-B. A dynamic host catalog with a plugin for AWS, Azure, or GCP, using tag-based filters
-C. A cron job editing the catalog
-D. Manual imports
+A. A cron job editing the catalog
+B. Static host catalogs updated manually
+C. Manual imports
+D. A dynamic host catalog with a plugin for AWS, Azure, or GCP, using tag-based filters
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Dynamic catalogs query the cloud provider and build host sets from tag filters, so an autoscaled instance becomes reachable as soon as it exists. Static catalogs are fine for fixed infrastructure and become stale everywhere else.
 </details>
@@ -230,15 +230,15 @@ D. Manual imports
 ### Question 13
 **Scenario:** A user runs `boundary connect ssh -target-id ttcp_...`. What happens?
 
-A. Boundary opens the firewall
-B. Boundary authorizes the session, returns connection details, and the local client proxies through a worker to the chosen host
-C. The user gets a network route to the subnet
-D. The target's password is printed
+A. The target's password is printed
+B. The user gets a network route to the subnet
+C. Boundary authorizes the session, returns connection details, and the local client proxies through a worker to the chosen host
+D. Boundary opens the firewall
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The client establishes a local listener and proxies through the worker, so the user's machine never gets a route into the target network. Authorization is evaluated per session, which is why revoking a role takes effect on the next connection attempt.
 </details>
@@ -248,15 +248,15 @@ D. The target's password is printed
 ### Question 14
 **Scenario:** Boundary's database.
 
-A. It stores secrets in plaintext
-B. Controllers use PostgreSQL for configuration and session state, with a KMS for encrypting sensitive values
+A. Controllers use PostgreSQL for configuration and session state, with a KMS for encrypting sensitive values
+B. No database is needed
 C. It uses SQLite in production
-D. No database is needed
+D. It stores secrets in plaintext
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** PostgreSQL is the state store, and the KMS blocks (root, worker-auth, recovery) encrypt sensitive data and authenticate workers. Losing the KMS keys makes the database unusable, so key management is part of the backup plan rather than an afterthought.
 </details>
@@ -266,9 +266,9 @@ D. No database is needed
 ### Question 15
 **Scenario:** How does Boundary fit a zero trust model?
 
-A. It replaces identity providers
+A. It grants standing network access
 B. Every session is authenticated, authorized against a policy at connection time, scoped to one service, time-bounded, and logged
-C. It grants standing network access
+C. It replaces identity providers
 D. It is a network firewall
 
 <details>

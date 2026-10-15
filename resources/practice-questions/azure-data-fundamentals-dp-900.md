@@ -16,15 +16,15 @@ DP-900 tests recognition and vocabulary rather than implementation, so these que
 ### Question 1
 **Scenario:** Which describes structured data?
 
-A. Video files
-B. Data organized into rows and columns with a predefined schema
-C. Free-text emails
-D. Images
+A. Free-text emails
+B. Images
+C. Data organized into rows and columns with a predefined schema
+D. Video files
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Structured data has a schema defined before the data is written, which is what makes SQL tables queryable in the way they are. Semi-structured data such as JSON carries its own schema in the payload. Video, images, and free text are unstructured.
 </details>
@@ -34,9 +34,9 @@ D. Images
 ### Question 2
 **Scenario:** Which workload type describes a system handling many small, fast inserts and updates from an application?
 
-A. OLAP
+A. Batch analytics
 B. OLTP
-C. Batch analytics
+C. OLAP
 D. Data warehousing
 
 <details>
@@ -52,15 +52,15 @@ D. Data warehousing
 ### Question 3
 **Scenario:** What does ACID stand for in a relational database?
 
-A. Available, Consistent, Isolated, Distributed
-B. Atomicity, Consistency, Isolation, Durability
-C. Access, Control, Identity, Directory
-D. Analytics, Caching, Indexing, Data
+A. Analytics, Caching, Indexing, Data
+B. Access, Control, Identity, Directory
+C. Available, Consistent, Isolated, Distributed
+D. Atomicity, Consistency, Isolation, Durability
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Atomicity means all or nothing, consistency means valid state to valid state, isolation means concurrent transactions do not interfere, and durability means a committed transaction survives a crash. These four are the guarantees applications rely on when moving money or booking inventory.
 </details>
@@ -70,15 +70,15 @@ D. Analytics, Caching, Indexing, Data
 ### Question 4
 **Scenario:** Which Azure service is a fully managed relational PaaS database with automatic patching and backups?
 
-A. Azure SQL Database
-B. Azure Blob Storage
+A. Azure Blob Storage
+B. Azure Files
 C. Azure Cosmos DB
-D. Azure Files
+D. Azure SQL Database
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Azure SQL Database is the relational PaaS offering. Cosmos DB is the NoSQL multi-model service. Blob Storage is object storage for unstructured data, and Azure Files provides SMB and NFS file shares.
 </details>
@@ -89,14 +89,14 @@ D. Azure Files
 **Scenario:** A key-value, document, graph, and column-family API from one service.
 
 A. Azure SQL Managed Instance
-B. Azure Cosmos DB
-C. Azure Synapse Analytics
-D. Azure Data Factory
+B. Azure Data Factory
+C. Azure Cosmos DB
+D. Azure Synapse Analytics
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Cosmos DB is multi-model, offering NoSQL (document), MongoDB, Cassandra (column-family), Gremlin (graph), and Table APIs on the same underlying engine with global distribution. The other services in the list are relational, analytical, and orchestration services respectively.
 </details>
@@ -107,9 +107,9 @@ D. Azure Data Factory
 **Scenario:** Unstructured files such as images and backups need cheap, massively scalable storage.
 
 A. Azure Blob Storage
-B. Azure SQL Database
-C. Azure Table Storage
-D. Azure Cache for Redis
+B. Azure Table Storage
+C. Azure Cache for Redis
+D. Azure SQL Database
 
 <details>
 <summary>Answer</summary>
@@ -124,15 +124,15 @@ D. Azure Cache for Redis
 ### Question 7
 **Scenario:** Which service orchestrates data movement and transformation across sources on a schedule?
 
-A. Azure Data Factory
-B. Azure Monitor
-C. Azure Functions
-D. Azure DevOps
+A. Azure Monitor
+B. Azure DevOps
+C. Azure Data Factory
+D. Azure Functions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Data Factory (and its Fabric equivalent, Data pipelines) is the ETL and ELT orchestration service with connectors, scheduling, and monitoring built in. Functions can move data but gives you none of the orchestration, retry, and lineage plumbing.
 </details>
@@ -142,15 +142,15 @@ D. Azure DevOps
 ### Question 8
 **Scenario:** The difference between ETL and ELT.
 
-A. They are identical
-B. ETL transforms before loading into the target; ELT loads raw data first and transforms inside the target system
-C. ELT is only for streaming
-D. ETL cannot handle relational data
+A. ETL transforms before loading into the target; ELT loads raw data first and transforms inside the target system
+B. They are identical
+C. ETL cannot handle relational data
+D. ELT is only for streaming
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** ELT became the common pattern because cloud data warehouses and lakehouses have cheap, elastic compute, so it is often better to land the raw data and transform in place. Keeping the raw copy also means a transformation bug is fixable without re-extracting from source.
 </details>
@@ -160,15 +160,15 @@ D. ETL cannot handle relational data
 ### Question 9
 **Scenario:** A data warehouse's fact table typically contains what?
 
-A. Descriptive attributes such as product name and category
-B. Numeric measures and foreign keys to dimensions, at a defined grain
-C. Report definitions
-D. User permissions
+A. Report definitions
+B. User permissions
+C. Descriptive attributes such as product name and category
+D. Numeric measures and foreign keys to dimensions, at a defined grain
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Facts hold the measurements (sales amount, quantity) plus keys, while dimensions hold the descriptive attributes you slice by. The grain, meaning what one row represents, is the first thing to define because everything else follows from it.
 </details>
@@ -178,10 +178,10 @@ D. User permissions
 ### Question 10
 **Scenario:** Which best describes a data lake?
 
-A. A relational database with a fixed schema
+A. A caching layer
 B. Storage for large volumes of raw data in native formats, with schema applied on read
-C. A caching layer
-D. A reporting tool
+C. A reporting tool
+D. A relational database with a fixed schema
 
 <details>
 <summary>Answer</summary>
@@ -197,8 +197,8 @@ D. A reporting tool
 **Scenario:** Which service provides interactive reports and dashboards for business users?
 
 A. Power BI
-B. Azure Data Lake Storage
-C. Azure Databricks
+B. Azure Databricks
+C. Azure Data Lake Storage
 D. Azure Data Box
 
 <details>
@@ -232,15 +232,15 @@ D. Manual data entry
 ### Question 13
 **Scenario:** A normalized relational design primarily aims to do what?
 
-A. Speed up analytical scans
-B. Reduce data redundancy and update anomalies by storing each fact once
+A. Reduce data redundancy and update anomalies by storing each fact once
+B. Speed up analytical scans
 C. Store images efficiently
 D. Eliminate the need for indexes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Normalization removes duplication so an update happens in one place. The trade-off is more joins, which is why analytical models deliberately denormalize into star schemas where read performance matters more than update anomalies.
 </details>
@@ -250,15 +250,15 @@ D. Eliminate the need for indexes
 ### Question 14
 **Scenario:** Who is typically responsible for building and maintaining data pipelines?
 
-A. Data analyst
-B. Data engineer
-C. Database administrator
-D. Data scientist
+A. Data scientist
+B. Database administrator
+C. Data engineer
+D. Data analyst
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Data engineers build ingestion and transformation pipelines and the storage that serves them. Analysts model and visualize for business questions, DBAs run and secure database systems, and data scientists build statistical and machine learning models. DP-900 expects you to distinguish these roles.
 </details>

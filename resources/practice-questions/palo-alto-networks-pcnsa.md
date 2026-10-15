@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Which technology identifies the application regardless of port or protocol?
 
-A. Port-based rules
-B. App-ID, which classifies traffic by application signatures and behavior rather than by port
-C. A stateful ACL
-D. DNS filtering
+A. App-ID, which classifies traffic by application signatures and behavior rather than by port
+B. DNS filtering
+C. Port-based rules
+D. A stateful ACL
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** App-ID is the core of the platform's next-generation firewall claim: a rule permitting `web-browsing` allows the application even as ports change, and blocks other traffic riding port 80. This is why policy is written by application rather than by port.
 </details>
@@ -52,8 +52,8 @@ D. Lowest risk first
 
 A. Zones do not matter
 B. Check the source and destination zones on the rule, since security policy is zone-based and a rule only applies to the zones it names
-C. Reboot the firewall
-D. Disable App-ID
+C. Disable App-ID
+D. Reboot the firewall
 
 <details>
 <summary>Answer</summary>
@@ -70,8 +70,8 @@ D. Disable App-ID
 
 A. App-ID
 B. User-ID, integrating with directory sources so policy can be written per user or group
-C. Content-ID
-D. NAT
+C. NAT
+D. Content-ID
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. NAT
 ### Question 5
 **Scenario:** Which component provides threat prevention, URL filtering, and file blocking?
 
-A. App-ID
+A. User-ID
 B. Content-ID, the umbrella for the threat inspection engines applied through security profiles
-C. User-ID
+C. App-ID
 D. NAT
 
 <details>
@@ -104,15 +104,15 @@ D. NAT
 ### Question 6
 **Scenario:** How are threat prevention actions applied to a security rule?
 
-A. Globally only
-B. Through security profiles (antivirus, anti-spyware, vulnerability protection, URL filtering, file blocking) attached to the rule, best managed as a profile group
-C. Automatically on all traffic
-D. In the NAT policy
+A. In the NAT policy
+B. Automatically on all traffic
+C. Through security profiles (antivirus, anti-spyware, vulnerability protection, URL filtering, file blocking) attached to the rule, best managed as a profile group
+D. Globally only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Profiles inspect traffic the rule has already allowed, so a rule with no profile permits threats along with the application. Profile groups keep the attachment consistent across many rules, which is how you avoid a rule that allows traffic uninspected.
 </details>
@@ -122,15 +122,15 @@ D. In the NAT policy
 ### Question 7
 **Scenario:** Internal hosts on private addresses must reach the internet.
 
-A. No translation needed
-B. A source NAT rule translating the private source to a public address, evaluated separately from security policy
+A. A security profile
+B. No translation needed
 C. Destination NAT
-D. A security profile
+D. A source NAT rule translating the private source to a public address, evaluated separately from security policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Source NAT with an interface address or a pool is the outbound case. The subtlety that catches candidates: security policy is evaluated against the post-NAT zones but the pre-NAT addresses, which is why a NAT and security rule pair can look correct yet not match.
 </details>
@@ -140,15 +140,15 @@ D. A security profile
 ### Question 8
 **Scenario:** An external service must be reachable at a public IP that maps to an internal server.
 
-A. Source NAT
-B. Destination NAT, translating the public destination to the internal address, with a security rule referencing the pre-NAT destination zone
-C. No NAT
-D. A URL filtering profile
+A. No NAT
+B. Source NAT
+C. A URL filtering profile
+D. Destination NAT, translating the public destination to the internal address, with a security rule referencing the pre-NAT destination zone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Inbound publishing uses destination NAT. The security rule must allow traffic to the original public address but with the destination zone the traffic ends up in, which is the exact detail that makes inbound NAT rules error-prone.
 </details>
@@ -176,15 +176,15 @@ D. Reset
 ### Question 10
 **Scenario:** The difference between deny and drop for a blocked session.
 
-A. They are identical
-B. Deny applies the rule's configured action per application; drop silently discards packets; reset sends a TCP reset to tear the connection down
-C. Drop notifies the sender
-D. Deny allows the traffic
+A. Drop notifies the sender
+B. Deny allows the traffic
+C. Deny applies the rule's configured action per application; drop silently discards packets; reset sends a TCP reset to tear the connection down
+D. They are identical
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Drop is silent, which can leave a client hanging until timeout, while reset ends the connection immediately. Choosing between them affects user experience and how much information a prober learns from the response.
 </details>
@@ -194,15 +194,15 @@ D. Deny allows the traffic
 ### Question 11
 **Scenario:** Configuration changes are made but not taking effect.
 
-A. The firewall is broken
-B. Changes are in the candidate configuration and must be committed to become the running configuration
-C. Reboot required
-D. License expired
+A. Reboot required
+B. License expired
+C. The firewall is broken
+D. Changes are in the candidate configuration and must be committed to become the running configuration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The candidate versus running configuration model is fundamental to PAN-OS, and forgetting to commit is the most common reason a change appears to do nothing. Commit also validates the configuration and can fail, which is itself informative.
 </details>
@@ -212,15 +212,15 @@ D. License expired
 ### Question 12
 **Scenario:** Which URL filtering action prompts the user before allowing access?
 
-A. Block
-B. Continue, which presents a response page the user must acknowledge to proceed
-C. Allow
+A. Continue, which presents a response page the user must acknowledge to proceed
+B. Allow
+C. Block
 D. Alert
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Continue nudges behavior without hard-blocking, alert logs while permitting, and override requires a password. Matching the action to the category's risk is the point of URL filtering policy rather than a blanket block or allow.
 </details>
@@ -230,15 +230,15 @@ D. Alert
 ### Question 13
 **Scenario:** An application depends on another application to function.
 
-A. Only the primary application is needed in policy
-B. Application dependencies must be allowed too, or the application will not work; the dependency warning on commit indicates which
-C. Dependencies are irrelevant
+A. Dependencies are irrelevant
+B. Only the primary application is needed in policy
+C. Application dependencies must be allowed too, or the application will not work; the dependency warning on commit indicates which
 D. Use a port-based rule instead
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Many applications ride on others, such as an application depending on `ssl` and `web-browsing`. PAN-OS surfaces the required dependencies, and ignoring them produces an application that is permitted by name but broken in practice.
 </details>
@@ -248,15 +248,15 @@ D. Use a port-based rule instead
 ### Question 14
 **Scenario:** How should administrative access to the firewall be secured?
 
-A. A shared admin account
-B. Role-based administrator accounts with least privilege, restricted management interface access, and authentication integrated with an identity source
-C. Default credentials
-D. Open management access
+A. Role-based administrator accounts with least privilege, restricted management interface access, and authentication integrated with an identity source
+B. Default credentials
+C. Open management access
+D. A shared admin account
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Admin roles scope what each administrator can see and change, and restricting the management interface to specific addresses limits exposure. Shared accounts also destroy accountability in the audit log, which matters after any change gone wrong.
 </details>
@@ -267,14 +267,14 @@ D. Open management access
 **Scenario:** Which log would you check to see why a session was allowed or blocked?
 
 A. The system log
-B. The traffic log, which records the matched rule, application, zones, action, and bytes per session
-C. The configuration log
+B. The configuration log
+C. The traffic log, which records the matched rule, application, zones, action, and bytes per session
 D. The alarm log
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The traffic log names the rule that matched, which is the fastest way to diagnose a policy problem. The threat log covers what Content-ID detected, and the system log covers device events, so the log you pick depends on the question you are asking.
 </details>

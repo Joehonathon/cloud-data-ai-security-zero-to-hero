@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An alarm must notify a team and trigger an automated response.
 
-A. Email only
-B. A Monitoring alarm publishing to a Notifications topic, with subscriptions to email and to a function that performs the remediation
-C. A log query
-D. Manual checks
+A. A Monitoring alarm publishing to a Notifications topic, with subscriptions to email and to a function that performs the remediation
+B. Manual checks
+C. Email only
+D. A log query
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Notifications topics fan out to multiple subscription types, so one alarm can both inform a human and invoke automation. Using a function subscription is how you build auto-remediation for well-understood conditions.
 </details>
@@ -33,14 +33,14 @@ D. Manual checks
 **Scenario:** Logs from many services and instances must be searched centrally.
 
 A. Log in to each host
-B. The Logging service with log groups, plus the agent configuration for custom logs, and Logging Analytics for parsing and correlation
+B. Screenshots
 C. Local files only
-D. Screenshots
+D. The Logging service with log groups, plus the agent configuration for custom logs, and Logging Analytics for parsing and correlation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Service logs, audit logs, and custom logs all land in the Logging service, and Logging Analytics adds parsing and dashboards on top. Central collection matters most during an incident, when logging into hosts is slowest.
 </details>
@@ -50,15 +50,15 @@ D. Screenshots
 ### Question 3
 **Scenario:** Patching must be applied to many instances on a schedule with reporting.
 
-A. SSH to each instance
-B. OS Management Hub, with managed instance groups, scheduled jobs, and compliance reporting
-C. Recreate instances weekly
-D. Ignore patches
+A. Recreate instances weekly
+B. Ignore patches
+C. OS Management Hub, with managed instance groups, scheduled jobs, and compliance reporting
+D. SSH to each instance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Managed groups let one job cover many instances and produce the compliance evidence an auditor asks for. Manual patching neither scales nor leaves a record, which is usually the more expensive gap.
 </details>
@@ -69,14 +69,14 @@ D. Ignore patches
 **Scenario:** A block volume must be backed up automatically with retention.
 
 A. Manual snapshots
-B. A backup policy (bronze, silver, gold, or custom) assigned to the volume, with cross-region copy where DR requires it
-C. Copy files
+B. Copy files
+C. A backup policy (bronze, silver, gold, or custom) assigned to the volume, with cross-region copy where DR requires it
 D. No backup
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Policy-based backups run on a schedule with defined retention and can copy to another region. Volume groups let you snapshot several volumes at a consistent point, which matters when an application spans volumes.
 </details>
@@ -86,15 +86,15 @@ D. No backup
 ### Question 5
 **Scenario:** An instance must move to a larger shape with minimal disruption.
 
-A. Rebuild it
-B. Stop the instance, change the shape (or edit a flexible shape's OCPU and memory), and start it
-C. It cannot be changed
-D. Attach more volumes
+A. Attach more volumes
+B. It cannot be changed
+C. Stop the instance, change the shape (or edit a flexible shape's OCPU and memory), and start it
+D. Rebuild it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Shape changes require a stop and start on virtual machines, and flexible shapes let you adjust OCPUs and memory independently within the family. Knowing that this is a reboot rather than a rebuild changes how the maintenance window is planned.
 </details>
@@ -104,15 +104,15 @@ D. Attach more volumes
 ### Question 6
 **Scenario:** Instance maintenance is announced by Oracle.
 
-A. Ignore it
-B. Read the maintenance notification, and for a live-migration-ineligible instance plan the reboot within the window, or proactively reboot at a convenient time
-C. Delete the instance
-D. Open a support ticket
+A. Read the maintenance notification, and for a live-migration-ineligible instance plan the reboot within the window, or proactively reboot at a convenient time
+B. Delete the instance
+C. Open a support ticket
+D. Ignore it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Many instances live migrate transparently, but some, including those with local NVMe or certain shapes, require a reboot. Acting early inside the window means the disruption happens when you choose rather than when the deadline arrives.
 </details>
@@ -122,10 +122,10 @@ D. Open a support ticket
 ### Question 7
 **Scenario:** Network connectivity between two instances fails intermittently.
 
-A. Recreate the instances
+A. Increase the shape
 B. Check security lists and NSGs, route tables, and then use the network path analyzer and VNIC metrics to localize the problem
-C. Reboot everything
-D. Increase the shape
+C. Recreate the instances
+D. Reboot everything
 
 <details>
 <summary>Answer</summary>
@@ -140,15 +140,15 @@ D. Increase the shape
 ### Question 8
 **Scenario:** Cloud Guard reports a problem for a publicly accessible bucket.
 
-A. Dismiss it
-B. Investigate whether public access is intended; if not, remove it and consider a Security Zone to prevent recurrence
-C. Delete the bucket
-D. Disable Cloud Guard
+A. Delete the bucket
+B. Disable Cloud Guard
+C. Dismiss it
+D. Investigate whether public access is intended; if not, remove it and consider a Security Zone to prevent recurrence
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Fixing the instance is half the job; preventing the next one is the other half. Security Zones refuse the operation outright, which converts a recurring detection into a configuration that cannot happen in that compartment.
 </details>
@@ -158,15 +158,15 @@ D. Disable Cloud Guard
 ### Question 9
 **Scenario:** Costs are rising and the cause is unclear.
 
-A. Reduce all resources
-B. Use Cost Analysis with grouping by compartment, service, and tag, then act on the largest contributors and set budgets with alerts
+A. Use Cost Analysis with grouping by compartment, service, and tag, then act on the largest contributors and set budgets with alerts
+B. Estimate
 C. Cancel the account
-D. Estimate
+D. Reduce all resources
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Attribution before action: cost is usually concentrated in a few resources, and cutting broadly hurts things that were not the problem. Budgets with forecast alerts then give warning before the next surprise.
 </details>
@@ -176,10 +176,10 @@ D. Estimate
 ### Question 10
 **Scenario:** An audit asks who terminated an instance last week.
 
-A. Instance logs
+A. Nobody can tell
 B. The Audit service, which records API calls with the principal, action, and time
 C. Monitoring metrics
-D. Nobody can tell
+D. Instance logs
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Nobody can tell
 ### Question 11
 **Scenario:** Object Storage costs are growing from data nobody reads.
 
-A. Delete everything
-B. Lifecycle policy rules moving objects to infrequent access and archive, with deletion rules where retention allows
-C. Compress only
+A. Compress only
+B. Delete everything
+C. Lifecycle policy rules moving objects to infrequent access and archive, with deletion rules where retention allows
 D. Move to block storage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Tiering matches storage cost to access frequency automatically. Archive is much cheaper but requires a restore before reading, so apply it to data whose retention is a compliance obligation rather than an operational need.
 </details>
@@ -212,15 +212,15 @@ D. Move to block storage
 ### Question 12
 **Scenario:** An OKE cluster's nodes must be updated to a new Kubernetes version.
 
-A. Update in place with no drain
-B. Add a new node pool on the target version, cordon and drain the old nodes to migrate workloads, then remove the old pool
-C. Delete the cluster
-D. Update only the control plane
+A. Delete the cluster
+B. Update in place with no drain
+C. Update only the control plane
+D. Add a new node pool on the target version, cordon and drain the old nodes to migrate workloads, then remove the old pool
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Control plane first, then nodes, is the required order. The blue-green node pool approach keeps workloads running and makes rollback a matter of draining back, whereas in-place node updates leave less room to retreat.
 </details>
@@ -230,10 +230,10 @@ D. Update only the control plane
 ### Question 13
 **Scenario:** Operational tasks must be automated without maintaining servers.
 
-A. Cron on a VM
+A. A spreadsheet
 B. Resource Scheduler or Events triggering Functions, with Resource Manager for infrastructure changes
-C. Manual runbooks
-D. A spreadsheet
+C. Cron on a VM
+D. Manual runbooks
 
 <details>
 <summary>Answer</summary>
@@ -248,15 +248,15 @@ D. A spreadsheet
 ### Question 14
 **Scenario:** A database's performance has degraded.
 
-A. Resize immediately
-B. Use Database Management and Performance Hub to find the top SQL and wait events, then address the query or index before changing capacity
-C. Restart it
-D. Add storage
+A. Use Database Management and Performance Hub to find the top SQL and wait events, then address the query or index before changing capacity
+B. Add storage
+C. Resize immediately
+D. Restart it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Diagnosis first: most degradation traces to a plan change or a missing index rather than genuine capacity exhaustion. Scaling first works, expensively and permanently, on a problem an index would have fixed.
 </details>
@@ -266,10 +266,10 @@ D. Add storage
 ### Question 15
 **Scenario:** Access reviews must confirm who can do what in a compartment.
 
-A. Ask people
+A. Check the console visually
 B. Review IAM policies and group memberships for the compartment, and use Audit to see what access was actually exercised
-C. Check the console visually
-D. Assume it is correct
+C. Assume it is correct
+D. Ask people
 
 <details>
 <summary>Answer</summary>

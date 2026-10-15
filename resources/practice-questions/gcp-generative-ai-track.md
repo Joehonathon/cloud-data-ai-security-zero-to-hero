@@ -16,15 +16,15 @@ This is a self-directed track rather than a Google exam, so these target working
 ### Question 1
 **Scenario:** Which Google Cloud surface provides access to Gemini and other foundation models with enterprise controls?
 
-A. Vertex AI, including Model Garden and the Gemini API
-B. BigQuery only
-C. Cloud Functions
-D. Compute Engine
+A. Compute Engine
+B. Vertex AI, including Model Garden and the Gemini API
+C. BigQuery only
+D. Cloud Functions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Vertex AI is the managed platform with data residency options, VPC Service Controls support, customer-managed encryption keys, and a commitment that customer prompts are not used to train the foundation models. Those enterprise properties are usually why an organization chooses it over a consumer API.
 </details>
@@ -34,15 +34,15 @@ D. Compute Engine
 ### Question 2
 **Scenario:** Answers must be grounded in the organization's own documents with citations.
 
-A. Fine-tune the model
-B. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline with Vertex AI Vector Search
+A. Use a larger model
+B. Fine-tune the model
 C. Increase the temperature
-D. Use a larger model
+D. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline with Vertex AI Vector Search
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Grounding retrieves passages and returns citations, so answers are checkable and update as the documents update. Fine-tuning bakes a snapshot into weights and cannot cite a source, which fails most enterprise requirements on its own.
 </details>
@@ -53,9 +53,9 @@ D. Use a larger model
 **Scenario:** A model must return answers grounded in current public web information.
 
 A. Grounding with Google Search
-B. A larger context window
-C. Higher temperature
-D. A longer prompt
+B. A longer prompt
+C. A larger context window
+D. Higher temperature
 
 <details>
 <summary>Answer</summary>
@@ -89,9 +89,9 @@ D. `stopSequences`
 **Scenario:** An application needs the model to call an internal API.
 
 A. Function calling: declare the function schema, let the model emit a structured call, execute it in your code, and return the result
-B. Ask the model to describe the API
-C. Fine-tune on API responses
-D. Paste the API docs in the prompt
+B. Fine-tune on API responses
+C. Paste the API docs in the prompt
+D. Ask the model to describe the API
 
 <details>
 <summary>Answer</summary>
@@ -107,14 +107,14 @@ D. Paste the API docs in the prompt
 **Scenario:** Gemini's multimodal capability is used to analyze a video.
 
 A. Extract frames manually and describe each
-B. Pass the video directly as part of the request, since Gemini accepts video, image, audio, and text natively
-C. Convert to text first
+B. Convert to text first
+C. Pass the video directly as part of the request, since Gemini accepts video, image, audio, and text natively
 D. It is not supported
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Native multimodality means the model reasons over the video with its temporal and audio context rather than over a lossy text summary you produced first. Frame-by-frame preprocessing throws away exactly the information that makes video analysis useful.
 </details>
@@ -124,10 +124,10 @@ D. It is not supported
 ### Question 7
 **Scenario:** Safety filters block legitimate content in a medical application.
 
-A. Disable all safety settings
+A. Switch providers
 B. Tune the configurable harm category thresholds to the levels the use case justifies, and add your own domain-appropriate checks
 C. Rewrite prompts to avoid medical terms
-D. Switch providers
+D. Disable all safety settings
 
 <details>
 <summary>Answer</summary>
@@ -142,15 +142,15 @@ D. Switch providers
 ### Question 8
 **Scenario:** Cost must be reduced for an application with a long, unchanging preamble on every request.
 
-A. Context caching for the repeated content
-B. A larger model
-C. More output tokens
-D. More replicas
+A. More output tokens
+B. More replicas
+C. A larger model
+D. Context caching for the repeated content
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Context caching stores the processed prefix so repeated requests do not re-pay for it, which suits long system instructions, large documents, or a codebase reused across turns. Model routing to a smaller model for simple requests is the complementary lever.
 </details>
@@ -160,15 +160,15 @@ D. More replicas
 ### Question 9
 **Scenario:** Output must conform to a JSON schema every time.
 
-A. Ask for JSON in the prompt
-B. Controlled generation with a response schema, then validate the parsed result
-C. Parse with regular expressions
-D. Retry until it works
+A. Controlled generation with a response schema, then validate the parsed result
+B. Ask for JSON in the prompt
+C. Retry until it works
+D. Parse with regular expressions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Constraining decoding to a schema eliminates the class of errors where the model wraps JSON in prose or omits a field. Validation afterwards is still worth keeping, because schema-valid output can still be semantically wrong.
 </details>
@@ -179,14 +179,14 @@ D. Retry until it works
 **Scenario:** An agent must complete multistep tasks using several tools.
 
 A. A single prompt
-B. Vertex AI Agent Builder or an agent framework, with per-tool authorization checked in code and hard limits on loop iterations
-C. Chain prompts manually forever
-D. A fine-tuned model
+B. A fine-tuned model
+C. Vertex AI Agent Builder or an agent framework, with per-tool authorization checked in code and hard limits on loop iterations
+D. Chain prompts manually forever
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Agents need three things the model cannot provide: an execution loop with termination bounds, tools with narrowly scoped credentials, and authorization evaluated against the calling user. Without those, an agent's blast radius is whatever its service account can do.
 </details>
@@ -198,8 +198,8 @@ D. A fine-tuned model
 
 A. Increase temperature
 B. Improve chunking, add hybrid search and a reranker, and evaluate retrieval separately from generation
-C. Use a larger model
-D. Shorten the answers
+C. Shorten the answers
+D. Use a larger model
 
 <details>
 <summary>Answer</summary>
@@ -214,15 +214,15 @@ D. Shorten the answers
 ### Question 12
 **Scenario:** Model quality must be measured before and after a change.
 
-A. Manual review
-B. The Vertex AI evaluation service with task-appropriate metrics, plus your own dataset representing production traffic
-C. Vendor benchmarks
+A. Vendor benchmarks
+B. Manual review
+C. The Vertex AI evaluation service with task-appropriate metrics, plus your own dataset representing production traffic
 D. Latency only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Public benchmarks say little about your specific distribution. Computation-based metrics and model-based (autorater) evaluation both have a place, and the dataset that matters is one drawn from real requests, including the awkward ones.
 </details>
@@ -232,10 +232,10 @@ D. Latency only
 ### Question 13
 **Scenario:** Generated images must be identifiable as AI-generated.
 
-A. A caption asking users to be honest
+A. Metadata only
 B. SynthID watermarking, which embeds an imperceptible, detectable marker in generated media
 C. A filename convention
-D. Metadata only
+D. A caption asking users to be honest
 
 <details>
 <summary>Answer</summary>
@@ -250,15 +250,15 @@ D. Metadata only
 ### Question 14
 **Scenario:** Model customization is needed for a specific output style with a few hundred examples.
 
-A. Pretraining
-B. Supervised fine-tuning (including parameter-efficient tuning) on the labeled examples
+A. Supervised fine-tuning (including parameter-efficient tuning) on the labeled examples
+B. Pretraining
 C. RAG
 D. A longer prompt only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Style, format, and task-specific behavior are what fine-tuning teaches well, and parameter-efficient methods make it feasible at that data scale. Reach for it after prompt engineering and few-shot examples stop improving results, not before.
 </details>
@@ -268,15 +268,15 @@ D. A longer prompt only
 ### Question 15
 **Scenario:** Which describes Google's responsible AI expectation for a launched feature?
 
-A. Accuracy testing alone
-B. Assess the use case for harms, evaluate performance across affected groups, apply safety controls, document limitations, and provide a human path for contested outcomes
-C. A terms-of-service update
-D. Nothing specific
+A. A terms-of-service update
+B. Accuracy testing alone
+C. Nothing specific
+D. Assess the use case for harms, evaluate performance across affected groups, apply safety controls, document limitations, and provide a human path for contested outcomes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The pattern is consistent across major providers: identify harms in context, measure disaggregated performance, apply layered controls, be transparent about limits, and keep a human in the loop where the stakes justify it. Aggregate accuracy is the measure that hides the problems.
 </details>

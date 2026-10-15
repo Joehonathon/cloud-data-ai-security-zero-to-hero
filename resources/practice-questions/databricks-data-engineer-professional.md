@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A streaming job must process only new files arriving in cloud storage, at scale.
 
-A. List the directory each run
-B. Auto Loader (`cloudFiles`), which tracks discovered files with a scalable file notification or directory listing mode
-C. A cron job with timestamps
-D. Reprocess everything
+A. A cron job with timestamps
+B. Reprocess everything
+C. Auto Loader (`cloudFiles`), which tracks discovered files with a scalable file notification or directory listing mode
+D. List the directory each run
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Directory listing degrades badly once a path holds millions of objects. Auto Loader maintains its own state of processed files and can use cloud notification services instead of listing, with schema inference and evolution built in.
 </details>
@@ -32,9 +32,9 @@ D. Reprocess everything
 ### Question 2
 **Scenario:** A Delta table must apply updates and inserts from a change feed atomically.
 
-A. Overwrite the table
+A. Append everything
 B. `MERGE INTO` keyed on the business key, using the change type to decide insert, update, or delete
-C. Append everything
+C. Overwrite the table
 D. Delete then insert
 
 <details>
@@ -50,15 +50,15 @@ D. Delete then insert
 ### Question 3
 **Scenario:** Downstream jobs need to know exactly which rows changed in a Delta table.
 
-A. Compare full snapshots
-B. Enable Change Data Feed on the table and read the change data with row-level change types
-C. Add a timestamp column
-D. Use the transaction log manually
+A. Use the transaction log manually
+B. Compare full snapshots
+C. Enable Change Data Feed on the table and read the change data with row-level change types
+D. Add a timestamp column
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** CDF emits inserts, updates (pre and post images), and deletes with commit versions, which is what makes incremental downstream processing correct rather than approximate. Timestamp columns miss deletes entirely and are unreliable under late-arriving data.
 </details>
@@ -68,10 +68,10 @@ D. Use the transaction log manually
 ### Question 4
 **Scenario:** A structured streaming job must guarantee exactly-once processing across restarts.
 
-A. Nothing is needed
+A. Manual offset tracking
 B. A checkpoint location plus an idempotent sink, which Delta provides through transactional writes
 C. Reprocess from the beginning
-D. Manual offset tracking
+D. Nothing is needed
 
 <details>
 <summary>Answer</summary>
@@ -86,15 +86,15 @@ D. Manual offset tracking
 ### Question 5
 **Scenario:** A slowly changing dimension must keep history of attribute changes.
 
-A. Overwrite the row (SCD Type 1)
-B. SCD Type 2: close the current row with an end timestamp and insert a new current row
+A. Use a view
+B. Overwrite the row (SCD Type 1)
 C. Delete old rows
-D. Use a view
+D. SCD Type 2: close the current row with an end timestamp and insert a new current row
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Type 2 preserves history so a fact from last year joins to the dimension values that were current then. Type 1 overwrites and loses that, which silently changes historical reports. Delta Live Tables has `APPLY CHANGES` support for both patterns.
 </details>
@@ -104,10 +104,10 @@ D. Use a view
 ### Question 6
 **Scenario:** Query performance on a large Delta table filtered by two high-cardinality columns is poor.
 
-A. Add more partitions
+A. Increase cluster size only
 B. Use liquid clustering (or Z-ordering with `OPTIMIZE`) on the filter columns to co-locate related data
 C. Convert to CSV
-D. Increase cluster size only
+D. Add more partitions
 
 <details>
 <summary>Answer</summary>
@@ -122,15 +122,15 @@ D. Increase cluster size only
 ### Question 7
 **Scenario:** A table has accumulated thousands of small files.
 
-A. Ignore it
-B. `OPTIMIZE` to compact, tune the writer to produce fewer larger files, and enable auto compaction and optimized writes
-C. Add more nodes
-D. Repartition to 10,000
+A. Repartition to 10,000
+B. Ignore it
+C. `OPTIMIZE` to compact, tune the writer to produce fewer larger files, and enable auto compaction and optimized writes
+D. Add more nodes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Each file adds open and metadata overhead, so small files dominate query time. Fixing the writer prevents recurrence and compaction cleans up existing data. Auto-optimize handles it continuously for streaming writes.
 </details>
@@ -140,15 +140,15 @@ D. Repartition to 10,000
 ### Question 8
 **Scenario:** Access must be governed centrally across workspaces with lineage.
 
-A. Table ACLs per workspace
-B. Unity Catalog, providing a three-level namespace, centralized grants, lineage, and audit across workspaces
+A. Notebook permissions
+B. Table ACLs per workspace
 C. Cloud storage permissions only
-D. Notebook permissions
+D. Unity Catalog, providing a three-level namespace, centralized grants, lineage, and audit across workspaces
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Unity Catalog moves governance above the workspace so one grant applies everywhere, and it captures column-level lineage automatically. Storage-level permissions cannot express table, column, or row scope, and per-workspace ACLs fragment as the estate grows.
 </details>
@@ -158,15 +158,15 @@ D. Notebook permissions
 ### Question 9
 **Scenario:** A streaming job's state store grows without bound on a windowed aggregation.
 
-A. Increase memory
-B. Set a watermark so state for closed windows can be dropped, and bound how late events are accepted
+A. Set a watermark so state for closed windows can be dropped, and bound how late events are accepted
+B. Restart daily
 C. Disable checkpointing
-D. Restart daily
+D. Increase memory
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Without a watermark, Spark must retain state indefinitely because any old window might still receive an event. The watermark declares a lateness bound, which is what lets old state be evicted, and it also defines which late records are dropped.
 </details>
@@ -176,15 +176,15 @@ D. Restart daily
 ### Question 10
 **Scenario:** A pipeline must enforce data quality and stop bad records reaching downstream tables.
 
-A. Trust the source
-B. Delta Live Tables expectations, choosing per rule whether to warn, drop the record, or fail the update
-C. Check afterwards
-D. A comment
+A. Delta Live Tables expectations, choosing per rule whether to warn, drop the record, or fail the update
+B. Trust the source
+C. A comment
+D. Check afterwards
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Expectations make quality declarative and observable in the pipeline event log, and the three actions map to different severities. Deciding upfront which rules are fatal is the part that turns quality from a dashboard into a gate.
 </details>
@@ -194,15 +194,15 @@ D. A comment
 ### Question 11
 **Scenario:** Old versions of a Delta table must be removed to reduce storage cost.
 
-A. Delete files from storage directly
-B. `VACUUM` with a retention period, understanding it breaks time travel beyond that window
+A. `VACUUM` with a retention period, understanding it breaks time travel beyond that window
+B. Nothing can be removed
 C. Drop the table
-D. Nothing can be removed
+D. Delete files from storage directly
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** VACUUM removes files no longer referenced by any retained version, and the default 7-day retention protects concurrent readers and streams. Deleting files manually corrupts the table because the transaction log still references them.
 </details>
@@ -212,10 +212,10 @@ D. Nothing can be removed
 ### Question 12
 **Scenario:** A job is failing intermittently with skew: one task takes ten times longer than the rest.
 
-A. Add nodes
+A. Increase the timeout
 B. Address skew: enable adaptive query execution's skew join handling, salt the skewed key, or broadcast the small side
 C. Reduce partitions to one
-D. Increase the timeout
+D. Add nodes
 
 <details>
 <summary>Answer</summary>
@@ -230,15 +230,15 @@ D. Increase the timeout
 ### Question 13
 **Scenario:** A production job must be orchestrated with dependencies, retries, and alerting.
 
-A. A scheduled notebook
-B. Databricks Jobs with multiple tasks, dependencies, retry policies, and notifications, defined as code
+A. Databricks Jobs with multiple tasks, dependencies, retry policies, and notifications, defined as code
+B. A scheduled notebook
 C. An external cron calling a notebook
 D. Manual runs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Multi-task jobs express the DAG, retries, and failure notification in one place, and defining them through Asset Bundles or the API makes them reviewable and promotable across environments. A single scheduled notebook has no dependency model.
 </details>
@@ -248,15 +248,15 @@ D. Manual runs
 ### Question 14
 **Scenario:** Development, staging, and production must use the same code against different data.
 
-A. Copy notebooks between workspaces
-B. Databricks Asset Bundles or CI/CD with parameterized catalogs and environment-specific configuration
+A. One shared environment
+B. Copy notebooks between workspaces
 C. Hard-code paths
-D. One shared environment
+D. Databricks Asset Bundles or CI/CD with parameterized catalogs and environment-specific configuration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Parameterizing the catalog and schema means the same artifact is promoted rather than reimplemented, which is what makes staging results meaningful. Copied notebooks drift, and the drift usually surfaces as a production-only bug.
 </details>
@@ -266,15 +266,15 @@ D. One shared environment
 ### Question 15
 **Scenario:** A pipeline's cost is higher than expected on an all-purpose cluster.
 
-A. Keep it running
-B. Use job clusters that terminate on completion, right-size the instance types, enable autoscaling, and consider spot for non-critical work
-C. Increase the cluster size
+A. Increase the cluster size
+B. Keep it running
+C. Use job clusters that terminate on completion, right-size the instance types, enable autoscaling, and consider spot for non-critical work
 D. Run more frequently
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** All-purpose clusters bill at a higher rate and often stay up between runs; job clusters exist for the run and stop. Photon and serverless SQL warehouses are the other levers, trading a higher unit rate for enough speedup to reduce total cost.
 </details>

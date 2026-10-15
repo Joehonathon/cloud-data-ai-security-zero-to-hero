@@ -20,17 +20,17 @@
 ### Question 1
 **Scenario:** A developer needs to create an Azure Function that processes messages from an Azure Service Bus queue. The function should scale automatically based on queue depth and handle message failures with retries. What trigger and configuration should they use?
 
-A. HTTP trigger with manual queue polling
-B. Service Bus Queue trigger with host.json retry configuration
-C. Timer trigger that checks queue periodically
-D. Event Grid trigger
+A. Event Grid trigger
+B. Timer trigger that checks queue periodically
+C. Service Bus Queue trigger with host.json retry configuration
+D. HTTP trigger with manual queue polling
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** Service Bus Queue trigger automatically scales based on queue depth (up to 16 instances by default). The trigger handles message completion/abandonment. host.json configures retry policies for failed processing. HTTP trigger (A) requires manual polling. Timer trigger (C) isn't event-driven. Event Grid (D) is for events, not queue messages.
+**Why:** Service Bus Queue trigger automatically scales based on queue depth (up to 16 instances by default). The trigger handles message completion/abandonment. host.json configures retry policies for failed processing. HTTP trigger (D) requires manual polling. Timer trigger (B) isn't event-driven. Event Grid (A) is for events, not queue messages.
 
 **Key Concept:** [Service Bus Trigger](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger)
 </details>
@@ -39,16 +39,16 @@ D. Event Grid trigger
 **Scenario:** A developer needs to deploy a containerized web application to Azure. The application should automatically scale based on HTTP traffic, support multiple revisions for blue-green deployments, and integrate with Dapr for service-to-service communication. What platform should they use?
 
 A. Azure Kubernetes Service
-B. Azure Container Apps
+B. Azure App Service
 C. Azure Container Instances
-D. Azure App Service
+D. Azure Container Apps
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Container Apps provides serverless containers with built-in HTTP autoscaling, revision-based traffic splitting for blue-green deployments, and native Dapr integration. AKS (A) requires manual Dapr installation and cluster management. ACI (C) doesn't have traffic splitting. App Service (D) has limited container features and no Dapr integration.
+**Why:** Container Apps provides serverless containers with built-in HTTP autoscaling, revision-based traffic splitting for blue-green deployments, and native Dapr integration. AKS (A) requires manual Dapr installation and cluster management. ACI (C) doesn't have traffic splitting. App Service (B) has limited container features and no Dapr integration.
 
 **Key Concept:** [Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/overview)
 </details>
@@ -56,17 +56,17 @@ D. Azure App Service
 ### Question 3
 **Scenario:** A developer is creating an Azure Function that needs to output to multiple Azure services: write to Blob Storage, send a message to a queue, and update a Cosmos DB document. How should they implement this efficiently?
 
-A. Use separate SDK calls in the function code for each service
-B. Use multiple output bindings declared in function.json or attributes
+A. Use Durable Functions for orchestration
+B. Use separate SDK calls in the function code for each service
 C. Create separate functions for each output
-D. Use Durable Functions for orchestration
+D. Use multiple output bindings declared in function.json or attributes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Output bindings allow declarative definition of outputs without SDK code. Multiple bindings can be defined for a single function (Blob, Queue, Cosmos DB outputs). The runtime handles connections and writes. SDK calls (A) work but require more code. Separate functions (C) add latency. Durable Functions (D) are for complex orchestrations.
+**Why:** Output bindings allow declarative definition of outputs without SDK code. Multiple bindings can be defined for a single function (Blob, Queue, Cosmos DB outputs). The runtime handles connections and writes. SDK calls (B) work but require more code. Separate functions (C) add latency. Durable Functions (A) are for complex orchestrations.
 
 **Key Concept:** [Function Bindings](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-expressions-patterns)
 </details>
@@ -74,17 +74,17 @@ D. Use Durable Functions for orchestration
 ### Question 4
 **Scenario:** A developer needs to implement a long-running workflow that coordinates multiple Azure Functions, waits for human approval, and retries failed steps. What should they use?
 
-A. Multiple timer-triggered functions with shared state in storage
-B. Durable Functions with orchestrator, activity functions, and external events
-C. Logic Apps
-D. Azure Batch
+A. Durable Functions with orchestrator, activity functions, and external events
+B. Azure Batch
+C. Multiple timer-triggered functions with shared state in storage
+D. Logic Apps
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Durable Functions provide orchestration patterns including function chaining, fan-out/fan-in, human interaction (external events for approval), and automatic retry. Orchestrator functions maintain state. Timer functions (A) are complex to coordinate. Logic Apps (C) are low-code, not developer-focused. Batch (D) is for parallel processing, not workflows.
+**Why:** Durable Functions provide orchestration patterns including function chaining, fan-out/fan-in, human interaction (external events for approval), and automatic retry. Orchestrator functions maintain state. Timer functions (C) are complex to coordinate. Logic Apps (D) are low-code, not developer-focused. Batch (B) is for parallel processing, not workflows.
 
 **Key Concept:** [Durable Functions](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview)
 </details>
@@ -92,17 +92,17 @@ D. Azure Batch
 ### Question 5
 **Scenario:** A developer needs to deploy an API to Azure App Service with zero-downtime deployments. They want to test new versions with a subset of traffic before full rollout. What should they configure?
 
-A. Delete and redeploy the App Service
-B. Deployment slots with traffic routing percentages
-C. Multiple App Services behind Load Balancer
-D. Azure DevOps release gates
+A. Deployment slots with traffic routing percentages
+B. Multiple App Services behind Load Balancer
+C. Azure DevOps release gates
+D. Delete and redeploy the App Service
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Deployment slots allow deploying new versions to a non-production slot, warming up the app, then gradually routing traffic (e.g., 10% to staging slot). Swap operation provides instant cutover with zero downtime. Delete/redeploy (A) causes downtime. Multiple services (C) require manual traffic management. Release gates (D) are for approval workflows, not traffic routing.
+**Why:** Deployment slots allow deploying new versions to a non-production slot, warming up the app, then gradually routing traffic (e.g., 10% to staging slot). Swap operation provides instant cutover with zero downtime. Delete/redeploy (D) causes downtime. Multiple services (B) require manual traffic management. Release gates (C) are for approval workflows, not traffic routing.
 
 **Key Concept:** [Deployment Slots](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
 </details>
@@ -110,9 +110,9 @@ D. Azure DevOps release gates
 ### Question 6
 **Scenario:** An Azure Function occasionally fails due to transient errors when calling an external API. The developer wants to implement automatic retries with exponential backoff. What should they configure?
 
-A. Wrap the code in a try-catch with Thread.Sleep
+A. Use Polly library for HTTP retries only
 B. Configure retry policy in host.json for the specific trigger type
-C. Use Polly library for HTTP retries only
+C. Wrap the code in a try-catch with Thread.Sleep
 D. Create multiple function instances
 
 <details>
@@ -120,7 +120,7 @@ D. Create multiple function instances
 
 **Correct: B**
 
-**Why:** host.json retry policies configure automatic retries with fixed delay, exponential backoff, or custom strategies at the trigger level. The runtime handles retry logic. Try-catch with Sleep (A) blocks the function. Polly (C) works for HTTP calls but host.json handles all trigger types. Multiple instances (D) don't address retries.
+**Why:** host.json retry policies configure automatic retries with fixed delay, exponential backoff, or custom strategies at the trigger level. The runtime handles retry logic. Try-catch with Sleep (C) blocks the function. Polly (A) works for HTTP calls but host.json handles all trigger types. Multiple instances (D) don't address retries.
 
 **Key Concept:** [Function Retry Policies](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-error-pages)
 </details>
@@ -129,16 +129,16 @@ D. Create multiple function instances
 **Scenario:** A developer is building a web API using Azure App Service. They need to implement caching to reduce database load. Cached data should be shared across all instances of the App Service. What caching solution should they use?
 
 A. In-memory caching in the application
-B. Azure Cache for Redis
-C. Output caching in App Service
-D. Browser caching headers
+B. Browser caching headers
+C. Azure Cache for Redis
+D. Output caching in App Service
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** Azure Cache for Redis provides a distributed cache shared across all App Service instances. It persists across instance restarts and scales independently. In-memory caching (A) isn't shared between instances. Output caching (C) is limited to response caching. Browser caching (D) is client-side only.
+**Why:** Azure Cache for Redis provides a distributed cache shared across all App Service instances. It persists across instance restarts and scales independently. In-memory caching (A) isn't shared between instances. Output caching (D) is limited to response caching. Browser caching (B) is client-side only.
 
 **Key Concept:** [Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)
 </details>
@@ -146,17 +146,17 @@ D. Browser caching headers
 ### Question 8
 **Scenario:** A developer needs to build an application that processes images uploaded to Blob Storage. Processing takes 2-3 minutes per image. The solution should scale automatically and be cost-effective for sporadic uploads.
 
-A. App Service WebJob with always-on
+A. VM with polling application
 B. Azure Function with Blob trigger on Consumption plan
 C. Azure Function with Blob trigger on Premium plan
-D. VM with polling application
+D. App Service WebJob with always-on
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Blob trigger processes new blobs automatically. Premium plan provides pre-warmed instances (no cold starts), longer execution timeout (unlimited vs 10 min consumption), and VNET integration if needed. Consumption plan (B) has 10-minute timeout which may not be enough for 2-3 minute processing with retries. WebJobs (A) and VMs (D) require more management.
+**Why:** Blob trigger processes new blobs automatically. Premium plan provides pre-warmed instances (no cold starts), longer execution timeout (unlimited vs 10 min consumption), and VNET integration if needed. Consumption plan (B) has 10-minute timeout which may not be enough for 2-3 minute processing with retries. WebJobs (D) and VMs (A) require more management.
 
 **Key Concept:** [Functions Premium Plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)
 </details>
@@ -164,17 +164,17 @@ D. VM with polling application
 ### Question 9
 **Scenario:** A developer is containerizing an application for Azure Container Instances. The container needs to access secrets stored in Azure Key Vault at startup. How should they securely provide the secrets?
 
-A. Pass secrets as environment variables in the deployment
+A. Embed secrets in the container image
 B. Mount Key Vault secrets as a volume using managed identity
-C. Embed secrets in the container image
-D. Use Azure App Configuration
+C. Use Azure App Configuration
+D. Pass secrets as environment variables in the deployment
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** ACI can mount Key Vault secrets as files in a volume using managed identity for authentication. Secrets are fetched at container start without exposing them in configuration. Environment variables (A) are visible in container settings. Embedded secrets (C) are in the image layer. App Configuration (D) isn't for secrets.
+**Why:** ACI can mount Key Vault secrets as files in a volume using managed identity for authentication. Secrets are fetched at container start without exposing them in configuration. Environment variables (D) are visible in container settings. Embedded secrets (A) are in the image layer. App Configuration (C) isn't for secrets.
 
 **Key Concept:** [ACI Secret Volumes](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-secret)
 </details>
@@ -182,15 +182,15 @@ D. Use Azure App Configuration
 ### Question 10
 **Scenario:** A developer needs to configure an Azure Function to use a custom Docker container. The function should scale based on queue length. What hosting plan and configuration are required?
 
-A. Consumption plan with container
-B. Premium plan or Dedicated plan with custom container
-C. Any plan supports containers
-D. Only ACI supports custom containers
+A. Premium plan or Dedicated plan with custom container
+B. Only ACI supports custom containers
+C. Consumption plan with container
+D. Any plan supports containers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Custom containers for Azure Functions require Premium plan or Dedicated (App Service) plan. Consumption plan doesn't support custom containers. Premium plan provides event-driven scaling. The container must include the Azure Functions runtime.
 
@@ -222,17 +222,17 @@ D. Monitor pattern
 ### Question 12
 **Scenario:** A developer needs to upload a 5GB video file to Azure Blob Storage from a web application. The upload should resume if interrupted and show progress. What upload method should they use?
 
-A. PutBlob API with single request
-B. Block blob upload with staged blocks and commit
-C. Append blob
-D. Page blob
+A. Block blob upload with staged blocks and commit
+B. PutBlob API with single request
+C. Page blob
+D. Append blob
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Block blobs support uploading in blocks (stages) that can be committed together. If upload is interrupted, only uncommitted blocks need retry. Progress can be tracked per block. PutBlob (A) fails for files > 256MB in single request. Append blobs (C) are for log-type data. Page blobs (D) are for random read/write like VHDs.
+**Why:** Block blobs support uploading in blocks (stages) that can be committed together. If upload is interrupted, only uncommitted blocks need retry. Progress can be tracked per block. PutBlob (B) fails for files > 256MB in single request. Append blobs (D) are for log-type data. Page blobs (C) are for random read/write like VHDs.
 
 **Key Concept:** [Block Blob Upload](https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs)
 </details>
@@ -240,17 +240,17 @@ D. Page blob
 ### Question 13
 **Scenario:** A developer needs to implement optimistic concurrency when updating blobs. Multiple clients may update the same blob simultaneously, and updates should fail if the blob changed since read. What should they use?
 
-A. Lease the blob before update
+A. Lock the storage account
 B. Use ETag and If-Match header in update request
-C. Lock the storage account
-D. Use Blob versioning
+C. Use Blob versioning
+D. Lease the blob before update
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** ETag represents the blob version. If-Match header with the ETag from read causes update to fail with 412 (Precondition Failed) if blob changed. This implements optimistic concurrency without locking. Lease (A) is pessimistic locking. Storage account lock (C) doesn't exist for this. Versioning (D) keeps history but doesn't prevent concurrent updates.
+**Why:** ETag represents the blob version. If-Match header with the ETag from read causes update to fail with 412 (Precondition Failed) if blob changed. This implements optimistic concurrency without locking. Lease (D) is pessimistic locking. Storage account lock (A) doesn't exist for this. Versioning (C) keeps history but doesn't prevent concurrent updates.
 
 **Key Concept:** [Optimistic Concurrency](https://learn.microsoft.com/en-us/azure/storage/blobs/concurrency-manage)
 </details>
@@ -258,17 +258,17 @@ D. Use Blob versioning
 ### Question 14
 **Scenario:** A developer needs to query data stored in Azure Cosmos DB. The application requires low latency reads from multiple regions and automatic failover. Reads should go to the nearest region. What consistency level and configuration should they use?
 
-A. Strong consistency with single region
-B. Session consistency with multi-region writes and preferred locations
+A. Bounded staleness with manual failover
+B. Strong consistency with single region
 C. Eventual consistency only
-D. Bounded staleness with manual failover
+D. Session consistency with multi-region writes and preferred locations
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Multi-region writes with preferred locations directs reads to the nearest region. Session consistency provides read-your-writes guarantee within a session (good balance of consistency and latency). Automatic failover handles region outages. Strong consistency (A) requires single region. Eventual (C) may return stale data. Manual failover (D) increases RTO.
+**Why:** Multi-region writes with preferred locations directs reads to the nearest region. Session consistency provides read-your-writes guarantee within a session (good balance of consistency and latency). Automatic failover handles region outages. Strong consistency (B) requires single region. Eventual (C) may return stale data. Manual failover (A) increases RTO.
 
 **Key Concept:** [Cosmos DB Multi-region](https://learn.microsoft.com/en-us/azure/cosmos-db/distribute-data-globally)
 </details>
@@ -276,17 +276,17 @@ D. Bounded staleness with manual failover
 ### Question 15
 **Scenario:** A developer is designing a Cosmos DB container for an e-commerce application. The main access patterns are: get orders by customer ID, get orders by order date range, and get order by order ID. What partition key should they choose?
 
-A. Order ID
-B. Customer ID
-C. Order Date
+A. Order Date
+B. Order ID
+C. Customer ID
 D. Composite key of Customer ID and Order Date
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** Customer ID groups related orders together for efficient customer-based queries. Single-item lookup by Order ID works with any partition key (cross-partition query). Date range queries across customers would be cross-partition but are typically less frequent. Order ID (A) would make every query cross-partition except single-item. Date (C) creates hot partitions. Composite (D) complicates customer queries.
+**Why:** Customer ID groups related orders together for efficient customer-based queries. Single-item lookup by Order ID works with any partition key (cross-partition query). Date range queries across customers would be cross-partition but are typically less frequent. Order ID (B) would make every query cross-partition except single-item. Date (A) creates hot partitions. Composite (D) complicates customer queries.
 
 **Key Concept:** [Partition Key Selection](https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning-overview)
 </details>
@@ -294,17 +294,17 @@ D. Composite key of Customer ID and Order Date
 ### Question 16
 **Scenario:** A developer needs to store and retrieve user session data with TTL (time-to-live). Sessions should automatically expire after 30 minutes of inactivity. What Azure service should they use?
 
-A. Azure Table Storage with manual cleanup
+A. Azure Blob Storage with lifecycle management
 B. Azure Cache for Redis with key expiration
-C. Azure Blob Storage with lifecycle management
-D. Azure SQL with scheduled job
+C. Azure SQL with scheduled job
+D. Azure Table Storage with manual cleanup
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Redis supports key expiration (TTL) natively with sliding expiration on access. Session data is accessed frequently and benefits from in-memory speed. Built-in TTL automatically removes expired sessions. Table Storage (A) requires manual cleanup. Blob lifecycle (C) minimum is days, not minutes. SQL job (D) adds complexity.
+**Why:** Redis supports key expiration (TTL) natively with sliding expiration on access. Session data is accessed frequently and benefits from in-memory speed. Built-in TTL automatically removes expired sessions. Table Storage (D) requires manual cleanup. Blob lifecycle (A) minimum is days, not minutes. SQL job (C) adds complexity.
 
 **Key Concept:** [Redis Key Expiration](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices-development)
 </details>
@@ -312,17 +312,17 @@ D. Azure SQL with scheduled job
 ### Question 17
 **Scenario:** A developer needs to perform a batch operation in Cosmos DB that updates 100 items atomically. All updates must succeed or all must fail. What should they use?
 
-A. Individual update operations in a loop
-B. Transactional batch with the same partition key
-C. Stored procedure
-D. Bulk executor
+A. Stored procedure
+B. Individual update operations in a loop
+C. Bulk executor
+D. Transactional batch with the same partition key
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Transactional batch operations in Cosmos DB are atomic within a single partition key. All operations succeed or all fail with no partial updates. Individual updates (A) aren't atomic. Stored procedures (C) also require same partition but are more complex. Bulk executor (D) is for high-throughput, not transactions.
+**Why:** Transactional batch operations in Cosmos DB are atomic within a single partition key. All operations succeed or all fail with no partial updates. Individual updates (B) aren't atomic. Stored procedures (A) also require same partition but are more complex. Bulk executor (C) is for high-throughput, not transactions.
 
 **Key Concept:** [Transactional Batch](https://learn.microsoft.com/en-us/azure/cosmos-db/transactional-batch)
 </details>
@@ -330,17 +330,17 @@ D. Bulk executor
 ### Question 18
 **Scenario:** A developer needs to generate a URL that allows a third party to upload a file directly to Blob Storage for the next hour. The third party should only be able to upload, not read or delete. What should they generate?
 
-A. Shared Access Signature (SAS) with create permission and 1-hour expiry
-B. Account key URL
-C. Public container URL
-D. Azure AD token
+A. Account key URL
+B. Public container URL
+C. Azure AD token
+D. Shared Access Signature (SAS) with create permission and 1-hour expiry
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
-**Why:** SAS tokens provide time-limited, permission-scoped access. Create (c) permission allows upload but not read or delete. 1-hour expiry limits the time window. Account key (B) gives full access. Public container (C) allows read, not upload. Azure AD (D) requires third-party Azure AD integration.
+**Why:** SAS tokens provide time-limited, permission-scoped access. Create (c) permission allows upload but not read or delete. 1-hour expiry limits the time window. Account key (A) gives full access. Public container (B) allows read, not upload. Azure AD (C) requires third-party Azure AD integration.
 
 **Key Concept:** [Blob SAS](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview)
 </details>
@@ -353,16 +353,16 @@ D. Azure AD token
 **Scenario:** A developer needs to access Azure Key Vault secrets from an Azure Function without storing credentials. The Function runs on a Consumption plan. What authentication method should they use?
 
 A. Store Key Vault access key in App Settings
-B. System-assigned managed identity with Key Vault access policy
-C. User-assigned managed identity only
-D. Certificate-based authentication
+B. Certificate-based authentication
+C. System-assigned managed identity with Key Vault access policy
+D. User-assigned managed identity only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** System-assigned managed identity is automatically created and managed by Azure. Access policy (or RBAC) grants the identity permission to read secrets. No credentials to manage. Consumption plan supports managed identity. Storing keys (A) defeats the purpose. User-assigned (C) works but system-assigned is simpler for single-resource scenarios.
+**Why:** System-assigned managed identity is automatically created and managed by Azure. Access policy (or RBAC) grants the identity permission to read secrets. No credentials to manage. Consumption plan supports managed identity. Storing keys (A) defeats the purpose. User-assigned (D) works but system-assigned is simpler for single-resource scenarios.
 
 **Key Concept:** [Managed Identity](https://learn.microsoft.com/en-us/azure/app-service/overview-managed-identity)
 </details>
@@ -371,16 +371,16 @@ D. Certificate-based authentication
 **Scenario:** A developer is building a web API that authenticates users with Azure AD. The API needs to validate the access token and extract user claims. What should they implement?
 
 A. Custom token validation code
-B. Microsoft.Identity.Web library with AddMicrosoftIdentityWebApi
-C. Manual JWT parsing
-D. API Management validation policy
+B. Manual JWT parsing
+C. API Management validation policy
+D. Microsoft.Identity.Web library with AddMicrosoftIdentityWebApi
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Microsoft.Identity.Web simplifies Azure AD integration with a single line of configuration. It handles token validation, issuer verification, audience checking, and claims extraction. Custom validation (A) or manual parsing (C) risks security vulnerabilities. API Management (D) is for gateway-level validation, not application-level.
+**Why:** Microsoft.Identity.Web simplifies Azure AD integration with a single line of configuration. It handles token validation, issuer verification, audience checking, and claims extraction. Custom validation (A) or manual parsing (B) risks security vulnerabilities. API Management (C) is for gateway-level validation, not application-level.
 
 **Key Concept:** [Microsoft.Identity.Web](https://learn.microsoft.com/en-us/azure/active-directory/develop/microsoft-identity-web)
 </details>
@@ -388,17 +388,17 @@ D. API Management validation policy
 ### Question 21
 **Scenario:** A developer needs to store an API key that the application uses to call an external service. The key should be encrypted, audited, and rotatable without redeploying the application. Where should they store it?
 
-A. Application configuration file
+A. Environment variable
 B. Azure Key Vault secret with application reference
-C. Environment variable
-D. Database table
+C. Database table
+D. Application configuration file
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Key Vault secrets are encrypted at rest and in transit. Access is audited via diagnostic logs. Key rotation updates the secret without application redeployment if using Key Vault references. App Service/Functions can reference Key Vault secrets in configuration. Config files (A) and environment variables (C) aren't encrypted or audited. Database (D) lacks specialized secret management.
+**Why:** Key Vault secrets are encrypted at rest and in transit. Access is audited via diagnostic logs. Key rotation updates the secret without application redeployment if using Key Vault references. App Service/Functions can reference Key Vault secrets in configuration. Config files (D) and environment variables (A) aren't encrypted or audited. Database (C) lacks specialized secret management.
 
 **Key Concept:** [Key Vault References](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references)
 </details>
@@ -406,17 +406,17 @@ D. Database table
 ### Question 22
 **Scenario:** A developer needs to implement the On-Behalf-Of (OBO) flow where a web API calls a downstream API using the user's identity. The original access token was obtained by a SPA. What should they implement?
 
-A. Use the original access token directly
+A. Request a new token with client credentials
 B. Exchange the incoming token for a new token using MSAL's AcquireTokenOnBehalfOf
-C. Request a new token with client credentials
-D. Pass user credentials to downstream API
+C. Pass user credentials to downstream API
+D. Use the original access token directly
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** OBO flow exchanges the user's access token for a new token scoped for the downstream API. MSAL handles this exchange with Azure AD. The downstream API receives a token representing the original user. Using original token (A) may have wrong audience. Client credentials (C) loses user context. Passing credentials (D) is insecure.
+**Why:** OBO flow exchanges the user's access token for a new token scoped for the downstream API. MSAL handles this exchange with Azure AD. The downstream API receives a token representing the original user. Using original token (D) may have wrong audience. Client credentials (A) loses user context. Passing credentials (C) is insecure.
 
 **Key Concept:** [On-Behalf-Of Flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow)
 </details>
@@ -424,17 +424,17 @@ D. Pass user credentials to downstream API
 ### Question 23
 **Scenario:** A developer needs to configure Azure App Service to only accept HTTPS traffic and enforce a minimum TLS version of 1.2. What settings should they configure?
 
-A. Configure in application code only
-B. Enable HTTPS Only setting and set minimum TLS version in App Service configuration
-C. Use Application Gateway for TLS termination
+A. Use Application Gateway for TLS termination
+B. Configure in application code only
+C. Enable HTTPS Only setting and set minimum TLS version in App Service configuration
 D. Configure web.config only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** App Service has built-in settings for HTTPS Only (redirects HTTP to HTTPS) and minimum TLS version. These are platform-level enforcement independent of application code. Application code (A) can be bypassed. Application Gateway (C) is additional complexity. Web.config (D) is application-level for IIS, not platform-level.
+**Why:** App Service has built-in settings for HTTPS Only (redirects HTTP to HTTPS) and minimum TLS version. These are platform-level enforcement independent of application code. Application code (B) can be bypassed. Application Gateway (A) is additional complexity. Web.config (D) is application-level for IIS, not platform-level.
 
 **Key Concept:** [App Service TLS](https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-bindings)
 </details>
@@ -442,17 +442,17 @@ D. Configure web.config only
 ### Question 24
 **Scenario:** A developer is implementing certificate-based authentication for a service-to-service scenario. The calling service needs to authenticate to an Azure AD-protected API using a certificate. What authentication flow should they use?
 
-A. Authorization code flow
+A. Device code flow
 B. Client credentials flow with certificate
-C. Implicit flow
-D. Device code flow
+C. Authorization code flow
+D. Implicit flow
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Client credentials flow with certificate is designed for service-to-service authentication where there's no user. The certificate proves the identity of the calling application. Authorization code (A) and implicit (C) are user-interactive flows. Device code (D) is for devices without browsers.
+**Why:** Client credentials flow with certificate is designed for service-to-service authentication where there's no user. The certificate proves the identity of the calling application. Authorization code (C) and implicit (D) are user-interactive flows. Device code (A) is for devices without browsers.
 
 **Key Concept:** [Client Credentials with Certificate](https://learn.microsoft.com/en-us/azure/active-directory/develop/msal-net-client-assertions)
 </details>
@@ -460,17 +460,17 @@ D. Device code flow
 ### Question 25
 **Scenario:** A developer needs to call Microsoft Graph API from an Azure Function to read user profiles. The function runs on a schedule (no user context). What permissions and authentication should they use?
 
-A. Delegated permissions with user sign-in
-B. Application permissions with client credentials flow using managed identity
-C. API key
-D. Basic authentication
+A. Application permissions with client credentials flow using managed identity
+B. Delegated permissions with user sign-in
+C. Basic authentication
+D. API key
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Application permissions allow accessing Graph API without user context (daemon/service scenario). Client credentials flow authenticates the application. Managed identity simplifies credential management. Admin consent is required for application permissions. Delegated permissions (A) require user context. API key (C) and basic auth (D) aren't supported by Graph.
+**Why:** Application permissions allow accessing Graph API without user context (daemon/service scenario). Client credentials flow authenticates the application. Managed identity simplifies credential management. Admin consent is required for application permissions. Delegated permissions (B) require user context. API key (D) and basic auth (C) aren't supported by Graph.
 
 **Key Concept:** [Graph Application Permissions](https://learn.microsoft.com/en-us/graph/auth/auth-concepts)
 </details>
@@ -478,17 +478,17 @@ D. Basic authentication
 ### Question 26
 **Scenario:** A developer needs to encrypt sensitive data before storing it in a database. The encryption key should be managed by Azure Key Vault. What approach should they use?
 
-A. Always Encrypted with Key Vault
-B. Store encrypted data with TDE
-C. Manual encryption with downloaded key
-D. Database-level encryption only
+A. Manual encryption with downloaded key
+B. Database-level encryption only
+C. Store encrypted data with TDE
+D. Always Encrypted with Key Vault
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
-**Why:** Always Encrypted encrypts data at the client before sending to database. Column master key (CMK) stored in Key Vault protects column encryption keys. Data remains encrypted in the database. TDE (B) is transparent and doesn't protect data in memory or transit. Manual encryption (C) exposes key. Database-level only (D) exposes data to DBAs.
+**Why:** Always Encrypted encrypts data at the client before sending to database. Column master key (CMK) stored in Key Vault protects column encryption keys. Data remains encrypted in the database. TDE (C) is transparent and doesn't protect data in memory or transit. Manual encryption (A) exposes key. Database-level only (B) exposes data to DBAs.
 
 **Key Concept:** [Always Encrypted](https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine)
 </details>
@@ -496,17 +496,17 @@ D. Database-level encryption only
 ### Question 27
 **Scenario:** A developer needs to implement API authentication that supports multiple identity providers (Azure AD, social providers, and local accounts) for a web application. What should they use?
 
-A. Implement separate authentication for each provider
-B. Azure AD B2C with user flows or custom policies
-C. Azure AD only
-D. Custom authentication system
+A. Azure AD B2C with user flows or custom policies
+B. Azure AD only
+C. Custom authentication system
+D. Implement separate authentication for each provider
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Azure AD B2C supports federation with multiple identity providers (social, enterprise, local accounts) through a unified interface. User flows provide common scenarios without code. Custom policies enable advanced scenarios. Separate implementations (A) are complex. Azure AD only (C) doesn't support social providers natively. Custom auth (D) is insecure.
+**Why:** Azure AD B2C supports federation with multiple identity providers (social, enterprise, local accounts) through a unified interface. User flows provide common scenarios without code. Custom policies enable advanced scenarios. Separate implementations (D) are complex. Azure AD only (B) doesn't support social providers natively. Custom auth (C) is insecure.
 
 **Key Concept:** [Azure AD B2C Identity Providers](https://learn.microsoft.com/en-us/azure/active-directory-b2c/add-identity-provider)
 </details>
@@ -519,16 +519,16 @@ D. Custom authentication system
 **Scenario:** A developer needs to track custom business metrics (e.g., orders processed, revenue) in Application Insights. These metrics should be available for alerting and dashboards. What should they implement?
 
 A. Write to log files only
-B. TrackMetric or GetMetric API in application code
+B. Export to external system
 C. Use only built-in metrics
-D. Export to external system
+D. TrackMetric or GetMetric API in application code
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** TrackMetric sends custom metrics to Application Insights. GetMetric provides local aggregation for high-frequency metrics. Custom metrics appear in Metrics Explorer, can trigger alerts, and be used in dashboards. Log files (A) aren't metrics. Built-in (C) doesn't include business metrics. Export (D) adds latency.
+**Why:** TrackMetric sends custom metrics to Application Insights. GetMetric provides local aggregation for high-frequency metrics. Custom metrics appear in Metrics Explorer, can trigger alerts, and be used in dashboards. Log files (A) aren't metrics. Built-in (C) doesn't include business metrics. Export (B) adds latency.
 
 **Key Concept:** [Custom Metrics](https://learn.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics)
 </details>
@@ -536,17 +536,17 @@ D. Export to external system
 ### Question 29
 **Scenario:** A developer's web application has intermittent slow responses. They need to identify which dependency call is causing the latency. What Application Insights feature should they use?
 
-A. Availability tests
-B. Application Map with dependency tracking
-C. Usage analytics
-D. Smart detection only
+A. Application Map with dependency tracking
+B. Smart detection only
+C. Availability tests
+D. Usage analytics
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Application Map visualizes dependencies and their performance. Dependency tracking shows average duration and failure rates for external calls (databases, APIs, etc.). Clicking on slow dependencies shows details. Availability tests (A) check endpoint availability. Usage analytics (C) tracks user behavior. Smart detection (D) is automatic alerting.
+**Why:** Application Map visualizes dependencies and their performance. Dependency tracking shows average duration and failure rates for external calls (databases, APIs, etc.). Clicking on slow dependencies shows details. Availability tests (C) check endpoint availability. Usage analytics (D) tracks user behavior. Smart detection (B) is automatic alerting.
 
 **Key Concept:** [Application Map](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-map)
 </details>
@@ -555,16 +555,16 @@ D. Smart detection only
 **Scenario:** A developer needs to implement distributed tracing across multiple microservices to track a request from start to finish. What should they configure?
 
 A. Separate Application Insights resources for each service
-B. Shared Application Insights with W3C Trace Context correlation
-C. Manual logging with timestamps
-D. Separate log files per service
+B. Separate log files per service
+C. Shared Application Insights with W3C Trace Context correlation
+D. Manual logging with timestamps
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** W3C Trace Context provides standard correlation headers (traceparent, tracestate) across services. Application Insights SDK automatically propagates correlation IDs. All services using the same connection string correlate traces in End-to-End Transaction view. Separate resources (A) lose correlation. Manual logging (C, D) requires custom correlation logic.
+**Why:** W3C Trace Context provides standard correlation headers (traceparent, tracestate) across services. Application Insights SDK automatically propagates correlation IDs. All services using the same connection string correlate traces in End-to-End Transaction view. Separate resources (A) lose correlation. Manual logging (D, B) requires custom correlation logic.
 
 **Key Concept:** [Distributed Tracing](https://learn.microsoft.com/en-us/azure/azure-monitor/app/distributed-tracing)
 </details>
@@ -572,17 +572,17 @@ D. Separate log files per service
 ### Question 31
 **Scenario:** A developer needs to configure alerts when their Azure Function experiences more than 10 failures in 5 minutes. They want to receive email notifications. What should they configure?
 
-A. Application Insights availability alert
+A. Manual monitoring
 B. Azure Monitor alert rule with metric condition on Function errors
-C. Log alert only
-D. Manual monitoring
+C. Application Insights availability alert
+D. Log alert only
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Azure Monitor alert rules can trigger on Function-specific metrics (Function Execution Count with ResultType=Failed). Condition: greater than 10 in 5-minute window. Action group sends email notification. Availability alerts (A) are for endpoint checks. Log alerts (C) work but metric alerts are more efficient for this scenario.
+**Why:** Azure Monitor alert rules can trigger on Function-specific metrics (Function Execution Count with ResultType=Failed). Condition: greater than 10 in 5-minute window. Action group sends email notification. Availability alerts (C) are for endpoint checks. Log alerts (D) work but metric alerts are more efficient for this scenario.
 
 **Key Concept:** [Function Monitoring](https://learn.microsoft.com/en-us/azure/azure-functions/functions-monitoring)
 </details>
@@ -590,9 +590,9 @@ D. Manual monitoring
 ### Question 32
 **Scenario:** A developer needs to optimize a Cosmos DB application that is experiencing high RU charges. Many queries return entire documents but only need a few fields. What optimization should they implement?
 
-A. Increase provisioned throughput
+A. Index all fields
 B. Use projection in queries to return only needed fields
-C. Index all fields
+C. Increase provisioned throughput
 D. Disable indexing
 
 <details>
@@ -600,7 +600,7 @@ D. Disable indexing
 
 **Correct: B**
 
-**Why:** Projection (SELECT c.field1, c.field2) reduces response payload size, lowering RU cost. Reading entire documents when only fields are needed wastes RUs. Increasing throughput (A) adds cost without solving efficiency. More indexes (C) may increase write RU. Disabling indexing (D) increases query RU.
+**Why:** Projection (SELECT c.field1, c.field2) reduces response payload size, lowering RU cost. Reading entire documents when only fields are needed wastes RUs. Increasing throughput (C) adds cost without solving efficiency. More indexes (A) may increase write RU. Disabling indexing (D) increases query RU.
 
 **Key Concept:** [Query Optimization](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/query/pagination)
 </details>
@@ -609,16 +609,16 @@ D. Disable indexing
 **Scenario:** A developer notices their Azure Function has memory issues. They need to analyze memory usage patterns over time. What tool should they use?
 
 A. Azure Portal metrics only
-B. Application Insights Profiler and live metrics
-C. Visual Studio debugger in production
+B. Visual Studio debugger in production
+C. Application Insights Profiler and live metrics
 D. Print statements
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** Application Insights Profiler captures performance traces including memory allocation. Live Metrics shows real-time memory usage. Together they identify memory patterns and leaks. Portal metrics (A) show high-level memory but not allocation details. VS debugger (C) shouldn't run in production. Print statements (D) don't show memory details.
+**Why:** Application Insights Profiler captures performance traces including memory allocation. Live Metrics shows real-time memory usage. Together they identify memory patterns and leaks. Portal metrics (A) show high-level memory but not allocation details. VS debugger (B) shouldn't run in production. Print statements (D) don't show memory details.
 
 **Key Concept:** [Application Insights Profiler](https://learn.microsoft.com/en-us/azure/azure-monitor/profiler/profiler-overview)
 </details>
@@ -626,17 +626,17 @@ D. Print statements
 ### Question 34
 **Scenario:** A developer needs to implement caching for an API that returns user profile data. The cache should invalidate when user data changes. What caching pattern should they use?
 
-A. Cache-aside with explicit invalidation on data changes
+A. Write-through cache only
 B. Read-through cache only
-C. Write-through cache only
+C. Cache-aside with explicit invalidation on data changes
 D. Time-based expiration only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
-**Why:** Cache-aside pattern: application checks cache first, loads from database on miss, caches result. On data changes, application invalidates (deletes) cache entry. Next read fetches fresh data. Read-through (B) doesn't handle invalidation. Write-through (C) keeps cache updated but adds write latency. Time-based only (D) may serve stale data.
+**Why:** Cache-aside pattern: application checks cache first, loads from database on miss, caches result. On data changes, application invalidates (deletes) cache entry. Next read fetches fresh data. Read-through (B) doesn't handle invalidation. Write-through (A) keeps cache updated but adds write latency. Time-based only (D) may serve stale data.
 
 **Key Concept:** [Caching Patterns](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside)
 </details>
@@ -648,17 +648,17 @@ D. Time-based expiration only
 ### Question 35
 **Scenario:** A developer needs to implement reliable messaging between two services. Messages should be processed in order and duplicates should be prevented. What Azure service should they use?
 
-A. Azure Queue Storage
-B. Azure Service Bus with FIFO queue (sessions)
-C. Azure Event Grid
-D. Azure Event Hubs
+A. Azure Service Bus with FIFO queue (sessions)
+B. Azure Queue Storage
+C. Azure Event Hubs
+D. Azure Event Grid
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Service Bus queues with sessions provide FIFO ordering within a session. Duplicate detection prevents duplicate messages within a configurable window. Service Bus provides exactly-once processing semantics. Queue Storage (A) doesn't guarantee order. Event Grid (C) is for event routing. Event Hubs (D) is for streaming, not message queuing.
+**Why:** Service Bus queues with sessions provide FIFO ordering within a session. Duplicate detection prevents duplicate messages within a configurable window. Service Bus provides exactly-once processing semantics. Queue Storage (B) doesn't guarantee order. Event Grid (D) is for event routing. Event Hubs (C) is for streaming, not message queuing.
 
 **Key Concept:** [Service Bus Sessions](https://learn.microsoft.com/en-us/azure/service-bus-messaging/message-sessions)
 </details>
@@ -666,17 +666,17 @@ D. Azure Event Hubs
 ### Question 36
 **Scenario:** A developer needs to implement a pub/sub pattern where a single event triggers multiple independent subscribers. Each subscriber should receive the event. What Azure service and pattern should they use?
 
-A. Service Bus Queue with competing consumers
+A. Event Grid with single endpoint
 B. Service Bus Topic with multiple subscriptions
-C. Event Grid with single endpoint
-D. Storage Queue
+C. Storage Queue
+D. Service Bus Queue with competing consumers
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Service Bus Topics support pub/sub with multiple subscriptions. Each subscription receives a copy of every message (or filtered messages). Subscribers are independent. Queue (A) is competing consumers (one receives each message). Event Grid (C) with single endpoint is one subscriber. Storage Queue (D) doesn't support pub/sub.
+**Why:** Service Bus Topics support pub/sub with multiple subscriptions. Each subscription receives a copy of every message (or filtered messages). Subscribers are independent. Queue (D) is competing consumers (one receives each message). Event Grid (A) with single endpoint is one subscriber. Storage Queue (C) doesn't support pub/sub.
 
 **Key Concept:** [Service Bus Topics](https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions)
 </details>
@@ -684,17 +684,17 @@ D. Storage Queue
 ### Question 37
 **Scenario:** A developer needs to handle Azure resource events (e.g., blob created, VM state changed) and trigger Azure Functions. Events should be delivered with at-least-once guarantee. What should they use?
 
-A. Polling for changes
-B. Azure Event Grid with Function subscriber
-C. Azure Monitor alerts
-D. Azure Automation webhooks
+A. Azure Event Grid with Function subscriber
+B. Polling for changes
+C. Azure Automation webhooks
+D. Azure Monitor alerts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Event Grid provides reactive, event-driven triggers for Azure resource events. Native integration with Functions as event handlers. At-least-once delivery with retry. Many Azure services publish events to Event Grid natively. Polling (A) is inefficient. Monitor alerts (C) are for metrics/logs. Automation webhooks (D) are for runbook triggers.
+**Why:** Event Grid provides reactive, event-driven triggers for Azure resource events. Native integration with Functions as event handlers. At-least-once delivery with retry. Many Azure services publish events to Event Grid natively. Polling (B) is inefficient. Monitor alerts (D) are for metrics/logs. Automation webhooks (C) are for runbook triggers.
 
 **Key Concept:** [Event Grid](https://learn.microsoft.com/en-us/azure/event-grid/overview)
 </details>
@@ -702,17 +702,17 @@ D. Azure Automation webhooks
 ### Question 38
 **Scenario:** A developer is building a web API that calls a backend service. They need to implement retry logic, circuit breaker, and timeout policies for the HTTP calls. What library should they use?
 
-A. Manual try-catch with Thread.Sleep
-B. Polly library with IHttpClientFactory
-C. HttpClient without any policies
-D. WebClient class
+A. Polly library with IHttpClientFactory
+B. WebClient class
+C. Manual try-catch with Thread.Sleep
+D. HttpClient without any policies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
-**Why:** Polly is a resilience library supporting retry, circuit breaker, timeout, fallback, and more. IHttpClientFactory integrates Polly policies with HttpClient lifecycle management. Policies are configured declaratively. Manual retry (A) is error-prone. Plain HttpClient (C) has no resilience. WebClient (D) is legacy.
+**Why:** Polly is a resilience library supporting retry, circuit breaker, timeout, fallback, and more. IHttpClientFactory integrates Polly policies with HttpClient lifecycle management. Policies are configured declaratively. Manual retry (C) is error-prone. Plain HttpClient (D) has no resilience. WebClient (B) is legacy.
 
 **Key Concept:** [HttpClientFactory with Polly](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/implement-http-call-retries-exponential-backoff-polly)
 </details>
@@ -721,16 +721,16 @@ D. WebClient class
 **Scenario:** A developer needs to expose an Azure Function as an API with rate limiting, authentication, and request/response transformation. What should they use?
 
 A. Function authorization keys only
-B. Azure API Management in front of the Function
-C. Custom middleware in the Function
+B. Custom middleware in the Function
+C. Azure API Management in front of the Function
 D. Application Gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
-**Why:** API Management provides rate limiting (quotas, throttling), multiple authentication options (keys, OAuth, certificates), and policies for transformation. Functions are configured as APIM backends. Function keys (A) provide basic auth but not rate limiting. Custom middleware (C) requires building these features. Application Gateway (D) is for routing/WAF, not API management.
+**Why:** API Management provides rate limiting (quotas, throttling), multiple authentication options (keys, OAuth, certificates), and policies for transformation. Functions are configured as APIM backends. Function keys (A) provide basic auth but not rate limiting. Custom middleware (B) requires building these features. Application Gateway (D) is for routing/WAF, not API management.
 
 **Key Concept:** [API Management](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts)
 </details>
@@ -738,17 +738,17 @@ D. Application Gateway
 ### Question 40
 **Scenario:** A developer needs to implement feature flags that can be changed without redeploying the application. The flags should support gradual rollouts (percentage-based) and targeting specific users.
 
-A. Application configuration files
-B. Azure App Configuration with feature management and targeting filters
-C. Environment variables
-D. Database table with feature flags
+A. Environment variables
+B. Application configuration files
+C. Database table with feature flags
+D. Azure App Configuration with feature management and targeting filters
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** App Configuration feature management supports feature flags with targeting filters (user ID, percentage, custom filters). Changes are reflected without deployment. SDK integration provides easy feature checks. Config files (A) and environment variables (C) require deployment. Database (D) requires building targeting logic.
+**Why:** App Configuration feature management supports feature flags with targeting filters (user ID, percentage, custom filters). Changes are reflected without deployment. SDK integration provides easy feature checks. Config files (B) and environment variables (A) require deployment. Database (C) requires building targeting logic.
 
 **Key Concept:** [App Configuration Feature Flags](https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management)
 </details>
@@ -759,43 +759,43 @@ D. Database table with feature flags
 
 | Question | Answer | Domain |
 |----------|--------|--------|
-| 1 | B | Compute |
-| 2 | B | Compute |
-| 3 | B | Compute |
-| 4 | B | Compute |
-| 5 | B | Compute |
+| 1 | C | Compute |
+| 2 | D | Compute |
+| 3 | D | Compute |
+| 4 | A | Compute |
+| 5 | A | Compute |
 | 6 | B | Compute |
-| 7 | B | Compute |
+| 7 | C | Compute |
 | 8 | C | Compute |
 | 9 | B | Compute |
-| 10 | B | Compute |
+| 10 | A | Compute |
 | 11 | B | Compute |
-| 12 | B | Storage |
+| 12 | A | Storage |
 | 13 | B | Storage |
-| 14 | B | Storage |
-| 15 | B | Storage |
+| 14 | D | Storage |
+| 15 | C | Storage |
 | 16 | B | Storage |
-| 17 | B | Storage |
-| 18 | A | Storage |
-| 19 | B | Security |
-| 20 | B | Security |
+| 17 | D | Storage |
+| 18 | D | Storage |
+| 19 | C | Security |
+| 20 | D | Security |
 | 21 | B | Security |
 | 22 | B | Security |
-| 23 | B | Security |
+| 23 | C | Security |
 | 24 | B | Security |
-| 25 | B | Security |
-| 26 | A | Security |
-| 27 | B | Security |
-| 28 | B | Monitor/Optimize |
-| 29 | B | Monitor/Optimize |
-| 30 | B | Monitor/Optimize |
+| 25 | A | Security |
+| 26 | D | Security |
+| 27 | A | Security |
+| 28 | D | Monitor/Optimize |
+| 29 | A | Monitor/Optimize |
+| 30 | C | Monitor/Optimize |
 | 31 | B | Monitor/Optimize |
 | 32 | B | Monitor/Optimize |
-| 33 | B | Monitor/Optimize |
-| 34 | A | Monitor/Optimize |
-| 35 | B | Azure Services |
+| 33 | C | Monitor/Optimize |
+| 34 | C | Monitor/Optimize |
+| 35 | A | Azure Services |
 | 36 | B | Azure Services |
-| 37 | B | Azure Services |
-| 38 | B | Azure Services |
-| 39 | B | Azure Services |
-| 40 | B | Azure Services |
+| 37 | A | Azure Services |
+| 38 | A | Azure Services |
+| 39 | C | Azure Services |
+| 40 | D | Azure Services |

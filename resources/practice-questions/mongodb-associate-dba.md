@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** How many voting members should a replica set have?
 
-A. Any number
-B. An odd number, so an election can reach a strict majority without ties
-C. Exactly two
-D. Exactly five
+A. Exactly five
+B. Any number
+C. An odd number, so an election can reach a strict majority without ties
+D. Exactly two
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Elections need a majority of voting members. An even count gives no advantage and can deadlock, which is why an arbiter exists: it adds a vote without carrying data. Prefer a data-bearing member where you can, because an arbiter cannot become primary.
 </details>
@@ -32,10 +32,10 @@ D. Exactly five
 ### Question 2
 **Scenario:** The primary becomes unreachable.
 
-A. The cluster stops accepting writes permanently
+A. An administrator must promote manually
 B. The remaining members hold an election and a secondary with the most recent oplog becomes the new primary
-C. An administrator must promote manually
-D. All data is lost
+C. All data is lost
+D. The cluster stops accepting writes permanently
 
 <details>
 <summary>Answer</summary>
@@ -50,15 +50,15 @@ D. All data is lost
 ### Question 3
 **Scenario:** A shard key must be chosen for a large collection.
 
-A. A monotonically increasing field such as a timestamp
-B. A field with high cardinality, low frequency, and non-monotonic change, or a compound or hashed key that achieves the same
-C. A low-cardinality field such as country
-D. `_id` always
+A. A field with high cardinality, low frequency, and non-monotonic change, or a compound or hashed key that achieves the same
+B. A monotonically increasing field such as a timestamp
+C. `_id` always
+D. A low-cardinality field such as country
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A monotonic key sends every insert to the same chunk, creating a hot shard. Low cardinality caps the number of chunks. Hashed sharding distributes evenly but gives up range query targeting, which is the trade-off to state explicitly.
 </details>
@@ -68,15 +68,15 @@ D. `_id` always
 ### Question 4
 **Scenario:** What does the config server replica set store in a sharded cluster?
 
-A. Application data
-B. Cluster metadata: the chunk ranges, shard list, and authentication data used to route queries
+A. Cluster metadata: the chunk ranges, shard list, and authentication data used to route queries
+B. Application data
 C. Backups
 D. Index data
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** `mongos` reads this metadata to route each operation to the right shard. Config servers run as a replica set, and losing them makes the cluster unroutable even though the shards still hold every byte of data.
 </details>
@@ -87,14 +87,14 @@ D. Index data
 **Scenario:** Which backup method gives point-in-time recovery?
 
 A. `mongodump` alone
-B. Continuous oplog-based backup, as in Atlas continuous backups or Ops Manager
-C. A filesystem copy of a running server
-D. Replica set members alone
+B. Replica set members alone
+C. Continuous oplog-based backup, as in Atlas continuous backups or Ops Manager
+D. A filesystem copy of a running server
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Point-in-time recovery needs a snapshot plus the oplog to replay forward to a chosen moment. `mongodump` gives you the moment it ran. Replication is high availability, not backup: a dropped collection replicates instantly to every secondary.
 </details>
@@ -104,15 +104,15 @@ D. Replica set members alone
 ### Question 6
 **Scenario:** Authentication must be enabled on a replica set.
 
-A. Application-level checks only
-B. Enable authorization plus internal cluster authentication, using a keyfile or x.509 certificates between members
+A. Enable authorization plus internal cluster authentication, using a keyfile or x.509 certificates between members
+B. Application-level checks only
 C. Firewall rules only
 D. No authentication is needed on a private network
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Two separate things need turning on: client authentication and member-to-member authentication. Enabling one without the other either leaves clients unauthenticated or breaks replication. A private network is not a substitute, as the historical wave of exposed unauthenticated MongoDB instances demonstrated.
 </details>
@@ -122,15 +122,15 @@ D. No authentication is needed on a private network
 ### Question 7
 **Scenario:** Which role grants read and write on one database only?
 
-A. `root`
-B. `readWrite` scoped to that database
-C. `dbAdmin`
-D. `clusterAdmin`
+A. `readWrite` scoped to that database
+B. `dbAdmin`
+C. `clusterAdmin`
+D. `root`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Roles are granted per database, so the same user can hold `readWrite` on one and `read` on another. `dbAdmin` covers schema and index administration without data access, and `clusterAdmin` is cluster-wide operations.
 </details>
@@ -141,14 +141,14 @@ D. `clusterAdmin`
 **Scenario:** The oplog is too small for a secondary's downtime window.
 
 A. Nothing can be done
-B. Increase the oplog size, because a secondary whose lag exceeds the oplog window must perform a full initial sync
+B. Add a shard
 C. Restart the secondary
-D. Add a shard
+D. Increase the oplog size, because a secondary whose lag exceeds the oplog window must perform a full initial sync
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The oplog is a capped collection, and once entries a secondary still needs have been overwritten, incremental catch-up is impossible. Size it against your longest expected maintenance window plus peak write rate, and it can be resized on a running server in current versions.
 </details>
@@ -159,14 +159,14 @@ D. Add a shard
 **Scenario:** Slow operations must be identified on a running server.
 
 A. Guessing
-B. The database profiler, plus the slow query log threshold and `currentOp` for what is executing now
-C. Restarting the server
-D. Adding memory
+B. Adding memory
+C. The database profiler, plus the slow query log threshold and `currentOp` for what is executing now
+D. Restarting the server
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The profiler writes to `system.profile` at level 1 for slow operations or level 2 for everything, and level 2 in production is itself a performance problem. `currentOp` shows live operations, and `killOp` stops one that is causing harm right now.
 </details>
@@ -176,15 +176,15 @@ D. Adding memory
 ### Question 10
 **Scenario:** Which storage engine is the default and what concurrency does it provide?
 
-A. MMAPv1 with collection-level locking
-B. WiredTiger with document-level concurrency, compression, and checkpointing
-C. In-memory only
-D. No storage engine
+A. No storage engine
+B. In-memory only
+C. MMAPv1 with collection-level locking
+D. WiredTiger with document-level concurrency, compression, and checkpointing
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** WiredTiger has been the default for many years and MMAPv1 is removed. Document-level concurrency is why write throughput scales; the WiredTiger cache defaults to roughly half of RAM minus 1 GB, which is the tuning knob that matters most.
 </details>
@@ -213,14 +213,14 @@ D. Shard the collection
 **Scenario:** Chunks are unevenly distributed across shards.
 
 A. Manual migration only
-B. The balancer migrates chunks automatically to even out distribution, and it can be scheduled to a maintenance window
+B. Nothing can be done
 C. Restart the cluster
-D. Nothing can be done
+D. The balancer migrates chunks automatically to even out distribution, and it can be scheduled to a maintenance window
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Balancing consumes I/O and network, so restricting it to a window is a common production practice. Persistent imbalance despite a running balancer usually means the shard key is the problem, not the balancer.
 </details>
@@ -248,15 +248,15 @@ D. Not supported
 ### Question 14
 **Scenario:** A major version upgrade must be performed on a replica set with minimal downtime.
 
-A. Stop everything and upgrade
-B. Rolling upgrade: upgrade secondaries one at a time, step down the primary, upgrade it, then set the feature compatibility version
-C. Restore from backup
+A. Restore from backup
+B. Stop everything and upgrade
+C. Rolling upgrade: upgrade secondaries one at a time, step down the primary, upgrade it, then set the feature compatibility version
 D. Upgrade the primary first
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The rolling order keeps a primary available throughout. Holding the feature compatibility version back until every member is upgraded is what preserves the ability to downgrade if something goes wrong.
 </details>

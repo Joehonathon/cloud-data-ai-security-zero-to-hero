@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Which component assigns LIDs and computes routing tables in an InfiniBand fabric?
 
-A. The subnet manager
-B. The DHCP server
-C. BGP
-D. The spine switch
+A. The DHCP server
+B. BGP
+C. The spine switch
+D. The subnet manager
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** InfiniBand is a managed fabric: the subnet manager discovers the topology, assigns local identifiers, and programs forwarding tables. It can run on a switch or a host, and a fabric with no active subnet manager does not pass traffic at all, which is the first thing to check on a dead fabric.
 </details>
@@ -32,15 +32,15 @@ D. The spine switch
 ### Question 2
 **Scenario:** What does RDMA provide that TCP/IP sockets do not?
 
-A. Encryption
-B. Direct memory-to-memory transfer with kernel bypass and near-zero CPU involvement
-C. Higher MTU
-D. Routing
+A. Direct memory-to-memory transfer with kernel bypass and near-zero CPU involvement
+B. Routing
+C. Encryption
+D. Higher MTU
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** RDMA writes into remote memory without the receiving CPU copying buffers through the kernel, which removes both latency and CPU overhead. That is why it matters at scale: with sockets, the CPUs become the bottleneck of a collective operation long before the wire does.
 </details>
@@ -68,15 +68,15 @@ D. Disable RDMA
 ### Question 4
 **Scenario:** A rail-optimized topology is chosen for a GPU cluster. What does that mean?
 
-A. All GPUs share one NIC
-B. Each GPU is associated with its own NIC and switch plane, so same-rank traffic across nodes stays within one rail
-C. Switches are stacked physically
-D. Only one switch is used
+A. Each GPU is associated with its own NIC and switch plane, so same-rank traffic across nodes stays within one rail
+B. Switches are stacked physically
+C. Only one switch is used
+D. All GPUs share one NIC
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Collectives such as all-reduce exchange between corresponding ranks across nodes, so putting each rank on its own rail keeps that traffic on a dedicated plane and avoids cross-rail contention. It also localizes failure: a rail outage degrades rather than halts the fabric.
 </details>
@@ -86,15 +86,15 @@ D. Only one switch is used
 ### Question 5
 **Scenario:** Which topology provides non-blocking bandwidth between any pair of endpoints at scale?
 
-A. A ring
-B. A fat-tree (Clos) with full bisection bandwidth
-C. A single switch chain
-D. A star with oversubscription
+A. A single switch chain
+B. A star with oversubscription
+C. A ring
+D. A fat-tree (Clos) with full bisection bandwidth
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A fat-tree provisions enough uplink capacity at each tier that any permutation of traffic can be carried, which is what all-to-all collectives demand. Oversubscribed designs are cheaper and fine for general datacenter traffic but throttle synchronized training.
 </details>
@@ -104,15 +104,15 @@ D. A star with oversubscription
 ### Question 6
 **Scenario:** GPUDirect RDMA must work between nodes.
 
-A. Only a driver update is needed
-B. The NIC and GPU must share a PCIe path with peer-to-peer support, the correct drivers must be loaded, and the topology should place them under the same PCIe switch or root complex
-C. It works automatically over any network
+A. It works automatically over any network
+B. Only a driver update is needed
+C. The NIC and GPU must share a PCIe path with peer-to-peer support, the correct drivers must be loaded, and the topology should place them under the same PCIe switch or root complex
 D. It requires Ethernet only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Peer-to-peer DMA depends on PCIe topology, so a NIC and GPU on different root complexes may fall back to staging through host memory and lose most of the benefit. `nvidia-smi topo -m` shows the affinity matrix, which is how you verify the pairing before blaming the fabric.
 </details>
@@ -123,9 +123,9 @@ D. It requires Ethernet only
 **Scenario:** Which tool monitors InfiniBand fabric health, congestion, and cable errors?
 
 A. NVIDIA UFM
-B. DCGM
-C. Prometheus alone
-D. `nvidia-smi`
+B. Prometheus alone
+C. `nvidia-smi`
+D. DCGM
 
 <details>
 <summary>Answer</summary>
@@ -158,15 +158,15 @@ D. Reduce the link speed permanently
 ### Question 9
 **Scenario:** SHARP is enabled on the fabric. What does it do?
 
-A. Encrypts traffic
-B. Performs in-network aggregation of collective operations in the switches, reducing data movement and latency
-C. Compresses packets
-D. Provides routing
+A. Provides routing
+B. Encrypts traffic
+C. Performs in-network aggregation of collective operations in the switches, reducing data movement and latency
+D. Compresses packets
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Scalable Hierarchical Aggregation and Reduction Protocol offloads reduction operations to the switch hierarchy, so partial sums are combined in the network rather than every value traversing to every endpoint. It measurably shortens all-reduce time at scale.
 </details>
@@ -177,14 +177,14 @@ D. Provides routing
 **Scenario:** Adaptive routing is enabled in an InfiniBand fabric.
 
 A. Packets always follow the shortest static path
-B. Traffic is dynamically distributed across alternative paths based on congestion, improving utilization in a fat-tree
-C. It disables the subnet manager
-D. It applies only to Ethernet
+B. It applies only to Ethernet
+C. Traffic is dynamically distributed across alternative paths based on congestion, improving utilization in a fat-tree
+D. It disables the subnet manager
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Static routing can create hotspots when several flows hash to the same path. Adaptive routing spreads them, which matters for the bursty synchronized patterns of distributed training. Applications must tolerate potential out-of-order delivery, which InfiniBand transport handles.
 </details>
@@ -194,10 +194,10 @@ D. It applies only to Ethernet
 ### Question 11
 **Scenario:** Spectrum switches are managed with Cumulus Linux. What is the operational model?
 
-A. A proprietary CLI only
+A. Windows-based management
 B. A Linux-based network operating system where standard tooling, automation, and NVUE or Linux commands configure the switch
 C. Manual cabling only
-D. Windows-based management
+D. A proprietary CLI only
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Windows-based management
 ### Question 12
 **Scenario:** A DPU (BlueField) is deployed in the cluster. What is its purpose?
 
-A. Additional GPU compute
+A. A storage array
 B. Offloading networking, storage, and security functions from the host CPU onto the network adapter, with its own cores and isolation
 C. A display adapter
-D. A storage array
+D. Additional GPU compute
 
 <details>
 <summary>Answer</summary>
@@ -248,15 +248,15 @@ D. Larger buffers only
 ### Question 14
 **Scenario:** A new cluster must be validated before production.
 
-A. Ping tests
-B. Fabric verification: link speed and width on every port, error counter baselines, point-to-point bandwidth and latency tests, and full-scale NCCL all-reduce benchmarks
-C. Visual inspection
-D. Trust the installer
+A. Visual inspection
+B. Trust the installer
+C. Fabric verification: link speed and width on every port, error counter baselines, point-to-point bandwidth and latency tests, and full-scale NCCL all-reduce benchmarks
+D. Ping tests
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Ping proves reachability and nothing about bandwidth. A link that negotiated a lower width, one bad optic, or a missing PFC configuration will pass ping and destroy training performance, so measure per-link and then measure the collective that the cluster exists to run.
 </details>
@@ -266,15 +266,15 @@ D. Trust the installer
 ### Question 15
 **Scenario:** Choosing between InfiniBand and Ethernet for a new AI fabric.
 
-A. Ethernet is always better
-B. InfiniBand offers lossless transport, adaptive routing, and SHARP natively; Ethernet with RoCE can be competitive but requires careful lossless configuration and brings existing operational familiarity
-C. InfiniBand cannot scale
+A. InfiniBand offers lossless transport, adaptive routing, and SHARP natively; Ethernet with RoCE can be competitive but requires careful lossless configuration and brings existing operational familiarity
+B. InfiniBand cannot scale
+C. Ethernet is always better
 D. They are identical
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The honest comparison is about built-in guarantees versus operational familiarity and ecosystem. InfiniBand gets lossless behavior and in-network aggregation by design; RoCE gets there with configuration discipline across every hop, which is where deployments most often go wrong.
 </details>

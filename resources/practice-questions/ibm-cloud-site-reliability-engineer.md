@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** An SLI, an SLO, and an SLA must be distinguished.
 
-A. They are the same
-B. The SLI is the measurement, the SLO is the internal target for it, and the SLA is the external contract with consequences
+A. The SLI is the measurement, the SLO is the internal target for it, and the SLA is the external contract with consequences
+B. They are the same
 C. The SLA is internal
 D. The SLO is a measurement
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SLOs should be tighter than SLAs so you notice before you breach the contract. The practical output of an SLO is the error budget, which converts reliability from an argument into an arithmetic question about how much budget remains.
 </details>
@@ -32,15 +32,15 @@ D. The SLO is a measurement
 ### Question 2
 **Scenario:** An error budget is exhausted mid-quarter.
 
-A. Continue shipping features
-B. Prioritize reliability work until the budget recovers, per the agreed policy
-C. Raise the SLO
-D. Stop measuring
+A. Raise the SLO
+B. Continue shipping features
+C. Stop measuring
+D. Prioritize reliability work until the budget recovers, per the agreed policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The budget policy is agreed in advance precisely so the decision is not relitigated under pressure. Raising the SLO to make the number look better is the failure mode that makes the whole practice performative.
 </details>
@@ -51,14 +51,14 @@ D. Stop measuring
 **Scenario:** A distributed request must be followed across six services.
 
 A. Logs from each service
-B. Distributed tracing with context propagated across service boundaries, ideally with OpenTelemetry
-C. Metrics only
-D. Ask each team
+B. Ask each team
+C. Distributed tracing with context propagated across service boundaries, ideally with OpenTelemetry
+D. Metrics only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Traces show where the latency actually went, which logs cannot without manual correlation. The requirement people underestimate is propagation: every service must forward the trace context, or the trace fragments into disconnected pieces.
 </details>
@@ -68,15 +68,15 @@ D. Ask each team
 ### Question 4
 **Scenario:** Alerts wake the on-call engineer several times a night for conditions that self-resolve.
 
-A. Ignore the alerts
-B. Alert on symptoms that affect users and are actionable, add duration conditions, and delete alerts nobody acts on
-C. Add more alerts
-D. Increase the on-call rotation
+A. Alert on symptoms that affect users and are actionable, add duration conditions, and delete alerts nobody acts on
+B. Add more alerts
+C. Increase the on-call rotation
+D. Ignore the alerts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Every page should correspond to something a human must do now. Alerts on causes rather than symptoms generate noise, and a self-resolving condition is by definition not one that needed a human. Alert fatigue causes real incidents to be missed.
 </details>
@@ -87,14 +87,14 @@ D. Increase the on-call rotation
 **Scenario:** A postmortem is written after a major incident.
 
 A. Identify who made the mistake
-B. Blameless analysis of the timeline, contributing factors, and detection and mitigation gaps, producing owned action items
+B. Add a dashboard
 C. Close the ticket
-D. Add a dashboard
+D. Blameless analysis of the timeline, contributing factors, and detection and mitigation gaps, producing owned action items
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Blame suppresses the information you need, because people stop reporting near misses. The output that matters is a small number of specific actions with owners; a long list nobody owns is the same as no actions.
 </details>
@@ -104,15 +104,15 @@ D. Add a dashboard
 ### Question 6
 **Scenario:** Infrastructure changes must be repeatable and reviewable.
 
-A. Console changes with notes
-B. Infrastructure as code in version control, applied through a pipeline with plan review
-C. Shell scripts run by hand
-D. A runbook
+A. A runbook
+B. Console changes with notes
+C. Infrastructure as code in version control, applied through a pipeline with plan review
+D. Shell scripts run by hand
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** IaC gives review, history, and rollback for infrastructure, and applying through a pipeline means the same process every time regardless of who is on call. Console changes are invisible to the next person and cause drift from the declared state.
 </details>
@@ -122,15 +122,15 @@ D. A runbook
 ### Question 7
 **Scenario:** Toil is consuming most of the team's time.
 
-A. Hire more people
-B. Measure the toil, then automate the highest-volume repetitive tasks, capping toil as a share of time
-C. Work longer hours
-D. Accept it
+A. Work longer hours
+B. Accept it
+C. Measure the toil, then automate the highest-volume repetitive tasks, capping toil as a share of time
+D. Hire more people
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Adding people to unbounded toil scales the problem rather than solving it. Capping toil as a share of the team's time creates the space to automate, which is the mechanism that makes the reduction actually happen.
 </details>
@@ -140,10 +140,10 @@ D. Accept it
 ### Question 8
 **Scenario:** A Kubernetes deployment must survive a node failure without dropping requests.
 
-A. One replica
+A. A larger node
 B. Multiple replicas spread across nodes and zones with anti-affinity, plus a PodDisruptionBudget and correct readiness probes
-C. A larger node
-D. Restart on failure
+C. Restart on failure
+D. One replica
 
 <details>
 <summary>Answer</summary>
@@ -160,8 +160,8 @@ D. Restart on failure
 
 A. React when it breaks
 B. Model demand growth against measured headroom, load test to find the actual limit, and plan lead times for capacity that cannot be added instantly
-C. Over-provision heavily
-D. Autoscaling handles everything
+C. Autoscaling handles everything
+D. Over-provision heavily
 
 <details>
 <summary>Answer</summary>
@@ -176,15 +176,15 @@ D. Autoscaling handles everything
 ### Question 10
 **Scenario:** Chaos engineering is proposed.
 
-A. Randomly break production immediately
-B. Form a hypothesis about steady state, run a small controlled experiment with a blast radius limit and an abort condition, then widen as confidence grows
-C. Only test in development
-D. It is too risky to attempt
+A. Form a hypothesis about steady state, run a small controlled experiment with a blast radius limit and an abort condition, then widen as confidence grows
+B. Only test in development
+C. It is too risky to attempt
+D. Randomly break production immediately
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** It is an experiment, not vandalism: you predict what should happen, verify the system behaves as designed, and learn when it does not. The blast radius limit and abort condition are what make running it in production defensible.
 </details>
@@ -194,15 +194,15 @@ D. It is too risky to attempt
 ### Question 11
 **Scenario:** A deployment must be rolled back quickly if error rates rise.
 
-A. Fix forward always
-B. Automated rollback triggered by SLI-based canary analysis, with the previous version still available
+A. Automated rollback triggered by SLI-based canary analysis, with the previous version still available
+B. Fix forward always
 C. Manual investigation first
 D. Wait for user reports
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Rollback speed is set in advance by whether the previous version is still deployable and whether the trigger is automatic. Fixing forward is reasonable when the fix is trivial and understood, but it should be the exception rather than the plan.
 </details>
@@ -212,15 +212,15 @@ D. Wait for user reports
 ### Question 12
 **Scenario:** A dependency's failure must not cascade.
 
-A. Retry indefinitely
-B. Timeouts, bounded retries with exponential backoff and jitter, circuit breakers, and a defined degraded behavior
-C. No timeouts
-D. Fail the whole request always
+A. No timeouts
+B. Fail the whole request always
+C. Retry indefinitely
+D. Timeouts, bounded retries with exponential backoff and jitter, circuit breakers, and a defined degraded behavior
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Unbounded retries turn a slow dependency into an outage by exhausting connections and amplifying load, and synchronized retries create thundering herds, which is why jitter matters. Deciding what degraded looks like is a product decision made before the incident.
 </details>
@@ -230,10 +230,10 @@ D. Fail the whole request always
 ### Question 13
 **Scenario:** Logs are expensive and voluminous.
 
-A. Stop logging
+A. Keep everything at debug forever
 B. Structure logs, set levels appropriately, sample high-volume events, and tier retention so recent data is queryable and older data is archived
-C. Keep everything at debug forever
-D. Log only errors
+C. Log only errors
+D. Stop logging
 
 <details>
 <summary>Answer</summary>
@@ -250,8 +250,8 @@ D. Log only errors
 
 A. Backups are sufficient
 B. Test restores on a schedule, measure the actual recovery time against the RTO, and fix what the test reveals
-C. Trust the backup job status
-D. Increase the backup frequency
+C. Increase the backup frequency
+D. Trust the backup job status
 
 <details>
 <summary>Answer</summary>
@@ -266,15 +266,15 @@ D. Increase the backup frequency
 ### Question 15
 **Scenario:** On-call must be sustainable.
 
-A. One person permanently
-B. A rotation with reasonable frequency, clear escalation, current runbooks, handover, and a limit on pages per shift that triggers investigation when exceeded
-C. Everyone on call all the time
-D. No on-call
+A. Everyone on call all the time
+B. No on-call
+C. A rotation with reasonable frequency, clear escalation, current runbooks, handover, and a limit on pages per shift that triggers investigation when exceeded
+D. One person permanently
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Sustainability is a reliability control, not a perk: an exhausted engineer makes worse decisions during the incident that matters. Treating a high page count as a defect to investigate is what keeps the rotation from degrading over time.
 </details>

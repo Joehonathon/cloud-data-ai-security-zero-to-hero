@@ -32,15 +32,15 @@ D. Peering only supports IPv6
 ### Question 2
 **Scenario:** A subnet must send all internet-bound traffic through a network virtual appliance.
 
-A. A Network Security Group with a deny rule
-B. A user-defined route with address prefix `0.0.0.0/0` and next hop type Virtual appliance, associated with the subnet
-C. Azure Firewall Manager policy alone
-D. Service endpoints
+A. A user-defined route with address prefix `0.0.0.0/0` and next hop type Virtual appliance, associated with the subnet
+B. Azure Firewall Manager policy alone
+C. Service endpoints
+D. A Network Security Group with a deny rule
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** UDRs override Azure's system routes, and a default route to a virtual appliance is the standard forced tunneling pattern. NSGs filter traffic but never redirect it. Remember the appliance's own NIC needs IP forwarding enabled, or the packets are dropped.
 </details>
@@ -51,14 +51,14 @@ D. Service endpoints
 **Scenario:** A storage account must be reachable privately from a VNet, with a private IP in that VNet, and not over the public endpoint.
 
 A. Service endpoint
-B. Private endpoint with a private DNS zone
-C. NAT gateway
-D. VNet peering
+B. VNet peering
+C. Private endpoint with a private DNS zone
+D. NAT gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A private endpoint places a NIC with a private IP into your subnet and maps it to the PaaS resource. The part people miss is DNS: without the `privatelink` private DNS zone linked to the VNet, the name still resolves to the public IP. Service endpoints keep the public IP and merely restrict access by VNet.
 </details>
@@ -68,15 +68,15 @@ D. VNet peering
 ### Question 4
 **Scenario:** Outbound internet access from a subnet must use a stable, predictable set of source IPs and avoid SNAT port exhaustion.
 
-A. A NAT gateway associated with the subnet
+A. An internal load balancer
 B. A public IP on each VM
-C. Default outbound access
-D. An internal load balancer
+C. A NAT gateway associated with the subnet
+D. Default outbound access
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** NAT gateway gives a large SNAT port pool with far better scaling than load balancer outbound rules or default outbound access, and it pins egress to the public IPs or prefix you attach. Per-VM public IPs work but multiply cost and attack surface. Default outbound access is being retired and uses unpredictable addresses.
 </details>
@@ -86,15 +86,15 @@ D. An internal load balancer
 ### Question 5
 **Scenario:** An HTTPS web app needs path-based routing, WAF, and TLS termination.
 
-A. Azure Load Balancer
-B. Application Gateway with the WAF SKU
-C. Traffic Manager
+A. Traffic Manager
+B. Azure Load Balancer
+C. Application Gateway with the WAF SKU
 D. NAT gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Application Gateway is the regional layer 7 load balancer, and the WAF SKU adds OWASP rule protection. Azure Load Balancer is layer 4 and cannot read paths. Traffic Manager is DNS-based global routing with no data path at all, so it cannot terminate TLS.
 </details>
@@ -105,8 +105,8 @@ D. NAT gateway
 **Scenario:** Global HTTP traffic must be routed to the closest healthy regional backend with edge caching.
 
 A. Azure Front Door
-B. Application Gateway
-C. Azure Load Balancer Standard
+B. Azure Load Balancer Standard
+C. Application Gateway
 D. ExpressRoute
 
 <details>
@@ -122,15 +122,15 @@ D. ExpressRoute
 ### Question 7
 **Scenario:** ExpressRoute must carry traffic to Azure PaaS services over the private connection, not the internet.
 
-A. Private peering only
-B. Microsoft peering, with route filters selecting the service communities
+A. A site-to-site VPN
+B. Private peering only
 C. Public peering
-D. A site-to-site VPN
+D. Microsoft peering, with route filters selecting the service communities
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Private peering reaches VNets. Microsoft peering reaches public Microsoft services such as Azure Storage and Microsoft 365, and a route filter is required to select which BGP communities are advertised. Public peering is the deprecated predecessor to Microsoft peering.
 </details>
@@ -140,15 +140,15 @@ D. A site-to-site VPN
 ### Question 8
 **Scenario:** A hub-and-spoke topology needs spokes to reach on-premises through the hub's VPN gateway.
 
-A. Enable "Use remote gateways" on the spoke peering and "Allow gateway transit" on the hub peering
-B. Deploy a VPN gateway in each spoke
-C. Use service endpoints
+A. Deploy a VPN gateway in each spoke
+B. Use service endpoints
+C. Enable "Use remote gateways" on the spoke peering and "Allow gateway transit" on the hub peering
 D. Enable IP forwarding on the spoke VMs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Gateway transit is the pair of peering settings that lets spokes use the hub's gateway. Both sides must be set, and a spoke can use only one remote gateway. Deploying a gateway per spoke works but multiplies cost and complexity, which defeats the point of a hub.
 </details>
@@ -158,10 +158,10 @@ D. Enable IP forwarding on the spoke VMs
 ### Question 9
 **Scenario:** BGP is configured on a site-to-site VPN and on-premises advertises `0.0.0.0/0`. What is the effect on Azure VMs?
 
-A. No effect
+A. Only DNS is affected
 B. Forced tunneling: internet-bound VM traffic is sent to on-premises
 C. The tunnel drops
-D. Only DNS is affected
+D. No effect
 
 <details>
 <summary>Answer</summary>
@@ -176,15 +176,15 @@ D. Only DNS is affected
 ### Question 10
 **Scenario:** You need to see, for a specific VM NIC, which route Azure will actually use for a destination.
 
-A. Network Watcher Effective routes and IP flow verify
-B. Azure Advisor
-C. The activity log
-D. Service Health
+A. Azure Advisor
+B. The activity log
+C. Service Health
+D. Network Watcher Effective routes and IP flow verify
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Effective routes merges system routes, UDRs, BGP-learned routes, and peering, which is the only reliable view when several sources conflict. IP flow verify answers "would this specific packet be allowed" and names the NSG rule that decided. Advisor, activity logs, and Service Health do not evaluate the data path.
 </details>
@@ -212,15 +212,15 @@ D. The most permissive wins
 ### Question 12
 **Scenario:** DNS resolution is needed for private endpoints across many VNets from an on-premises resolver.
 
-A. Azure DNS Private Resolver with an inbound endpoint, plus private DNS zones linked to the VNets
-B. Public Azure DNS zones
-C. A hosts file on each VM
-D. Custom DNS on every VNet pointing to 8.8.8.8
+A. Public Azure DNS zones
+B. Azure DNS Private Resolver with an inbound endpoint, plus private DNS zones linked to the VNets
+C. Custom DNS on every VNet pointing to 8.8.8.8
+D. A hosts file on each VM
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Private DNS zones are not reachable from on-premises by themselves. The Private Resolver's inbound endpoint gives on-premises a private IP to forward queries to, and the outbound endpoint plus forwarding rulesets handle the reverse direction. Public resolvers cannot see privatelink records.
 </details>
@@ -230,15 +230,15 @@ D. Custom DNS on every VNet pointing to 8.8.8.8
 ### Question 13
 **Scenario:** Virtual WAN is chosen over a manually built hub. What is the main benefit?
 
-A. Lower per-GB cost always
-B. Managed hubs with automated any-to-any branch, VNet, and user connectivity and built-in routing
+A. It provides layer 7 WAF
+B. Lower per-GB cost always
 C. It removes the need for NSGs
-D. It provides layer 7 WAF
+D. Managed hubs with automated any-to-any branch, VNet, and user connectivity and built-in routing
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Virtual WAN's value is managed transit: Microsoft runs the hub routing, VPN and ExpressRoute gateways, and scale-out, so you configure connections rather than route tables. Cost is not automatically lower. Security controls and WAF are still separate services you attach.
 </details>
@@ -266,15 +266,15 @@ D. Enable service endpoints
 ### Question 15
 **Scenario:** You must capture packet-level evidence of a connectivity problem on a running VM.
 
-A. NSG flow logs
-B. Network Watcher packet capture
+A. Network Watcher packet capture
+B. NSG flow logs
 C. Connection Monitor
 D. Azure Monitor metrics
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Packet capture writes a capture file from the VM extension for the depth you need to see handshakes and resets. Flow logs record allow and deny decisions per flow, which is excellent for "was it blocked" but not for payload or TCP state. Connection Monitor does synthetic reachability testing over time.
 </details>

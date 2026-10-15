@@ -32,15 +32,15 @@ D. An external table
 ### Question 2
 **Scenario:** A pipeline must process only rows changed since the last run.
 
-A. Compare full snapshots
-B. A stream on the source table, which exposes change records and advances its offset when consumed in a DML statement
-C. A timestamp filter
-D. Time Travel
+A. A timestamp filter
+B. Compare full snapshots
+C. Time Travel
+D. A stream on the source table, which exposes change records and advances its offset when consumed in a DML statement
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Standard streams show net changes including deletes and updates; append-only streams show inserts only and are cheaper. A stream becomes stale if not consumed within the source table's data retention period, which is the failure mode to monitor for.
 </details>
@@ -50,15 +50,15 @@ D. Time Travel
 ### Question 3
 **Scenario:** A multi-step transformation must run on a schedule with dependencies between steps.
 
-A. External cron calling each step
-B. A task DAG, with child tasks defined by `AFTER` on their predecessor, optionally gated by `SYSTEM$STREAM_HAS_DATA`
-C. A stored procedure loop
-D. A materialized view
+A. A stored procedure loop
+B. A materialized view
+C. A task DAG, with child tasks defined by `AFTER` on their predecessor, optionally gated by `SYSTEM$STREAM_HAS_DATA`
+D. External cron calling each step
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Only the root task carries a schedule; children fire on completion of their parent. Gating on stream contents means the DAG skips a run entirely when there is nothing new, which is where serverless task credits are saved.
 </details>
@@ -68,15 +68,15 @@ D. A materialized view
 ### Question 4
 **Scenario:** A pipeline should be declarative rather than a chain of streams and tasks.
 
-A. A view
-B. A dynamic table, defined by its query with a target lag, refreshed incrementally by Snowflake
-C. A materialized view
-D. An external table
+A. A dynamic table, defined by its query with a target lag, refreshed incrementally by Snowflake
+B. An external table
+C. A view
+D. A materialized view
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** You declare the result you want and the freshness you need instead of orchestrating the steps. Not every query supports incremental refresh; those that do not fall back to full refresh, which changes the cost profile substantially.
 </details>
@@ -86,10 +86,10 @@ D. An external table
 ### Question 5
 **Scenario:** Semi-structured JSON must be loaded and queried efficiently.
 
-A. Parse it in the application first
+A. Store it as a string
 B. Load into a `VARIANT` column and query with path notation, flattening arrays with `LATERAL FLATTEN`
-C. Store it as a string
-D. Convert to CSV
+C. Convert to CSV
+D. Parse it in the application first
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. Convert to CSV
 ### Question 6
 **Scenario:** A `COPY INTO` fails partway through on malformed rows.
 
-A. Loading always aborts
-B. Set `ON_ERROR` to `CONTINUE`, `SKIP_FILE`, or a threshold, and inspect `VALIDATION_MODE` or `COPY_HISTORY` for the rejected rows
-C. Fix the source only
-D. Use Snowpipe instead
+A. Set `ON_ERROR` to `CONTINUE`, `SKIP_FILE`, or a threshold, and inspect `VALIDATION_MODE` or `COPY_HISTORY` for the rejected rows
+B. Use Snowpipe instead
+C. Loading always aborts
+D. Fix the source only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The default aborts the whole statement, which is correct when partial loads would corrupt downstream results and wrong when a few bad rows in a large file should not block everything. `VALIDATION_MODE` lets you dry-run the load before committing to it.
 </details>
@@ -122,15 +122,15 @@ D. Use Snowpipe instead
 ### Question 7
 **Scenario:** Row-level streaming ingestion is required with sub-second latency.
 
-A. Snowpipe file-based auto-ingest
-B. Snowpipe Streaming, writing rows directly through the streaming API without staging files
+A. Snowpipe Streaming, writing rows directly through the streaming API without staging files
+B. Kafka Connect to files
 C. `INSERT` statements per row
-D. Kafka Connect to files
+D. Snowpipe file-based auto-ingest
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** File-based Snowpipe latency is bounded by how often files are written. Snowpipe Streaming skips the file entirely, and the Kafka connector can use it directly, which is the standard event-streaming path into Snowflake.
 </details>
@@ -140,10 +140,10 @@ D. Kafka Connect to files
 ### Question 8
 **Scenario:** A transformation is written in Python and must run inside Snowflake.
 
-A. Export the data
+A. A SQL script only
 B. Snowpark Python: DataFrame operations pushed down to SQL, plus UDFs, UDTFs, and stored procedures running in the secure sandbox
 C. An external function
-D. A SQL script only
+D. Export the data
 
 <details>
 <summary>Answer</summary>
@@ -158,15 +158,15 @@ D. A SQL script only
 ### Question 9
 **Scenario:** A merge pattern must apply inserts, updates, and deletes from a change stream.
 
-A. Delete then insert
-B. A `MERGE` statement matching on the key, with `WHEN MATCHED` and `WHEN NOT MATCHED` clauses driven by the stream's metadata columns
+A. A `MERGE` statement matching on the key, with `WHEN MATCHED` and `WHEN NOT MATCHED` clauses driven by the stream's metadata columns
+B. An update only
 C. Truncate and reload
-D. An update only
+D. Delete then insert
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** `METADATA$ACTION` and `METADATA$ISUPDATE` on the stream tell you which branch applies. Duplicate keys in the source cause a nondeterministic merge error, so deduplicating to one row per key before the merge is part of the pattern.
 </details>
@@ -176,15 +176,15 @@ D. An update only
 ### Question 10
 **Scenario:** A load job's warehouse is oversized and finishes in seconds.
 
-A. Keep it for speed
-B. Right-size to the file count and size, since loading parallelism comes from the number of files, and split very large files or combine tiny ones toward the 100-250 MB compressed range
-C. Use the largest warehouse
-D. Use a multi-cluster warehouse
+A. Use the largest warehouse
+B. Use a multi-cluster warehouse
+C. Right-size to the file count and size, since loading parallelism comes from the number of files, and split very large files or combine tiny ones toward the 100-250 MB compressed range
+D. Keep it for speed
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A single large file cannot use more threads, so a bigger warehouse buys nothing. Thousands of tiny files waste per-file overhead instead, which is why file sizing is the first thing to check on a slow load.
 </details>
@@ -195,14 +195,14 @@ D. Use a multi-cluster warehouse
 **Scenario:** Pipeline failures must be detected and alerted on.
 
 A. Check manually
-B. Query `TASK_HISTORY`, `COPY_HISTORY`, and `PIPE_USAGE_HISTORY`, and use alerts with notification integrations for automated notification
-C. Rely on downstream complaints
+B. Rely on downstream complaints
+C. Query `TASK_HISTORY`, `COPY_HISTORY`, and `PIPE_USAGE_HISTORY`, and use alerts with notification integrations for automated notification
 D. Email on completion
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A task that errors leaves its DAG's children unrun, so a silent failure quietly stops the whole pipeline. Alerts evaluate a condition on a schedule and fire an action, which turns the history views into monitoring rather than forensics.
 </details>
@@ -230,15 +230,15 @@ D. Not possible
 ### Question 13
 **Scenario:** Sensitive columns must be masked in non-production clones.
 
-A. Delete the columns
-B. Masking policies attached through tags, which clones inherit, plus role design so the development role sees masked values
-C. Separate tables
-D. No clone
+A. Separate tables
+B. No clone
+C. Masking policies attached through tags, which clones inherit, plus role design so the development role sees masked values
+D. Delete the columns
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Clones inherit policies, so a cloned environment is not automatically an unprotected copy. The remaining work is making sure the development roles are not the same roles the policy unmasks for.
 </details>
@@ -248,15 +248,15 @@ D. No clone
 ### Question 14
 **Scenario:** A transformation pipeline must be developed and tested safely.
 
-A. Test in production
-B. Zero-copy clone the database for a development branch, run the pipeline, then discard the clone
-C. A subset extract
-D. A separate account
+A. A separate account
+B. A subset extract
+C. Test in production
+D. Zero-copy clone the database for a development branch, run the pipeline, then discard the clone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Cloning gives production-representative data instantly at no immediate storage cost, which a sampled extract cannot. Clone lifecycle matters: an abandoned clone accumulates storage as its data diverges from the source.
 </details>
@@ -266,15 +266,15 @@ D. A separate account
 ### Question 15
 **Scenario:** Query costs on a pipeline must be attributed and reduced.
 
-A. Guess
-B. Attribute by warehouse and query tag through `QUERY_HISTORY` and `WAREHOUSE_METERING_HISTORY`, then reduce by pruning better, avoiding unnecessary full scans, and setting appropriate auto-suspend
-C. Fewer queries
-D. A smaller warehouse only
+A. Fewer queries
+B. A smaller warehouse only
+C. Guess
+D. Attribute by warehouse and query tag through `QUERY_HISTORY` and `WAREHOUSE_METERING_HISTORY`, then reduce by pruning better, avoiding unnecessary full scans, and setting appropriate auto-suspend
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** `QUERY_TAG` set on a session is what makes per-pipeline attribution possible at all, since one warehouse usually serves many jobs. The Query Profile's partitions-scanned versus partitions-total figure is the specific number that tells you whether pruning is working.
 </details>

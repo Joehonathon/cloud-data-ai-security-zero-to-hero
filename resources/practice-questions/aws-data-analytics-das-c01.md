@@ -18,8 +18,8 @@ DAS-C01 has been retired and replaced by the Data Engineer Associate (DEA-C01). 
 
 A. SQS
 B. Kinesis Data Streams, where multiple consumers read the same shards independently
-C. A single Lambda
-D. Direct writes to S3
+C. Direct writes to S3
+D. A single Lambda
 
 <details>
 <summary>Answer</summary>
@@ -34,15 +34,15 @@ D. Direct writes to S3
 ### Question 2
 **Scenario:** A Kinesis stream has a hot shard because one partition key dominates.
 
-A. Increase retention
-B. Choose a higher-cardinality partition key so records distribute evenly, and resize shards
-C. Add consumers
-D. Reduce the record size
+A. Choose a higher-cardinality partition key so records distribute evenly, and resize shards
+B. Add consumers
+C. Reduce the record size
+D. Increase retention
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Each shard has a fixed write limit, so a skewed key concentrates writes and throttles regardless of total shard count. This is the same hot-partition reasoning as DynamoDB, and the fix is the same: distribute the key.
 </details>
@@ -52,15 +52,15 @@ D. Reduce the record size
 ### Question 3
 **Scenario:** Athena queries over a large S3 dataset are slow and expensive.
 
-A. Convert to columnar Parquet or ORC, compress, and partition by the common filter columns
-B. Add more Athena capacity
-C. Query the raw JSON with more workers
+A. Add more Athena capacity
+B. Query the raw JSON with more workers
+C. Convert to columnar Parquet or ORC, compress, and partition by the common filter columns
 D. Increase the S3 storage class
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Athena bills by data scanned, so the three levers are all about scanning less: columnar formats read only the needed columns, compression shrinks bytes, and partitioning prunes whole prefixes. Together they routinely cut cost by an order of magnitude.
 </details>
@@ -106,10 +106,10 @@ D. Increase node count only
 ### Question 6
 **Scenario:** A Glue ETL job must process only new files since the last run.
 
-A. Reprocess everything
+A. Delete files after processing
 B. Enable job bookmarks so Glue tracks processed data
-C. Delete files after processing
-D. Use a timestamp in the filename manually
+C. Use a timestamp in the filename manually
+D. Reprocess everything
 
 <details>
 <summary>Answer</summary>
@@ -124,15 +124,15 @@ D. Use a timestamp in the filename manually
 ### Question 7
 **Scenario:** Streaming data must land in S3 in Parquet, batched by size or time, with no code.
 
-A. Kinesis Data Firehose with record format conversion and buffering hints
-B. Kinesis Data Streams alone
-C. A Lambda per record
+A. Kinesis Data Streams alone
+B. A Lambda per record
+C. Kinesis Data Firehose with record format conversion and buffering hints
 D. Direct PUT from producers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Firehose is the managed delivery service: it buffers, converts JSON to Parquet using a Glue table schema, compresses, partitions, and retries. Writing per-record from Lambda produces the small-file problem that then wrecks query performance downstream.
 </details>
@@ -142,15 +142,15 @@ D. Direct PUT from producers
 ### Question 8
 **Scenario:** EMR jobs are expensive and run nightly.
 
-A. Use a long-running cluster
-B. Use transient clusters that terminate on completion, with spot instances for task nodes and instance fleets for capacity
+A. Use transient clusters that terminate on completion, with spot instances for task nodes and instance fleets for capacity
+B. Use a long-running cluster
 C. Increase instance sizes
 D. Move to a single EC2 instance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A cluster that only exists during the job stops paying between runs, and task nodes are the safe place for spot because they hold no HDFS data. Keeping core nodes on-demand protects the data while most of the compute runs at spot pricing.
 </details>
@@ -160,15 +160,15 @@ D. Move to a single EC2 instance
 ### Question 9
 **Scenario:** A QuickSight dashboard must be fast over a large dataset.
 
-A. Direct query against the source for every visual
-B. Import into SPICE with a scheduled refresh
-C. Reduce the number of visuals
-D. Increase the source database size
+A. Import into SPICE with a scheduled refresh
+B. Increase the source database size
+C. Direct query against the source for every visual
+D. Reduce the number of visuals
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SPICE is the in-memory engine that decouples dashboard performance from the source and protects the source from dashboard load. The trade-off is data freshness bounded by the refresh schedule, so direct query remains right when near-real-time is the requirement.
 </details>
@@ -179,14 +179,14 @@ D. Increase the source database size
 **Scenario:** Small files are accumulating in the data lake and query performance is degrading.
 
 A. Ignore it
-B. Compact small files into larger ones on a schedule, and tune the producer's buffering to write fewer, larger objects
-C. Add more partitions
+B. Add more partitions
+C. Compact small files into larger ones on a schedule, and tune the producer's buffering to write fewer, larger objects
 D. Switch to CSV
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Every file carries listing and open overhead, so thousands of tiny objects dominate query time. Fixing it at the source (buffer hints, fewer output partitions) prevents recurrence, and periodic compaction cleans up what already exists. More partitions makes the problem worse.
 </details>
@@ -196,15 +196,15 @@ D. Switch to CSV
 ### Question 11
 **Scenario:** Redshift must query data in S3 without loading it.
 
-A. Redshift Spectrum against external tables in the Glue Data Catalog
+A. UNLOAD
 B. COPY into Redshift
-C. UNLOAD
-D. A federated query to RDS
+C. A federated query to RDS
+D. Redshift Spectrum against external tables in the Glue Data Catalog
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Spectrum reads S3 directly using the catalog for schema, so cold historical data stays in cheap storage while joins with local tables still work. The same partitioning and columnar-format advice applies, because Spectrum also bills by data scanned.
 </details>
@@ -214,15 +214,15 @@ D. A federated query to RDS
 ### Question 12
 **Scenario:** PII must be masked for analysts but visible to a small compliance team.
 
-A. Two copies of the data
-B. Lake Formation column-level permissions and data filters, or dynamic masking in the query layer
-C. Application filtering
-D. Deleting the columns
+A. Deleting the columns
+B. Application filtering
+C. Two copies of the data
+D. Lake Formation column-level permissions and data filters, or dynamic masking in the query layer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Enforcing at the catalog and query layer means it applies to every engine and every tool, which is what makes it a control rather than a convention. Maintaining two copies doubles storage and guarantees they drift.
 </details>
@@ -250,15 +250,15 @@ D. Athena on raw data
 ### Question 14
 **Scenario:** A Glue crawler keeps creating new tables instead of updating one.
 
-A. That is expected
-B. Inconsistent schemas or partition structure under the path; fix the layout or configure the crawler's schema change and grouping behavior
-C. Delete the catalog
-D. Run it less often
+A. Run it less often
+B. That is expected
+C. Inconsistent schemas or partition structure under the path; fix the layout or configure the crawler's schema change and grouping behavior
+D. Delete the catalog
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Crawlers group objects into tables by similarity of schema and path structure, so mixed formats or an inconsistent prefix layout fragment the result. Setting a table-level grouping policy and enforcing a consistent partition layout at write time is the durable fix.
 </details>
@@ -268,15 +268,15 @@ D. Run it less often
 ### Question 15
 **Scenario:** Analytics data must be retained for 7 years but is rarely queried after 90 days.
 
-A. Keep everything in Redshift
-B. Tier it: recent data in the warehouse, older data in S3 with lifecycle transitions to colder classes, queried through Spectrum or Athena when needed
-C. Delete after 90 days
-D. Store everything in S3 Standard
+A. Tier it: recent data in the warehouse, older data in S3 with lifecycle transitions to colder classes, queried through Spectrum or Athena when needed
+B. Keep everything in Redshift
+C. Store everything in S3 Standard
+D. Delete after 90 days
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Matching storage cost to access frequency is the main lever on a long-retention analytics estate. Keeping the query path available through Spectrum or Athena means archived data is still reachable, which is what makes the tiering acceptable to the business.
 </details>

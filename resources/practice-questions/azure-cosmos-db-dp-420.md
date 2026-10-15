@@ -15,14 +15,14 @@ difficulty: advanced
 **Scenario:** A container stores telemetry for 10,000 devices. Queries are almost always for one device over a time range.
 
 A. Partition key `/date`
-B. Partition key `/deviceId`
+B. No partition key
 C. Partition key `/id`
-D. No partition key
+D. Partition key `/deviceId`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A good partition key has high cardinality and matches the dominant query filter, which keeps queries single-partition and cheap. `/date` creates a hot partition because all of today's writes land in one place. `/id` gives perfect distribution but makes every device query fan out across all partitions.
 </details>
@@ -32,9 +32,9 @@ D. No partition key
 ### Question 2
 **Scenario:** A query returns the right data but consumes 500 RUs instead of the expected 3.
 
-A. The container is under-provisioned
+A. The consistency level is too weak
 B. The query is cross-partition; add the partition key to the filter or reshape the model
-C. The consistency level is too weak
+C. The container is under-provisioned
 D. The SDK version is old
 
 <details>
@@ -50,15 +50,15 @@ D. The SDK version is old
 ### Question 3
 **Scenario:** Which consistency level guarantees monotonic reads within a session and is the default?
 
-A. Strong
-B. Bounded staleness
-C. Session
-D. Eventual
+A. Session
+B. Eventual
+C. Strong
+D. Bounded staleness
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Session consistency guarantees read-your-writes and monotonic reads for a client holding the session token, at much lower cost and latency than Strong. Strong requires a single write region or region-bounded configuration and costs roughly double the RUs for reads. Eventual is cheapest with no ordering guarantee.
 </details>
@@ -68,15 +68,15 @@ D. Eventual
 ### Question 4
 **Scenario:** An account has multiple write regions and two users update the same document in different regions simultaneously.
 
-A. One write fails
-B. Conflict resolution applies: last-writer-wins by a defined property, or a custom stored procedure resolves it
+A. Conflict resolution applies: last-writer-wins by a defined property, or a custom stored procedure resolves it
+B. One write fails
 C. The document is deleted
 D. The account goes read-only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Multi-region writes accept both and then resolve. The default policy is last-writer-wins on `_ts`, which you can point at your own numeric property, or you can register a merge procedure and inspect the conflicts feed. If silent overwrite is unacceptable, custom resolution is mandatory, not optional.
 </details>
@@ -86,15 +86,15 @@ D. The account goes read-only
 ### Question 5
 **Scenario:** Documents contain a large `attachments` array that is rarely read but always retrieved with the item.
 
-A. Keep it embedded for atomicity
-B. Reference the attachments as separate items in the same logical partition
-C. Move to a different database
-D. Increase the RU budget
+A. Reference the attachments as separate items in the same logical partition
+B. Move to a different database
+C. Increase the RU budget
+D. Keep it embedded for atomicity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Embed when data is read together, is bounded, and changes together. An unbounded, rarely read array inflates item size, which raises the RU cost of every read and write of the parent. Keeping the referenced items in the same logical partition preserves transactional batch capability.
 </details>
@@ -105,14 +105,14 @@ D. Increase the RU budget
 **Scenario:** Only three properties are ever filtered on, but writes cost far more than expected.
 
 A. Lower the consistency level
-B. Customize the indexing policy to exclude paths that are never queried
-C. Increase throughput
-D. Add a composite index for every path
+B. Add a composite index for every path
+C. Customize the indexing policy to exclude paths that are never queried
+D. Increase throughput
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Cosmos DB indexes every path by default, and every indexed path adds RU cost to writes. Excluding unused paths (or switching to an include-list) is one of the highest-leverage cost optimizations available. Adding more indexes would increase write cost further.
 </details>
@@ -122,15 +122,15 @@ D. Add a composite index for every path
 ### Question 7
 **Scenario:** A query does `ORDER BY category ASC, price DESC` and fails or is slow.
 
-A. Add a composite index on those two paths in that order and direction
+A. Increase MaxItemCount
 B. Add a range index on `price`
 C. Use a spatial index
-D. Increase MaxItemCount
+D. Add a composite index on those two paths in that order and direction
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Multi-property ORDER BY requires a composite index matching the property order and sort directions (and their exact reverse). Single-path range indexes cover single-property ordering only. This is a frequent DP-420 question because the requirement is not obvious until the query fails.
 </details>
@@ -140,10 +140,10 @@ D. Increase MaxItemCount
 ### Question 8
 **Scenario:** Downstream systems must react to every item change in a container, in order, per partition.
 
-A. Poll the container on a timer
+A. Enable analytical store
 B. Change feed, consumed via the change feed processor or an Azure Functions trigger
-C. A stored procedure
-D. Enable analytical store
+C. Poll the container on a timer
+D. A stored procedure
 
 <details>
 <summary>Answer</summary>
@@ -158,15 +158,15 @@ D. Enable analytical store
 ### Question 9
 **Scenario:** Analytics teams want to run large aggregations without affecting the transactional workload's RUs.
 
-A. Provision more RUs
-B. Enable the analytical store and query it with Azure Synapse Link or Fabric
-C. Run the queries at night
-D. Add a read region
+A. Run the queries at night
+B. Add a read region
+C. Enable the analytical store and query it with Azure Synapse Link or Fabric
+D. Provision more RUs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The analytical store is a column-oriented copy maintained automatically with no RU cost on the transactional store, which is the point of Synapse Link. Adding a read region still consumes RUs and replicates the row store. Shifting the time of day does not remove the contention.
 </details>
@@ -176,10 +176,10 @@ D. Add a read region
 ### Question 10
 **Scenario:** Old telemetry should be removed automatically after 90 days.
 
-A. A scheduled delete job
+A. Drop and recreate the container
 B. Set container TTL to 7,776,000 seconds, optionally overriding per item
-C. Drop and recreate the container
-D. Use the change feed
+C. Use the change feed
+D. A scheduled delete job
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Use the change feed
 ### Question 11
 **Scenario:** A transactional batch must update three documents atomically.
 
-A. They must share the same logical partition key
+A. They must be in different containers
 B. They can be in any partition
-C. They must be in different containers
+C. They must share the same logical partition key
 D. Use a distributed transaction coordinator
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Transactional batch and stored procedure transactions are scoped to a single logical partition. This constraint should drive your model: if two entities must change atomically, give them the same partition key. There is no cross-partition transaction.
 </details>
@@ -213,14 +213,14 @@ D. Use a distributed transaction coordinator
 **Scenario:** A workload is spiky, with 10x bursts a few times a day and near-zero baseline.
 
 A. Provisioned throughput sized for the peak
-B. Autoscale throughput, which scales between 10% and 100% of the maximum
-C. Serverless for a high-volume production workload
-D. Manual scaling scripts
+B. Manual scaling scripts
+C. Autoscale throughput, which scales between 10% and 100% of the maximum
+D. Serverless for a high-volume production workload
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Autoscale bills for the highest RU/s used each hour within a 10x band, which fits exactly this shape. Provisioning for the peak pays for it around the clock. Serverless suits low-volume and development workloads and has lower ceilings than a bursty production system usually needs.
 </details>
@@ -230,15 +230,15 @@ D. Manual scaling scripts
 ### Question 13
 **Scenario:** The SDK reports HTTP 429 responses under load.
 
-A. The request was unauthorized
-B. Rate limiting: requests exceeded provisioned RU/s, so honor the retry-after header, tune the query, or raise throughput
+A. Consistency conflict
+B. The request was unauthorized
 C. The item was not found
-D. Consistency conflict
+D. Rate limiting: requests exceeded provisioned RU/s, so honor the retry-after header, tune the query, or raise throughput
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** 429 means throttled. The SDKs retry automatically using `x-ms-retry-after-ms`, so occasional 429s are normal and not an outage. Persistent throttling means either a hot partition, an expensive query, or genuinely insufficient throughput, and the fix differs for each.
 </details>
@@ -250,8 +250,8 @@ D. Consistency conflict
 
 A. Add read regions and configure the client's preferred regions list
 B. Use Strong consistency everywhere
-C. Increase RU/s
-D. Use a single region with a CDN
+C. Use a single region with a CDN
+D. Increase RU/s
 
 <details>
 <summary>Answer</summary>
@@ -266,15 +266,15 @@ D. Use a single region with a CDN
 ### Question 15
 **Scenario:** Access must be granted to an application without using the account primary key.
 
-A. Microsoft Entra ID with the Cosmos DB data plane RBAC roles, assigned to a managed identity
-B. A resource token broker only
+A. A resource token broker only
+B. Microsoft Entra ID with the Cosmos DB data plane RBAC roles, assigned to a managed identity
 C. A read-only key
 D. IP firewall rules
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Data plane RBAC lets you grant read or write on specific databases and containers to an Entra identity, with no shared secret to rotate. Read-only keys are still account-wide shared secrets. Firewall rules restrict where a key can be used, which is a useful layer but not authentication.
 </details>

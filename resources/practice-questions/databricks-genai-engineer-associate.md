@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A RAG application must answer questions from internal policy documents.
 
-A. Fine-tune a model on the documents
+A. Train a model from scratch
 B. Chunk and embed the documents into a Vector Search index, retrieve relevant chunks at query time, and generate an answer from them
-C. Put all documents in the prompt
-D. Train a model from scratch
+C. Fine-tune a model on the documents
+D. Put all documents in the prompt
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Train a model from scratch
 ### Question 2
 **Scenario:** A Delta table of documents must stay in sync with a vector index.
 
-A. Rebuild the index nightly by hand
-B. A Databricks Vector Search Delta Sync index, which keeps the index updated as the source table changes
-C. Export to CSV
-D. Manual upserts
+A. A Databricks Vector Search Delta Sync index, which keeps the index updated as the source table changes
+B. Manual upserts
+C. Rebuild the index nightly by hand
+D. Export to CSV
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Delta Sync indexes track the source table and update automatically, which removes the class of bugs where the index silently falls behind the data. Direct Vector Access indexes are the alternative when you manage embeddings and writes yourself.
 </details>
@@ -51,14 +51,14 @@ D. Manual upserts
 **Scenario:** Chunk size must be chosen for a corpus of long technical manuals.
 
 A. One chunk per document
-B. Chunks sized to hold a complete idea with some overlap, ideally split on document structure such as sections rather than fixed character counts
-C. One sentence per chunk
-D. Chunk size does not matter
+B. Chunk size does not matter
+C. Chunks sized to hold a complete idea with some overlap, ideally split on document structure such as sections rather than fixed character counts
+D. One sentence per chunk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Whole documents dilute the embedding so retrieval returns everything weakly; single sentences lose the context needed to answer. Structure-aware splitting with overlap keeps facts intact across boundaries, and it is the highest-leverage tuning knob in most RAG systems.
 </details>
@@ -69,14 +69,14 @@ D. Chunk size does not matter
 **Scenario:** Retrieval misses documents when the user's query uses different wording from the source.
 
 A. Keyword search only
-B. Vector (semantic) search, optionally hybrid with keyword search for exact identifiers
-C. Increase temperature
+B. Increase temperature
+C. Vector (semantic) search, optionally hybrid with keyword search for exact identifiers
 D. A bigger model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Embeddings capture meaning rather than surface form, which is why a paraphrased query still retrieves. Hybrid search adds back the exact-match strength that dense retrieval lacks for error codes, part numbers, and rare proper nouns.
 </details>
@@ -86,10 +86,10 @@ D. A bigger model
 ### Question 5
 **Scenario:** A model endpoint must serve an external foundation model and a fine-tuned model behind one interface.
 
-A. Two applications
+A. Manual routing
 B. Mosaic AI Model Serving with external model endpoints and custom model endpoints, optionally behind an AI Gateway
 C. A load balancer
-D. Manual routing
+D. Two applications
 
 <details>
 <summary>Answer</summary>
@@ -105,14 +105,14 @@ D. Manual routing
 **Scenario:** A chain of retrieval, prompt, and model must be tracked and versioned.
 
 A. A notebook only
-B. Log the chain as an MLflow model, register it in Unity Catalog, and deploy the registered version
-C. Copy the code to production
-D. A text file
+B. A text file
+C. Log the chain as an MLflow model, register it in Unity Catalog, and deploy the registered version
+D. Copy the code to production
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Logging the whole chain rather than just the model makes the deployed artifact reproducible, including the prompt template and retrieval configuration. Registering in Unity Catalog gives it the same governance, lineage, and access control as data.
 </details>
@@ -122,15 +122,15 @@ D. A text file
 ### Question 7
 **Scenario:** The application must be evaluated for answer quality against ground truth.
 
-A. Spot checks
-B. An evaluation set with metrics such as answer correctness, groundedness, and retrieval recall, run automatically on each change
-C. User complaints
-D. Latency only
+A. User complaints
+B. Latency only
+C. Spot checks
+D. An evaluation set with metrics such as answer correctness, groundedness, and retrieval recall, run automatically on each change
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Separating retrieval metrics from generation metrics matters because they fail for different reasons. Mosaic AI Agent Evaluation supports LLM-judge metrics alongside human review, and running it on every prompt or model change is what catches silent regressions.
 </details>
@@ -140,15 +140,15 @@ D. Latency only
 ### Question 8
 **Scenario:** Retrieval must respect who is asking, so users only see permitted documents.
 
-A. Instruct the model to refuse
-B. Filter at retrieval time by metadata reflecting the user's entitlements, enforced in code
-C. Post-process the answer
-D. Rely on the model's training
+A. Rely on the model's training
+B. Post-process the answer
+C. Filter at retrieval time by metadata reflecting the user's entitlements, enforced in code
+D. Instruct the model to refuse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Once content is in the context window it can appear in the output, so authorization must happen before retrieval returns. A prompt instruction is advisory and can be overridden by injected text in a retrieved document.
 </details>
@@ -159,14 +159,14 @@ D. Rely on the model's training
 **Scenario:** Model responses must be traced for debugging and audit.
 
 A. Print statements
-B. MLflow Tracing capturing spans for retrieval, prompt construction, and generation, plus inference tables logging requests and responses
-C. No logging
-D. Only errors
+B. No logging
+C. Only errors
+D. MLflow Tracing capturing spans for retrieval, prompt construction, and generation, plus inference tables logging requests and responses
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A wrong answer is usually a retrieval problem, and you cannot tell without seeing which chunks were retrieved. Tracing makes each step inspectable, and inference tables put production traffic into a Delta table you can query and build evaluation sets from.
 </details>
@@ -176,15 +176,15 @@ D. Only errors
 ### Question 10
 **Scenario:** An agent must call tools to complete a task.
 
-A. The model executes tools itself
-B. The model emits a structured tool call, your code executes it with a scoped credential and an authorization check, and the result returns to the model
+A. The model emits a structured tool call, your code executes it with a scoped credential and an authorization check, and the result returns to the model
+B. The model executes tools itself
 C. Give the agent admin access
 D. Skip authorization
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The execution step is where security lives, because the model is an untrusted planner that a retrieved document may have influenced. Unity Catalog functions as tools help here by carrying their own governance and grants.
 </details>
@@ -194,10 +194,10 @@ D. Skip authorization
 ### Question 11
 **Scenario:** An embedding model is upgraded.
 
-A. No further action
+A. Increase the index size
 B. Re-embed the entire index, because vectors from different models are not comparable
 C. Re-embed new documents only
-D. Increase the index size
+D. No further action
 
 <details>
 <summary>Answer</summary>
@@ -230,15 +230,15 @@ D. Lower temperature
 ### Question 13
 **Scenario:** Costs rise sharply as usage grows.
 
-A. Accept it
-B. Measure tokens per request, use a smaller model for simple steps, cache repeated prefixes, and cap retrieved context size
-C. Increase the model size
-D. Add more endpoints
+A. Measure tokens per request, use a smaller model for simple steps, cache repeated prefixes, and cap retrieved context size
+B. Increase the model size
+C. Add more endpoints
+D. Accept it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Cost is driven by tokens in and out, and retrieved context is often the largest and least examined contributor. Trimming top-k after measuring the effect on quality frequently reduces cost without any measurable loss.
 </details>
@@ -248,15 +248,15 @@ D. Add more endpoints
 ### Question 14
 **Scenario:** Which describes the difference between prompt engineering, RAG, and fine-tuning?
 
-A. They are interchangeable
-B. Prompt engineering shapes behavior with instructions and examples, RAG supplies external knowledge at query time, and fine-tuning adjusts weights for consistent task behavior
+A. RAG replaces the model
+B. They are interchangeable
 C. Fine-tuning is always best
-D. RAG replaces the model
+D. Prompt engineering shapes behavior with instructions and examples, RAG supplies external knowledge at query time, and fine-tuning adjusts weights for consistent task behavior
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** They address different needs and cost increases in that order. Most production systems combine them: a tuned prompt, retrieval for facts, and optionally fine-tuning for format consistency the prompt could not reliably enforce.
 </details>

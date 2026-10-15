@@ -28,14 +28,14 @@ D. No, because Kubernetes manifests are not a valid state store
 **Scenario:** Which of the following do the four OpenGitOps principles require?
 
 A. Git specifically as the state store
-B. Kubernetes as the target
-C. A versioned, immutable state store, whatever the technology
-D. Automatic correction of all drift
+B. A versioned, immutable state store, whatever the technology
+C. Automatic correction of all drift
+D. Kubernetes as the target
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** The principles say "stored in a way that enforces immutability, versioning, and retains a complete version history". They name neither Git nor Kubernetes. Principle four says agents observe and *attempt to apply*, so alerting on drift for some resources remains a valid policy choice.
 </details>
@@ -45,15 +45,15 @@ D. Automatic correction of all drift
 ### Question 3
 **Scenario:** A platform team manages dev, staging, and production for 40 services. Which environment model is generally recommended?
 
-A. Branch per environment
-B. Directory per environment with a shared base and overlays
+A. One repository per service per environment
+B. Branch per environment
 C. One repository per environment
-D. One repository per service per environment
+D. Directory per environment with a shared base and overlays
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Directories make configuration differences visible side by side, make promotion an explicit reviewable change, and support per-directory access control. Branches diverge over time and turn promotion into a merge exercise carrying unintended changes.
 </details>
@@ -63,10 +63,10 @@ D. One repository per service per environment
 ### Question 4
 **Scenario:** An agent with self-heal enabled keeps reverting a Deployment's replica count from 12 to 3 while an HPA scales it back up.
 
-A. Disable self-heal entirely
-B. Set the manifest replicas to 12
+A. Remove the HPA
+B. Disable self-heal entirely
 C. Remove `replicas` from the committed manifest, or configure the agent to ignore that field
-D. Remove the HPA
+D. Set the manifest replicas to 12
 
 <details>
 <summary>Answer</summary>
@@ -82,9 +82,9 @@ D. Remove the HPA
 **Scenario:** A team needs database credentials available to workloads. The config repository is readable by all engineers.
 
 A. Base64-encode the Secret manifest and commit it
-B. Make the repository private
+B. Apply the secret manually outside GitOps
 C. Use Sealed Secrets, SOPS, or the External Secrets Operator
-D. Apply the secret manually outside GitOps
+D. Make the repository private
 
 <details>
 <summary>Answer</summary>
@@ -99,15 +99,15 @@ D. Apply the secret manually outside GitOps
 ### Question 6
 **Scenario:** What is the correct rollback procedure in a GitOps model?
 
-A. `kubectl rollout undo`
-B. Revert the commit in the state store and let the agent reconcile
-C. Pause the agent and fix the cluster manually
-D. Re-run the previous CI pipeline
+A. Revert the commit in the state store and let the agent reconcile
+B. `kubectl rollout undo`
+C. Re-run the previous CI pipeline
+D. Pause the agent and fix the cluster manually
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Any change made directly to the cluster is drift that the next reconciliation will erase. Reverting the state store is auditable, reviewable, and leaves the store accurate, which matters because the store is what the next reconciliation applies.
 </details>
@@ -117,15 +117,15 @@ D. Re-run the previous CI pipeline
 ### Question 7
 **Scenario:** Where does CI end and GitOps begin?
 
-A. CI deploys to dev; GitOps handles production
-B. CI builds, tests, and publishes an immutable artifact; GitOps begins at the commit to the config repository
-C. GitOps replaces CI entirely
-D. They are the same process
+A. They are the same process
+B. CI deploys to dev; GitOps handles production
+C. CI builds, tests, and publishes an immutable artifact; GitOps begins at the commit to the config repository
+D. GitOps replaces CI entirely
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** GitOps is a continuous delivery approach; CI still builds and tests. The handover is a commit updating an image tag in the config repository, either made by CI or by an image update controller watching the registry.
 </details>
@@ -136,14 +136,14 @@ D. They are the same process
 **Scenario:** Which security property does the pull model provide that a push model does not?
 
 A. Encrypted manifests
-B. No external system holds cluster credentials, and no inbound access to the cluster is required
-C. Faster deployments
+B. Faster deployments
+C. No external system holds cluster credentials, and no inbound access to the cluster is required
 D. Automatic secret rotation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** In a push model a compromised CI system has full cluster access. In a pull model the agent uses in-cluster identity, so a compromised CI system can at most propose a commit, which is reviewable and revertable.
 </details>
@@ -153,15 +153,15 @@ D. Automatic secret rotation
 ### Question 9
 **Scenario:** What distinguishes continuous reconciliation from self-healing?
 
-A. Nothing; they are synonyms
-B. Reconciliation observes and attempts to apply; self-healing is the specific behavior of automatically correcting drift, which is configurable
+A. Reconciliation applies only to new resources
+B. Nothing; they are synonyms
 C. Self-healing runs on a schedule and reconciliation does not
-D. Reconciliation applies only to new resources
+D. Reconciliation observes and attempts to apply; self-healing is the specific behavior of automatically correcting drift, which is configurable
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The principle mandates continuous observation and attempted application. Whether the agent automatically corrects a given resource, or alerts instead, is a design decision, and legitimate designs exclude fields another controller owns.
 </details>
@@ -172,14 +172,14 @@ D. Reconciliation applies only to new resources
 **Scenario:** Why is a mutable image tag such as `latest` discouraged in a GitOps state store?
 
 A. It slows down image pulls
-B. It breaks immutability: the same desired state can produce two different running systems, and rollback becomes ambiguous
-C. Registries reject it
-D. Agents cannot resolve it
+B. Registries reject it
+C. Agents cannot resolve it
+D. It breaks immutability: the same desired state can produce two different running systems, and rollback becomes ambiguous
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The second principle requires that a stored state be immutable. A tag that resolves to different bytes over time means the recorded desired state no longer identifies what actually runs, which defeats both reproducibility and rollback.
 </details>
@@ -189,15 +189,15 @@ D. Agents cannot resolve it
 ### Question 11
 **Scenario:** Which is the recommended repository structure?
 
-A. Manifests committed into the application source repository
-B. Separate application and configuration repositories
+A. Separate application and configuration repositories
+B. Manifests committed into the application source repository
 C. One repository per environment per service
 D. Manifests generated at deploy time and not stored
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Separation avoids the CI loop where a pipeline commits an image tag into the repository that triggers it, and allows different access controls and reviewers for code and for deployment configuration.
 </details>
@@ -207,15 +207,15 @@ D. Manifests generated at deploy time and not stored
 ### Question 12
 **Scenario:** An organization runs 30 clusters and needs a common baseline plus per-cluster application sets, without duplicating the baseline.
 
-A. Thirty repositories, one per cluster
-B. Copy the baseline into each cluster directory
-C. Generators such as ApplicationSets or Kustomization substitution, driven by cluster metadata, over a shared base
-D. One manifest set applied identically everywhere
+A. One manifest set applied identically everywhere
+B. Generators such as ApplicationSets or Kustomization substitution, driven by cluster metadata, over a shared base
+C. Thirty repositories, one per cluster
+D. Copy the baseline into each cluster directory
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Generators render one definition across many clusters using cluster metadata, which is the pattern that avoids duplication. Copying drifts the moment one copy is updated. A single identical manifest set allows no per-cluster variation.
 </details>
@@ -225,15 +225,15 @@ D. One manifest set applied identically everywhere
 ### Question 13
 **Scenario:** How does GitOps affect the DORA metric "time to restore service"?
 
-A. It has no effect
-B. It generally improves it, because rollback is a revert of the state store
-C. It worsens it, because changes require review
-D. It affects only deployment frequency
+A. It generally improves it, because rollback is a revert of the state store
+B. It worsens it, because changes require review
+C. It affects only deployment frequency
+D. It has no effect
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Rollback becomes a single reviewed commit rather than a pipeline re-run or manual intervention, which shortens recovery. GitOps typically improves all four DORA metrics, which is a common exam framing for why organizations adopt it.
 </details>
@@ -243,15 +243,15 @@ D. It affects only deployment frequency
 ### Question 14
 **Scenario:** Which safety net prevents a bad commit from deploying a non-compliant resource, given that the agent applies whatever is committed?
 
-A. Branch protection alone
-B. Policy as code enforced at admission, with Kyverno or OPA Gatekeeper
+A. Policy as code enforced at admission, with Kyverno or OPA Gatekeeper
+B. A longer reconciliation interval
 C. The agent's own validation
-D. A longer reconciliation interval
+D. Branch protection alone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The agent faithfully applies the state store, so the enforcement point must be admission control, which everything reaching the cluster passes through. Branch protection helps but depends on reviewers noticing. A longer interval simply delays the bad apply.
 </details>
@@ -263,8 +263,8 @@ D. A longer reconciliation interval
 
 A. Argo CD and Jenkins
 B. Argo CD and Flux
-C. Flux and Terraform
-D. Helm and Kustomize
+C. Helm and Kustomize
+D. Flux and Terraform
 
 <details>
 <summary>Answer</summary>

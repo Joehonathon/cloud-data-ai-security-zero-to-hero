@@ -15,14 +15,14 @@ difficulty: beginner
 **Scenario:** The CIA triad's three components.
 
 A. Control, Integrity, Access
-B. Confidentiality, Integrity, Availability
-C. Compliance, Identity, Authorization
+B. Compliance, Identity, Authorization
+C. Confidentiality, Integrity, Availability
 D. Cryptography, Isolation, Auditing
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Confidentiality keeps data from unauthorized viewers, integrity keeps it unaltered, availability keeps it reachable. Most exam questions asking "which principle is affected" resolve by mapping the incident to one of the three: a leak is confidentiality, tampering is integrity, ransomware is availability.
 </details>
@@ -33,14 +33,14 @@ D. Cryptography, Isolation, Auditing
 **Scenario:** A control category question: a security guard, a firewall, and a policy document.
 
 A. All technical
-B. Physical, technical, and managerial respectively
-C. All administrative
-D. All operational
+B. All administrative
+C. All operational
+D. Physical, technical, and managerial respectively
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** SY0-701 uses managerial, operational, technical, and physical as the categories, cut across by control types: preventive, deterrent, detective, corrective, compensating, and directive. A single control has one category and one type, and questions often ask for both.
 </details>
@@ -50,15 +50,15 @@ D. All operational
 ### Question 3
 **Scenario:** An attacker sends a targeted email to the CFO impersonating the CEO requesting a wire transfer.
 
-A. Phishing
-B. Business email compromise, a form of spear phishing known as whaling when it targets executives
-C. Vishing
-D. Smishing
+A. Vishing
+B. Smishing
+C. Phishing
+D. Business email compromise, a form of spear phishing known as whaling when it targets executives
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Spear phishing is targeted, whaling targets high-value individuals, and BEC is the fraud pattern built on it. Vishing is voice and smishing is SMS. The exam distinguishes these by the channel and the targeting, so read for both.
 </details>
@@ -69,14 +69,14 @@ D. Smishing
 **Scenario:** A user's password is stolen but the attacker still cannot log in.
 
 A. Encryption
-B. Multi-factor authentication requiring a second factor
+B. Antivirus
 C. A firewall
-D. Antivirus
+D. Multi-factor authentication requiring a second factor
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The factors are something you know, something you have, and something you are, with location and behavior as attributes. Two of the same category is not MFA: a password plus a security question is still one factor.
 </details>
@@ -104,15 +104,15 @@ D. Non-repudiation on its own
 ### Question 6
 **Scenario:** Symmetric versus asymmetric encryption.
 
-A. They are the same
-B. Symmetric uses one shared key and is fast; asymmetric uses a public and private key pair, solving key distribution at higher computational cost
-C. Asymmetric is always faster
-D. Symmetric cannot encrypt bulk data
+A. Symmetric uses one shared key and is fast; asymmetric uses a public and private key pair, solving key distribution at higher computational cost
+B. Asymmetric is always faster
+C. Symmetric cannot encrypt bulk data
+D. They are the same
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The practical pattern combines both: asymmetric to exchange a symmetric session key, symmetric for the bulk data. TLS works this way, which is why it needs certificates for the handshake and a cipher for the payload.
 </details>
@@ -122,15 +122,15 @@ D. Symmetric cannot encrypt bulk data
 ### Question 7
 **Scenario:** A certificate is presented and the client must verify it is not revoked.
 
-A. Check the expiry date only
-B. Check a certificate revocation list or use OCSP, ideally with stapling
-C. Trust the certificate
-D. Check the hostname only
+A. Trust the certificate
+B. Check the hostname only
+C. Check a certificate revocation list or use OCSP, ideally with stapling
+D. Check the expiry date only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Validation covers the chain to a trusted root, the hostname, the validity dates, and revocation. OCSP stapling has the server present a signed status response, avoiding a separate client lookup and the privacy leak that comes with it.
 </details>
@@ -141,14 +141,14 @@ D. Check the hostname only
 **Scenario:** Which describes a zero-day vulnerability?
 
 A. A vulnerability disclosed a year ago
-B. A vulnerability with no vendor patch available at the time of exploitation
-C. Any unpatched system
+B. Any unpatched system
+C. A vulnerability with no vendor patch available at the time of exploitation
 D. A misconfiguration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The defining property is the absence of a fix, which is why compensating controls matter: segmentation, monitoring, and least privilege limit the damage of something you cannot patch. An old unpatched vulnerability is a patch management failure, not a zero-day.
 </details>
@@ -158,10 +158,10 @@ D. A misconfiguration
 ### Question 9
 **Scenario:** A network is divided so that a compromised workstation cannot reach the database tier directly.
 
-A. Encryption
+A. Load balancing
 B. Segmentation, limiting lateral movement
-C. Load balancing
-D. Redundancy
+C. Redundancy
+D. Encryption
 
 <details>
 <summary>Answer</summary>
@@ -176,15 +176,15 @@ D. Redundancy
 ### Question 10
 **Scenario:** An organization must decide how to handle a risk it cannot cost-effectively mitigate.
 
-A. Ignore it
-B. Choose among the responses: accept, avoid, transfer (for example insurance), or mitigate, and document the decision
-C. Always mitigate
-D. Always transfer
+A. Choose among the responses: accept, avoid, transfer (for example insurance), or mitigate, and document the decision
+B. Always mitigate
+C. Always transfer
+D. Ignore it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Formal acceptance by an authorized owner is a legitimate outcome and is what the risk register records. The exam also tests the vocabulary around it: risk appetite, residual risk (what remains after controls), and inherent risk (before them).
 </details>
@@ -194,15 +194,15 @@ D. Always transfer
 ### Question 11
 **Scenario:** The incident response lifecycle order.
 
-A. Detection, preparation, recovery, containment
-B. Preparation, detection and analysis, containment, eradication, recovery, lessons learned
-C. Containment first, always
+A. Preparation, detection and analysis, containment, eradication, recovery, lessons learned
+B. Containment first, always
+C. Detection, preparation, recovery, containment
 D. Recovery, then detection
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Preparation comes first because it is what makes the rest possible, and lessons learned is where the organization actually improves. Containment precedes eradication: stop the spread before you remove the cause.
 </details>
@@ -212,15 +212,15 @@ D. Recovery, then detection
 ### Question 12
 **Scenario:** RPO and RTO must be distinguished.
 
-A. They are the same
-B. RPO is how much data loss is acceptable, driving backup frequency; RTO is how long recovery may take, driving the recovery architecture
+A. RPO is how much data loss is acceptable, driving backup frequency; RTO is how long recovery may take, driving the recovery architecture
+B. RPO measures downtime
 C. RTO measures data loss
-D. RPO measures downtime
+D. They are the same
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** RPO looks backward from the incident and RTO looks forward. A four-hour RPO means backups at least every four hours; a one-hour RTO usually rules out restoring from tape. MTTR and MTBF are the related availability metrics.
 </details>
@@ -232,8 +232,8 @@ D. RPO measures downtime
 
 A. A firewall
 B. A SIEM, aggregating and correlating log data with alerting
-C. An IPS
-D. A vulnerability scanner
+C. A vulnerability scanner
+D. An IPS
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. A vulnerability scanner
 ### Question 14
 **Scenario:** A penetration test where the tester has no prior knowledge of the environment.
 
-A. White box
+A. Partially known (grey box)
 B. Unknown environment (black box)
-C. Partially known (grey box)
-D. A vulnerability scan
+C. A vulnerability scan
+D. White box
 
 <details>
 <summary>Answer</summary>
@@ -267,14 +267,14 @@ D. A vulnerability scan
 **Scenario:** Sensitive data must be replaced with a non-sensitive equivalent that can be reversed by an authorized system.
 
 A. Hashing
-B. Tokenization, where the token maps back to the original in a secure vault
-C. Masking
-D. Encryption with a lost key
+B. Encryption with a lost key
+C. Tokenization, where the token maps back to the original in a secure vault
+D. Masking
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Tokenization removes the sensitive value from the processing environment entirely, which is why it is common in payment systems for PCI scope reduction. Masking obscures for display, and hashing is one-way and therefore not reversible.
 </details>

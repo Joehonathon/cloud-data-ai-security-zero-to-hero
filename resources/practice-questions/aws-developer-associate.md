@@ -17,15 +17,15 @@
 ### Question 1
 **Scenario:** A developer is building a serverless API that needs to validate request payloads before processing. The validation logic is complex and varies by endpoint. What's the most efficient approach?
 
-A. Add validation code at the beginning of each Lambda function
-B. Use API Gateway request validation with JSON Schema
-C. Create a Lambda authorizer for validation
-D. Use API Gateway mapping templates to validate requests
+A. Create a Lambda authorizer for validation
+B. Use API Gateway mapping templates to validate requests
+C. Use API Gateway request validation with JSON Schema
+D. Add validation code at the beginning of each Lambda function
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** API Gateway request validation with JSON Schema provides built-in validation before Lambda is invoked, reducing costs and latency. Custom Lambda code adds execution time and cost. Lambda authorizers are for authentication, not payload validation. Mapping templates transform data but aren't designed for complex validation.
 
@@ -37,15 +37,15 @@ D. Use API Gateway mapping templates to validate requests
 ### Question 2
 **Scenario:** A Lambda function processes messages from an SQS queue. During testing, some messages fail and are processed multiple times before going to the dead-letter queue. How can the developer ensure each message is processed only once?
 
-A. Enable FIFO queue
-B. Implement idempotency using DynamoDB with conditional writes
-C. Decrease the visibility timeout
-D. Increase the batch size
+A. Increase the batch size
+B. Decrease the visibility timeout
+C. Enable FIFO queue
+D. Implement idempotency using DynamoDB with conditional writes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Implementing idempotency using DynamoDB with conditional writes ensures that even if a message is delivered multiple times, the processing logic only executes once. FIFO queues provide ordering but don't prevent reprocessing on failure. Visibility timeout changes don't solve the idempotency problem. Batch size doesn't affect duplicate processing.
 
@@ -77,15 +77,15 @@ D. S3 with lifecycle policies
 ### Question 4
 **Scenario:** A developer is building a Lambda function that needs to make 100 parallel API calls to an external service. The function times out at the default 3-second limit. What should the developer do?
 
-A. Increase the Lambda timeout to 15 minutes
-B. Use Lambda Provisioned Concurrency
+A. Use Lambda Provisioned Concurrency
+B. Increase Lambda memory allocation
 C. Implement async processing with Step Functions
-D. Increase Lambda memory allocation
+D. Increase the Lambda timeout to 15 minutes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: D**
+**Correct: B**
 
 **Why:** Increasing Lambda memory also increases CPU allocation proportionally, which speeds up parallel processing. The default timeout is 3 seconds, so increasing it alone won't help if the code is CPU-bound. Provisioned Concurrency reduces cold starts, not execution time. Step Functions add complexity unnecessary for this use case.
 
@@ -98,14 +98,14 @@ D. Increase Lambda memory allocation
 **Scenario:** A developer needs to query a DynamoDB table by a non-key attribute. The queries are infrequent but need to return results quickly. What's the most cost-effective approach?
 
 A. Use a Scan operation with a filter expression
-B. Create a Global Secondary Index (GSI)
-C. Create a Local Secondary Index (LSI)
-D. Migrate to Amazon RDS
+B. Migrate to Amazon RDS
+C. Create a Global Secondary Index (GSI)
+D. Create a Local Secondary Index (LSI)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A Global Secondary Index allows efficient queries on non-key attributes without scanning the entire table. Since queries are infrequent, the GSI cost is minimal. Scan operations are expensive and slow for large tables. LSI can only be created at table creation and requires the same partition key. Migrating to RDS is unnecessary overhead.
 
@@ -119,8 +119,8 @@ D. Migrate to Amazon RDS
 
 A. Enable enhanced fan-out
 B. Configure bisect batch on function error
-C. Increase the shard count
-D. Use Lambda Destinations
+C. Use Lambda Destinations
+D. Increase the shard count
 
 <details>
 <summary>Answer</summary>
@@ -137,10 +137,10 @@ D. Use Lambda Destinations
 ### Question 7
 **Scenario:** A developer is building a REST API with API Gateway and Lambda. They need to return a custom error response with specific headers when validation fails. What's the correct approach?
 
-A. Throw an exception in Lambda with the error details
+A. Configure a Lambda alias with error handling
 B. Use API Gateway Gateway Responses
-C. Configure a Lambda alias with error handling
-D. Use API Gateway request validators only
+C. Use API Gateway request validators only
+D. Throw an exception in Lambda with the error details
 
 <details>
 <summary>Answer</summary>
@@ -158,14 +158,14 @@ D. Use API Gateway request validators only
 **Scenario:** A developer needs to upload a 10GB file to S3 from a client application. The upload must be resumable if interrupted. What approach should they use?
 
 A. Single PUT request with increased timeout
-B. Multipart upload with presigned URLs
+B. S3 Transfer Acceleration
 C. AWS Transfer Family
-D. S3 Transfer Acceleration
+D. Multipart upload with presigned URLs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Multipart upload breaks large files into parts that can be uploaded independently and resumed if interrupted. Presigned URLs allow secure uploads from clients without AWS credentials. Single PUT is limited to 5GB and not resumable. Transfer Family is for SFTP/FTPS. Transfer Acceleration improves speed but doesn't enable resumable uploads.
 
@@ -179,8 +179,8 @@ D. S3 Transfer Acceleration
 
 A. SQS queue as event source
 B. Lambda Destinations with on-failure configuration
-C. CloudWatch Events rule
-D. SNS topic trigger
+C. SNS topic trigger
+D. CloudWatch Events rule
 
 <details>
 <summary>Answer</summary>
@@ -217,15 +217,15 @@ D. Implement client-side data aggregation
 ### Question 11
 **Scenario:** A developer's Lambda function makes API calls to a third-party service that has rate limits. During peak traffic, the function is throttled. How can the developer smooth out the request rate?
 
-A. Use Lambda reserved concurrency
-B. Add an SQS queue with controlled concurrency
-C. Implement exponential backoff in the Lambda code
-D. Use Lambda Provisioned Concurrency
+A. Add an SQS queue with controlled concurrency
+B. Implement exponential backoff in the Lambda code
+C. Use Lambda Provisioned Concurrency
+D. Use Lambda reserved concurrency
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** An SQS queue with controlled Lambda concurrency limits the rate of requests to the external service, smoothing out bursts. Reserved concurrency limits function invocations but doesn't queue requests. Exponential backoff handles retries but doesn't prevent initial throttling. Provisioned Concurrency reduces cold starts, not request rate.
 
@@ -237,15 +237,15 @@ D. Use Lambda Provisioned Concurrency
 ### Question 12
 **Scenario:** A developer needs to store application configuration that may change without redeploying the application. The configuration includes feature flags and API endpoints. What service should they use?
 
-A. Environment variables
-B. AWS AppConfig
-C. S3 bucket with versioning
-D. Secrets Manager
+A. Secrets Manager
+B. Environment variables
+C. AWS AppConfig
+D. S3 bucket with versioning
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** AWS AppConfig provides managed configuration with validation, gradual rollout, and instant updates without redeployment. Environment variables require redeployment. S3 requires custom polling logic. Secrets Manager is for sensitive data like credentials, not general configuration.
 
@@ -257,15 +257,15 @@ D. Secrets Manager
 ### Question 13
 **Scenario:** A developer needs to implement a fan-out pattern where a single event triggers multiple independent Lambda functions. Order of execution doesn't matter. What's the simplest approach?
 
-A. SNS topic with multiple Lambda subscribers
+A. EventBridge with multiple rules
 B. Step Functions parallel state
-C. EventBridge with multiple rules
-D. SQS queue with multiple consumers
+C. SQS queue with multiple consumers
+D. SNS topic with multiple Lambda subscribers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** SNS provides native fan-out where a single message triggers all subscribers simultaneously. It's simpler than Step Functions for independent parallel execution. EventBridge works but requires multiple rules. SQS delivers each message to only one consumer, not suitable for fan-out.
 
@@ -279,10 +279,10 @@ D. SQS queue with multiple consumers
 ### Question 14
 **Scenario:** A developer needs to allow a Lambda function to access a DynamoDB table in another AWS account. What's the most secure approach?
 
-A. Use hardcoded access keys from the other account
+A. Use VPC peering between accounts
 B. Configure a cross-account IAM role and assume it
 C. Make the DynamoDB table public
-D. Use VPC peering between accounts
+D. Use hardcoded access keys from the other account
 
 <details>
 <summary>Answer</summary>
@@ -299,15 +299,15 @@ D. Use VPC peering between accounts
 ### Question 15
 **Scenario:** A developer needs to securely store database credentials that a Lambda function uses. The credentials must be rotated automatically every 30 days. Which service should they use?
 
-A. Systems Manager Parameter Store SecureString
-B. AWS Secrets Manager with rotation enabled
-C. Environment variables with KMS encryption
-D. S3 bucket with server-side encryption
+A. AWS Secrets Manager with rotation enabled
+B. Environment variables with KMS encryption
+C. S3 bucket with server-side encryption
+D. Systems Manager Parameter Store SecureString
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** AWS Secrets Manager provides automatic rotation for database credentials with built-in Lambda rotation functions. Parameter Store SecureString doesn't have built-in rotation. Environment variables require redeployment to rotate. S3 is not designed for secrets management.
 
@@ -319,15 +319,15 @@ D. S3 bucket with server-side encryption
 ### Question 16
 **Scenario:** A developer is implementing authentication for an API Gateway REST API. The API needs to validate JWT tokens issued by a third-party identity provider. What's the recommended approach?
 
-A. Lambda authorizer that validates the JWT
-B. IAM authorization
-C. API Gateway JWT authorizer (HTTP API)
-D. Cognito User Pool authorizer
+A. API Gateway JWT authorizer (HTTP API)
+B. Lambda authorizer that validates the JWT
+C. Cognito User Pool authorizer
+D. IAM authorization
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** For REST APIs with third-party JWTs, a Lambda authorizer provides full control over token validation. HTTP API's built-in JWT authorizer doesn't work with REST APIs. IAM authorization is for AWS credentials. Cognito authorizers work with Cognito-issued tokens, not third-party tokens.
 
@@ -340,14 +340,14 @@ D. Cognito User Pool authorizer
 **Scenario:** A developer needs to encrypt sensitive data before storing it in DynamoDB. The encryption key must be managed by AWS but dedicated to this application. What should they use?
 
 A. DynamoDB default encryption
-B. Customer managed key (CMK) in KMS
+B. Client-side encryption with a self-managed key
 C. AWS managed key in KMS
-D. Client-side encryption with a self-managed key
+D. Customer managed key (CMK) in KMS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A customer managed key (CMK) in KMS is managed by AWS but dedicated to the application with full control over key policies. Default encryption uses AWS owned keys with no control. AWS managed keys are shared across services. Self-managed keys require more operational overhead.
 
@@ -359,15 +359,15 @@ D. Client-side encryption with a self-managed key
 ### Question 18
 **Scenario:** A developer's Lambda function needs to access resources in a private VPC subnet. After configuring VPC access, the function can no longer reach the internet to call external APIs. What should the developer do?
 
-A. Add an Internet Gateway to the VPC
-B. Configure a NAT Gateway in a public subnet
-C. Disable VPC access for the Lambda function
+A. Configure a NAT Gateway in a public subnet
+B. Disable VPC access for the Lambda function
+C. Add an Internet Gateway to the VPC
 D. Add a public IP to the Lambda function
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Lambda functions in a VPC private subnet need a NAT Gateway to access the internet. The NAT Gateway should be in a public subnet with a route to an Internet Gateway. Internet Gateway alone doesn't help private subnets. Disabling VPC access loses private resource connectivity. Lambda functions can't have public IPs.
 
@@ -379,15 +379,15 @@ D. Add a public IP to the Lambda function
 ### Question 19
 **Scenario:** A developer wants to ensure that only their specific Lambda function can write to an S3 bucket. What's the most secure way to implement this?
 
-A. S3 bucket policy with principal condition
-B. IAM policy attached to Lambda execution role
-C. S3 ACL with canonical user ID
-D. Resource-based policy on Lambda
+A. Resource-based policy on Lambda
+B. S3 ACL with canonical user ID
+C. S3 bucket policy with principal condition
+D. IAM policy attached to Lambda execution role
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** An S3 bucket policy with a principal condition restricting access to the specific Lambda execution role ARN ensures only that function can write. IAM policy grants the function access but doesn't prevent other principals from accessing the bucket. ACLs are legacy and less flexible. Resource-based policies on Lambda control who can invoke it, not what it can access.
 
@@ -399,15 +399,15 @@ D. Resource-based policy on Lambda
 ### Question 20
 **Scenario:** A developer needs to implement fine-grained access control for a DynamoDB table where users can only read their own records. The application uses Cognito for authentication. What should they use?
 
-A. DynamoDB IAM policies with conditions
-B. Cognito Identity Pool with IAM role mapping
-C. Lambda authorizer with custom logic
-D. DynamoDB streams with filtering
+A. DynamoDB streams with filtering
+B. DynamoDB IAM policies with conditions
+C. Cognito Identity Pool with IAM role mapping
+D. Lambda authorizer with custom logic
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Cognito Identity Pool can map authenticated users to IAM roles with policies that use DynamoDB condition keys (like `dynamodb:LeadingKeys`) to restrict access to items matching the user's identity. This provides fine-grained access control at the IAM level. Lambda authorizers add latency. DynamoDB streams are for change data capture.
 
@@ -419,15 +419,15 @@ D. DynamoDB streams with filtering
 ### Question 21
 **Scenario:** A developer needs to call AWS services from an EC2 instance. The security team prohibits storing credentials on instances. What's the correct approach?
 
-A. Use environment variables
-B. Use an IAM instance profile
+A. Use AWS CLI configure
+B. Use environment variables
 C. Store credentials in Secrets Manager
-D. Use AWS CLI configure
+D. Use an IAM instance profile
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** IAM instance profiles allow EC2 instances to assume a role and get temporary credentials automatically. No credentials are stored on the instance. Environment variables would require storing credentials. Secrets Manager adds complexity for this use case. CLI configure stores credentials in files.
 
@@ -439,15 +439,15 @@ D. Use AWS CLI configure
 ### Question 22
 **Scenario:** A developer is building a public API that needs to be protected against common web exploits like SQL injection and cross-site scripting. What AWS service should they use?
 
-A. AWS Shield
-B. AWS WAF
-C. Security Groups
+A. Security Groups
+B. AWS Shield
+C. AWS WAF
 D. Network ACLs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** AWS WAF provides protection against web exploits including SQL injection and XSS through managed rules and custom rules. Shield protects against DDoS attacks. Security Groups and Network ACLs filter network traffic but don't inspect application-layer content.
 
@@ -459,15 +459,15 @@ D. Network ACLs
 ### Question 23
 **Scenario:** A developer needs to encrypt environment variables in a Lambda function. The application code needs to decrypt them at runtime. What should they do?
 
-A. Enable Lambda environment variable encryption with KMS
-B. Store encrypted values and decrypt in code
+A. Store encrypted values and decrypt in code
+B. Enable KMS encryption on the Lambda deployment package
 C. Use Secrets Manager instead
-D. Enable KMS encryption on the Lambda deployment package
+D. Enable Lambda environment variable encryption with KMS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Lambda automatically encrypts environment variables at rest using KMS. Enabling encryption helpers provides automatic decryption at runtime. Storing pre-encrypted values requires manual KMS calls. Secrets Manager is better for secrets that need rotation. Deployment package encryption doesn't help environment variables.
 
@@ -481,8 +481,8 @@ D. Enable KMS encryption on the Lambda deployment package
 ### Question 24
 **Scenario:** A developer wants to deploy a new version of a Lambda function with minimal risk. They want to gradually shift traffic to the new version while monitoring for errors. What should they use?
 
-A. Lambda versions with weighted alias
-B. Blue/green deployment with separate functions
+A. Blue/green deployment with separate functions
+B. Lambda versions with weighted alias
 C. Canary deployment with CodeDeploy
 D. All-at-once deployment
 
@@ -502,14 +502,14 @@ D. All-at-once deployment
 **Scenario:** A developer needs to deploy a containerized application to ECS. The deployment should replace instances gradually with automatic rollback if health checks fail. What deployment type should they configure?
 
 A. In-place deployment
-B. Blue/green deployment
-C. Rolling update
-D. Canary deployment
+B. Rolling update
+C. Canary deployment
+D. Blue/green deployment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** ECS rolling updates replace tasks gradually while maintaining availability. If health checks fail, the deployment rolls back automatically. Blue/green creates a new task set (more complex). In-place isn't an ECS concept. Canary is for Lambda with CodeDeploy.
 
@@ -521,15 +521,15 @@ D. Canary deployment
 ### Question 26
 **Scenario:** A developer wants to use AWS SAM to define a serverless application. They need to configure environment-specific values like database endpoints. What's the best approach?
 
-A. Hardcode values in template.yaml
-B. Use SAM parameter overrides with different files per environment
-C. Create separate template files per environment
-D. Use Lambda environment variables only
+A. Use SAM parameter overrides with different files per environment
+B. Hardcode values in template.yaml
+C. Use Lambda environment variables only
+D. Create separate template files per environment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SAM supports parameter overrides using `--parameter-overrides` with different values per environment. This keeps a single template with environment-specific configurations. Hardcoding prevents reuse. Separate templates cause drift. Lambda environment variables don't handle all template configurations.
 
@@ -541,15 +541,15 @@ D. Use Lambda environment variables only
 ### Question 27
 **Scenario:** A developer needs to automate the deployment pipeline for a Lambda function. The pipeline should run unit tests, build the code, and deploy to staging and production environments with approval between stages. What service should they use?
 
-A. CodeBuild only
-B. CodePipeline with CodeBuild and manual approval actions
-C. Jenkins on EC2
-D. GitHub Actions only
+A. CodePipeline with CodeBuild and manual approval actions
+B. CodeBuild only
+C. GitHub Actions only
+D. Jenkins on EC2
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** CodePipeline orchestrates the full deployment workflow including CodeBuild for testing/building, manual approval actions for stage gates, and deployment actions. CodeBuild alone doesn't provide workflow orchestration. Jenkins requires self-management. GitHub Actions alone lacks native AWS deployment integration.
 
@@ -562,9 +562,9 @@ D. GitHub Actions only
 **Scenario:** A developer is using Elastic Beanstalk to deploy an application. They want to add custom configuration like installing additional packages and running scripts during deployment. What should they use?
 
 A. .ebextensions configuration files
-B. Custom AMI
-C. User data scripts
-D. CodeDeploy hooks
+B. User data scripts
+C. CodeDeploy hooks
+D. Custom AMI
 
 <details>
 <summary>Answer</summary>
@@ -581,15 +581,15 @@ D. CodeDeploy hooks
 ### Question 29
 **Scenario:** A developer needs to deploy infrastructure and application code together. The infrastructure includes a Lambda function, DynamoDB table, and API Gateway. What tool should they use?
 
-A. CloudFormation only
-B. AWS CDK
-C. Terraform
-D. AWS CLI scripts
+A. Terraform
+B. AWS CLI scripts
+C. AWS CDK
+D. CloudFormation only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** AWS CDK allows defining infrastructure and application code in the same project using familiar programming languages. It synthesizes to CloudFormation. Plain CloudFormation requires YAML/JSON. Terraform is multi-cloud but less integrated. CLI scripts lack state management and idempotency.
 
@@ -601,15 +601,15 @@ D. AWS CLI scripts
 ### Question 30
 **Scenario:** A developer is deploying a containerized application. They want to use infrastructure as code but the team prefers YAML over programming languages. What should they use for container orchestration?
 
-A. ECS with CloudFormation
-B. EKS with Helm charts
-C. AWS CDK with TypeScript
+A. EKS with Helm charts
+B. AWS CDK with TypeScript
+C. ECS with CloudFormation
 D. Custom Docker scripts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** ECS with CloudFormation uses YAML templates to define container services declaratively. EKS with Helm also uses YAML but adds Kubernetes complexity. CDK uses programming languages. Custom scripts lack the benefits of infrastructure as code.
 
@@ -622,8 +622,8 @@ D. Custom Docker scripts
 **Scenario:** A developer needs to store and version Lambda function deployment packages. They want to maintain multiple versions and roll back if needed. What should they use?
 
 A. S3 bucket with versioning
-B. CodeCommit repository
-C. Lambda layers
+B. Lambda layers
+C. CodeCommit repository
 D. ECR repository
 
 <details>
@@ -641,15 +641,15 @@ D. ECR repository
 ### Question 32
 **Scenario:** A developer wants to test Lambda functions locally before deploying. They need to simulate API Gateway events and DynamoDB interactions. What tool should they use?
 
-A. AWS SAM CLI with sam local invoke
-B. LocalStack
-C. Docker compose
+A. Docker compose
+B. AWS SAM CLI with sam local invoke
+C. LocalStack
 D. Unit tests with mocks only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** SAM CLI's sam local invoke and sam local start-api allow testing Lambda functions locally with simulated AWS events. It integrates with Docker for the Lambda runtime. LocalStack is third-party. Docker compose doesn't simulate AWS services. Mocks don't test actual Lambda behavior.
 
@@ -661,15 +661,15 @@ D. Unit tests with mocks only
 ### Question 33
 **Scenario:** A developer needs to share common code between multiple Lambda functions without including it in each deployment package. What's the recommended approach?
 
-A. Create a shared Lambda layer
-B. Use Lambda extensions
-C. Deploy the code to S3 and download at runtime
-D. Use a monorepo with shared modules
+A. Use a monorepo with shared modules
+B. Create a shared Lambda layer
+C. Use Lambda extensions
+D. Deploy the code to S3 and download at runtime
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Lambda layers allow packaging shared libraries and dependencies separately from function code. Functions can include up to 5 layers. Extensions are for monitoring/security tools. Downloading from S3 adds latency. Monorepos help with development but don't reduce package size.
 
@@ -683,15 +683,15 @@ D. Use a monorepo with shared modules
 ### Question 34
 **Scenario:** A developer notices that their Lambda function has high latency during the first invocation after periods of inactivity. Subsequent invocations are fast. What's causing this and how can they fix it?
 
-A. Network latency; use VPC endpoints
-B. Cold start; use Provisioned Concurrency
-C. Memory limits; increase memory allocation
-D. Timeout settings; increase timeout
+A. Cold start; use Provisioned Concurrency
+B. Network latency; use VPC endpoints
+C. Timeout settings; increase timeout
+D. Memory limits; increase memory allocation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Cold starts occur when Lambda needs to initialize a new execution environment. Provisioned Concurrency keeps environments warm, eliminating cold starts. VPC endpoints don't affect cold starts. Memory affects execution speed, not initialization. Timeout doesn't reduce latency.
 
@@ -704,14 +704,14 @@ D. Timeout settings; increase timeout
 **Scenario:** A developer's API Gateway returns 502 errors intermittently. The backend Lambda function logs show successful executions. What's the most likely cause?
 
 A. Lambda function timeout
-B. Response format not matching API Gateway integration
+B. VPC connectivity issues
 C. API Gateway throttling
-D. VPC connectivity issues
+D. Response format not matching API Gateway integration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** API Gateway returns 502 when the Lambda response format doesn't match expected structure (missing statusCode, headers, or body). Successful Lambda logs confirm execution completed. Timeout would show in Lambda logs. Throttling returns 429. VPC issues would cause Lambda failures.
 
@@ -723,15 +723,15 @@ D. VPC connectivity issues
 ### Question 36
 **Scenario:** A developer needs to trace requests through an application with Lambda functions, API Gateway, and DynamoDB. They want to visualize the request flow and identify bottlenecks. What service should they use?
 
-A. CloudWatch Logs Insights
-B. AWS X-Ray
-C. CloudWatch Metrics
-D. AWS Config
+A. CloudWatch Metrics
+B. CloudWatch Logs Insights
+C. AWS Config
+D. AWS X-Ray
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** X-Ray provides distributed tracing across AWS services, showing request flow, latency breakdown, and bottlenecks in a service map. CloudWatch Logs shows log data. CloudWatch Metrics shows aggregate data. AWS Config tracks configuration changes.
 
@@ -743,15 +743,15 @@ D. AWS Config
 ### Question 37
 **Scenario:** A developer's DynamoDB table is experiencing throttling during peak hours. The table uses on-demand capacity mode. What should they investigate first?
 
-A. Partition key design causing hot partitions
-B. Insufficient read/write capacity units
-C. Global Secondary Index throttling
-D. DynamoDB stream configuration
+A. Global Secondary Index throttling
+B. DynamoDB stream configuration
+C. Insufficient read/write capacity units
+D. Partition key design causing hot partitions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Even with on-demand capacity, DynamoDB can throttle hot partitions if a single partition receives disproportionate traffic. Poor partition key design (like using a date) causes this. On-demand mode auto-scales capacity units. GSI throttling is separate but also related to hot keys. Streams don't cause read/write throttling.
 
@@ -763,15 +763,15 @@ D. DynamoDB stream configuration
 ### Question 38
 **Scenario:** A developer needs to analyze Lambda function errors and group them by error type. They want to set up alerts for new error patterns. What should they use?
 
-A. CloudWatch Logs with metric filters
+A. CloudWatch Application Insights
 B. CloudWatch Contributor Insights
-C. Lambda Insights
-D. CloudWatch Application Insights
+C. CloudWatch Logs with metric filters
+D. Lambda Insights
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: D**
 
 **Why:** Lambda Insights provides automatic collection of function metrics including errors grouped by type, plus custom dashboard for analysis. Metric filters require manual setup for each error pattern. Contributor Insights is for high-cardinality data. Application Insights is for application health, not Lambda-specific errors.
 
@@ -783,15 +783,15 @@ D. CloudWatch Application Insights
 ### Question 39
 **Scenario:** A developer's Lambda function is running out of memory. They see "Process exited before completing request" in the logs. The function processes images from S3. What should they do?
 
-A. Increase Lambda timeout
-B. Increase Lambda memory
+A. Increase Lambda memory
+B. Enable Lambda SnapStart
 C. Use S3 Transfer Acceleration
-D. Enable Lambda SnapStart
+D. Increase Lambda timeout
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** "Process exited before completing request" typically indicates the function ran out of memory. Image processing is memory-intensive. Increasing memory also increases CPU proportionally. Timeout doesn't help memory issues. Transfer Acceleration speeds downloads. SnapStart reduces cold starts.
 
@@ -803,10 +803,10 @@ D. Enable Lambda SnapStart
 ### Question 40
 **Scenario:** A developer notices their SQS-triggered Lambda function is processing messages slowly. The function takes 10 seconds per message, and there are 1000 messages in the queue. How can they improve throughput?
 
-A. Increase batch size
+A. Decrease visibility timeout
 B. Increase Lambda reserved concurrency
-C. Use FIFO queue
-D. Decrease visibility timeout
+C. Increase batch size
+D. Use FIFO queue
 
 <details>
 <summary>Answer</summary>
@@ -824,45 +824,45 @@ D. Decrease visibility timeout
 
 | Question | Answer | Domain |
 |----------|--------|--------|
-| 1 | B | Development |
-| 2 | B | Development |
+| 1 | C | Development |
+| 2 | D | Development |
 | 3 | C | Development |
-| 4 | D | Development |
-| 5 | B | Development |
+| 4 | B | Development |
+| 5 | C | Development |
 | 6 | B | Development |
 | 7 | B | Development |
-| 8 | B | Development |
+| 8 | D | Development |
 | 9 | B | Development |
 | 10 | B | Development |
-| 11 | B | Development |
-| 12 | B | Development |
-| 13 | A | Development |
+| 11 | A | Development |
+| 12 | C | Development |
+| 13 | D | Development |
 | 14 | B | Security |
-| 15 | B | Security |
-| 16 | A | Security |
-| 17 | B | Security |
-| 18 | B | Security |
-| 19 | A | Security |
-| 20 | B | Security |
-| 21 | B | Security |
-| 22 | B | Security |
-| 23 | A | Security |
+| 15 | A | Security |
+| 16 | B | Security |
+| 17 | D | Security |
+| 18 | A | Security |
+| 19 | C | Security |
+| 20 | C | Security |
+| 21 | D | Security |
+| 22 | C | Security |
+| 23 | D | Security |
 | 24 | C | Deployment |
-| 25 | C | Deployment |
-| 26 | B | Deployment |
-| 27 | B | Deployment |
+| 25 | B | Deployment |
+| 26 | A | Deployment |
+| 27 | A | Deployment |
 | 28 | A | Deployment |
-| 29 | B | Deployment |
-| 30 | A | Deployment |
+| 29 | C | Deployment |
+| 30 | C | Deployment |
 | 31 | A | Deployment |
-| 32 | A | Deployment |
-| 33 | A | Deployment |
-| 34 | B | Troubleshooting |
-| 35 | B | Troubleshooting |
-| 36 | B | Troubleshooting |
-| 37 | A | Troubleshooting |
-| 38 | C | Troubleshooting |
-| 39 | B | Troubleshooting |
+| 32 | B | Deployment |
+| 33 | B | Deployment |
+| 34 | A | Troubleshooting |
+| 35 | D | Troubleshooting |
+| 36 | D | Troubleshooting |
+| 37 | D | Troubleshooting |
+| 38 | D | Troubleshooting |
+| 39 | A | Troubleshooting |
 | 40 | B | Troubleshooting |
 
 ---

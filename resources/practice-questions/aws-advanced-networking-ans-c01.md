@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Fifty VPCs across several accounts must communicate with each other and with on-premises, with centralized routing.
 
-A. Full-mesh VPC peering
-B. AWS Transit Gateway with route tables and attachments, shared through Resource Access Manager
+A. AWS Transit Gateway with route tables and attachments, shared through Resource Access Manager
+B. Full-mesh VPC peering
 C. A VPN per VPC pair
 D. PrivateLink for everything
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Peering is non-transitive and a 50-VPC mesh needs 1,225 connections, which is unmanageable. Transit Gateway is a hub with attachment-level route tables that give you segmentation, and RAM shares it across accounts. PrivateLink exposes individual services rather than providing general routing.
 </details>
@@ -32,15 +32,15 @@ D. PrivateLink for everything
 ### Question 2
 **Scenario:** Two VPCs have overlapping CIDR blocks and one application in each must talk to the other.
 
-A. Re-address one VPC
-B. Use PrivateLink to expose the specific service, or NAT the overlapping ranges through a middlebox
+A. Use PrivateLink to expose the specific service, or NAT the overlapping ranges through a middlebox
+B. Re-address one VPC
 C. VPC peering
 D. Transit Gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Neither peering nor Transit Gateway supports overlapping CIDRs, because routing becomes ambiguous. PrivateLink sidesteps it entirely by presenting the service on an endpoint in the consumer's address space. Re-addressing works but is usually the most disruptive option.
 </details>
@@ -86,15 +86,15 @@ D. DNS
 ### Question 5
 **Scenario:** Private DNS resolution is needed between on-premises and a VPC in both directions.
 
-A. Route 53 Resolver inbound and outbound endpoints with forwarding rules
-B. Public hosted zones
-C. Host files
-D. A NAT gateway
+A. Host files
+B. A NAT gateway
+C. Public hosted zones
+D. Route 53 Resolver inbound and outbound endpoints with forwarding rules
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Inbound endpoints give on-premises resolvers an IP in the VPC to query for private zones, and outbound endpoints with rules forward VPC queries for on-premises domains to your resolvers. Both are needed for bidirectional resolution, and forgetting one is the standard hybrid DNS bug.
 </details>
@@ -105,14 +105,14 @@ D. A NAT gateway
 **Scenario:** All egress to the internet from many VPCs must be inspected centrally.
 
 A. A NAT gateway per VPC
-B. A centralized inspection VPC with AWS Network Firewall or third-party appliances, reached through Transit Gateway with appliance mode enabled
-C. Security groups
+B. Security groups
+C. A centralized inspection VPC with AWS Network Firewall or third-party appliances, reached through Transit Gateway with appliance mode enabled
 D. NACLs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Centralized inspection needs traffic steered through a hub, and appliance mode on the Transit Gateway attachment ensures both directions of a flow use the same appliance, which stateful inspection requires. Without appliance mode, asymmetric routing breaks the firewall's state table.
 </details>
@@ -122,15 +122,15 @@ D. NACLs
 ### Question 7
 **Scenario:** A Network Load Balancer must preserve the client IP for backends.
 
-A. Enable proxy protocol v2 or use target type IP or instance where client IP preservation applies
-B. Use an Application Load Balancer
-C. Use X-Forwarded-For on NLB
-D. It is impossible
+A. Use X-Forwarded-For on NLB
+B. It is impossible
+C. Use an Application Load Balancer
+D. Enable proxy protocol v2 or use target type IP or instance where client IP preservation applies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** NLB operates at layer 4, so there is no HTTP header to add: client IP preservation depends on the target type and setting, and proxy protocol carries the original addresses when preservation is not available. X-Forwarded-For is an ALB (layer 7) mechanism.
 </details>
@@ -140,10 +140,10 @@ D. It is impossible
 ### Question 8
 **Scenario:** An application must be reachable from another VPC without exposing the whole VPC.
 
-A. VPC peering
+A. Transit Gateway
 B. AWS PrivateLink: an endpoint service backed by an NLB, consumed via interface endpoints
-C. Transit Gateway
-D. A public ALB
+C. A public ALB
+D. VPC peering
 
 <details>
 <summary>Answer</summary>
@@ -159,14 +159,14 @@ D. A public ALB
 **Scenario:** A packet capture is needed for a production EC2 instance's traffic without touching the instance.
 
 A. VPC Flow Logs
-B. VPC Traffic Mirroring to a monitoring appliance
+B. A tcpdump on the instance
 C. CloudTrail
-D. A tcpdump on the instance
+D. VPC Traffic Mirroring to a monitoring appliance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Traffic Mirroring copies packets, including payload, to a target for analysis with no agent on the source. Flow Logs record metadata about flows (source, destination, ports, action) but not contents, so they answer "was it allowed" rather than "what was in it."
 </details>
@@ -176,15 +176,15 @@ D. A tcpdump on the instance
 ### Question 10
 **Scenario:** Global users need low-latency TCP access to regional endpoints with fast failover.
 
-A. Amazon CloudFront
-B. AWS Global Accelerator with static anycast IPs
-C. Route 53 latency routing alone
-D. An internet-facing NLB in one region
+A. Route 53 latency routing alone
+B. An internet-facing NLB in one region
+C. AWS Global Accelerator with static anycast IPs
+D. Amazon CloudFront
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Global Accelerator gives static anycast addresses, enters the AWS backbone at the nearest edge, and shifts traffic on health checks in seconds without waiting for DNS TTLs. CloudFront is the right answer for cacheable HTTP; DNS-based routing is slower to fail over because resolvers cache.
 </details>
@@ -194,15 +194,15 @@ D. An internet-facing NLB in one region
 ### Question 11
 **Scenario:** IPv6 must be supported for outbound-only connectivity from private subnets.
 
-A. A NAT gateway
-B. An egress-only internet gateway
-C. An internet gateway
-D. A NAT instance
+A. An egress-only internet gateway
+B. A NAT instance
+C. A NAT gateway
+D. An internet gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** IPv6 addresses are globally routable, so there is no NAT in the IPv4 sense. The egress-only internet gateway is the stateful device that allows outbound IPv6 and blocks inbound. Using a plain internet gateway would make the instances directly reachable from the internet.
 </details>
@@ -214,8 +214,8 @@ D. A NAT instance
 
 A. It is not supported
 B. Run an AWS Site-to-Site VPN over a Direct Connect public virtual interface, or use MACsec on supported connections
-C. Use a private VIF alone
-D. Rely on application TLS only
+C. Rely on application TLS only
+D. Use a private VIF alone
 
 <details>
 <summary>Answer</summary>
@@ -230,15 +230,15 @@ D. Rely on application TLS only
 ### Question 13
 **Scenario:** Flow Logs show `REJECT` for return traffic to an instance that initiated a connection.
 
-A. The security group is wrong
-B. A network ACL is blocking the ephemeral port range on the return path, because NACLs are stateless
-C. The route table is wrong
-D. DNS failure
+A. A network ACL is blocking the ephemeral port range on the return path, because NACLs are stateless
+B. DNS failure
+C. The security group is wrong
+D. The route table is wrong
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Security groups are stateful, so a permitted outbound flow returns automatically. NACLs evaluate each direction independently, so the inbound rule must allow the ephemeral port range (typically 1024-65535) for responses. This is the classic asymmetry the exam tests.
 </details>
@@ -249,14 +249,14 @@ D. DNS failure
 **Scenario:** A Transit Gateway must keep production and development traffic separated while both reach a shared services VPC.
 
 A. One route table for everything
-B. Separate Transit Gateway route tables per segment, with associations and propagations arranged so prod and dev can reach shared services but not each other
-C. Security groups only
-D. Separate Transit Gateways
+B. Separate Transit Gateways
+C. Separate Transit Gateway route tables per segment, with associations and propagations arranged so prod and dev can reach shared services but not each other
+D. Security groups only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Segmentation on a Transit Gateway comes from route table design: which attachments associate to which table, and which routes propagate into it. This is the standard shared-services pattern and it is cheaper and simpler than running multiple gateways.
 </details>
@@ -266,15 +266,15 @@ D. Separate Transit Gateways
 ### Question 15
 **Scenario:** DNS queries for an S3 VPC gateway endpoint resolve to public IPs and traffic leaves the VPC.
 
-A. Gateway endpoints work by route table prefix lists, so verify the endpoint's route is present in the subnet's route table
-B. Add an interface endpoint only
-C. Change the DNS server
-D. Use a NAT gateway
+A. Use a NAT gateway
+B. Change the DNS server
+C. Gateway endpoints work by route table prefix lists, so verify the endpoint's route is present in the subnet's route table
+D. Add an interface endpoint only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Gateway endpoints for S3 and DynamoDB work by injecting a prefix list route, not by changing DNS, so the resolved address stays public while the route keeps traffic inside AWS. Interface endpoints are the DNS-based alternative and are what you need for on-premises access over Direct Connect.
 </details>

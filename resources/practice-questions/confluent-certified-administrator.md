@@ -15,14 +15,14 @@ difficulty: intermediate
 **Scenario:** A broker fails in a cluster with replication factor 3 and `min.insync.replicas` 2.
 
 A. The cluster stops accepting writes
-B. Leadership moves to an in-sync replica and producing continues, since two in-sync replicas remain
-C. Data is lost
+B. Data is lost
+C. Leadership moves to an in-sync replica and producing continues, since two in-sync replicas remain
 D. Consumers stop
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Leader election among in-sync replicas is what makes the failure survivable. Losing a second broker would drop the partition below `min.insync.replicas`, at which point `acks=all` producers receive `NotEnoughReplicas` rather than silently accepting unreplicated writes.
 </details>
@@ -51,14 +51,14 @@ D. Kafka Connect
 **Scenario:** Partitions are unevenly distributed after adding brokers.
 
 A. New brokers take load automatically
-B. Run a partition reassignment to move replicas onto the new brokers, throttling the reassignment to protect live traffic
-C. Restart the cluster
-D. Create new topics only
+B. Restart the cluster
+C. Create new topics only
+D. Run a partition reassignment to move replicas onto the new brokers, throttling the reassignment to protect live traffic
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Adding a broker only affects new partitions, so existing load stays where it is. The throttle matters: an unthrottled reassignment saturates the network and degrades production traffic while it copies data.
 </details>
@@ -68,15 +68,15 @@ D. Create new topics only
 ### Question 4
 **Scenario:** Consumer lag is growing steadily on one consumer group.
 
-A. Add partitions
-B. Diagnose first: check whether consumers are slow, failing, rebalancing, or fewer than the partition count, then scale consumers up to at most the partition count
+A. Diagnose first: check whether consumers are slow, failing, rebalancing, or fewer than the partition count, then scale consumers up to at most the partition count
+B. Restart brokers
 C. Increase retention
-D. Restart brokers
+D. Add partitions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Lag is a symptom with several causes, and adding partitions to an already-underconsumed topic does nothing. Adding consumers beyond the partition count also does nothing, which is why partition count is a capacity planning decision made early.
 </details>
@@ -86,15 +86,15 @@ D. Restart brokers
 ### Question 5
 **Scenario:** Which metric indicates replicas falling behind their leader?
 
-A. `BytesInPerSec`
-B. `UnderReplicatedPartitions`, along with `IsrShrinksPerSec` and replica lag
-C. `RequestQueueSize`
-D. `MessagesInPerSec`
+A. `UnderReplicatedPartitions`, along with `IsrShrinksPerSec` and replica lag
+B. `BytesInPerSec`
+C. `MessagesInPerSec`
+D. `RequestQueueSize`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A sustained non-zero under-replicated count is one of the highest-signal broker alerts, because it means durability is degraded before anything has visibly failed. `OfflinePartitionsCount` above zero is the more severe version: those partitions have no leader at all.
 </details>
@@ -106,8 +106,8 @@ D. `MessagesInPerSec`
 
 A. Add disks only
 B. Review per-topic retention by time and size, plus compaction settings, and confirm segment rolling and deletion are actually occurring
-C. Delete topics
-D. Reduce replication factor
+C. Reduce replication factor
+D. Delete topics
 
 <details>
 <summary>Answer</summary>
@@ -124,8 +124,8 @@ D. Reduce replication factor
 
 A. Network isolation only
 B. TLS for encryption plus SASL for authentication (SCRAM, GSSAPI, or OAUTHBEARER), with ACLs or RBAC for authorization
-C. ACLs alone
-D. A firewall
+C. A firewall
+D. ACLs alone
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. A firewall
 ### Question 8
 **Scenario:** A specific application must be allowed to read one topic only.
 
-A. Give it cluster admin
+A. A network policy
 B. An ACL granting Read on that topic and Read on its consumer group to that principal, with `allow.everyone.if.no.acl.found` disabled
 C. A separate cluster
-D. A network policy
+D. Give it cluster admin
 
 <details>
 <summary>Answer</summary>
@@ -159,14 +159,14 @@ D. A network policy
 **Scenario:** A cluster must be replicated to a second data center for disaster recovery.
 
 A. Copy the log directories
-B. Cluster Linking or MirrorMaker 2 replicating topics, consumer groups, and offsets to the remote cluster
-C. Backups only
+B. Backups only
+C. Cluster Linking or MirrorMaker 2 replicating topics, consumer groups, and offsets to the remote cluster
 D. A shared filesystem
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Replicating offsets is what makes consumer failover viable rather than a full reprocess. Cluster Linking preserves offsets natively; MirrorMaker 2 translates them, which is why the two behave differently on cutover.
 </details>
@@ -176,15 +176,15 @@ D. A shared filesystem
 ### Question 10
 **Scenario:** A rolling broker upgrade must proceed without downtime.
 
-A. Stop all brokers and upgrade
-B. Upgrade one broker at a time, waiting for under-replicated partitions to return to zero before proceeding, and set the inter-broker protocol version deliberately
-C. Upgrade all at once
+A. Upgrade one broker at a time, waiting for under-replicated partitions to return to zero before proceeding, and set the inter-broker protocol version deliberately
+B. Upgrade all at once
+C. Stop all brokers and upgrade
 D. Upgrade clients first
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Waiting for replicas to catch up is what preserves durability during the roll; moving on early can leave partitions with too few in-sync replicas. Pinning the inter-broker protocol version until every broker is upgraded is what keeps a rollback possible.
 </details>
@@ -195,14 +195,14 @@ D. Upgrade clients first
 **Scenario:** Frequent consumer group rebalances are disrupting processing.
 
 A. Ignore them
-B. Investigate causes: consumers exceeding `max.poll.interval.ms`, unstable instances, or scaling churn; use cooperative sticky assignment and static group membership to reduce impact
+B. Disable consumer groups
 C. Reduce partitions
-D. Disable consumer groups
+D. Investigate causes: consumers exceeding `max.poll.interval.ms`, unstable instances, or scaling churn; use cooperative sticky assignment and static group membership to reduce impact
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Cooperative rebalancing avoids the stop-the-world pause of the eager protocol, and static membership with `group.instance.id` stops a rolling restart from triggering a rebalance per instance. Both reduce impact rather than removing the cause.
 </details>
@@ -212,15 +212,15 @@ D. Disable consumer groups
 ### Question 12
 **Scenario:** Which Confluent Platform component enforces schema compatibility?
 
-A. Control Center
-B. Schema Registry, storing schemas and validating new versions against the subject's compatibility mode
+A. Schema Registry, storing schemas and validating new versions against the subject's compatibility mode
+B. Control Center
 C. REST Proxy
 D. ksqlDB
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Schema Registry stores its state in a compacted Kafka topic, so it is itself a Kafka client rather than an external database. Broker-side schema validation can additionally reject records whose schema is not registered.
 </details>
@@ -231,14 +231,14 @@ D. ksqlDB
 **Scenario:** Broker request latency is high and the request queue is filling.
 
 A. Add brokers immediately
-B. Check network and I/O thread counts against utilization, disk performance, and whether a few clients are producing disproportionate load, before adding capacity
-C. Restart the cluster
+B. Restart the cluster
+C. Check network and I/O thread counts against utilization, disk performance, and whether a few clients are producing disproportionate load, before adding capacity
 D. Reduce replication
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Saturated `num.network.threads` or `num.io.threads` produce queueing that looks like a capacity problem but is a configuration one. Client quotas are the other lever, bounding a single misbehaving application's effect on everyone else.
 </details>
@@ -248,15 +248,15 @@ D. Reduce replication
 ### Question 14
 **Scenario:** A topic's partition count must increase.
 
-A. It cannot change
-B. Partitions can be added but not removed, and adding them changes key-to-partition mapping so ordering guarantees for existing keys are broken from that point
-C. Partitions can be reduced too
-D. Recreate the topic only
+A. Partitions can be reduced too
+B. Recreate the topic only
+C. Partitions can be added but not removed, and adding them changes key-to-partition mapping so ordering guarantees for existing keys are broken from that point
+D. It cannot change
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Existing data is not redistributed, so a key that used to land on partition 2 may now land on partition 5 while its history stays behind. This is why over-provisioning partitions modestly at creation is easier than growing them later.
 </details>
@@ -267,14 +267,14 @@ D. Recreate the topic only
 **Scenario:** An unclean leader election setting must be decided.
 
 A. Enable it for availability
-B. Leave `unclean.leader.election.enable` false by default, accepting unavailability rather than data loss, and enable it only where availability genuinely outranks correctness
+B. Enable it everywhere
 C. It does not matter
-D. Enable it everywhere
+D. Leave `unclean.leader.election.enable` false by default, accepting unavailability rather than data loss, and enable it only where availability genuinely outranks correctness
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** An unclean election promotes an out-of-sync replica, so acknowledged messages it never received are lost. That is a legitimate trade for some telemetry topics and unacceptable for a financial ledger, which is why it is a per-topic decision.
 </details>

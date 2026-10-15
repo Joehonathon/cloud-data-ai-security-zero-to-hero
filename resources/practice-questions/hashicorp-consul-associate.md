@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** How many Consul servers should a production datacenter run?
 
-A. One
-B. An odd number, typically 3 or 5, to form a Raft quorum
-C. As many as there are clients
-D. Two
+A. As many as there are clients
+B. One
+C. Two
+D. An odd number, typically 3 or 5, to form a Raft quorum
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Raft needs a majority to commit, so an odd count avoids wasted capacity: 3 servers tolerate 1 failure and 5 tolerate 2. Two servers tolerate zero failures and are worse than one, because losing either loses quorum.
 </details>
@@ -32,15 +32,15 @@ D. Two
 ### Question 2
 **Scenario:** What protocol does Consul use for membership and failure detection?
 
-A. Raft
-B. Gossip, based on SWIM, over the LAN and WAN pools
-C. BGP
-D. DNS
+A. DNS
+B. BGP
+C. Gossip, based on SWIM, over the LAN and WAN pools
+D. Raft
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Gossip handles membership, failure detection, and event broadcast among all agents. Raft is used separately, and only among servers, for consistency of the state store. Keeping the two straight explains why client agents scale to thousands while servers stay at 3 or 5.
 </details>
@@ -50,15 +50,15 @@ D. DNS
 ### Question 3
 **Scenario:** A service must be discoverable by name from any host in the datacenter.
 
-A. Register it with a Consul agent and query `<service>.service.consul` via DNS or the HTTP API
-B. Hard-code IP addresses
-C. Use a load balancer only
-D. Update `/etc/hosts`
+A. Use a load balancer only
+B. Register it with a Consul agent and query `<service>.service.consul` via DNS or the HTTP API
+C. Update `/etc/hosts`
+D. Hard-code IP addresses
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Registration plus the DNS interface is the core discovery loop, and only instances passing their health checks are returned. That last part is what makes discovery useful: a failed instance disappears from results without anyone editing configuration.
 </details>
@@ -68,10 +68,10 @@ D. Update `/etc/hosts`
 ### Question 4
 **Scenario:** A registered service's health check fails.
 
-A. The service is deregistered permanently
+A. Nothing changes
 B. The instance stops being returned by service discovery queries while remaining registered
 C. Consul restarts the service
-D. Nothing changes
+D. The service is deregistered permanently
 
 <details>
 <summary>Answer</summary>
@@ -86,15 +86,15 @@ D. Nothing changes
 ### Question 5
 **Scenario:** Service-to-service traffic must be encrypted and authorized by service identity.
 
-A. Consul service mesh (Connect) with sidecar proxies, mTLS, and intentions
-B. Gossip encryption
-C. TLS on the API only
-D. Firewall rules
+A. TLS on the API only
+B. Consul service mesh (Connect) with sidecar proxies, mTLS, and intentions
+C. Firewall rules
+D. Gossip encryption
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Connect issues each service an identity certificate and the sidecar enforces mTLS, while intentions define which service may call which by name rather than by IP. Gossip encryption protects agent membership traffic, which is a different channel entirely.
 </details>
@@ -106,8 +106,8 @@ D. Firewall rules
 
 A. Set the default intention to deny and add explicit allow intentions per source and destination
 B. Rely on network segmentation
-C. Set default allow
-D. Disable Connect
+C. Disable Connect
+D. Set default allow
 
 <details>
 <summary>Answer</summary>
@@ -122,15 +122,15 @@ D. Disable Connect
 ### Question 7
 **Scenario:** ACLs are enabled and an agent cannot register services.
 
-A. ACLs do not affect registration
-B. The agent needs a token with `service:write` for the service name; check the agent token and the ACL policy
-C. Restart Consul
-D. Disable ACLs
+A. Restart Consul
+B. Disable ACLs
+C. The agent needs a token with `service:write` for the service name; check the agent token and the ACL policy
+D. ACLs do not affect registration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** With ACLs enabled the default policy is deny, so every operation needs an explicitly granted token. Agent tokens, node identities, and service identities are the mechanisms that scope this, and disabling ACLs to make an error go away removes the security model.
 </details>
@@ -141,9 +141,9 @@ D. Disable ACLs
 **Scenario:** Configuration values must be shared across services and rendered into config files as they change.
 
 A. The Consul KV store with consul-template watching the keys
-B. Environment variables
-C. A shared NFS mount
-D. The catalog
+B. The catalog
+C. Environment variables
+D. A shared NFS mount
 
 <details>
 <summary>Answer</summary>
@@ -158,15 +158,15 @@ D. The catalog
 ### Question 9
 **Scenario:** Consul state must be backed up before an upgrade.
 
-A. Copy the data directory while running
-B. `consul snapshot save` to capture the Raft state, restorable with `consul snapshot restore`
-C. Export the KV store only
-D. No backup is needed
+A. No backup is needed
+B. Copy the data directory while running
+C. `consul snapshot save` to capture the Raft state, restorable with `consul snapshot restore`
+D. Export the KV store only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Snapshots capture the full Raft state including KV, catalog, ACLs, and sessions, taken consistently from the leader. Copying the data directory of a running server risks an inconsistent capture mid-write.
 </details>
@@ -176,15 +176,15 @@ D. No backup is needed
 ### Question 10
 **Scenario:** Two datacenters must share service discovery.
 
-A. WAN federation joining the server clusters, or cluster peering between them
-B. A single stretched LAN gossip pool
-C. VPN only
-D. DNS forwarding only
+A. DNS forwarding only
+B. VPN only
+C. WAN federation joining the server clusters, or cluster peering between them
+D. A single stretched LAN gossip pool
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** WAN federation joins server clusters into a shared WAN gossip pool with a primary datacenter for ACLs and CA. Cluster peering is the newer alternative that connects datacenters without a shared primary, which suits independent teams and different administrative domains.
 </details>
@@ -194,15 +194,15 @@ D. DNS forwarding only
 ### Question 11
 **Scenario:** Which gateway lets mesh services reach services in another datacenter or outside the mesh?
 
-A. Mesh gateway for cross-datacenter, terminating gateway for external services, ingress gateway for inbound
-B. Only the ingress gateway
-C. A NAT gateway
-D. An API gateway only
+A. A NAT gateway
+B. Mesh gateway for cross-datacenter, terminating gateway for external services, ingress gateway for inbound
+C. An API gateway only
+D. Only the ingress gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Each gateway type solves a distinct edge problem: mesh gateways forward mTLS traffic between datacenters without decrypting it, terminating gateways originate or terminate mTLS for services that cannot run a sidecar, and ingress gateways admit traffic into the mesh.
 </details>
@@ -212,15 +212,15 @@ D. An API gateway only
 ### Question 12
 **Scenario:** Gossip traffic must be encrypted.
 
-A. Set a `encrypt` key in the agent configuration, shared by all agents in the pool
+A. Use IPsec
 B. Enable TLS on the HTTP API only
-C. Use IPsec
-D. It is encrypted by default
+C. It is encrypted by default
+D. Set a `encrypt` key in the agent configuration, shared by all agents in the pool
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Gossip uses a shared symmetric key, distinct from the TLS configuration that protects RPC and HTTP traffic. Securing a Consul cluster means all three: gossip encryption, TLS for RPC and HTTP, and ACLs, and leaving any one out leaves a real gap.
 </details>
@@ -231,14 +231,14 @@ D. It is encrypted by default
 **Scenario:** Consul is installed on Kubernetes.
 
 A. Only by manual manifests
-B. With the official Helm chart or the Consul K8s CLI, which wire up sidecar injection and sync with Kubernetes services
-C. It does not run on Kubernetes
-D. As a DaemonSet only
+B. It does not run on Kubernetes
+C. As a DaemonSet only
+D. With the official Helm chart or the Consul K8s CLI, which wire up sidecar injection and sync with Kubernetes services
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The Helm chart deploys servers, clients or dataplanes, the connect injector webhook, and optional catalog sync. Consul Dataplane removes the per-node client agent requirement, which simplifies the Kubernetes deployment model considerably.
 </details>
@@ -248,15 +248,15 @@ D. As a DaemonSet only
 ### Question 14
 **Scenario:** A Consul server loses quorum after two of three servers fail.
 
-A. The cluster continues normally
-B. The remaining server cannot elect a leader, so writes fail while stale reads may still be served; recover by restoring servers or performing an outage recovery
-C. Data is lost immediately
-D. Clients take over
+A. The remaining server cannot elect a leader, so writes fail while stale reads may still be served; recover by restoring servers or performing an outage recovery
+B. The cluster continues normally
+C. Clients take over
+D. Data is lost immediately
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Without a majority, Raft cannot commit, so the cluster is read-degraded and write-unavailable. Recovery is either restoring the failed servers or using peers.json outage recovery to force a new configuration, which is a documented last-resort procedure.
 </details>
@@ -268,8 +268,8 @@ D. Clients take over
 
 A. A service splitter configuration entry, with service resolver subsets defining the versions
 B. DNS round robin
-C. Two service names
-D. An external load balancer
+C. An external load balancer
+D. Two service names
 
 <details>
 <summary>Answer</summary>

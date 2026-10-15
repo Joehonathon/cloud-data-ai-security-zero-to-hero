@@ -16,15 +16,15 @@ LFCS is performance-based on a live system. These reinforce which tool to reach 
 ### Question 1
 **Scenario:** A directory must let any user create files but only allow the file's owner to delete their own file.
 
-A. `chmod 777 /shared`
-B. `chmod 1777 /shared` (sticky bit)
-C. `chmod 2775 /shared` (setgid)
+A. `chmod 1777 /shared` (sticky bit)
+B. `chmod 2775 /shared` (setgid)
+C. `chmod 777 /shared`
 D. `chattr +i /shared`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The sticky bit on a directory restricts deletion and renaming to the file's owner, the directory's owner, or root. This is exactly how `/tmp` works. Plain 777 lets anyone delete anyone's file. Setgid makes new files inherit the directory's group, which is a different requirement. `chattr +i` makes something immutable.
 </details>
@@ -34,15 +34,15 @@ D. `chattr +i /shared`
 ### Question 2
 **Scenario:** A service should start automatically at boot and start now.
 
-A. `systemctl enable --now nginx`
-B. `systemctl start nginx`
-C. `systemctl status nginx`
+A. `systemctl status nginx`
+B. `systemctl enable --now nginx`
+C. `systemctl start nginx`
 D. `service nginx restart`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** `enable` creates the symlink that makes it start at boot, `start` runs it right now, and `--now` does both in one command. `start` alone does not survive a reboot, which is the classic exam trap where the grader reboots the machine.
 </details>
@@ -52,15 +52,15 @@ D. `service nginx restart`
 ### Question 3
 **Scenario:** You need to find which process is listening on TCP port 8080.
 
-A. `ps aux | grep 8080`
-B. `ss -tlnp | grep 8080`
-C. `top`
+A. `top`
+B. `ps aux | grep 8080`
+C. `ss -tlnp | grep 8080`
 D. `df -h`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** `ss` lists sockets, and `-tlnp` gives TCP, listening only, numeric ports, with the owning process (which needs root to show for other users' processes). `ps | grep` finds a port only if it happens to be on the command line. `top` shows resource use and `df` shows disk.
 </details>
@@ -70,15 +70,15 @@ D. `df -h`
 ### Question 4
 **Scenario:** A logical volume must be extended by 5 GB and its ext4 filesystem grown to match, online.
 
-A. `lvextend -L +5G /dev/vg/lv` then `resize2fs /dev/vg/lv`
-B. `fdisk` then reboot
-C. `mkfs.ext4` on the volume
-D. `pvcreate` then `mount -o remount`
+A. `pvcreate` then `mount -o remount`
+B. `lvextend -L +5G /dev/vg/lv` then `resize2fs /dev/vg/lv`
+C. `fdisk` then reboot
+D. `mkfs.ext4` on the volume
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** LVM grows the block device and the filesystem is grown separately, which is why `lvextend -r` (or `--resizefs`) exists as a shortcut. `resize2fs` handles ext2/3/4 online; XFS uses `xfs_growfs` and cannot shrink at all. `mkfs` would destroy the data.
 </details>
@@ -88,15 +88,15 @@ D. `pvcreate` then `mount -o remount`
 ### Question 5
 **Scenario:** A user should run one specific command as root without a password.
 
-A. Add them to the `wheel` group
-B. Add a sudoers rule via `visudo`: `alice ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
+A. `chmod u+s /usr/bin/systemctl`
+B. Add them to the `wheel` group
 C. Give them the root password
-D. `chmod u+s /usr/bin/systemctl`
+D. Add a sudoers rule via `visudo`: `alice ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A targeted sudoers entry grants exactly one command. Use `visudo` because it validates syntax before saving, and a broken sudoers file can lock you out. Group membership grants far more. Setting setuid on `systemctl` would let anyone control every service, which is a serious hole.
 </details>
@@ -106,15 +106,15 @@ D. `chmod u+s /usr/bin/systemctl`
 ### Question 6
 **Scenario:** A filesystem must mount automatically at boot and survive device renaming.
 
-A. Add an `/etc/fstab` entry using `UUID=`
+A. Add a `mount` command to `.bashrc`
 B. Add an `/etc/fstab` entry using `/dev/sdb1`
-C. Add a `mount` command to `.bashrc`
-D. Mount it manually after each boot
+C. Mount it manually after each boot
+D. Add an `/etc/fstab` entry using `UUID=`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Device names such as `/dev/sdb1` can change when hardware is added or the kernel enumerates differently, so UUID (or LABEL) is the stable identifier. Always test with `mount -a` before rebooting, because a bad fstab entry can drop the system into emergency mode.
 </details>
@@ -125,9 +125,9 @@ D. Mount it manually after each boot
 **Scenario:** You need the last 50 lines of the systemd journal for a unit, following new output.
 
 A. `journalctl -u nginx -n 50 -f`
-B. `tail -f /var/log/messages`
-C. `dmesg`
-D. `systemctl status nginx`
+B. `dmesg`
+C. `systemctl status nginx`
+D. `tail -f /var/log/messages`
 
 <details>
 <summary>Answer</summary>
@@ -160,15 +160,15 @@ D. `tr old new < file.conf`
 ### Question 9
 **Scenario:** SSH password authentication must be disabled so only keys work.
 
-A. Set `PasswordAuthentication no` in `/etc/ssh/sshd_config` and reload sshd
+A. Set `PermitRootLogin no`
 B. Delete all user passwords
-C. Change the SSH port
-D. Set `PermitRootLogin no`
+C. Set `PasswordAuthentication no` in `/etc/ssh/sshd_config` and reload sshd
+D. Change the SSH port
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** That directive is the control, and the change takes effect on `systemctl reload sshd`. Confirm you can log in with a key from a second session before closing the first, because locking yourself out of a remote box is unrecoverable without console access. Changing the port is obscurity, and `PermitRootLogin` covers only root.
 </details>
@@ -178,17 +178,17 @@ D. Set `PermitRootLogin no`
 ### Question 10
 **Scenario:** A job must run at 02:30 every weekday.
 
-A. `30 2 * * 1-5` in a crontab
-B. `2 30 * * 1-5`
-C. `30 2 * * 0-4`
-D. `* * 2 30 1-5`
+A. `* * 2 30 1-5`
+B. `30 2 * * 0-4`
+C. `30 2 * * 1-5` in a crontab
+D. `2 30 * * 1-5`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
-**Why:** Cron fields are minute, hour, day of month, month, day of week, in that order, so 02:30 is `30 2`. Day of week runs 0-7 with both 0 and 7 meaning Sunday, so Monday to Friday is `1-5`. Option C would be Sunday to Thursday.
+**Why:** Cron fields are minute, hour, day of month, month, day of week, in that order, so 02:30 is `30 2`. Day of week runs 0-7 with both 0 and 7 meaning Sunday, so Monday to Friday is `1-5`. Option B would be Sunday to Thursday.
 </details>
 
 ---
@@ -196,15 +196,15 @@ D. `* * 2 30 1-5`
 ### Question 11
 **Scenario:** A process is consuming CPU and must be stopped gracefully first, forcibly only if it ignores that.
 
-A. `kill -9` immediately
-B. `kill <pid>` (SIGTERM), then `kill -9 <pid>` if it does not exit
-C. `kill -HUP <pid>`
-D. `renice`
+A. `renice`
+B. `kill -HUP <pid>`
+C. `kill -9` immediately
+D. `kill <pid>` (SIGTERM), then `kill -9 <pid>` if it does not exit
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** SIGTERM is catchable, so the process can flush buffers and clean up. SIGKILL cannot be caught and risks corrupt state or orphaned files, so it is the escalation, not the opener. SIGHUP usually means "reload config" for daemons. `renice` changes priority without stopping anything.
 </details>
@@ -214,10 +214,10 @@ D. `renice`
 ### Question 12
 **Scenario:** A firewall must permit inbound HTTPS permanently on a firewalld system.
 
-A. `firewall-cmd --add-service=https` only
+A. `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
 B. `firewall-cmd --permanent --add-service=https` then `firewall-cmd --reload`
-C. `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
-D. `systemctl stop firewalld`
+C. `systemctl stop firewalld`
+D. `firewall-cmd --add-service=https` only
 
 <details>
 <summary>Answer</summary>
@@ -233,9 +233,9 @@ D. `systemctl stop firewalld`
 **Scenario:** You must give a group read and write access to a directory tree without changing individual ownership everywhere.
 
 A. `chgrp -R devs /srv/app && chmod -R g+rw /srv/app && chmod g+s /srv/app`
-B. `chmod -R 777 /srv/app`
+B. `umask 000`
 C. `chown -R root /srv/app`
-D. `umask 000`
+D. `chmod -R 777 /srv/app`
 
 <details>
 <summary>Answer</summary>
@@ -250,15 +250,15 @@ D. `umask 000`
 ### Question 14
 **Scenario:** The system boots but one service failed. You need a list of failed units.
 
-A. `systemctl --failed`
-B. `systemctl list-units --all`
-C. `ls /etc/systemd/system`
-D. `journalctl -b`
+A. `journalctl -b`
+B. `ls /etc/systemd/system`
+C. `systemctl --failed`
+D. `systemctl list-units --all`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** `systemctl --failed` gives exactly the failed units in one line each, which is the fastest first step. `journalctl -b` shows the whole boot log and is the natural follow-up once you know which unit to investigate. Listing all units or the unit directory buries the signal.
 </details>
@@ -268,15 +268,15 @@ D. `journalctl -b`
 ### Question 15
 **Scenario:** An NFS export must be available to a subnet with read and write access.
 
-A. Add `/srv/share 10.0.0.0/24(rw,sync,no_subtree_check)` to `/etc/exports` and run `exportfs -ra`
-B. Add it to `/etc/fstab`
+A. `chmod 777 /srv/share`
+B. Add `/srv/share 10.0.0.0/24(rw,sync,no_subtree_check)` to `/etc/exports` and run `exportfs -ra`
 C. Start Samba
-D. `chmod 777 /srv/share`
+D. Add it to `/etc/fstab`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** `/etc/exports` defines what the server offers and to whom, and `exportfs -ra` re-reads it without a restart. `/etc/fstab` is the client side. Samba is SMB rather than NFS. Loosening permissions does not export anything, and the firewall plus `nfs-server` service still need to be in place.
 </details>

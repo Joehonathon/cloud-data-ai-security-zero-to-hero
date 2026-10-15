@@ -14,10 +14,10 @@ difficulty: beginner
 ### Question 1
 **Scenario:** Which OSI layer does a router operate at?
 
-A. Layer 2, data link
+A. Layer 4, transport
 B. Layer 3, network
-C. Layer 4, transport
-D. Layer 7, application
+C. Layer 7, application
+D. Layer 2, data link
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Layer 7, application
 ### Question 2
 **Scenario:** A host has IP 192.168.10.50 with mask 255.255.255.0.
 
-A. The network is 192.168.10.0/24 with 254 usable host addresses
-B. The network is 192.168.0.0/16
-C. There are 256 usable hosts
-D. The mask is invalid
+A. The mask is invalid
+B. The network is 192.168.10.0/24 with 254 usable host addresses
+C. The network is 192.168.0.0/16
+D. There are 256 usable hosts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** 255.255.255.0 is /24, leaving 8 host bits: 256 addresses minus the network and broadcast addresses gives 254 usable. Subnetting arithmetic appears throughout the exam, so practice converting between dotted-decimal masks and CIDR notation fluently.
 </details>
@@ -51,14 +51,14 @@ D. The mask is invalid
 **Scenario:** TCP versus UDP.
 
 A. They are interchangeable
-B. TCP is connection-oriented with acknowledgment, ordering, and retransmission; UDP is connectionless with lower overhead and no delivery guarantee
-C. UDP is more reliable
-D. TCP has no ordering
+B. UDP is more reliable
+C. TCP has no ordering
+D. TCP is connection-oriented with acknowledgment, ordering, and retransmission; UDP is connectionless with lower overhead and no delivery guarantee
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** UDP suits real-time traffic where a late packet is worse than a lost one: voice, video, DNS queries. TCP's three-way handshake (SYN, SYN-ACK, ACK) is a frequent exam item, as is the port list that goes with each protocol.
 </details>
@@ -68,15 +68,15 @@ D. TCP has no ordering
 ### Question 4
 **Scenario:** A workstation gets a 169.254.x.x address.
 
-A. It has a valid static address
-B. APIPA: it failed to reach a DHCP server, so check DHCP availability, the relay agent, and layer 2 connectivity
-C. It is on the internet
-D. It has a public IP
+A. It has a public IP
+B. It has a valid static address
+C. APIPA: it failed to reach a DHCP server, so check DHCP availability, the relay agent, and layer 2 connectivity
+D. It is on the internet
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** An APIPA address is a self-assigned link-local fallback and a direct symptom of DHCP failure. Because DHCP uses broadcasts, a client on a different subnet from the server needs a relay agent (IP helper), which is the usual cause when one VLAN works and another does not.
 </details>
@@ -86,17 +86,17 @@ D. It has a public IP
 ### Question 5
 **Scenario:** Which DNS record maps a hostname to an IPv4 address?
 
-A. A record
-B. AAAA record
-C. CNAME
-D. MX
+A. MX
+B. CNAME
+C. A record
+D. AAAA record
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
-**Why:** A is IPv4, AAAA is IPv6, CNAME is an alias to another name, MX routes mail, PTR does reverse lookup, and TXT holds arbitrary text used for SPF and domain verification. Record-type identification is reliably on the exam.
+**Why:** C is IPv4, AAAA is IPv6, CNAME is an alias to another name, MX routes mail, PTR does reverse lookup, and TXT holds arbitrary text used for SPF and domain verification. Record-type identification is reliably on the exam.
 </details>
 
 ---
@@ -104,15 +104,15 @@ D. MX
 ### Question 6
 **Scenario:** VLANs are configured and two hosts in different VLANs cannot communicate.
 
-A. That is expected; inter-VLAN routing requires a layer 3 device
-B. VLANs are broken
-C. Add more switches
-D. Change the cable
+A. Change the cable
+B. That is expected; inter-VLAN routing requires a layer 3 device
+C. VLANs are broken
+D. Add more switches
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** VLANs create separate broadcast domains by design, so traffic between them must be routed. A router-on-a-stick uses a trunk with subinterfaces; a layer 3 switch does it with switched virtual interfaces. Trunk ports carry tagged frames (802.1Q); access ports carry one untagged VLAN.
 </details>
@@ -122,15 +122,15 @@ D. Change the cable
 ### Question 7
 **Scenario:** Which topology change prevents switching loops?
 
-A. Adding more links
-B. Spanning Tree Protocol, which blocks redundant paths while keeping them available for failover
-C. Removing all redundancy
-D. Increasing bandwidth
+A. Increasing bandwidth
+B. Removing all redundancy
+C. Adding more links
+D. Spanning Tree Protocol, which blocks redundant paths while keeping them available for failover
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Without STP, redundant layer 2 links create broadcast storms because frames have no TTL to expire them. STP keeps the redundancy for failover while logically blocking the loop. The symptom is a network that becomes unusable after adding a switch link.
 </details>
@@ -140,15 +140,15 @@ D. Increasing bandwidth
 ### Question 8
 **Scenario:** A user reports slow performance. What is the first troubleshooting step?
 
-A. Reboot the server
-B. Identify the problem: gather information, question the user, and determine what changed
-C. Replace hardware
+A. Identify the problem: gather information, question the user, and determine what changed
+B. Replace hardware
+C. Reboot the server
 D. Escalate immediately
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The methodology is examinable in order: identify the problem, establish a theory, test it, establish a plan, implement, verify full functionality, and document. "What changed recently" resolves a large share of real incidents before any tool is opened.
 </details>
@@ -158,15 +158,15 @@ D. Escalate immediately
 ### Question 9
 **Scenario:** Which command traces the path a packet takes to a destination?
 
-A. `ping`
-B. `traceroute` / `tracert`
-C. `ipconfig`
+A. `traceroute` / `tracert`
+B. `ipconfig`
+C. `ping`
 D. `netstat`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Traceroute reveals where a path breaks by incrementing TTL and recording each responding hop. `ping` tests reachability, `netstat` shows connections and listening ports, and `nslookup` or `dig` test name resolution specifically.
 </details>
@@ -176,15 +176,15 @@ D. `netstat`
 ### Question 10
 **Scenario:** Cable choice for a 100-metre run in an environment with heavy electrical interference.
 
-A. Unshielded twisted pair
-B. Fiber optic, which is immune to electromagnetic interference
+A. Fiber optic, which is immune to electromagnetic interference
+B. Any cable
 C. Coaxial
-D. Any cable
+D. Unshielded twisted pair
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Fiber is immune to EMI and exceeds copper's 100-metre limit. Shielded twisted pair is the copper mitigation when fiber is not practical. Single-mode fiber goes farther than multimode; multimode is cheaper for short runs.
 </details>
@@ -194,10 +194,10 @@ D. Any cable
 ### Question 11
 **Scenario:** Which addresses are reserved for private use?
 
-A. 8.8.8.8
+A. 169.254.0.0/16
 B. 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16
 C. 1.1.1.1
-D. 169.254.0.0/16
+D. 8.8.8.8
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. 169.254.0.0/16
 ### Question 12
 **Scenario:** A wireless network must authenticate users against a central directory rather than a shared passphrase.
 
-A. WPA3-Personal
-B. WPA2 or WPA3-Enterprise with 802.1X and a RADIUS server
-C. WEP
-D. An open network with a captive portal
+A. WPA2 or WPA3-Enterprise with 802.1X and a RADIUS server
+B. WPA3-Personal
+C. An open network with a captive portal
+D. WEP
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Enterprise mode gives per-user credentials, so removing one user does not require rotating a shared key. Personal mode uses a pre-shared key. WEP is broken and should never appear in a correct answer.
 </details>
@@ -230,15 +230,15 @@ D. An open network with a captive portal
 ### Question 13
 **Scenario:** Which device operates at layer 7 and can inspect application content?
 
-A. A layer 2 switch
-B. A next-generation firewall or application-layer proxy
-C. A hub
-D. A media converter
+A. A media converter
+B. A layer 2 switch
+C. A next-generation firewall or application-layer proxy
+D. A hub
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Traditional firewalls filter on IP, port, and protocol; next-generation firewalls add application awareness, user identity, and intrusion prevention. A load balancer can also operate at layer 7, routing by URL path or hostname.
 </details>
@@ -249,14 +249,14 @@ D. A media converter
 **Scenario:** Network documentation must support future troubleshooting.
 
 A. Nothing is needed
-B. Physical and logical diagrams, an IP address plan, rack and cable labeling, configuration backups, and a change log
-C. Diagrams alone
-D. A single spreadsheet of IPs
+B. A single spreadsheet of IPs
+C. Physical and logical diagrams, an IP address plan, rack and cable labeling, configuration backups, and a change log
+D. Diagrams alone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The distinction the exam draws is physical (where cables and devices are) versus logical (how traffic flows, VLANs, subnets, routing). Configuration backups are what turn a failed device into a swap rather than a rebuild.
 </details>
@@ -267,14 +267,14 @@ D. A single spreadsheet of IPs
 **Scenario:** High availability is required for the default gateway.
 
 A. Two gateways with manual failover
-B. A first-hop redundancy protocol such as HSRP or VRRP presenting a virtual IP
-C. A second internet link
-D. More bandwidth
+B. A second internet link
+C. More bandwidth
+D. A first-hop redundancy protocol such as HSRP or VRRP presenting a virtual IP
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** FHRPs let two routers share a virtual IP and MAC so clients never change their gateway setting on failover. Pair it with redundant links and link aggregation (LACP) for a design with no single point of failure at the edge.
 </details>

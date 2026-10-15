@@ -16,15 +16,15 @@ PAS-C01 has been retired by AWS. The architectural content remains applicable to
 ### Question 1
 **Scenario:** An SAP HANA production database must run on AWS with vendor support.
 
-A. Any EC2 instance type
-B. An SAP-certified instance type from the certified list, meeting the required CPU-to-memory ratio and storage KPIs
-C. A container
-D. Lambda
+A. An SAP-certified instance type from the certified list, meeting the required CPU-to-memory ratio and storage KPIs
+B. Lambda
+C. Any EC2 instance type
+D. A container
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SAP only supports HANA on certified configurations, so the instance family, size, and storage layout all come from the certification list rather than from general sizing intuition. Running on an uncertified type puts you outside support, which is usually a contractual problem before it is a technical one.
 </details>
@@ -34,15 +34,15 @@ D. Lambda
 ### Question 2
 **Scenario:** HANA data and log volumes must meet SAP's storage KPIs.
 
-A. gp2 volumes sized by capacity
-B. io2 or gp3 volumes provisioned to meet the throughput and latency KPIs, with separate volumes for data, log, and shared
-C. Instance store only
-D. EFS for everything
+A. EFS for everything
+B. gp2 volumes sized by capacity
+C. io2 or gp3 volumes provisioned to meet the throughput and latency KPIs, with separate volumes for data, log, and shared
+D. Instance store only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** HANA's log writes are latency-sensitive and its data volume is throughput-sensitive, so the volumes are sized against IOPS and MB/s targets rather than capacity alone. Separating data, log, and shared volumes is part of the certified layout, and HCMT is the tool that validates it.
 </details>
@@ -52,15 +52,15 @@ D. EFS for everything
 ### Question 3
 **Scenario:** SAP application servers must fail over across Availability Zones with minimal downtime.
 
-A. A single instance with backups
-B. An HA cluster (for example SUSE or Red Hat pacemaker) across two AZs with an overlay IP and a shared file system
+A. An HA cluster (for example SUSE or Red Hat pacemaker) across two AZs with an overlay IP and a shared file system
+B. A single instance with backups
 C. Manual restart
 D. Auto Scaling of the ASCS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The ASCS and ERS instances are the single points of failure, so they run in a cluster with an overlay IP routed by a route table update on failover. Auto Scaling does not apply because these are stateful, licensed singleton components rather than interchangeable replicas.
 </details>
@@ -70,15 +70,15 @@ D. Auto Scaling of the ASCS
 ### Question 4
 **Scenario:** A shared file system is needed for `/sapmnt` across application servers.
 
-A. Amazon EFS or Amazon FSx for NetApp ONTAP, mounted across AZs
-B. EBS attached to one instance
-C. S3 mounted as a filesystem
+A. S3 mounted as a filesystem
+B. Amazon EFS or Amazon FSx for NetApp ONTAP, mounted across AZs
+C. EBS attached to one instance
 D. Local disk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** `/sapmnt` and the transport directory need concurrent POSIX access from many hosts, which EFS and FSx provide across AZs. EBS is single-attach for this purpose, and S3 is object storage without the file semantics SAP expects.
 </details>
@@ -89,14 +89,14 @@ D. Local disk
 **Scenario:** A migration from on-premises SAP ECC to AWS must minimize downtime for a 20 TB database.
 
 A. Offline export and import
-B. A near-zero-downtime approach: database replication or backup and restore with log shipping, cut over during a short window
-C. Copy the VM image
+B. Copy the VM image
+C. A near-zero-downtime approach: database replication or backup and restore with log shipping, cut over during a short window
 D. Rebuild and re-enter data
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Keeping the source running while the target catches up through replication is what compresses the downtime window from days to hours. Classic heterogeneous migration with export and import is still used when a platform change is required, and the parallel export and import options are what make it tolerable.
 </details>
@@ -107,14 +107,14 @@ D. Rebuild and re-enter data
 **Scenario:** HANA must be protected against an AZ failure with an RPO near zero.
 
 A. Backups to S3 only
-B. HANA System Replication in synchronous mode to a secondary in another AZ
+B. EBS snapshots hourly
 C. Asynchronous replication to another region only
-D. EBS snapshots hourly
+D. HANA System Replication in synchronous mode to a secondary in another AZ
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Synchronous HSR acknowledges commits only after the secondary has the log, so RPO is effectively zero at the cost of some commit latency across AZs. Asynchronous replication to a distant region is the DR tier, where a larger RPO is accepted in exchange for distance.
 </details>
@@ -125,9 +125,9 @@ D. EBS snapshots hourly
 **Scenario:** SAP backups must be stored durably and restorable quickly.
 
 A. Backint-integrated backup to S3, with lifecycle rules for older backups
-B. Backups to local EBS only
+B. No backups, replication is enough
 C. Tape
-D. No backups, replication is enough
+D. Backups to local EBS only
 
 <details>
 <summary>Answer</summary>
@@ -143,14 +143,14 @@ D. No backups, replication is enough
 **Scenario:** Non-production SAP systems must reduce cost outside business hours.
 
 A. Terminate them
-B. Schedule stop and start of the instances (for example with Systems Manager or the AWS instance scheduler), keeping EBS volumes
-C. Reduce the database size
-D. Use spot instances
+B. Reduce the database size
+C. Use spot instances
+D. Schedule stop and start of the instances (for example with Systems Manager or the AWS instance scheduler), keeping EBS volumes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Stopping instances stops compute charges while EBS persists, which suits development and QA systems used only in working hours. Spot is not appropriate for SAP because an interruption to a stateful, licensed system is disruptive and slow to recover.
 </details>
@@ -160,15 +160,15 @@ D. Use spot instances
 ### Question 9
 **Scenario:** Which service provides SAP-aware operational visibility on AWS?
 
-A. AWS Systems Manager for SAP, with AWS Launch Wizard for deployment
-B. CloudFront
-C. Amazon Inspector
-D. AWS Glue
+A. Amazon Inspector
+B. AWS Systems Manager for SAP, with AWS Launch Wizard for deployment
+C. AWS Glue
+D. CloudFront
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Launch Wizard deploys certified SAP architectures with the right instance and storage layout, and Systems Manager for SAP provides discovery, backup integration, and operational actions that understand SAP components rather than just EC2 instances.
 </details>
@@ -178,15 +178,15 @@ D. AWS Glue
 ### Question 10
 **Scenario:** Network latency between application servers and HANA must be minimized.
 
-A. Spread them across regions
-B. Place them in the same AZ, and use a cluster placement group where the instance types support it
-C. Use a NAT gateway
-D. Route through Transit Gateway
+A. Route through Transit Gateway
+B. Use a NAT gateway
+C. Place them in the same AZ, and use a cluster placement group where the instance types support it
+D. Spread them across regions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** SAP application-to-database traffic is chatty and latency-sensitive, so same-AZ placement is the standard design, with HA achieved by a second AZ pair rather than by splitting a single system. Cross-region separation of app and database is not a supported design.
 </details>
@@ -196,10 +196,10 @@ D. Route through Transit Gateway
 ### Question 11
 **Scenario:** SAP systems must be reachable from the corporate network only.
 
-A. Public subnets with security groups
+A. An internet-facing load balancer
 B. Private subnets, reached over Direct Connect or VPN, with no internet-facing endpoints for SAP components
-C. An internet-facing load balancer
-D. Public IPs with an allowlist
+C. Public IPs with an allowlist
+D. Public subnets with security groups
 
 <details>
 <summary>Answer</summary>
@@ -215,8 +215,8 @@ D. Public IPs with an allowlist
 **Scenario:** SAP data must be encrypted at rest with organizational key control.
 
 A. EBS and S3 encryption with KMS customer managed keys, plus HANA data volume encryption
-B. No encryption needed on a private network
-C. Application-level only
+B. Application-level only
+C. No encryption needed on a private network
 D. Encrypt backups only
 
 <details>
@@ -232,15 +232,15 @@ D. Encrypt backups only
 ### Question 13
 **Scenario:** Right-sizing an SAP landscape after migration.
 
-A. Keep on-premises sizing permanently
-B. Use SAP sizing outputs (SAPS requirements) plus observed CloudWatch and HANA metrics to resize, then consider Savings Plans or Reserved Instances for the steady state
-C. Always use the largest instance
-D. Guess
+A. Guess
+B. Always use the largest instance
+C. Use SAP sizing outputs (SAPS requirements) plus observed CloudWatch and HANA metrics to resize, then consider Savings Plans or Reserved Instances for the steady state
+D. Keep on-premises sizing permanently
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** On-premises sizing usually embeds years of growth headroom bought up front, which is exactly the cost the cloud lets you release. Resize based on measured utilization first, then commit to the resulting steady state to capture the discount.
 </details>
@@ -250,15 +250,15 @@ D. Guess
 ### Question 14
 **Scenario:** A DR region must be maintained cost-effectively for SAP.
 
-A. A full-size duplicate landscape running permanently
-B. Pilot light: replicate data continuously, keep minimal resources running, and scale up on failover using automation
+A. No DR
+B. A full-size duplicate landscape running permanently
 C. Backups only, with rebuild from scratch
-D. No DR
+D. Pilot light: replicate data continuously, keep minimal resources running, and scale up on failover using automation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Pilot light matches most SAP DR requirements: HANA System Replication keeps the data current while the application tier stays small or stopped until needed. The critical part is that the scale-up is automated and rehearsed, otherwise the RTO is fictional.
 </details>
@@ -268,10 +268,10 @@ D. No DR
 ### Question 15
 **Scenario:** SAP licensing and support obligations on AWS.
 
-A. AWS provides SAP licenses
+A. No licenses are required in the cloud
 B. You bring your own SAP licenses; AWS provides the certified infrastructure, and support is shared between SAP, AWS, and the operating system vendor
-C. No licenses are required in the cloud
-D. Licenses are per-region
+C. Licenses are per-region
+D. AWS provides SAP licenses
 
 <details>
 <summary>Answer</summary>

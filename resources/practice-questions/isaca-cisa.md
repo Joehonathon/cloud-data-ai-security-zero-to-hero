@@ -18,8 +18,8 @@ CISA questions reward the auditor's mindset. The correct answer is usually the o
 
 A. Fix it immediately
 B. Document the finding with evidence, assess its risk, discuss it with management, and report it
-C. Report it to the regulator first
-D. Ignore it if it is minor
+C. Ignore it if it is minor
+D. Report it to the regulator first
 
 <details>
 <summary>Answer</summary>
@@ -34,15 +34,15 @@ D. Ignore it if it is minor
 ### Question 2
 **Scenario:** What is the FIRST step in planning an audit?
 
-A. Select the sample
-B. Understand the business and its risks, then define scope and objectives based on a risk assessment
-C. Test controls
-D. Write the report
+A. Understand the business and its risks, then define scope and objectives based on a risk assessment
+B. Test controls
+C. Write the report
+D. Select the sample
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Risk-based planning is what directs limited audit effort toward what matters. CISA questions asking for the FIRST step almost always want the understanding-and-planning answer rather than a testing activity.
 </details>
@@ -52,15 +52,15 @@ D. Write the report
 ### Question 3
 **Scenario:** Which evidence is most reliable?
 
-A. A verbal statement from the system owner
-B. Evidence obtained directly by the auditor from an independent external source
+A. Evidence obtained directly by the auditor from an independent external source
+B. A policy document
 C. An internal report provided by the auditee
-D. A policy document
+D. A verbal statement from the system owner
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Reliability rises with auditor-obtained, external, and objective evidence, and falls with auditee-provided, internal, and verbal evidence. A policy document shows what should happen, not what did, which makes it evidence of design rather than of operation.
 </details>
@@ -71,14 +71,14 @@ D. A policy document
 **Scenario:** An auditor must test whether a control operated throughout the year, not just today.
 
 A. An inquiry
-B. A test of operating effectiveness over a sample of the period, using attribute sampling with a defined confidence level
+B. A walkthrough
 C. Observation on one day
-D. A walkthrough
+D. A test of operating effectiveness over a sample of the period, using attribute sampling with a defined confidence level
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A walkthrough tests design, sampling across the period tests operation. Sample size follows from the population, tolerable deviation rate, and confidence level, which is why the statistical basis matters rather than picking a round number.
 </details>
@@ -88,10 +88,10 @@ D. A walkthrough
 ### Question 5
 **Scenario:** Segregation of duties cannot be achieved in a small IT team.
 
-A. Accept the risk silently
+A. Hire more staff
 B. Recommend compensating controls: supervisory review, detailed logging with independent log review, and reconciliation
-C. Hire more staff
-D. Report it as a critical failure with no alternative
+C. Report it as a critical failure with no alternative
+D. Accept the risk silently
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Report it as a critical failure with no alternative
 ### Question 6
 **Scenario:** Which control type is a detective control?
 
-A. An access control list
+A. Encryption
 B. Log review and reconciliation, which identify problems after they occur
-C. Encryption
-D. Segregation of duties
+C. Segregation of duties
+D. An access control list
 
 <details>
 <summary>Answer</summary>
@@ -125,14 +125,14 @@ D. Segregation of duties
 **Scenario:** A change was moved to production without approval.
 
 A. A minor issue
-B. A control failure in change management; assess whether it is isolated or systemic by testing a sample of other changes
-C. Reverse the change
+B. Reverse the change
+C. A control failure in change management; assess whether it is isolated or systemic by testing a sample of other changes
 D. Ignore it if the change worked
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A single exception may be an anomaly or the visible part of a broken process, and the difference determines the finding's severity. Expanding the sample to establish which is the auditor's next action, not remediation.
 </details>
@@ -142,15 +142,15 @@ D. Ignore it if the change worked
 ### Question 8
 **Scenario:** A business continuity plan exists but has never been tested.
 
-A. It is adequate
-B. An untested plan provides limited assurance; recommend testing appropriate to criticality, from walkthrough to full interruption test
-C. Testing is optional
-D. Rewrite the plan
+A. Rewrite the plan
+B. Testing is optional
+C. An untested plan provides limited assurance; recommend testing appropriate to criticality, from walkthrough to full interruption test
+D. It is adequate
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Testing is what turns a document into a capability, and it is where unrecorded dependencies surface. The test type escalates with criticality: checklist, walkthrough, simulation, parallel, then full interruption.
 </details>
@@ -160,15 +160,15 @@ D. Rewrite the plan
 ### Question 9
 **Scenario:** Which metric defines the maximum acceptable data loss?
 
-A. RTO
-B. RPO, the recovery point objective
-C. MTD
+A. RPO, the recovery point objective
+B. MTD
+C. RTO
 D. MTBF
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** RPO is measured backwards from the incident and drives backup and replication frequency; RTO is measured forwards and drives recovery capability. The maximum tolerable downtime bounds the RTO, and the two are frequently confused in exam wording.
 </details>
@@ -178,15 +178,15 @@ D. MTBF
 ### Question 10
 **Scenario:** An auditor is asked to audit a system they helped design last year.
 
-A. Proceed as normal
-B. Disclose the impairment to independence and have someone else perform that portion of the audit
-C. Decline all work with that client
-D. Note it in the report only
+A. Decline all work with that client
+B. Note it in the report only
+C. Proceed as normal
+D. Disclose the impairment to independence and have someone else perform that portion of the audit
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Independence in both fact and appearance is the profession's foundation, and self-review is the classic impairment. Disclosure plus reassignment is the standard remedy under the ISACA code of professional ethics.
 </details>
@@ -196,15 +196,15 @@ D. Note it in the report only
 ### Question 11
 **Scenario:** Sampling finds 3 exceptions in a sample of 60 from a population of 6,000.
 
-A. Conclude there are exactly 300 exceptions
-B. Project the deviation rate to the population, compare it against the tolerable rate, and consider extending testing before concluding
-C. Ignore the exceptions
-D. Test the whole population
+A. Test the whole population
+B. Conclude there are exactly 300 exceptions
+C. Project the deviation rate to the population, compare it against the tolerable rate, and consider extending testing before concluding
+D. Ignore the exceptions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A sample supports an inference with a confidence interval, not a point count. Whether the projected rate exceeds the tolerable rate is what decides the conclusion, and exceptions also warrant asking whether they share a root cause.
 </details>
@@ -214,10 +214,10 @@ D. Test the whole population
 ### Question 12
 **Scenario:** An organization outsources payroll processing to a third party.
 
-A. Risk transfers entirely to the provider
+A. Audit the provider directly always
 B. Accountability remains with the organization; obtain assurance through a service auditor's report such as SOC 1 or SOC 2 and review complementary user entity controls
-C. No audit is required
-D. Audit the provider directly always
+C. Risk transfers entirely to the provider
+D. No audit is required
 
 <details>
 <summary>Answer</summary>
@@ -232,15 +232,15 @@ D. Audit the provider directly always
 ### Question 13
 **Scenario:** Which control best addresses the risk of privileged account misuse?
 
-A. Password complexity
-B. Privileged access management with checkout, session recording, and independent review of privileged activity
-C. Annual access reviews
-D. Account lockout
+A. Privileged access management with checkout, session recording, and independent review of privileged activity
+B. Password complexity
+C. Account lockout
+D. Annual access reviews
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Privileged users can often alter the very logs that would show misuse, which is why independent review and tamper-resistant recording matter more than credential strength. Annual reviews are too infrequent to be the primary control here.
 </details>
@@ -251,14 +251,14 @@ D. Account lockout
 **Scenario:** An audit report finding is disputed by management.
 
 A. Remove the finding
-B. Re-examine the evidence; if the finding stands, report it with management's response included
-C. Escalate to the board immediately
+B. Escalate to the board immediately
+C. Re-examine the evidence; if the finding stands, report it with management's response included
 D. Soften the wording
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Including management's response is standard practice and lets the reader weigh both positions. Removing or softening a supported finding compromises the audit's integrity, while immediate escalation skips a legitimate step in the process.
 </details>
@@ -269,14 +269,14 @@ D. Soften the wording
 **Scenario:** Which is the strongest evidence that a data center's physical access control works?
 
 A. The policy document
-B. Observation combined with testing the access log against the authorized personnel list for the period
+B. A photograph of the badge reader
 C. An interview with the facilities manager
-D. A photograph of the badge reader
+D. Observation combined with testing the access log against the authorized personnel list for the period
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Reconciling actual entries against authorization tests operation over time, while observation confirms the control exists as described. Comparing the two also catches badges belonging to leavers, which is the usual finding.
 </details>

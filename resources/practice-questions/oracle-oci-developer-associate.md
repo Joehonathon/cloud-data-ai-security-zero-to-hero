@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** OCI Functions is based on which open source project?
 
-A. Knative
+A. Kubeless
 B. Fn Project
-C. OpenFaaS
-D. Kubeless
+C. Knative
+D. OpenFaaS
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Kubeless
 ### Question 2
 **Scenario:** A function must access an Object Storage bucket without stored credentials.
 
-A. An API key in the function code
-B. Resource principals: a dynamic group matching the function and a policy granting that group access
-C. A public bucket
-D. A username and password
+A. Resource principals: a dynamic group matching the function and a policy granting that group access
+B. A username and password
+C. An API key in the function code
+D. A public bucket
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Resource principals are the serverless equivalent of instance principals: the function authenticates as itself using a token the platform supplies. Any credential embedded in the image is visible to anyone who can pull it from the registry.
 </details>
@@ -52,8 +52,8 @@ D. A username and password
 
 A. Poll the bucket
 B. An Events rule matching the object create event, with the function as the action
-C. A scheduled job
-D. A webhook from the client
+C. A webhook from the client
+D. A scheduled job
 
 <details>
 <summary>Answer</summary>
@@ -68,15 +68,15 @@ D. A webhook from the client
 ### Question 4
 **Scenario:** Container images must be stored privately for OKE to pull.
 
-A. Docker Hub public
-B. OCI Container Registry (OCIR), with an image pull secret or the appropriate policy for the cluster
-C. A file server
-D. Local build only
+A. A file server
+B. Local build only
+C. OCI Container Registry (OCIR), with an image pull secret or the appropriate policy for the cluster
+D. Docker Hub public
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** OCIR is the private registry integrated with OCI IAM, so access follows compartment policy. The practical detail is authentication: OCIR uses an auth token rather than your console password for docker login.
 </details>
@@ -86,9 +86,9 @@ D. Local build only
 ### Question 5
 **Scenario:** An OKE cluster's worker nodes must be private but still pull images and reach OCI services.
 
-A. Public worker nodes
+A. No gateways
 B. Private node subnets with a NAT gateway for internet egress and a service gateway for OCI services
-C. No gateways
+C. Public worker nodes
 D. An internet gateway on the node subnet
 
 <details>
@@ -106,8 +106,8 @@ D. An internet gateway on the node subnet
 
 A. Direct HTTP calls to each
 B. OCI Streaming (Kafka-compatible), where each consumer group reads independently
-C. A shared database table
-D. A queue with one consumer
+C. A queue with one consumer
+D. A shared database table
 
 <details>
 <summary>Answer</summary>
@@ -123,14 +123,14 @@ D. A queue with one consumer
 **Scenario:** An API must be published with authentication, rate limiting, and request validation.
 
 A. Expose the function directly
-B. API Gateway in front, with policies for authentication, rate limiting, and CORS
-C. A load balancer
+B. A load balancer
+C. API Gateway in front, with policies for authentication, rate limiting, and CORS
 D. A security list
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The gateway centralizes cross-cutting concerns and gives a stable external contract, so backends can change without breaking consumers. It can also invoke a function as an authorizer for custom authentication logic.
 </details>
@@ -140,15 +140,15 @@ D. A security list
 ### Question 8
 **Scenario:** A build and deployment pipeline must run in OCI.
 
-A. Manual builds
-B. OCI DevOps service with build pipelines, an artifact registry, and deployment pipelines supporting rolling, blue-green, and canary strategies
-C. A shell script on a VM
+A. A shell script on a VM
+B. Manual builds
+C. OCI DevOps service with build pipelines, an artifact registry, and deployment pipelines supporting rolling, blue-green, and canary strategies
 D. Local deployment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The DevOps service covers the whole path from source through build to deployment with approval stages, so the artifact that was tested is the artifact deployed. Deployment strategy support is what makes a safe rollout a configuration rather than a script.
 </details>
@@ -159,14 +159,14 @@ D. Local deployment
 **Scenario:** A function is timing out on a long-running task.
 
 A. Increase the timeout indefinitely
-B. Functions have a maximum execution time, so decompose the work, hand it to a queue or a container instance, or use a different compute service for long jobs
+B. Add memory only
 C. Retry forever
-D. Add memory only
+D. Functions have a maximum execution time, so decompose the work, hand it to a queue or a container instance, or use a different compute service for long jobs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Recognizing when a workload has outgrown serverless is the design skill. Long-running or stateful work belongs in Container Instances, OKE, or a compute instance, with the function acting as a trigger rather than the worker.
 </details>
@@ -176,15 +176,15 @@ D. Add memory only
 ### Question 10
 **Scenario:** Application secrets must not appear in the container image or environment.
 
-A. Bake them into the image
-B. OCI Vault secrets, retrieved at run time using the resource or instance principal
-C. A config file in the repository
+A. OCI Vault secrets, retrieved at run time using the resource or instance principal
+B. A config file in the repository
+C. Bake them into the image
 D. Command-line arguments
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Vault plus a principal-based identity means no secret exists in the artifact or the deployment manifest, and rotation happens in one place. Environment variables are better than baking into the image but are still visible to anyone who can describe the resource.
 </details>
@@ -194,15 +194,15 @@ D. Command-line arguments
 ### Question 11
 **Scenario:** Application traces must be collected across services.
 
-A. Logs only
-B. Application Performance Monitoring with tracing, instrumented in the application, plus Logging for events
-C. Metrics only
-D. Manual timing
+A. Manual timing
+B. Metrics only
+C. Application Performance Monitoring with tracing, instrumented in the application, plus Logging for events
+D. Logs only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Traces show where the latency went across service boundaries, which logs cannot without manual correlation. The prerequisite is context propagation: every service must forward the trace headers or the trace fragments.
 </details>
@@ -212,15 +212,15 @@ D. Manual timing
 ### Question 12
 **Scenario:** A twelve-factor principle relevant to cloud native development.
 
-A. Store configuration in the code
-B. Store configuration in the environment, keep processes stateless, and treat backing services as attached resources
-C. Use local disk for state
-D. One deployment per environment build
+A. Store configuration in the environment, keep processes stateless, and treat backing services as attached resources
+B. One deployment per environment build
+C. Store configuration in the code
+D. Use local disk for state
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Stateless processes with external configuration are what make a container replaceable at any moment, which is the assumption every orchestrator makes. Local state means a rescheduled pod loses data, and the orchestrator will reschedule.
 </details>
@@ -230,15 +230,15 @@ D. One deployment per environment build
 ### Question 13
 **Scenario:** A Kubernetes deployment on OKE must scale with request load.
 
-A. A fixed replica count
-B. A Horizontal Pod Autoscaler on a suitable metric, with the cluster autoscaler adding nodes when pods cannot be placed
-C. A larger node
-D. Manual scaling
+A. A larger node
+B. A fixed replica count
+C. Manual scaling
+D. A Horizontal Pod Autoscaler on a suitable metric, with the cluster autoscaler adding nodes when pods cannot be placed
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The two autoscalers work together: HPA adds pods and the cluster autoscaler adds nodes when there is nowhere to put them. Pods must declare resource requests, or the scheduler cannot tell when the cluster is full.
 </details>
@@ -249,14 +249,14 @@ D. Manual scaling
 **Scenario:** A function's cold start latency is too high.
 
 A. Nothing can be done
-B. Reduce image size, minimize initialization work, and use provisioned concurrency where available for latency-sensitive paths
+B. Add more functions
 C. Increase the timeout
-D. Add more functions
+D. Reduce image size, minimize initialization work, and use provisioned concurrency where available for latency-sensitive paths
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Cold start is dominated by image pull and runtime initialization, so a slim image and lazy initialization address most of it. Where the latency budget is strict, keeping instances warm is the remaining lever, at the cost of paying for idle capacity.
 </details>
@@ -266,15 +266,15 @@ D. Add more functions
 ### Question 15
 **Scenario:** A container must run without managing a Kubernetes cluster.
 
-A. OKE only
-B. OCI Container Instances, running containers directly as a serverless workload
-C. A compute instance with Docker
-D. A function only
+A. OCI Container Instances, running containers directly as a serverless workload
+B. A function only
+C. OKE only
+D. A compute instance with Docker
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Container Instances fills the gap between Functions (short, event-driven) and OKE (full orchestration): a container that runs for a while with no cluster to operate. Choosing between the three by workload shape is a recurring exam theme.
 </details>

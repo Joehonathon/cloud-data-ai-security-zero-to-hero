@@ -16,15 +16,15 @@ CySA+ is analyst-level and behavioral: it tests what you do with the data, not j
 ### Question 1
 **Scenario:** A vulnerability scan returns 4,000 findings. What drives remediation order?
 
-A. CVSS base score alone
-B. Risk in context: exploitability and known exploitation in the wild, asset criticality, exposure, and compensating controls, alongside the CVSS score
+A. Risk in context: exploitability and known exploitation in the wild, asset criticality, exposure, and compensating controls, alongside the CVSS score
+B. CVSS base score alone
 C. Alphabetical by host
 D. Oldest first
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A critical CVSS on an isolated internal test box outranks nothing. Environmental and temporal CVSS metrics exist for exactly this adjustment, and known-exploited catalogs turn "theoretically severe" into "actively used", which is the strongest prioritization signal available.
 </details>
@@ -35,14 +35,14 @@ D. Oldest first
 **Scenario:** A scanner reports a vulnerability the analyst confirms is not present.
 
 A. Report it anyway
-B. A false positive: validate, document the finding as such with evidence, and tune the scanner or add an exception so it does not recur
-C. Ignore all scanner output
+B. Ignore all scanner output
+C. A false positive: validate, document the finding as such with evidence, and tune the scanner or add an exception so it does not recur
 D. Disable the scanner
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Validation is the analyst's core job, because untuned scanner output erodes trust in the whole program. Note the counterpart: a false negative is more dangerous and is why scanning is layered with configuration review and penetration testing.
 </details>
@@ -52,15 +52,15 @@ D. Disable the scanner
 ### Question 3
 **Scenario:** A SIEM rule fires 300 times a day for benign administrative activity.
 
-A. Disable the rule
-B. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into one incident
-C. Ignore the alerts
-D. Increase the alert threshold arbitrarily
+A. Increase the alert threshold arbitrarily
+B. Disable the rule
+C. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into one incident
+D. Ignore the alerts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Alert fatigue is a real security failure because analysts stop reading. Tuning preserves the detection for the malicious version of the behavior; disabling the rule loses that coverage entirely, which is what makes the two options meaningfully different.
 </details>
@@ -70,10 +70,10 @@ D. Increase the alert threshold arbitrarily
 ### Question 4
 **Scenario:** Which describes threat hunting?
 
-A. Responding to alerts
+A. Reading vendor advisories
 B. Hypothesis-driven proactive searching for adversary activity that existing detections have not caught
-C. Running vulnerability scans
-D. Reading vendor advisories
+C. Responding to alerts
+D. Running vulnerability scans
 
 <details>
 <summary>Answer</summary>
@@ -88,15 +88,15 @@ D. Reading vendor advisories
 ### Question 5
 **Scenario:** An analyst maps observed attacker behavior to a common framework.
 
-A. CVSS
-B. MITRE ATT&CK, mapping tactics and techniques
-C. OWASP Top 10
-D. NIST CSF
+A. OWASP Top 10
+B. NIST CSF
+C. MITRE ATT&CK, mapping tactics and techniques
+D. CVSS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** ATT&CK gives a shared vocabulary for behavior, which supports coverage analysis: which techniques do we detect, and where are the gaps. The Cyber Kill Chain and the Diamond Model are the other two models CySA+ expects you to recognize.
 </details>
@@ -106,15 +106,15 @@ D. NIST CSF
 ### Question 6
 **Scenario:** Indicators of compromise versus indicators of attack.
 
-A. They are identical
-B. IOCs are artifacts of activity that already happened (hashes, IPs, domains); IOAs describe behavior in progress and generalize better across variants
+A. IOCs are behavioral
+B. They are identical
 C. IOAs are historical
-D. IOCs are behavioral
+D. IOCs are artifacts of activity that already happened (hashes, IPs, domains); IOAs describe behavior in progress and generalize better across variants
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Hash and IP indicators are trivially changed by an attacker, which is why behavior-based detection outlives them. The practical implication is where to invest detection effort: atomic indicators for cheap coverage, behavioral analytics for durability.
 </details>
@@ -124,10 +124,10 @@ D. IOCs are behavioral
 ### Question 7
 **Scenario:** A host is confirmed compromised. What comes first?
 
-A. Reimage immediately
+A. Run antivirus
 B. Containment that preserves evidence: isolate the host from the network while keeping it running, and capture volatile data before shutdown
 C. Shut it down
-D. Run antivirus
+D. Reimage immediately
 
 <details>
 <summary>Answer</summary>
@@ -142,15 +142,15 @@ D. Run antivirus
 ### Question 8
 **Scenario:** Evidence must hold up in a legal proceeding.
 
-A. Copy the files to a share
-B. Maintain chain of custody, take forensically sound images with hash verification, and work from copies
-C. Analyze the original disk
-D. Screenshot everything
+A. Analyze the original disk
+B. Screenshot everything
+C. Copy the files to a share
+D. Maintain chain of custody, take forensically sound images with hash verification, and work from copies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Chain of custody documents every handler and transfer; hashing proves the image is unaltered. Working on the original rather than a verified copy is what gets evidence excluded, regardless of what the analysis found.
 </details>
@@ -160,15 +160,15 @@ D. Screenshot everything
 ### Question 9
 **Scenario:** Network traffic shows periodic outbound connections to an unknown domain at exact intervals.
 
-A. Normal traffic
-B. Possible command-and-control beaconing: investigate the destination reputation, the process making the connection, and the payload
-C. A DNS issue
-D. A backup job by definition
+A. Possible command-and-control beaconing: investigate the destination reputation, the process making the connection, and the payload
+B. A backup job by definition
+C. Normal traffic
+D. A DNS issue
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Regularity is the signature; legitimate traffic is usually more irregular, though jitter is used to evade this exact detection. The pivot from network observation to the responsible process on the host is what turns a suspicion into a finding.
 </details>
@@ -178,15 +178,15 @@ D. A backup job by definition
 ### Question 10
 **Scenario:** A web server log shows requests containing `' OR '1'='1`.
 
-A. A malformed request
-B. An SQL injection attempt: check whether it succeeded, review the application's parameterization, and assess data exposure
+A. An SQL injection attempt: check whether it succeeded, review the application's parameterization, and assess data exposure
+B. A malformed request
 C. A scanner artifact to ignore
 D. A DDoS attack
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The follow-up matters more than the identification: attempted and successful are different incidents. Response codes and response sizes in the log usually distinguish them, and parameterized queries are the fix rather than input filtering.
 </details>
@@ -196,15 +196,15 @@ D. A DDoS attack
 ### Question 11
 **Scenario:** Which log source best answers "which process opened this network connection"?
 
-A. Firewall logs
-B. Endpoint detection and response or host process telemetry, correlated with the network connection
-C. DNS logs
+A. Endpoint detection and response or host process telemetry, correlated with the network connection
+B. DNS logs
+C. Firewall logs
 D. Web server logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Network logs identify endpoints, not processes. Correlating host and network telemetry is the standard analyst pivot, and it is why EDR deployment coverage gaps are a detection problem rather than just a tooling preference.
 </details>
@@ -215,14 +215,14 @@ D. Web server logs
 **Scenario:** A patch cannot be applied to a critical production system.
 
 A. Accept the risk silently
-B. Apply compensating controls (segmentation, virtual patching at the IPS or WAF, tightened monitoring), document the exception with an owner and a review date
-C. Take the system offline permanently
-D. Patch anyway during business hours
+B. Patch anyway during business hours
+C. Apply compensating controls (segmentation, virtual patching at the IPS or WAF, tightened monitoring), document the exception with an owner and a review date
+D. Take the system offline permanently
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Exceptions are legitimate when they are documented, time-bounded, and owned. The failure mode is the permanent undocumented exception, which is indistinguishable from having forgotten about the vulnerability entirely.
 </details>
@@ -251,14 +251,14 @@ D. A single sentence
 **Scenario:** Which metric best shows whether the SOC is improving?
 
 A. Number of alerts
-B. Mean time to detect and mean time to respond, trended over time
+B. Number of rules
 C. Number of tools deployed
-D. Number of rules
+D. Mean time to detect and mean time to respond, trended over time
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** MTTD and MTTR measure outcomes; alert and rule counts measure activity and can rise while effectiveness falls. Trending matters more than the absolute value, since the baseline differs by environment.
 </details>
@@ -268,10 +268,10 @@ D. Number of rules
 ### Question 15
 **Scenario:** A phishing email reached 200 users and 12 clicked.
 
-A. Reset all passwords and close
+A. Block the sender domain and close
 B. Scope it: identify who clicked and who entered credentials, remove the message from all mailboxes, reset affected credentials, hunt for follow-on activity, and feed the indicators into detection
 C. Notify users only
-D. Block the sender domain and close
+D. Reset all passwords and close
 
 <details>
 <summary>Answer</summary>

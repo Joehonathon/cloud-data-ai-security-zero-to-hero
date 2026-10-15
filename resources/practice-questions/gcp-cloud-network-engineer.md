@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** How does a Google Cloud VPC differ from a typical cloud VPC?
 
-A. It is zonal
-B. It is a global resource, with subnets scoped to regions, so one VPC spans regions without peering
-C. It is regional only
-D. It cannot have subnets
+A. It is regional only
+B. It cannot have subnets
+C. It is a global resource, with subnets scoped to regions, so one VPC spans regions without peering
+D. It is zonal
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** This is the defining GCP difference: a VPC is global and subnets are regional, so instances in different regions communicate over internal IPs with no peering or gateway. Routes and firewall rules are also VPC-wide, which changes how you design segmentation.
 </details>
@@ -50,15 +50,15 @@ D. One project for everything
 ### Question 3
 **Scenario:** Firewall rules must allow SSH only to instances with a specific role.
 
-A. Allow from 0.0.0.0/0
-B. A rule targeting a network tag or service account, sourced from Identity-Aware Proxy's range for tunneled SSH
-C. Allow all internal traffic
-D. Rely on the OS firewall
+A. Rely on the OS firewall
+B. Allow from 0.0.0.0/0
+C. A rule targeting a network tag or service account, sourced from Identity-Aware Proxy's range for tunneled SSH
+D. Allow all internal traffic
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Targeting by service account is more robust than network tags because tags can be added by anyone who can edit the instance. IAP TCP forwarding removes the need for public IPs or a bastion entirely, restricting the source to Google's forwarding range with IAM controlling who may use it.
 </details>
@@ -68,15 +68,15 @@ D. Rely on the OS firewall
 ### Question 4
 **Scenario:** Instances in a private subnet need outbound internet access without public IPs.
 
-A. Cloud NAT configured on the region's router
-B. A public IP per instance
+A. A public IP per instance
+B. Private Google Access
 C. A proxy VM
-D. Private Google Access
+D. Cloud NAT configured on the region's router
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Cloud NAT is a managed, distributed service with no NAT instance to run, configured on the Cloud Router. Private Google Access is the related but different feature: it lets instances without external IPs reach Google APIs, which is not general internet egress.
 </details>
@@ -86,10 +86,10 @@ D. Private Google Access
 ### Question 5
 **Scenario:** An instance must reach Cloud Storage without traversing the internet and without a public IP.
 
-A. Cloud NAT
+A. Cloud VPN
 B. Private Google Access on the subnet, or Private Service Connect for a private endpoint
 C. A public IP
-D. Cloud VPN
+D. Cloud NAT
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. Cloud VPN
 ### Question 6
 **Scenario:** Hybrid connectivity must be resilient with a 99.99% availability SLA.
 
-A. A single Dedicated Interconnect
-B. Four Dedicated Interconnect connections across two metropolitan areas and two zones, per Google's topology requirements
+A. Four Dedicated Interconnect connections across two metropolitan areas and two zones, per Google's topology requirements
+B. Two connections in one location
 C. HA VPN alone
-D. Two connections in one location
+D. A single Dedicated Interconnect
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Google publishes explicit topologies for 99.9% and 99.99%, and the higher tier requires geographic and zone diversity, not just two circuits. HA VPN reaches 99.99% on its own tier with two interfaces, but with internet-path characteristics rather than dedicated bandwidth.
 </details>
@@ -122,10 +122,10 @@ D. Two connections in one location
 ### Question 7
 **Scenario:** A Cloud Router must advertise only specific subnets to on-premises.
 
-A. It always advertises everything
+A. Change the subnet range
 B. Configure custom route advertisements on the BGP session, listing the prefixes
 C. Use static routes only
-D. Change the subnet range
+D. It always advertises everything
 
 <details>
 <summary>Answer</summary>
@@ -140,15 +140,15 @@ D. Change the subnet range
 ### Question 8
 **Scenario:** A global HTTPS application needs one anycast IP and routing to the closest healthy backend.
 
-A. Global external Application Load Balancer
-B. Network Load Balancer
-C. Internal load balancer
-D. Cloud DNS round robin
+A. Network Load Balancer
+B. Internal load balancer
+C. Cloud DNS round robin
+D. Global external Application Load Balancer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** The global Application Load Balancer gives a single anycast address, terminates TLS at the edge, and routes by URL map to the nearest healthy backend with Cloud CDN and Cloud Armor available on top. DNS-based distribution cannot fail over quickly because resolvers cache.
 </details>
@@ -158,15 +158,15 @@ D. Cloud DNS round robin
 ### Question 9
 **Scenario:** Layer 7 protection against SQL injection and volumetric attacks is required.
 
-A. Firewall rules
-B. Cloud Armor security policies with preconfigured WAF rules and rate limiting, attached to the load balancer backend
-C. VPC Service Controls
-D. Cloud NAT
+A. Cloud Armor security policies with preconfigured WAF rules and rate limiting, attached to the load balancer backend
+B. Firewall rules
+C. Cloud NAT
+D. VPC Service Controls
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Cloud Armor operates at the edge in front of the load balancer, so malicious traffic never reaches your backends. VPC firewall rules are layer 3 and 4 and cannot inspect a request body. VPC Service Controls is a data exfiltration boundary for Google APIs, a different control entirely.
 </details>
@@ -177,14 +177,14 @@ D. Cloud NAT
 **Scenario:** Data exfiltration from BigQuery to a personal project must be prevented.
 
 A. IAM alone
-B. VPC Service Controls creating a service perimeter around the projects
-C. Firewall rules
+B. Firewall rules
+C. VPC Service Controls creating a service perimeter around the projects
 D. Cloud Armor
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** IAM controls who can act, but a legitimately authorized insider can still copy data to an outside project. A service perimeter restricts API access based on the network and project boundary, so the copy is refused regardless of the caller's permissions.
 </details>
@@ -194,15 +194,15 @@ D. Cloud Armor
 ### Question 11
 **Scenario:** Two VPCs have overlapping IP ranges but one service must be shared.
 
-A. VPC Peering
-B. Private Service Connect, which publishes a service reachable via an endpoint in the consumer's address space
-C. Shared VPC
-D. A VPN
+A. Shared VPC
+B. VPC Peering
+C. A VPN
+D. Private Service Connect, which publishes a service reachable via an endpoint in the consumer's address space
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Peering requires non-overlapping ranges and is non-transitive. Private Service Connect exposes one service through a consumer-side endpoint, so the address spaces never need to be reconciled, which also makes it the pattern for SaaS-style publishing.
 </details>
@@ -213,14 +213,14 @@ D. A VPN
 **Scenario:** DNS names in a VPC must resolve from on-premises.
 
 A. Public DNS zones
-B. Cloud DNS private zones with inbound and outbound server policies (DNS forwarding) between on-premises and the VPC
-C. Host files
-D. A public IP
+B. A public IP
+C. Cloud DNS private zones with inbound and outbound server policies (DNS forwarding) between on-premises and the VPC
+D. Host files
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** An inbound server policy creates forwarding addresses on-premises resolvers can query, and outbound forwarding sends VPC queries for on-premises domains to your resolvers. Both directions must be configured, and missing one is the standard hybrid DNS failure.
 </details>
@@ -230,15 +230,15 @@ D. A public IP
 ### Question 13
 **Scenario:** Packet-level visibility is needed for traffic between two instances.
 
-A. VPC Flow Logs
-B. Packet Mirroring to a collector instance group
-C. Cloud Audit Logs
-D. Cloud Monitoring
+A. Packet Mirroring to a collector instance group
+B. VPC Flow Logs
+C. Cloud Monitoring
+D. Cloud Audit Logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Packet Mirroring copies full packets including payload to a collector behind an internal load balancer, which is what an IDS needs. Flow Logs record connection metadata and sampled flow records, which answer "who talked to whom" but not "what was in it."
 </details>
@@ -248,15 +248,15 @@ D. Cloud Monitoring
 ### Question 14
 **Scenario:** Connectivity between two instances fails and the cause is unclear.
 
-A. Recreate the instances
-B. Connectivity Tests in Network Intelligence Center, which simulates the path against the configuration and names the blocking rule or missing route
-C. Ping only
+A. Connectivity Tests in Network Intelligence Center, which simulates the path against the configuration and names the blocking rule or missing route
+B. Ping only
+C. Recreate the instances
 D. Restart the VPC
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Connectivity Tests evaluate the actual configuration, including firewall rules, routes, and peering, and report exactly where the packet would be dropped. It works even when the instances are stopped, because it analyzes configuration rather than sending traffic.
 </details>
@@ -266,10 +266,10 @@ D. Restart the VPC
 ### Question 15
 **Scenario:** A GKE cluster must not expose its control plane to the internet.
 
-A. A public cluster with authorized networks
+A. Cloud Armor
 B. A private cluster, with private endpoint access and authorized networks for administrative access
-C. Firewall rules on nodes
-D. Cloud Armor
+C. A public cluster with authorized networks
+D. Firewall rules on nodes
 
 <details>
 <summary>Answer</summary>

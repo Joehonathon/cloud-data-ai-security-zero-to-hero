@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A feature must be computed from events strictly before each label's timestamp.
 
-A. Join on the key only
+A. Ignore timestamps
 B. A point-in-time join using the feature store's time-aware lookup, so no future information leaks into training
 C. Use the latest feature values
-D. Ignore timestamps
+D. Join on the key only
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Ignore timestamps
 ### Question 2
 **Scenario:** A production model must be retrained and redeployed automatically when quality degrades.
 
-A. Manual retraining when someone notices
-B. A monitored trigger feeding a pipeline that retrains, evaluates against the incumbent, and promotes only if it wins
+A. A monitored trigger feeding a pipeline that retrains, evaluates against the incumbent, and promotes only if it wins
+B. Never retrain
 C. Retrain daily regardless
-D. Never retrain
+D. Manual retraining when someone notices
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The champion-challenger comparison is what makes automation safe: a retrained model on a bad data batch will not be promoted. Without that gate, automated retraining is a mechanism for automatically deploying regressions.
 </details>
@@ -51,14 +51,14 @@ D. Never retrain
 **Scenario:** Two model versions must be compared on live traffic.
 
 A. Offline evaluation only
-B. A serving endpoint with traffic split between versions, or shadow serving the challenger without returning its responses
-C. Replace the model entirely
+B. Replace the model entirely
+C. A serving endpoint with traffic split between versions, or shadow serving the challenger without returning its responses
 D. Ask users
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Shadow mode measures the challenger on real traffic at zero user risk, which is the right first step when the model affects decisions. A traffic split then gives real outcome data on a bounded share before full promotion.
 </details>
@@ -68,15 +68,15 @@ D. Ask users
 ### Question 4
 **Scenario:** Model quality monitoring needs ground truth that arrives days after the prediction.
 
-A. Monitor input drift only
-B. Monitor input drift immediately and join delayed labels to predictions when they arrive, computing quality metrics on that lag
-C. Skip monitoring
+A. Monitor input drift immediately and join delayed labels to predictions when they arrive, computing quality metrics on that lag
+B. Skip monitoring
+C. Monitor input drift only
 D. Assume quality is stable
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Label delay is normal, so you need both signals: drift as the leading indicator available now, and realized accuracy as the lagging ground truth. Inference tables make the join straightforward because requests and predictions are already in Delta.
 </details>
@@ -86,15 +86,15 @@ D. Assume quality is stable
 ### Question 5
 **Scenario:** A model artifact must carry its input schema so bad requests fail clearly.
 
-A. No schema
-B. Log the model with an MLflow signature and an input example
-C. Document it separately
-D. Validate in the client only
+A. Document it separately
+B. No schema
+C. Validate in the client only
+D. Log the model with an MLflow signature and an input example
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The signature makes serving reject malformed input with a clear error instead of silently coercing types and producing nonsense predictions. It also documents the contract for whoever integrates months later.
 </details>
@@ -104,15 +104,15 @@ D. Validate in the client only
 ### Question 6
 **Scenario:** Custom preprocessing and postprocessing must ship with the model.
 
-A. Ask callers to reimplement it
-B. An `mlflow.pyfunc` custom model wrapping the full logic, logged as one artifact
-C. Two separate services
+A. Two separate services
+B. Ask callers to reimplement it
+C. An `mlflow.pyfunc` custom model wrapping the full logic, logged as one artifact
 D. A README
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Packaging preprocessing with the model means every caller gets identical behavior and there is one thing to version. Asking callers to reimplement transformation logic is how training-serving skew re-enters after you removed it from your own pipeline.
 </details>
@@ -122,15 +122,15 @@ D. A README
 ### Question 7
 **Scenario:** Feature computation is expensive and shared by several models.
 
-A. Recompute per model
-B. Materialize features into feature tables on a schedule, with online tables for low-latency serving
-C. Compute in each notebook
-D. Cache in memory only
+A. Cache in memory only
+B. Compute in each notebook
+C. Materialize features into feature tables on a schedule, with online tables for low-latency serving
+D. Recompute per model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Materialization amortizes the cost across consumers and gives one definition to govern. Online tables replicate the values into a low-latency store so real-time serving does not need to run the batch computation on the request path.
 </details>
@@ -160,8 +160,8 @@ D. One workspace for everything
 
 A. Multiple endpoints and client-side logic
 B. A pyfunc model that loads the components and implements the combination logic, served as a single version
-C. It is not possible
-D. Retrain as one model
+C. Retrain as one model
+D. It is not possible
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Training curves
 ### Question 11
 **Scenario:** A time-series model must be validated correctly.
 
-A. Random k-fold
-B. Rolling-origin (walk-forward) validation, training on past and validating on future, respecting the forecast horizon
-C. Stratified split
-D. Leave-one-out
+A. Leave-one-out
+B. Stratified split
+C. Random k-fold
+D. Rolling-origin (walk-forward) validation, training on past and validating on future, respecting the forecast horizon
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Random folds let the model learn from the future, which yields validation numbers that cannot be reproduced in production. Walk-forward validation also gives several evaluation windows, which reveals whether performance is stable over time.
 </details>
@@ -213,14 +213,14 @@ D. Leave-one-out
 **Scenario:** Training data must be versioned so a model can be rebuilt exactly.
 
 A. Overwrite the table each run
-B. Delta table versions or a snapshot, with the version recorded in the MLflow run
+B. Keep the latest only
 C. Note the date
-D. Keep the latest only
+D. Delta table versions or a snapshot, with the version recorded in the MLflow run
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Recording the Delta version number in the run makes rebuild deterministic without duplicating the data, since time travel can read that version directly. A date alone is insufficient when the table is updated multiple times a day.
 </details>
@@ -230,15 +230,15 @@ D. Keep the latest only
 ### Question 13
 **Scenario:** An endpoint's latency must be reduced for a large model.
 
-A. Add more model versions
-B. Right-size the compute (including GPU where appropriate), enable caching where responses repeat, and consider a distilled or quantized model
-C. Increase the batch size
-D. Reduce logging
+A. Reduce logging
+B. Add more model versions
+C. Right-size the compute (including GPU where appropriate), enable caching where responses repeat, and consider a distilled or quantized model
+D. Increase the batch size
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Latency work starts with measuring where the time goes: model compute, feature lookup, or queueing. Larger batches improve throughput while worsening latency, so they are the wrong lever for a p99 target.
 </details>
@@ -248,15 +248,15 @@ D. Reduce logging
 ### Question 14
 **Scenario:** Governance requires knowing which data a model was trained on and who can use it.
 
-A. A wiki page
-B. Unity Catalog lineage linking the model to the tables and features it consumed, with grants controlling access to the model
-C. Comments in code
-D. File permissions
+A. Unity Catalog lineage linking the model to the tables and features it consumed, with grants controlling access to the model
+B. Comments in code
+C. File permissions
+D. A wiki page
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Lineage is captured automatically rather than documented manually, which is why it stays accurate. Governing the model in the same catalog as the data means one permission model covers both, which is what an audit is actually asking for.
 </details>
@@ -266,15 +266,15 @@ D. File permissions
 ### Question 15
 **Scenario:** A model exhibits degraded performance for one customer segment.
 
-A. Report only aggregate accuracy
-B. Evaluate disaggregated performance by segment, investigate representation and feature quality for that group, and document known limitations
-C. Increase the model size
+A. Evaluate disaggregated performance by segment, investigate representation and feature quality for that group, and document known limitations
+B. Increase the model size
+C. Report only aggregate accuracy
 D. Remove the segment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Aggregate metrics average away subgroup failures, so they must be broken out to be seen at all. Removing the segment from evaluation makes the number look better while leaving the harm in production, which is the outcome the practice exists to prevent.
 </details>

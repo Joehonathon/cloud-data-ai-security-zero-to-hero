@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A workload needs horizontal scale, strong consistency, and relational semantics across regions.
 
-A. Cloud SQL
+A. Firestore
 B. Cloud Spanner
-C. Firestore
-D. Bigtable
+C. Bigtable
+D. Cloud SQL
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Bigtable
 ### Question 2
 **Scenario:** A time-series workload writes millions of events per second with key-range scans.
 
-A. Bigtable
+A. Firestore
 B. Cloud SQL
-C. Firestore
+C. Bigtable
 D. Memorystore
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Bigtable is a wide-column store designed for very high write throughput with row-key range scans, which is exactly the time-series access pattern. Row key design decides everything: put the time component after a distributing prefix to avoid hotspotting on the newest range.
 </details>
@@ -50,15 +50,15 @@ D. Memorystore
 ### Question 3
 **Scenario:** A Bigtable table is hotspotting on writes.
 
-A. Add more nodes
-B. Redesign the row key so writes distribute, for example by salting or field promotion, avoiding a purely sequential prefix
-C. Increase the timeout
-D. Use a smaller cell size
+A. Increase the timeout
+B. Use a smaller cell size
+C. Redesign the row key so writes distribute, for example by salting or field promotion, avoiding a purely sequential prefix
+D. Add more nodes
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Bigtable splits data into contiguous row ranges served by tablets, so a monotonically increasing key sends all writes to one tablet. Adding nodes does not help because the bottleneck is one range, not total capacity. Key Visualizer shows the hotspot directly.
 </details>
@@ -68,10 +68,10 @@ D. Use a smaller cell size
 ### Question 4
 **Scenario:** A Cloud SQL instance must survive a zone failure automatically.
 
-A. Read replicas
+A. A larger machine type
 B. High availability configuration with a synchronous standby in another zone and automatic failover
-C. Backups
-D. A larger machine type
+C. Read replicas
+D. Backups
 
 <details>
 <summary>Answer</summary>
@@ -86,15 +86,15 @@ D. A larger machine type
 ### Question 5
 **Scenario:** A Spanner schema uses a monotonically increasing primary key and writes are slow.
 
-A. Add nodes
-B. Avoid sequential keys: use a UUID, a hashed prefix, or bit-reversed sequence so writes spread across splits
-C. Increase the timeout
-D. Use a secondary index
+A. Avoid sequential keys: use a UUID, a hashed prefix, or bit-reversed sequence so writes spread across splits
+B. Add nodes
+C. Use a secondary index
+D. Increase the timeout
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Spanner also splits by key range, so the same hotspot logic as Bigtable applies. This is the single most important Spanner schema rule, and it is why the documentation warns against timestamp-first or auto-increment primary keys.
 </details>
@@ -104,15 +104,15 @@ D. Use a secondary index
 ### Question 6
 **Scenario:** Related child rows should be stored physically near their parent in Spanner.
 
-A. A foreign key
-B. Table interleaving, declaring the child table interleaved in the parent
+A. Table interleaving, declaring the child table interleaved in the parent
+B. A foreign key
 C. A secondary index
 D. A view
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Interleaving co-locates child rows with their parent row so a join reads one split rather than several, which is the main Spanner performance design tool. The trade-off is that the relationship becomes part of the physical layout and cannot be changed without a rewrite.
 </details>
@@ -123,14 +123,14 @@ D. A view
 **Scenario:** An on-premises PostgreSQL database must migrate to Cloud SQL with minimal downtime.
 
 A. Dump and restore during a maintenance window
-B. Database Migration Service with continuous replication, cutting over after the target catches up
+B. Export to CSV
 C. Manual replication scripts
-D. Export to CSV
+D. Database Migration Service with continuous replication, cutting over after the target catches up
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** DMS performs an initial load and then streams ongoing changes, so the source stays live until a short cutover. Dump and restore requires downtime proportional to the database size, which is unacceptable for anything large.
 </details>
@@ -140,15 +140,15 @@ D. Export to CSV
 ### Question 8
 **Scenario:** A heterogeneous migration from Oracle to PostgreSQL is required.
 
-A. It is not possible
-B. Use Database Migration Service with conversion tooling, expecting manual work on stored procedures and vendor-specific SQL
-C. Copy the datafiles
-D. Change the connection string
+A. Change the connection string
+B. Copy the datafiles
+C. It is not possible
+D. Use Database Migration Service with conversion tooling, expecting manual work on stored procedures and vendor-specific SQL
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Schema and data can be converted largely automatically; PL/SQL, vendor-specific functions, and application SQL are where the real effort sits. Planning for that manual remediation, and testing it, is what separates a realistic migration plan from an optimistic one.
 </details>
@@ -158,15 +158,15 @@ D. Change the connection string
 ### Question 9
 **Scenario:** Read latency must be reduced for a repeated key-value lookup.
 
-A. Add a read replica
-B. Memorystore for Redis or Memcached in front of the database, with a defined invalidation strategy
-C. Increase the instance size
-D. Add an index
+A. Add an index
+B. Increase the instance size
+C. Memorystore for Redis or Memcached in front of the database, with a defined invalidation strategy
+D. Add a read replica
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** An in-memory cache removes the query entirely for repeated reads. The design decision that must be explicit is invalidation: TTL-based lazy loading is simple but serves stale data for the TTL window, while write-through keeps freshness at the cost of write complexity.
 </details>
@@ -176,15 +176,15 @@ D. Add an index
 ### Question 10
 **Scenario:** A mobile application needs real-time sync of documents with offline support.
 
-A. Firestore
-B. Cloud SQL
+A. BigQuery
+B. Firestore
 C. Bigtable
-D. BigQuery
+D. Cloud SQL
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Firestore provides document storage with realtime listeners, offline persistence in the client SDKs, and security rules evaluated per request. That client-side feature set is what distinguishes it from the other options, none of which offer offline sync.
 </details>
@@ -195,9 +195,9 @@ D. BigQuery
 **Scenario:** Database credentials must not appear in application configuration.
 
 A. IAM database authentication where supported, or Secret Manager with a workload identity, rather than static passwords
-B. Environment variables in the image
-C. A config file
-D. Hard-coded strings
+B. Hard-coded strings
+C. Environment variables in the image
+D. A config file
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. Hard-coded strings
 ### Question 12
 **Scenario:** Point-in-time recovery is needed for a Cloud SQL instance.
 
-A. Daily backups only
-B. Enable point-in-time recovery, which uses binary or write-ahead logs to restore to a specific moment
-C. Snapshots of the disk
-D. Export to Cloud Storage
+A. Export to Cloud Storage
+B. Snapshots of the disk
+C. Daily backups only
+D. Enable point-in-time recovery, which uses binary or write-ahead logs to restore to a specific moment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** PITR combines a base backup with transaction logs to reach any moment in the retention window, which is what protects against a bad `DELETE` at 14:32. Exports are logical dumps useful for portability, not for fine-grained recovery.
 </details>
@@ -248,15 +248,15 @@ D. Add secondary indexes
 ### Question 14
 **Scenario:** A query on Cloud SQL is slow and the cause is unclear.
 
-A. Increase the machine size
-B. Use Query Insights to identify the top queries and wait events, then fix the query or index
-C. Restart the instance
-D. Add a read replica
+A. Use Query Insights to identify the top queries and wait events, then fix the query or index
+B. Add a read replica
+C. Increase the machine size
+D. Restart the instance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Query Insights attributes load to specific normalized queries with execution plans and wait breakdowns, which usually reveals a missing index or a full scan. Scaling up first pays permanently for a problem an index would fix.
 </details>
@@ -267,14 +267,14 @@ D. Add a read replica
 **Scenario:** Analytics must run over operational data without affecting the transactional database.
 
 A. Query the primary directly
-B. Replicate to BigQuery (for example with Datastream or federated queries), keeping analytical load off the operational store
-C. Increase the instance size
+B. Increase the instance size
+C. Replicate to BigQuery (for example with Datastream or federated queries), keeping analytical load off the operational store
 D. Run analytics at night
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Separating operational and analytical workloads is the standard answer because their access patterns conflict: short indexed reads versus large scans. Datastream provides change data capture into BigQuery with low latency, so analysts get near-current data without touching the primary.
 </details>

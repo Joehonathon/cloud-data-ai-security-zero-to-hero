@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-14] (3) - Practice-question answer positions balanced repo-wide
+
+An audit of `resources/practice-questions` found the correct answer was B in most banks: 64 of 152 banks had B correct for 90% or more of their questions (52 of them for every question). A learner could score well by always choosing B.
+
+### Fixed
+
+- 150 banks (2,904 questions) rebalanced so each letter is correct about equally often. Letter references in explanations (`(A)`, `Option B`) and every answer-key table were remapped. Checked against git HEAD: correct-option text identical for every question, 1,112 remapped references each point at the same option text as before, and 520 answer-key rows match their questions.
+- 76 questions whose options refer to other options ("all of the above", "both A and B") or whose explanation refers to letters in a form the tool cannot remap were left in place.
+
+### Added
+
+- `.github/scripts/balance-answer-positions.py` with `--check` and `--write`, and authoring rules in `resources/practice-questions/template.md`.
+
+### Found, not fixed
+
+- The correct option is the longest of the four in 88% of questions (2,651 of 3,015). Needs rewriting by hand; see TODO.md.
+
 ## [2026-10-14] (2) - Cloud Architect brought up to the current exam guide
 
 ### Fixed

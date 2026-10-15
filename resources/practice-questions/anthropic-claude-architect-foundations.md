@@ -16,15 +16,15 @@ These are original practice questions, not vendor exam questions. Verify API det
 ### Question 1
 **Scenario:** A team wants to know whether their task warrants an agent.
 
-A. Always build an agent
-B. Check four things: is the task multi-step and hard to specify in advance, does the outcome justify higher cost and latency, is the model capable at it, and can errors be caught and recovered
-C. Build an agent if the task uses tools
-D. Agents are for chat only
+A. Check four things: is the task multi-step and hard to specify in advance, does the outcome justify higher cost and latency, is the model capable at it, and can errors be caught and recovered
+B. Always build an agent
+C. Agents are for chat only
+D. Build an agent if the task uses tools
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Complexity, value, viability, and cost of error are the four gates. A "no" on any of them means staying at a simpler tier: a single call for classification or extraction, or a code-controlled workflow where you own the branching.
 </details>
@@ -34,15 +34,15 @@ D. Agents are for chat only
 ### Question 2
 **Scenario:** Which describes the tiers from simplest to most complex?
 
-A. Agent, workflow, single call
-B. Single LLM call, workflow with code-controlled logic, agent with a model-driven loop
-C. They are equivalent
-D. Workflow, agent, single call
+A. Workflow, agent, single call
+B. They are equivalent
+C. Single LLM call, workflow with code-controlled logic, agent with a model-driven loop
+D. Agent, workflow, single call
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Default to the simplest tier that meets the need. The distinction between a workflow and an agent is who decides the next step: your code in a workflow, the model in an agent. Model-driven control flow is what buys adaptability and what costs predictability.
 </details>
@@ -52,15 +52,15 @@ D. Workflow, agent, single call
 ### Question 3
 **Scenario:** A custom-tool agent is being built and the team is writing the request-execute-loop by hand.
 
-A. That is the only option
-B. The SDK's tool runner drives the loop for you and still exposes per-turn hooks for approval gates, error interception, result modification, and retries
-C. Hand-writing the loop gives more control in every case
+A. The SDK's tool runner drives the loop for you and still exposes per-turn hooks for approval gates, error interception, result modification, and retries
+B. Hand-writing the loop gives more control in every case
+C. That is the only option
 D. Loops are not needed
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** "I need control" is rarely a reason to hand-roll: the runner yields the assistant message before tools execute, so approval gating and interception fit inside it. Write the loop yourself only for control the runner genuinely does not expose.
 </details>
@@ -70,15 +70,15 @@ D. Loops are not needed
 ### Question 4
 **Scenario:** The team confuses the Tool Runner with the Claude Agent SDK.
 
-A. They are the same
-B. The Tool Runner is a helper in the regular API SDK that loops over tools you define; the Claude Agent SDK is a separate library packaging the Claude Code harness with built-in file, bash, and search tools
+A. The Tool Runner is a helper in the regular API SDK that loops over tools you define; the Claude Agent SDK is a separate library packaging the Claude Code harness with built-in file, bash, and search tools
+B. They are the same
 C. The Agent SDK has no tools
 D. The Tool Runner hosts your compute
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Both supply a harness and leave deployment to you; the difference is scope. The Tool Runner has no built-in tools and no filesystem access. Managed Agents is the third option, where Anthropic runs both the loop and a per-session sandbox.
 </details>
@@ -88,15 +88,15 @@ D. The Tool Runner hosts your compute
 ### Question 5
 **Scenario:** Should an action be a bash command or a dedicated tool?
 
-A. Always bash for flexibility
-B. Start with bash for breadth; promote to a dedicated tool when you need to gate, render, audit, or parallelize that specific action
+A. Start with bash for breadth; promote to a dedicated tool when you need to gate, render, audit, or parallelize that specific action
+B. Always bash for flexibility
 C. Always dedicated tools
 D. It makes no difference
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A bash tool gives your harness one opaque string for every action, so it cannot tell a parallel-safe search from a destructive push. A dedicated tool gives typed arguments the harness can intercept, confirm, or run concurrently.
 </details>
@@ -106,15 +106,15 @@ D. It makes no difference
 ### Question 6
 **Scenario:** A tool description is one vague sentence and its parameters have no descriptions.
 
-A. Fine, the schema is enough
-B. Under-described: tool descriptions are the biggest factor in tool performance, so write several sentences covering what it does, when to use it, when not to, and what each parameter means
-C. Shorter is always better
-D. Add urgent capitalized instructions
+A. Add urgent capitalized instructions
+B. Shorter is always better
+C. Fine, the schema is enough
+D. Under-described: tool descriptions are the biggest factor in tool performance, so write several sentences covering what it does, when to use it, when not to, and what each parameter means
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Under-description is the more common failure than over-description, and being prescriptive about *when* to call a tool measurably improves selection. What does not belong in a description is behavioral steering or worked examples; those go in the system prompt or a skill.
 </details>
@@ -124,9 +124,9 @@ D. Add urgent capitalized instructions
 ### Question 7
 **Scenario:** MCP in one sentence.
 
-A. A model architecture
+A. A prompt format
 B. An open protocol for exposing tools, prompts, and resources to a model through a standard server interface
-C. A prompt format
+C. A model architecture
 D. A hosting platform
 
 <details>
@@ -144,8 +144,8 @@ D. A hosting platform
 
 A. Prefill the assistant turn with an opening brace
 B. Structured outputs with a JSON schema
-C. Ask politely and retry on parse failure
-D. A stop sequence
+C. A stop sequence
+D. Ask politely and retry on parse failure
 
 <details>
 <summary>Answer</summary>
@@ -160,15 +160,15 @@ D. A stop sequence
 ### Question 9
 **Scenario:** A system prompt carried over from an older model is full of "CRITICAL: You MUST" instructions and the model now overtriggers a tool.
 
-A. Add more emphasis
-B. Dial the language back to plain statements; current models follow the system prompt closely, so emphasis written to overcome older reluctance now over-applies
-C. Remove the tool
-D. Lower the temperature
+A. Lower the temperature
+B. Add more emphasis
+C. Dial the language back to plain statements; current models follow the system prompt closely, so emphasis written to overcome older reluctance now over-applies
+D. Remove the tool
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** When every instruction is marked critical, the markers stop carrying information, and an anxious prompt produces a hedging model. Emphasis is a tested fix for one demonstrably underweighted instruction, not a default register.
 </details>
@@ -179,14 +179,14 @@ D. Lower the temperature
 **Scenario:** Where should thinking depth be controlled?
 
 A. By instructing "think step by step" in the prompt
-B. Through configuration: adaptive thinking plus the effort parameter
-C. By raising `max_tokens`
+B. By raising `max_tokens`
+C. Through configuration: adaptive thinking plus the effort parameter
 D. It cannot be controlled
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** On thinking models the prose incantation is redundant, and instructions to think or not to think are prompt cruft worth deleting. Effort is the configured control, and it also affects tool-use rate and how far the model scopes its work.
 </details>
@@ -197,14 +197,14 @@ D. It cannot be controlled
 **Scenario:** A long-running agent's context window fills with old tool results.
 
 A. Restart the conversation
-B. Context editing to clear stale tool results, compaction to summarize when near the limit, and memory for state that must survive the session
+B. Delete the oldest messages arbitrarily
 C. Raise `max_tokens`
-D. Delete the oldest messages arbitrarily
+D. Context editing to clear stale tool results, compaction to summarize when near the limit, and memory for state that must survive the session
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The three operate at different scopes: editing prunes within a session, compaction summarizes within a session, memory persists across sessions. Many long-running agents use all three. Arbitrary truncation breaks tool-use pairing and thinking-block ordering.
 </details>
@@ -232,9 +232,9 @@ D. Add more breakpoints
 ### Question 13
 **Scenario:** An agent loop must not run forever.
 
-A. Trust the model to stop
+A. Increase the context window
 B. Bound it: maximum iterations, a wall-clock timeout, a token budget, and detection of repeated states
-C. Increase the context window
+C. Trust the model to stop
 D. Use a larger model
 
 <details>
@@ -250,15 +250,15 @@ D. Use a larger model
 ### Question 14
 **Scenario:** A repository uses a `CLAUDE.md` and skill files.
 
-A. They are documentation for humans only
-B. They are context loaded into the model's working set, so every paragraph is paid for on use and should carry information only the author knows
-C. Longer is always better
-D. They replace the system prompt
+A. Longer is always better
+B. They replace the system prompt
+C. They are documentation for humans only
+D. They are context loaded into the model's working set, so every paragraph is paid for on use and should carry information only the author knows
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The deletion test is whether the model could already know it. Keep the audience, environment facts, quality bar, and tool contracts; remove restatements of trained defaults and workarounds for failures the current model no longer has.
 </details>
@@ -269,14 +269,14 @@ D. They replace the system prompt
 **Scenario:** A tool with side effects, such as sending email, is exposed to an agent.
 
 A. Trust the loop
-B. Validate inputs and gate destructive or irreversible actions behind confirmation, whether you use the tool runner or a manual loop
-C. Add a warning to the system prompt
-D. Log the calls and review later
+B. Log the calls and review later
+C. Validate inputs and gate destructive or irreversible actions behind confirmation, whether you use the tool runner or a manual loop
+D. Add a warning to the system prompt
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The tool executes automatically whenever the model requests it, so the gate has to be in code. With the runner you gate inside the tool function or intervene on the yielded message before it executes; the system prompt is advisory and injected content can compete with it.
 </details>

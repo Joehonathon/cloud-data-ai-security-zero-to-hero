@@ -10,14 +10,14 @@
 **Scenario:** A retailer wants an assistant that answers customer questions about its current product catalog, which changes weekly.
 
 A. Fine-tune a model on the catalog
-B. Ground the model on the catalog data, using retrieval
+B. Train a custom foundation model
 C. Include the whole catalog in every prompt
-D. Train a custom foundation model
+D. Ground the model on the catalog data, using retrieval
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Weekly changes make fine-tuning wrong, because fine-tuned knowledge is frozen at training time and would need retraining each week. Grounding updates instantly. Including the whole catalog exceeds practical context and cost limits. The commonest wrong answer on this exam is fine-tuning applied to a knowledge problem.
 </details>
@@ -27,15 +27,15 @@ D. Train a custom foundation model
 ### Question 2
 **Scenario:** An organization wants employees to draft documents and summarize meetings more quickly, with minimal engineering effort.
 
-A. Build a custom application on Vertex AI
-B. Adopt Gemini for Google Workspace
-C. Fine-tune a model on company documents
-D. Deploy an open model with Gemma
+A. Deploy an open model with Gemma
+B. Fine-tune a model on company documents
+C. Build a custom application on Vertex AI
+D. Adopt Gemini for Google Workspace
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Start at the lowest rung of the ladder. An applied assistant delivers productivity gains with no build at all. Building on the platform is for differentiated experiences, and fine-tuning or self-hosting are further up the cost and effort curve.
 </details>
@@ -46,14 +46,14 @@ D. Deploy an open model with Gemma
 **Scenario:** Responses to the same prompt vary too much between runs for an extraction task.
 
 A. Increase top-k
-B. Lower the temperature
-C. Fine-tune the model
-D. Increase the output token limit
+B. Increase the output token limit
+C. Lower the temperature
+D. Fine-tune the model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Temperature is the primary control over randomness in token selection, and lowering it makes output near-deterministic. Increasing top-k widens the candidate set, adding variety. Fine-tuning is an expensive answer to a parameter setting.
 </details>
@@ -63,15 +63,15 @@ D. Increase the output token limit
 ### Question 4
 **Scenario:** A model must check live inventory before answering a customer question.
 
-A. Fine-tune the model on inventory data
-B. Grounding with Google Search
-C. Function calling, so the model can request that application code query the inventory system
-D. Increase the context window
+A. Increase the context window
+B. Function calling, so the model can request that application code query the inventory system
+C. Grounding with Google Search
+D. Fine-tune the model on inventory data
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Live data and actions require function calling. Fine-tuning freezes a snapshot. Search grounding covers public web information, not an internal inventory system. A larger context window does not connect the model to a live system.
 </details>
@@ -81,15 +81,15 @@ D. Increase the context window
 ### Question 5
 **Scenario:** Which Google Cloud product provides grounded search over an organization's own content with generative summaries and citations?
 
-A. NotebookLM
-B. Vertex AI Search
-C. BigQuery ML
-D. Gemma
+A. BigQuery ML
+B. NotebookLM
+C. Gemma
+D. Vertex AI Search
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Vertex AI Search is the enterprise product for grounded search with summaries and citations. NotebookLM is grounded research over sources an individual supplies. BigQuery ML brings generative functions to data in the warehouse. Gemma is a family of open models.
 </details>
@@ -99,15 +99,15 @@ D. Gemma
 ### Question 6
 **Scenario:** A leadership team asks how to decide which generative AI use cases to pursue first.
 
-A. Start with the most technically interesting
-B. Prioritize by business value against feasibility, favoring high-value, high-feasibility quick wins with demonstration value
+A. Prioritize by business value against feasibility, favoring high-value, high-feasibility quick wins with demonstration value
+B. Start with the most technically interesting
 C. Start with the largest department
 D. Pursue all candidate use cases in parallel
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Value against feasibility is the standard framing, and early wins should be chosen partly for visibility, because a demonstrated success builds the organizational appetite that later, harder projects require.
 </details>
@@ -117,10 +117,10 @@ D. Pursue all candidate use cases in parallel
 ### Question 7
 **Scenario:** A project to summarize support tickets has stalled. The model works well in demos. What is the most likely cause?
 
-A. The model is not capable enough
+A. Temperature is set incorrectly
 B. Data readiness: access, quality, or governance of the ticket data
 C. The context window is too small
-D. Temperature is set incorrectly
+D. The model is not capable enough
 
 <details>
 <summary>Answer</summary>
@@ -153,15 +153,15 @@ D. Determining regulatory filing figures with no review
 ### Question 9
 **Scenario:** What does grounding primarily mitigate?
 
-A. Latency
-B. Cost
-C. Hallucination
-D. Bias
+A. Hallucination
+B. Latency
+C. Bias
+D. Cost
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Grounding supplies authoritative source text so the model answers from evidence rather than from memory, which is the primary mitigation for confident wrong answers. It also enables citations so a human can verify.
 </details>
@@ -172,14 +172,14 @@ D. Bias
 **Scenario:** Which is included in total cost of ownership for a generative AI solution but commonly overlooked?
 
 A. Inference cost
-B. Data preparation, evaluation, monitoring, and change management
-C. Model licensing
-D. Network egress
+B. Network egress
+C. Data preparation, evaluation, monitoring, and change management
+D. Model licensing
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Inference is visible and often not the largest line. Data preparation is usually the largest hidden cost, and ongoing evaluation, monitoring, and adoption work continue for the life of the system.
 </details>
@@ -189,15 +189,15 @@ D. Network egress
 ### Question 11
 **Scenario:** Which situation calls for keeping a human in the loop?
 
-A. Summarizing internal meeting notes
-B. Suggesting draft product descriptions
-C. Making a credit decision affecting an applicant
+A. Making a credit decision affecting an applicant
+B. Summarizing internal meeting notes
+C. Suggesting draft product descriptions
 D. Categorizing support tickets by topic
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** High-stakes, regulated decisions affecting individuals require human review and an explainable rationale. The other three are low-stakes, reversible, and reviewable in aggregate.
 </details>
@@ -207,9 +207,9 @@ D. Categorizing support tickets by topic
 ### Question 12
 **Scenario:** Which responsible AI theme does publishing a clear notice that users are interacting with an AI system address?
 
-A. Fairness
+A. Privacy
 B. Transparency
-C. Privacy
+C. Fairness
 D. Accountability
 
 <details>
@@ -225,15 +225,15 @@ D. Accountability
 ### Question 13
 **Scenario:** An organization needs to run a model on its own infrastructure, including at the edge, with full control over the weights.
 
-A. Gemini through Vertex AI
-B. Gemma open models
-C. Vertex AI Search
-D. Gemini for Google Cloud
+A. Gemini for Google Cloud
+B. Gemini through Vertex AI
+C. Gemma open models
+D. Vertex AI Search
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Gemma is Google's family of open models intended to be run by the user, which is what "own infrastructure" and "control over the weights" require. The others are managed services or applied assistants.
 </details>
@@ -243,10 +243,10 @@ D. Gemini for Google Cloud
 ### Question 14
 **Scenario:** How should the success of a generative AI deployment be measured?
 
-A. Number of prompts submitted
+A. Number of features shipped
 B. Business outcomes defined before building, plus quality, cost, and adoption metrics
-C. Model size
-D. Number of features shipped
+C. Number of prompts submitted
+D. Model size
 
 <details>
 <summary>Answer</summary>
@@ -261,15 +261,15 @@ D. Number of features shipped
 ### Question 15
 **Scenario:** A regulated customer requires that data submitted to a model is not used to train the provider's foundation models, and that inference stays within a specific region.
 
-A. This is not achievable with a managed service
-B. Vertex AI enterprise controls: customer data is not used to train Google's foundation models, with regional endpoints and data residency options
+A. Vertex AI enterprise controls: customer data is not used to train Google's foundation models, with regional endpoints and data residency options
+B. It depends on the model chosen
 C. Only self-hosting an open model satisfies this
-D. It depends on the model chosen
+D. This is not achievable with a managed service
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Enterprise data governance, residency, private connectivity, and encryption controls are frequently the deciding factor in business scenarios involving regulated industries, and they are available on the managed platform rather than requiring self-hosting.
 </details>

@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An engineer is asked to reduce a service's cost without harming reliability.
 
-A. Reduce redundancy
-B. Attack waste first: rightsize against measured utilization, remove idle and orphaned resources, and schedule non-production, before touching anything that carries the reliability
-C. Move to a cheaper region
-D. Reduce replicas
+A. Attack waste first: rightsize against measured utilization, remove idle and orphaned resources, and schedule non-production, before touching anything that carries the reliability
+B. Move to a cheaper region
+C. Reduce replicas
+D. Reduce redundancy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Waste reduction has no reliability cost, so it comes first by definition. Orphaned resources are the usual quick win: unattached volumes, unassociated addresses, old snapshots, and load balancers with no targets accumulate silently.
 </details>
@@ -32,15 +32,15 @@ D. Reduce replicas
 ### Question 2
 **Scenario:** Instances are sized from a spreadsheet estimate made before launch.
 
-A. Keep them
-B. Rightsize against observed CPU, memory, and I/O percentiles over a representative period, allowing headroom for peaks rather than sizing to the average
-C. Halve every instance
-D. Double every instance
+A. Double every instance
+B. Halve every instance
+C. Keep them
+D. Rightsize against observed CPU, memory, and I/O percentiles over a representative period, allowing headroom for peaks rather than sizing to the average
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Pre-launch estimates embed guesswork plus a safety margin nobody revisits. Sizing to observed percentiles with deliberate headroom is the disciplined version; sizing to the average is the failure mode that turns a cost win into an incident.
 </details>
@@ -51,14 +51,14 @@ D. Double every instance
 **Scenario:** A batch workload tolerates interruption and reruns cheaply.
 
 A. On-demand instances
-B. Spot or preemptible capacity with checkpointing, falling back to on-demand when spot is unavailable
-C. Reserved instances
-D. Dedicated hosts
+B. Dedicated hosts
+C. Spot or preemptible capacity with checkpointing, falling back to on-demand when spot is unavailable
+D. Reserved instances
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Interruption tolerance is the qualifying property, and checkpointing is what makes an interruption a pause rather than a lost run. Stateless, retryable, non-urgent work is the right fit; a stateful licensed database is not.
 </details>
@@ -68,15 +68,15 @@ D. Dedicated hosts
 ### Question 4
 **Scenario:** Storage costs grow steadily while access falls off after 30 days.
 
-A. Delete everything after 30 days
-B. Lifecycle policies transitioning to colder tiers on a schedule, with expiry where retention allows, plus a review of whether snapshots and versions are accumulating
+A. Lifecycle policies transitioning to colder tiers on a schedule, with expiry where retention allows, plus a review of whether snapshots and versions are accumulating
+B. Buy more storage
 C. Compress the data
-D. Buy more storage
+D. Delete everything after 30 days
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Tiering matches cost to access frequency automatically. The overlooked contributors are usually object versions and orphaned snapshots, which grow without any corresponding growth in what the application actually reads.
 </details>
@@ -87,14 +87,14 @@ D. Buy more storage
 **Scenario:** Data transfer charges are unexpectedly high.
 
 A. Reduce the data volume only
-B. Map the flows: cross-zone and cross-region traffic, NAT gateway processing, and egress to the internet, then co-locate chatty components and use private endpoints or a CDN where they apply
-C. Compress everything
-D. Move to another provider
+B. Move to another provider
+C. Map the flows: cross-zone and cross-region traffic, NAT gateway processing, and egress to the internet, then co-locate chatty components and use private endpoints or a CDN where they apply
+D. Compress everything
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Transfer cost is architectural, not incidental. Cross-zone chatter between tiers and NAT processing charges for traffic that could use a private service endpoint are the two most common surprises, and both are fixed by design changes rather than tuning.
 </details>
@@ -104,9 +104,9 @@ D. Move to another provider
 ### Question 6
 **Scenario:** A Kubernetes cluster runs at 20% node utilization.
 
-A. Add more nodes
+A. Reduce replicas
 B. Set resource requests to match observed usage, enable cluster autoscaling with bin-packing, and consolidate workloads; requests, not actual usage, drive scheduling
-C. Reduce replicas
+C. Add more nodes
 D. Buy commitments for the nodes
 
 <details>
@@ -124,8 +124,8 @@ D. Buy commitments for the nodes
 
 A. Serverless is always cheaper
 B. Model the crossover: serverless wins for spiky and low-volume workloads, while sustained high-volume traffic often favors provisioned compute
-C. Increase the memory allocation
-D. Reduce the timeout
+C. Reduce the timeout
+D. Increase the memory allocation
 
 <details>
 <summary>Answer</summary>
@@ -141,14 +141,14 @@ D. Reduce the timeout
 **Scenario:** Cost must be considered before code ships, not after.
 
 A. Monthly review meetings
-B. Shift left: cost estimation in infrastructure-as-code pull requests, policy checks blocking oversized or untagged resources, and cost as a design constraint alongside performance
-C. A dashboard for engineers
+B. A dashboard for engineers
+C. Shift left: cost estimation in infrastructure-as-code pull requests, policy checks blocking oversized or untagged resources, and cost as a design constraint alongside performance
 D. Quarterly audits
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Architecture decisions set the cost floor, and no amount of later tuning removes a design with inherently heavy cross-region transfer or per-request pricing at scale. A pull-request estimate is the cheapest possible moment to catch it.
 </details>
@@ -158,15 +158,15 @@ D. Quarterly audits
 ### Question 9
 **Scenario:** Idle non-production resources must stop accruing cost automatically.
 
-A. Ask developers to remember
-B. Automated scheduling to stop resources outside working hours, plus expiry policies on ephemeral environments with a documented override
-C. Delete them weekly
-D. Reduce their size
+A. Automated scheduling to stop resources outside working hours, plus expiry policies on ephemeral environments with a documented override
+B. Delete them weekly
+C. Reduce their size
+D. Ask developers to remember
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Automation removes the person who might forget, which is the entire point. An override path matters too: a schedule with no exception mechanism gets disabled the first time it interrupts real work.
 </details>
@@ -176,15 +176,15 @@ D. Reduce their size
 ### Question 10
 **Scenario:** A team wants to know whether an optimization actually worked.
 
-A. Look at total spend next month
-B. Measure the specific resource or unit metric before and after, isolating the change from unrelated growth
-C. Ask the team
-D. Check the invoice total
+A. Ask the team
+B. Check the invoice total
+C. Measure the specific resource or unit metric before and after, isolating the change from unrelated growth
+D. Look at total spend next month
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Total spend moves for many reasons at once, so attribution requires narrowing to the affected resources or to a unit cost. Without that isolation, a successful optimization masked by growth looks like a failure and gets reverted.
 </details>
@@ -195,14 +195,14 @@ D. Check the invoice total
 **Scenario:** A database is over-provisioned but the team fears a resize.
 
 A. Leave it
-B. Reduce in stages with monitoring and a rollback plan, and use a read replica or a test restore to validate the smaller size under realistic load first
+B. Add a cache instead
 C. Halve it immediately
-D. Add a cache instead
+D. Reduce in stages with monitoring and a rollback plan, and use a read replica or a test restore to validate the smaller size under realistic load first
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Staged change with a rollback path is how you make a reversible experiment out of something that feels irreversible. Validating on a copy under realistic load removes most of the uncertainty that drives the fear.
 </details>
@@ -212,15 +212,15 @@ D. Add a cache instead
 ### Question 12
 **Scenario:** Which architectural change most reduces cost for a read-heavy workload?
 
-A. A larger database instance
-B. Caching in front of the datastore and a CDN for static content, removing repeated work entirely
-C. More replicas
+A. Caching in front of the datastore and a CDN for static content, removing repeated work entirely
+B. More replicas
+C. A larger database instance
 D. A faster disk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Caching removes the request rather than serving it more cheaply, which is a larger effect than any resizing. The design work is invalidation: TTL-based lazy loading is simple but serves stale data, write-through stays fresh at the cost of write complexity.
 </details>
@@ -231,14 +231,14 @@ D. A faster disk
 **Scenario:** GPU instances for machine learning sit idle between training runs.
 
 A. Keep them running for convenience
-B. Use managed training jobs or clusters that scale to zero, checkpoint to durable storage, and separate training from inference so each scales on its own pattern
-C. Buy commitments for them
-D. Use CPU instead
+B. Buy commitments for them
+C. Use CPU instead
+D. Use managed training jobs or clusters that scale to zero, checkpoint to durable storage, and separate training from inference so each scales on its own pattern
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** GPUs are among the most expensive idle resources in any estate. Separating training from inference matters because their load shapes differ completely: bursty long jobs versus steady low-latency requests.
 </details>
@@ -248,10 +248,10 @@ D. Use CPU instead
 ### Question 14
 **Scenario:** An engineer is asked to commit to a three-year reservation.
 
-A. Commit to current usage
+A. Commit to peak
 B. Commit only to the stable baseline that survives planned changes, after rightsizing, and weigh the flexibility cost of the longer term
 C. Never commit
-D. Commit to peak
+D. Commit to current usage
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Commit to peak
 ### Question 15
 **Scenario:** Cost anomalies should reach the engineer who caused them.
 
-A. A monthly report to finance
+A. An annual review
 B. Automated anomaly detection routing alerts to the owning team by tag or account, close to when the change happened
-C. An annual review
-D. A shared inbox
+C. A shared inbox
+D. A monthly report to finance
 
 <details>
 <summary>Answer</summary>

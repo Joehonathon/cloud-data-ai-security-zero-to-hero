@@ -9,15 +9,15 @@
 ### Question 1
 **Scenario:** A team has 1 TB of training data in S3 and runs SageMaker training jobs. The job is read-bound. What feature optimizes I/O?
 
-A. Use SageMaker File mode (download all data first)
-B. Use SageMaker FastFile mode or Pipe mode (stream data, no full download)
+A. Use SageMaker FastFile mode or Pipe mode (stream data, no full download)
+B. Use SageMaker File mode (download all data first)
 C. Move data to EBS
 D. Use smaller instances
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** File mode downloads everything before training (slow startup). FastFile / Pipe streams from S3 during training, faster startup and lower disk needs. FastFile is the modern default; Pipe is legacy.
 </details>
@@ -28,9 +28,9 @@ D. Use smaller instances
 **Scenario:** Hyperparameter tuning across 100 candidate configs - what SageMaker feature?
 
 A. SageMaker Automatic Model Tuning (AMT) with Bayesian search
-B. Manual grid search via shell scripts
+B. EC2 Spot Fleet
 C. SageMaker Pipelines
-D. EC2 Spot Fleet
+D. Manual grid search via shell scripts
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. EC2 Spot Fleet
 ### Question 3
 **Scenario:** A batch inference job needs to score 10M records overnight. What endpoint type?
 
-A. Real-time endpoint
+A. Lambda
 B. SageMaker Batch Transform
-C. SageMaker Serverless inference
-D. Lambda
+C. Real-time endpoint
+D. SageMaker Serverless inference
 
 <details>
 <summary>Answer</summary>
@@ -63,9 +63,9 @@ D. Lambda
 ### Question 4
 **Scenario:** A team needs A/B testing between model v1 and v2. Which SageMaker feature?
 
-A. Inference recommender
+A. Two separate endpoints + manual routing
 B. SageMaker endpoints with multiple production variants and traffic split (e.g., 90/10)
-C. Two separate endpoints + manual routing
+C. Inference recommender
 D. Lambda function with random routing
 
 <details>
@@ -81,15 +81,15 @@ D. Lambda function with random routing
 ### Question 5
 **Scenario:** Data drift detection on a deployed model - which SageMaker feature?
 
-A. SageMaker Model Monitor
+A. AWS Config
 B. CloudWatch only
-C. Amazon Macie
-D. AWS Config
+C. SageMaker Model Monitor
+D. Amazon Macie
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Model Monitor watches input/output distributions for drift (data drift, model quality drift, bias drift, feature attribution drift). Captures inference data, compares against a baseline computed from training data, alerts on deviation.
 </details>
@@ -100,14 +100,14 @@ D. AWS Config
 **Scenario:** A team trains a custom image classifier. They want to use a pre-trained backbone (ResNet) and fine-tune the final layers. Which approach?
 
 A. Train from scratch
-B. Transfer learning with a pre-trained model from SageMaker JumpStart
-C. Use only Amazon Rekognition
-D. Custom hardware
+B. Use only Amazon Rekognition
+C. Custom hardware
+D. Transfer learning with a pre-trained model from SageMaker JumpStart
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Transfer learning is the standard pattern for image/NLP - start with a pre-trained backbone, fine-tune on your task. JumpStart provides 500+ pre-trained models with one-click deployment and fine-tuning.
 </details>
@@ -117,15 +117,15 @@ D. Custom hardware
 ### Question 7
 **Scenario:** Data labeling at scale - which AWS service?
 
-A. SageMaker Ground Truth (managed labeling with human workforce + ML-assisted labeling)
-B. AWS Lambda
-C. Amazon Mechanical Turk only
-D. SageMaker Studio
+A. AWS Lambda
+B. SageMaker Ground Truth (managed labeling with human workforce + ML-assisted labeling)
+C. SageMaker Studio
+D. Amazon Mechanical Turk only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Ground Truth manages labeling jobs - public workforce (Mechanical Turk), private workforce (your employees), or vendors. ML-assisted active labeling reduces cost (~70%) by auto-labeling high-confidence items.
 </details>
@@ -137,8 +137,8 @@ D. SageMaker Studio
 
 A. Versioned, reproducible, lineage-tracked, integrated with SageMaker Model Registry, conditional steps
 B. Faster execution
-C. Lower cost
-D. They're identical
+C. They're identical
+D. Lower cost
 
 <details>
 <summary>Answer</summary>
@@ -153,15 +153,15 @@ D. They're identical
 ### Question 9
 **Scenario:** A model needs to serve predictions in <100ms. What endpoint configuration?
 
-A. Real-time endpoint with provisioned instances; enable auto-scaling on InvocationsPerInstance
-B. Batch Transform
+A. Batch Transform
+B. Lambda only
 C. Serverless inference
-D. Lambda only
+D. Real-time endpoint with provisioned instances; enable auto-scaling on InvocationsPerInstance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Real-time endpoints with appropriately-sized instances meet sub-100ms latency. Auto-scaling adapts to traffic. Serverless has variable cold start (could be slower). Batch is high-throughput, not low-latency.
 </details>
@@ -171,15 +171,15 @@ D. Lambda only
 ### Question 10
 **Scenario:** Which is the AWS-managed feature store?
 
-A. SageMaker Feature Store
-B. Amazon RDS
+A. Amazon RDS
+B. SageMaker Feature Store
 C. DynamoDB
 D. ElasticSearch
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** SageMaker Feature Store is the managed feature store: online (low-latency lookup) + offline (S3-backed for training). Solves train/serve skew by ensuring features are computed identically for both.
 </details>
@@ -190,14 +190,14 @@ D. ElasticSearch
 **Scenario:** A model is in production. Its accuracy slowly degrades over weeks. What's the most likely cause?
 
 A. The model was always broken
-B. Concept drift (the underlying relationship between features and target shifts over time, e.g., user preferences change)
-C. Hardware failure
-D. Network latency
+B. Hardware failure
+C. Network latency
+D. Concept drift (the underlying relationship between features and target shifts over time, e.g., user preferences change)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Concept drift = the world changes, so a model trained on yesterday's patterns underperforms. Mitigated by periodic retraining, online learning, or change-detection alarms (Model Monitor).
 </details>
@@ -207,15 +207,15 @@ D. Network latency
 ### Question 12
 **Scenario:** A model trained on US data underperforms in EU markets. What's the issue?
 
-A. Network latency
-B. Distribution shift / data drift between training and deployment populations
-C. Model size
-D. The model is broken
+A. Model size
+B. The model is broken
+C. Network latency
+D. Distribution shift / data drift between training and deployment populations
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Distribution shift = the deployed population differs from the training population (different demographics, behaviors, etc.). Mitigation: train per-region, ensemble, fine-tune on local data, or domain adaptation techniques.
 </details>
@@ -225,15 +225,15 @@ D. The model is broken
 ### Question 13
 **Scenario:** SageMaker Clarify is for:
 
-A. Encryption
-B. Bias detection in data and models, plus model explainability (SHAP values)
+A. Bias detection in data and models, plus model explainability (SHAP values)
+B. Encryption
 C. Cost optimization
 D. Networking
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Clarify analyzes datasets and models for bias across protected attributes, and provides SHAP-based explanations of individual predictions. Required for high-stakes regulated applications.
 </details>
@@ -243,15 +243,15 @@ D. Networking
 ### Question 14
 **Scenario:** Multi-model endpoint vs multiple single-model endpoints?
 
-A. Multi-model endpoint hosts many models on shared compute (low traffic per model = cost savings)
+A. Multi-model only works for one framework
 B. They're identical
-C. Multi-model is always slower
-D. Multi-model only works for one framework
+C. Multi-model endpoint hosts many models on shared compute (low traffic per model = cost savings)
+D. Multi-model is always slower
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Multi-model endpoints (MME) host hundreds of models on shared instances - models loaded on demand. Best when you have many low-traffic models (per-customer model). Bigger ratio of models to instances = bigger savings.
 </details>
@@ -261,15 +261,15 @@ D. Multi-model only works for one framework
 ### Question 15
 **Scenario:** Bedrock vs SageMaker - high-level distinction?
 
-A. Bedrock = managed access to foundation models via API (no model hosting); SageMaker = full ML platform including custom training, hosting, MLOps
-B. Identical
-C. SageMaker only does training; Bedrock only does inference
-D. Bedrock is for non-ML
+A. Bedrock is for non-ML
+B. Bedrock = managed access to foundation models via API (no model hosting); SageMaker = full ML platform including custom training, hosting, MLOps
+C. Identical
+D. SageMaker only does training; Bedrock only does inference
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Bedrock = "I want to call Claude/Llama via API." SageMaker = "I want to train, tune, deploy, and monitor my own models" (with optional access to foundation models via JumpStart). They complement each other - many architectures use both.
 </details>
@@ -279,15 +279,15 @@ D. Bedrock is for non-ML
 ### Question 16
 **Scenario:** A team trains a model that exceeds memory on a single GPU. The dataset is 800 GB. Best SageMaker training pattern?
 
-A. Train on a smaller sample
-B. SageMaker Distributed Training - data parallel (sharded data, replicated model) for moderate model sizes; model parallel (sharded model across GPUs) when the model itself is the bottleneck
-C. Local mode only
+A. SageMaker Distributed Training - data parallel (sharded data, replicated model) for moderate model sizes; model parallel (sharded model across GPUs) when the model itself is the bottleneck
+B. Local mode only
+C. Train on a smaller sample
 D. Inference-only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SageMaker offers SMDDP (data parallel) and SMP (model parallel) libraries. Choose based on what's saturating: data volume → data parallel, model size → model parallel. Both can stack for large LLMs. Local mode is for dev iteration only.
 </details>
@@ -297,15 +297,15 @@ D. Inference-only
 ### Question 17
 **Scenario:** A model in production drifts after 6 months - predictions degrade as inputs shift. Which feature catches this?
 
-A. SageMaker Model Monitor with data quality + model quality baselines, scheduled to compare live traffic against a baseline and emit CloudWatch metrics + alerts
-B. CloudTrail
-C. Manual review
+A. CloudTrail
+B. Manual review
+C. SageMaker Model Monitor with data quality + model quality baselines, scheduled to compare live traffic against a baseline and emit CloudWatch metrics + alerts
 D. AWS Config
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Model Monitor detects data drift (input distribution change), model quality drift (accuracy regression on labeled subset), bias drift, feature attribution drift. Run on an endpoint with a captured baseline.
 </details>
@@ -315,15 +315,15 @@ D. AWS Config
 ### Question 18
 **Scenario:** A real-time endpoint must scale from 1-200 instances based on traffic with a sub-100 ms p99 SLA. Best configuration?
 
-A. Static fleet of 200
-B. SageMaker async or real-time endpoint with auto-scaling on TargetTrackingScalingPolicy (e.g., InvocationsPerInstance), provisioned warm pool, and instance type matched to model latency profile
-C. Lambda with the model in a layer
-D. Batch transform
+A. SageMaker async or real-time endpoint with auto-scaling on TargetTrackingScalingPolicy (e.g., InvocationsPerInstance), provisioned warm pool, and instance type matched to model latency profile
+B. Batch transform
+C. Static fleet of 200
+D. Lambda with the model in a layer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Real-time endpoints support target-tracking auto-scaling. Warm pools cut scale-out latency. For very bursty workloads, async endpoints buffer to SQS-style queue. Lambda has cold-start and 250 MB layer limits incompatible with most ML models.
 </details>
@@ -334,14 +334,14 @@ D. Batch transform
 **Scenario:** Cost optimization: workload runs predictable, mixed batch + real-time. Which combination saves most?
 
 A. On-demand only
-B. SageMaker Savings Plans for predictable usage + Spot instances for batch transform / non-critical training jobs (with checkpointing) + Multi-Model Endpoints for low-traffic models
-C. Reserved EC2
+B. Reserved EC2
+C. SageMaker Savings Plans for predictable usage + Spot instances for batch transform / non-critical training jobs (with checkpointing) + Multi-Model Endpoints for low-traffic models
 D. Disable everything
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Savings Plans cut steady-state cost ~30-60%. Spot saves 70-90% on interruptible jobs (training with checkpointing, batch). Multi-Model Endpoints amortize host cost across many small models. Layer the levers.
 </details>
@@ -352,9 +352,9 @@ D. Disable everything
 **Scenario:** Bedrock - which feature lets you ground responses on private documents without managing a vector store?
 
 A. Bedrock Knowledge Bases - managed RAG: ingests S3 docs, chunks, embeds (Titan Embeddings or other), stores in OpenSearch Serverless / RDS / Pinecone, retrieves at inference
-B. Bedrock Agents
-C. Bedrock Guardrails
-D. Bedrock Studio
+B. Bedrock Studio
+C. Bedrock Agents
+D. Bedrock Guardrails
 
 <details>
 <summary>Answer</summary>
@@ -369,15 +369,15 @@ D. Bedrock Studio
 ### Question 21
 **Scenario:** Bias detection during training - which SageMaker feature?
 
-A. SageMaker Clarify - measures pre-training bias (class imbalance, label imbalance), post-training bias (predictions vary by sensitive feature), and explainability (SHAP)
-B. Model Monitor only
-C. Pipelines
-D. Ground Truth
+A. Model Monitor only
+B. Ground Truth
+C. SageMaker Clarify - measures pre-training bias (class imbalance, label imbalance), post-training bias (predictions vary by sensitive feature), and explainability (SHAP)
+D. Pipelines
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Clarify measures bias in data and model, with multiple metrics (DPL, KL divergence, etc.). Output is a report tied to the training job. Model Monitor handles drift in production. Ground Truth labels data.
 </details>
@@ -387,15 +387,15 @@ D. Ground Truth
 ### Question 22
 **Scenario:** A team versions training code, hyperparameters, and model artifacts for reproducibility. Which native combo?
 
-A. Manual notebook saves
-B. SageMaker Pipelines (DAG of steps) + Model Registry (versioned models with approval workflow) + git for code + Experiments for tracking metrics across runs
-C. S3 only
-D. CodeCommit only
+A. S3 only
+B. CodeCommit only
+C. Manual notebook saves
+D. SageMaker Pipelines (DAG of steps) + Model Registry (versioned models with approval workflow) + git for code + Experiments for tracking metrics across runs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Pipelines + Model Registry is the SageMaker MLOps backbone. Pipelines defines the workflow as code; Model Registry tracks versions with approval gates feeding deployment. Experiments captures metrics + hyperparams. Git holds the code.
 </details>
@@ -405,15 +405,15 @@ D. CodeCommit only
 ### Question 23
 **Scenario:** Data labeling at scale (50,000 images for object detection) with quality control?
 
-A. Manual emails
-B. SageMaker Ground Truth with built-in workflows, automated labeling (active learning) for cost reduction, plus consensus / multi-annotator review for quality
-C. Hire freelancers offline
+A. Hire freelancers offline
+B. Manual emails
+C. SageMaker Ground Truth with built-in workflows, automated labeling (active learning) for cost reduction, plus consensus / multi-annotator review for quality
 D. Bedrock
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Ground Truth supports public (Mechanical Turk), private, or vendor workforces. Active learning trains a small model that auto-labels easy examples and routes hard cases to humans, cutting labeling cost. Quality controls: consensus across N annotators.
 </details>
@@ -424,14 +424,14 @@ D. Bedrock
 **Scenario:** A team wants reproducible feature engineering across training and serving. Best AWS service?
 
 A. S3 only
-B. SageMaker Feature Store - dual storage (offline for training, online for low-latency inference) with consistency guarantees and feature versioning
-C. RDS
-D. DynamoDB
+B. RDS
+C. DynamoDB
+D. SageMaker Feature Store - dual storage (offline for training, online for low-latency inference) with consistency guarantees and feature versioning
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Feature Store solves the train/serve skew problem. Same features, same logic, queryable at training time (offline) and at inference (online). Versioned, governed. Critical for production ML at scale.
 </details>
@@ -443,8 +443,8 @@ D. DynamoDB
 
 A. Public S3
 B. VPC-only training with no internet access (use VPC endpoints), KMS-encrypted training data and artifacts, IAM roles with least-privilege, network isolation flag enabled, plus inter-container traffic encryption
-C. Disable encryption
-D. Open security groups
+C. Open security groups
+D. Disable encryption
 
 <details>
 <summary>Answer</summary>

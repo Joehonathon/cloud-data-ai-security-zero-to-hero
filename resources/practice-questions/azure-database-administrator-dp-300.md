@@ -14,9 +14,9 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An application uses SQL Server Agent jobs, cross-database queries, and CLR. It must move to a PaaS offering with minimal code change.
 
-A. Azure SQL Database single database
+A. SQL Server on an Azure VM
 B. Azure SQL Managed Instance
-C. SQL Server on an Azure VM
+C. Azure SQL Database single database
 D. Azure Database for PostgreSQL
 
 <details>
@@ -32,10 +32,10 @@ D. Azure Database for PostgreSQL
 ### Question 2
 **Scenario:** A single database must survive a regional outage with an RPO measured in seconds and a readable secondary.
 
-A. Geo-redundant backups only
+A. Long-term retention
 B. Active geo-replication or a failover group to a secondary region
-C. Zone-redundant configuration
-D. Long-term retention
+C. Geo-redundant backups only
+D. Zone-redundant configuration
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Long-term retention
 ### Question 3
 **Scenario:** A query that ran in 200 ms now takes 30 seconds after a statistics update, and the plan changed.
 
-A. Rebuild all indexes
+A. Increase the service tier
 B. Use Query Store to find the regression and force the previously good plan
-C. Restart the server
-D. Increase the service tier
+C. Rebuild all indexes
+D. Restart the server
 
 <details>
 <summary>Answer</summary>
@@ -68,15 +68,15 @@ D. Increase the service tier
 ### Question 4
 **Scenario:** Column-level protection is required so that support staff see only the last four digits of a card number, without changing queries.
 
-A. Transparent Data Encryption
-B. Dynamic Data Masking
-C. Always Encrypted
-D. Row-Level Security
+A. Always Encrypted
+B. Row-Level Security
+C. Transparent Data Encryption
+D. Dynamic Data Masking
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Dynamic Data Masking rewrites results at query time for unprivileged users while the data stays intact. Be clear about its limit: it is a presentation control, not a cryptographic one, and a user who can run arbitrary queries can often infer the value. Always Encrypted protects against the DBA and the platform but requires client-side key handling.
 </details>
@@ -86,15 +86,15 @@ D. Row-Level Security
 ### Question 5
 **Scenario:** Data must be unreadable to Microsoft operators and to the DBA, including in memory on the server.
 
-A. TDE
-B. Always Encrypted with secure enclaves
-C. Dynamic Data Masking
-D. Auditing
+A. Auditing
+B. TDE
+C. Always Encrypted with secure enclaves
+D. Dynamic Data Masking
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Always Encrypted keeps the keys client-side so the engine never sees plaintext, and secure enclaves extend that to allow richer operations such as range comparisons and in-place encryption. TDE encrypts data at rest only, so anyone querying the database sees plaintext.
 </details>
@@ -104,15 +104,15 @@ D. Auditing
 ### Question 6
 **Scenario:** Users should only see rows belonging to their own department, enforced in the database.
 
-A. Views for each department
-B. Row-Level Security with a security predicate function
+A. Row-Level Security with a security predicate function
+B. Views for each department
 C. Application filtering
 D. Column encryption
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** RLS attaches a predicate to the table so every query is filtered regardless of how it arrives, which closes the gap that per-department views and application-side filtering leave open when someone connects with another tool. Filter predicates control reads and block predicates control writes.
 </details>
@@ -122,15 +122,15 @@ D. Column encryption
 ### Question 7
 **Scenario:** A database must authenticate application access without storing a password.
 
-A. SQL authentication with a strong password
-B. Microsoft Entra ID authentication using a managed identity for the app
+A. Microsoft Entra ID authentication using a managed identity for the app
+B. SQL authentication with a strong password
 C. A shared service account
 D. Certificate in the connection string
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A managed identity means no credential exists to leak or rotate: Azure issues tokens to the resource itself, and you create a contained database user for that identity. Shared SQL logins spread across configuration files and lose per-application accountability.
 </details>
@@ -140,15 +140,15 @@ D. Certificate in the connection string
 ### Question 8
 **Scenario:** A workload has unpredictable, bursty usage with long idle periods, and cost must follow usage.
 
-A. Provisioned General Purpose
-B. Serverless compute tier with auto-pause
-C. Business Critical
-D. Hyperscale
+A. Business Critical
+B. Hyperscale
+C. Serverless compute tier with auto-pause
+D. Provisioned General Purpose
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Serverless bills per vCore-second within a range and can auto-pause when idle, which matches intermittent workloads. The trade-off is a cold-start delay on the first connection after a pause. Business Critical targets low latency and high IOPS, and Hyperscale targets very large databases with fast restore.
 </details>
@@ -158,15 +158,15 @@ D. Hyperscale
 ### Question 9
 **Scenario:** A 40 TB database needs near-instant restores and rapid scale-out of read replicas.
 
-A. Hyperscale
-B. General Purpose
-C. Business Critical
-D. Managed Instance General Purpose
+A. General Purpose
+B. Managed Instance General Purpose
+C. Hyperscale
+D. Business Critical
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Hyperscale separates compute, log, and page servers, so backups are snapshot-based and restore time is largely independent of database size, and read replicas can be added quickly. General Purpose and Business Critical have much lower size ceilings and size-dependent restore times.
 </details>
@@ -176,15 +176,15 @@ D. Managed Instance General Purpose
 ### Question 10
 **Scenario:** You must prove who read a sensitive table over the last 90 days.
 
-A. Query Store
-B. SQL auditing writing to a Log Analytics workspace or storage account
+A. SQL auditing writing to a Log Analytics workspace or storage account
+B. Extended events on the client
 C. Dynamic Data Masking
-D. Extended events on the client
+D. Query Store
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Auditing records database events with the principal that performed them, and shipping it to Log Analytics gives retention and query. Query Store is a performance feature and does not retain identity. Pair auditing with Microsoft Defender for SQL if you also want anomaly alerting.
 </details>
@@ -194,15 +194,15 @@ D. Extended events on the client
 ### Question 11
 **Scenario:** A maintenance job must run nightly against an Azure SQL Database single database, which has no SQL Agent.
 
-A. Elastic Jobs (or Azure Automation / Logic Apps) scheduled against the database
-B. SQL Server Agent
-C. A cron job on the server
-D. It cannot be automated
+A. It cannot be automated
+B. A cron job on the server
+C. SQL Server Agent
+D. Elastic Jobs (or Azure Automation / Logic Apps) scheduled against the database
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Single databases have no Agent, so scheduling comes from outside: Elastic Jobs is the native option and can target groups of databases, while Automation runbooks or Logic Apps are common alternatives. Managed Instance is the deployment option that does include SQL Agent.
 </details>
@@ -212,15 +212,15 @@ D. It cannot be automated
 ### Question 12
 **Scenario:** Waits show high `PAGEIOLATCH_SH` and the storage is at its IOPS ceiling.
 
-A. Add indexes to reduce reads, and scale the tier or move to a tier with higher IOPS
-B. Rebuild statistics
-C. Increase MAXDOP
-D. Enable Query Store
+A. Increase MAXDOP
+B. Enable Query Store
+C. Add indexes to reduce reads, and scale the tier or move to a tier with higher IOPS
+D. Rebuild statistics
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** That wait type means sessions are waiting on data pages to come from storage, so the fix is reading less (better indexes, fewer scans) or having faster storage. Raising MAXDOP adds parallelism to a problem that is I/O bound and can make contention worse.
 </details>
@@ -230,15 +230,15 @@ D. Enable Query Store
 ### Question 13
 **Scenario:** A deleted table must be recovered from four days ago on a database with default settings.
 
-A. Point-in-time restore to a new database, then copy the table back
+A. Restore the log manually
 B. Undo the delete
-C. Restore the log manually
-D. Use geo-replication failover
+C. Use geo-replication failover
+D. Point-in-time restore to a new database, then copy the table back
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Point-in-time restore always creates a new database rather than overwriting the original, so you restore then extract what you need. The default retention is 7 days and can be raised, which is why checking retention before you need it matters. Failover does not travel back in time; the deletion replicated too.
 </details>
@@ -248,10 +248,10 @@ D. Use geo-replication failover
 ### Question 14
 **Scenario:** Connections from the app tier must not traverse the public internet.
 
-A. A firewall rule allowing the app's public IP
+A. A service endpoint plus public access
 B. A private endpoint for the logical server, with public network access disabled
-C. A service endpoint plus public access
-D. Encrypting the connection string
+C. Encrypting the connection string
+D. A firewall rule allowing the app's public IP
 
 <details>
 <summary>Answer</summary>
@@ -266,15 +266,15 @@ D. Encrypting the connection string
 ### Question 15
 **Scenario:** Several databases with varying, uncorrelated load should share a cost-efficient resource pool.
 
-A. One large single database
-B. An elastic pool
-C. Separate provisioned databases at peak size
-D. Serverless for each
+A. An elastic pool
+B. One large single database
+C. Serverless for each
+D. Separate provisioned databases at peak size
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Elastic pools let many databases share a pool of DTUs or vCores, which works precisely because their peaks do not coincide. Sizing every database for its own peak wastes most of the capacity most of the time. Serverless per database is an alternative but pays per-database overhead.
 </details>

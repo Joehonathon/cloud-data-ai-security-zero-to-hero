@@ -9,15 +9,15 @@
 ### Question 1 - Domain 1: Security and Risk Management
 **Scenario:** A Chief Risk Officer asks for a risk treatment for a vulnerability with low likelihood but catastrophic impact. The vulnerability cannot be remediated for 6 months. What's the BEST treatment?
 
-A. Accept the risk
-B. Avoid the risk by retiring the affected system
-C. Transfer the risk via cyber insurance for the interim
-D. Mitigate by adding a compensating control
+A. Mitigate by adding a compensating control
+B. Accept the risk
+C. Avoid the risk by retiring the affected system
+D. Transfer the risk via cyber insurance for the interim
 
 <details>
 <summary>Answer</summary>
 
-**Correct: D**
+**Correct: A**
 
 **Why:** "Catastrophic impact" makes acceptance and transfer alone too weak; even with insurance, business continuity matters. A **compensating control** (firewall rule, additional monitoring, manual review) reduces likelihood while remediation is in progress. Avoidance via retirement is too costly without business approval. CISSP favors layered defense.
 </details>
@@ -27,10 +27,10 @@ D. Mitigate by adding a compensating control
 ### Question 2 - Domain 1
 **Scenario:** What's the order of priorities in a Business Impact Analysis (BIA)?
 
-A. Cost > Safety > Reputation > Compliance
+A. They're equal
 B. Safety of life > Critical assets > Reputation > Cost
 C. Compliance > Cost > Reputation > Safety
-D. They're equal
+D. Cost > Safety > Reputation > Compliance
 
 <details>
 <summary>Answer</summary>
@@ -45,15 +45,15 @@ D. They're equal
 ### Question 3 - Domain 2: Asset Security
 **Scenario:** Personal Health Information (PHI) under HIPAA must be classified at what level minimum?
 
-A. Public
-B. Internal
+A. It depends on the organization's classification scheme
+B. Public
 C. Confidential / Restricted (highest standard tier the organization uses for sensitive data)
-D. It depends on the organization's classification scheme
+D. Internal
 
 <details>
 <summary>Answer</summary>
 
-**Correct: D**
+**Correct: A**
 
 **Why:** Classification schemes vary by organization. Most have 3-4 tiers (Public, Internal, Confidential, Restricted). PHI must be at the highest sensitivity tier the org defines. The right answer recognizes that classification labels are organization-specific while the underlying control requirements (encryption, access controls, audit) are mandated by HIPAA.
 </details>
@@ -63,15 +63,15 @@ D. It depends on the organization's classification scheme
 ### Question 4 - Domain 3: Security Architecture
 **Scenario:** What's the primary purpose of a Trusted Platform Module (TPM)?
 
-A. Network packet filtering
-B. Storing cryptographic keys in tamper-resistant hardware tied to a specific machine
-C. Application sandboxing
+A. Storing cryptographic keys in tamper-resistant hardware tied to a specific machine
+B. Application sandboxing
+C. Network packet filtering
 D. Providing physical security
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** TPM is a hardware chip that stores keys securely, supports remote attestation, and enables full-disk encryption (BitLocker, dm-crypt). The key benefit is **bound to a specific physical machine** - keys can't be exfiltrated to another machine.
 </details>
@@ -81,15 +81,15 @@ D. Providing physical security
 ### Question 5 - Domain 3
 **Scenario:** A defense-in-depth strategy adds firewall, IDS, EDR, and email filtering. What concept does this exemplify?
 
-A. Single point of failure
-B. Layered controls / defense in depth
-C. Reactive security
+A. Layered controls / defense in depth
+B. Reactive security
+C. Single point of failure
 D. Compliance theater
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Layering different control types (network, host, email) so a single failure doesn't compromise the system. CISSP tests this concept repeatedly under names like "defense in depth," "layered controls," "diverse controls."
 </details>
@@ -118,9 +118,9 @@ D. Application data encryption
 **Scenario:** Type 1, Type 2, Type 3 authentication factors - which is which?
 
 A. Something you know / something you have / something you are
-B. Username / password / biometric
-C. Hardware / software / cloud
-D. Required / recommended / optional
+B. Required / recommended / optional
+C. Username / password / biometric
+D. Hardware / software / cloud
 
 <details>
 <summary>Answer</summary>
@@ -135,15 +135,15 @@ D. Required / recommended / optional
 ### Question 8 - Domain 5
 **Scenario:** A federated identity model with SAML - what does the Identity Provider (IdP) provide?
 
-A. The application itself
-B. Authentication assertions about a user (the IdP says "yes, this is alice@example.com")
-C. Network access
+A. Network access
+B. The application itself
+C. Authentication assertions about a user (the IdP says "yes, this is alice@example.com")
 D. Audit logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** In SAML federation, the IdP authenticates the user and sends a signed assertion to the Service Provider (SP / app). The SP trusts the assertion based on the IdP's signing certificate. OIDC works similarly with JWT tokens.
 </details>
@@ -173,8 +173,8 @@ D. No authorization needed if internal
 
 A. Identification
 B. Preparation
-C. Containment
-D. Recovery
+C. Recovery
+D. Containment
 
 <details>
 <summary>Answer</summary>
@@ -189,15 +189,15 @@ D. Recovery
 ### Question 11 - Domain 7
 **Scenario:** RAID 5 vs RAID 6 - the key difference?
 
-A. RAID 5 has one parity disk; RAID 6 has two (tolerates two simultaneous disk failures)
-B. RAID 5 is faster
-C. RAID 6 uses encryption
-D. They're the same
+A. RAID 5 is faster
+B. RAID 6 uses encryption
+C. They're the same
+D. RAID 5 has one parity disk; RAID 6 has two (tolerates two simultaneous disk failures)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** RAID 5: striping with single parity (tolerates 1 failure). RAID 6: striping with double parity (tolerates 2 simultaneous failures, slower writes due to dual parity calculation). RAID 10 is mirrored stripes (fast, expensive).
 </details>
@@ -226,14 +226,14 @@ D. Both A and C
 **Scenario:** SQL injection is mitigated primarily by:
 
 A. Input validation alone
-B. Parameterized queries (prepared statements) with bound parameters
-C. Output encoding
-D. Web Application Firewall
+B. Web Application Firewall
+C. Parameterized queries (prepared statements) with bound parameters
+D. Output encoding
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Parameterized queries are the **primary** defense. They separate SQL code from data so user input can't be interpreted as code. Input validation is defense-in-depth but not sufficient alone (encoding bypasses, edge cases). WAF helps but is reactive.
 </details>
@@ -243,15 +243,15 @@ D. Web Application Firewall
 ### Question 14 - Domain 8
 **Scenario:** A code review finds a hardcoded API key in source. What's the BEST remediation?
 
-A. Comment it out and ship
-B. Rotate the key, store in a secret manager, fix the code, audit version control history for prior leaks, and rotate any other credentials that may have been compromised
-C. Use environment variables instead
-D. Encrypt the key in code
+A. Encrypt the key in code
+B. Use environment variables instead
+C. Comment it out and ship
+D. Rotate the key, store in a secret manager, fix the code, audit version control history for prior leaks, and rotate any other credentials that may have been compromised
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A hardcoded credential in version control is **already leaked** if the repo has multiple eyes. Rotate first, then move to secret manager, then sweep history (`git log -p` or BFG Repo-Cleaner), then audit related credentials. CISSP favors comprehensive remediation over narrow fixes.
 </details>
@@ -261,15 +261,15 @@ D. Encrypt the key in code
 ### Question 15 - Cross-domain
 **Scenario:** A company hires a third-party SaaS for HR data. From a security perspective, what document is MOST important?
 
-A. NDA
-B. SLA + SOC 2 Type II report + Data Processing Agreement (DPA)
+A. SLA + SOC 2 Type II report + Data Processing Agreement (DPA)
+B. NDA
 C. Master Service Agreement
 D. Insurance certificate
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SOC 2 Type II shows operational security controls work over time. SLA covers availability and breach notification timing. DPA (especially under GDPR/CCPA) defines data handling. NDA and MSA are baseline contractual but don't cover security operations.
 </details>
@@ -279,14 +279,14 @@ D. Insurance certificate
 ### Question 16
 **Scenario:** A new security control is proposed. What's the security manager's FIRST step before approving?
 
-A. Conduct a risk assessment to determine if the control's cost is justified by the risk it mitigates
-B. Implement immediately
-C. Buy the most expensive option
-D. Skip if it's expensive
+A. Buy the most expensive option
+B. Skip if it's expensive
+C. Conduct a risk assessment to determine if the control's cost is justified by the risk it mitigates
+D. Implement immediately
 
 <details><summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** CISSP rule: every control proposal goes through risk assessment. Cost of control should not exceed expected loss it mitigates. "Best" answer in CISSP is almost always the risk-based one.
 </details>
@@ -296,14 +296,14 @@ D. Skip if it's expensive
 ### Question 17
 **Scenario:** During incident response, the FIRST priority is:
 
-A. Public statement
-B. Containment to prevent further damage
-C. Forensic analysis
-D. Restoration
+A. Forensic analysis
+B. Restoration
+C. Containment to prevent further damage
+D. Public statement
 
 <details><summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** NIST IR lifecycle: Preparation → Detection → **Containment** → Eradication → Recovery → Lessons Learned. Containment first. Even before knowing root cause, stopping the bleeding is the priority.
 </details>
@@ -313,14 +313,14 @@ D. Restoration
 ### Question 18
 **Scenario:** Best evidence in a fraud investigation:
 
-A. Eyewitness testimony
-B. Original / direct evidence (system logs, signed documents, video)
+A. Original / direct evidence (system logs, signed documents, video)
+B. Eyewitness testimony
 C. Hearsay
 D. Circumstantial evidence
 
 <details><summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Evidence hierarchy: best (original / direct) > secondary > circumstantial > hearsay. System logs with chain of custody are the gold standard for digital forensics.
 </details>
@@ -348,13 +348,13 @@ D. Multi-site active-active
 **Scenario:** Defense in depth means:
 
 A. One very strong control
-B. Multiple layered controls so failure of any one doesn't compromise the system
+B. Hiring more security staff
 C. Buying expensive products
-D. Hiring more security staff
+D. Multiple layered controls so failure of any one doesn't compromise the system
 
 <details><summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Defense in depth = layered defenses (perimeter + network + host + app + data + identity + monitoring) so an attacker must defeat multiple controls to reach assets. Single-control strategies are brittle.
 </details>
@@ -364,14 +364,14 @@ D. Hiring more security staff
 ### Question 21
 **Scenario:** Most secure password storage:
 
-A. Plain text
+A. SHA-256 fast hash
 B. Reversible encryption
-C. One-way hash with salt + slow KDF (bcrypt, scrypt, Argon2)
-D. SHA-256 fast hash
+C. Plain text
+D. One-way hash with salt + slow KDF (bcrypt, scrypt, Argon2)
 
 <details><summary>Answer</summary>
 
-**Correct: C**
+**Correct: D**
 
 **Why:** Passwords should never be reversible. Salt prevents rainbow tables. Slow KDF (bcrypt / scrypt / Argon2) makes brute force computationally expensive. Fast hashes like SHA-256 are wrong - they're optimized for speed, which helps attackers.
 </details>
@@ -381,14 +381,14 @@ D. SHA-256 fast hash
 ### Question 22
 **Scenario:** Bell-LaPadula model focuses on:
 
-A. Confidentiality (no read up, no write down)
+A. Availability
 B. Integrity
-C. Availability
-D. Non-repudiation
+C. Non-repudiation
+D. Confidentiality (no read up, no write down)
 
 <details><summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Bell-LaPadula = confidentiality. Biba = integrity (no write up, no read down). Clark-Wilson = integrity via well-formed transactions. Brewer-Nash (Chinese Wall) = conflict-of-interest. Memorize the model-to-property mapping for CISSP.
 </details>
@@ -398,14 +398,14 @@ D. Non-repudiation
 ### Question 23
 **Scenario:** Which legal concept applies when an employee's actions cause harm and the employer is held responsible?
 
-A. Vicarious liability
-B. Strict liability
-C. Negligence per se
-D. Comparative fault
+A. Strict liability
+B. Vicarious liability
+C. Comparative fault
+D. Negligence per se
 
 <details><summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Vicarious liability = employer responsible for employee actions within scope of employment. Implications: training, policies, accountability chains all matter for the security manager.
 </details>
@@ -415,9 +415,9 @@ D. Comparative fault
 ### Question 24
 **Scenario:** A penetration test discovers a vulnerability that the team disagrees about exploiting in scope. The CORRECT response:
 
-A. Test it anyway
+A. Inform a competitor
 B. Stop, refer to the rules of engagement, get written authorization to expand scope before exploiting
-C. Inform a competitor
+C. Test it anyway
 D. Ignore it
 
 <details><summary>Answer</summary>
@@ -432,14 +432,14 @@ D. Ignore it
 ### Question 25
 **Scenario:** Most important component of an effective security awareness program:
 
-A. Annual mandatory training
-B. Continuous, role-relevant content + measured outcomes (phish simulation pass rates, time-to-report) + non-punitive culture for reporting
-C. Posters
-D. Email reminders
+A. Posters
+B. Email reminders
+C. Continuous, role-relevant content + measured outcomes (phish simulation pass rates, time-to-report) + non-punitive culture for reporting
+D. Annual mandatory training
 
 <details><summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Awareness is a program, not an event. Sustained, measured, role-relevant training with a non-punitive reporting culture is what changes behavior. Annual training is necessary but not sufficient. Punitive responses suppress reporting.
 </details>

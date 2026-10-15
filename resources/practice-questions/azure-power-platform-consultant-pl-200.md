@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A table must store one row per customer and many rows per order, with orders deleted when the customer is deleted.
 
-A. A one-to-many relationship with a cascade delete behavior of Cascade All
-B. A many-to-many relationship
-C. Two unrelated tables
-D. A lookup column with no relationship
+A. A lookup column with no relationship
+B. A one-to-many relationship with a cascade delete behavior of Cascade All
+C. A many-to-many relationship
+D. Two unrelated tables
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** The relationship type follows the cardinality, and cascade behaviors (Cascade All, Cascade Active, Cascade User-Owned, Cascade None, Remove Link) determine what happens to children on delete, assign, share, and reparent. Choosing cascade behavior deliberately is a core Dataverse configuration skill.
 </details>
@@ -32,15 +32,15 @@ D. A lookup column with no relationship
 ### Question 2
 **Scenario:** A choice column needs values shared across several tables and kept consistent.
 
-A. A global choice (option set)
-B. A local choice on each table
+A. A separate table with a lookup
+B. A global choice (option set)
 C. A text column
-D. A separate table with a lookup
+D. A local choice on each table
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Global choices are defined once and reused, so adding a value updates everywhere. Local choices duplicate the list and drift. If the values need extra attributes or frequent business-user editing, a reference table with a lookup is the better pattern, which is the nuance worth knowing.
 </details>
@@ -50,15 +50,15 @@ D. A separate table with a lookup
 ### Question 3
 **Scenario:** Users in a regional team should see records owned by their own business unit only.
 
-A. A security role with Business Unit scope on the read privilege
-B. Organization scope
-C. User scope only
+A. Organization scope
+B. User scope only
+C. A security role with Business Unit scope on the read privilege
 D. Column-level security
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Dataverse privilege depth runs User, Business Unit, Parent-Child Business Unit, and Organization. Setting read to Business Unit gives exactly the regional visibility described. Column security restricts fields, not rows.
 </details>
@@ -86,15 +86,15 @@ D. Duplicate the record
 ### Question 5
 **Scenario:** A business process flow should branch based on the value of a field.
 
-A. Add a condition to the business process flow to create a branch
-B. Create two separate flows and ask users to pick
-C. Use a business rule
-D. Use a canvas app
+A. Create two separate flows and ask users to pick
+B. Add a condition to the business process flow to create a branch
+C. Use a canvas app
+D. Use a business rule
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Business process flows support conditional branching so a single guided process can handle variant paths. Business rules do field-level logic within a form and cannot restructure stages. Making users choose between two processes moves the decision to the wrong place.
 </details>
@@ -104,15 +104,15 @@ D. Use a canvas app
 ### Question 6
 **Scenario:** A cloud flow must process 5,000 records and complete reliably within the platform's limits.
 
-A. Loop sequentially with no concurrency
-B. Use pagination, batching, and controlled concurrency, and consider a child flow to isolate the per-item work
-C. Increase the timeout indefinitely
+A. Use pagination, batching, and controlled concurrency, and consider a child flow to isolate the per-item work
+B. Increase the timeout indefinitely
+C. Loop sequentially with no concurrency
 D. Run it manually
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Power Automate has request limits, pagination defaults, and per-flow run duration limits. Batching plus controlled concurrency in the Apply to each settings keeps you inside them, and a child flow isolates failures so one bad record does not fail the whole run.
 </details>
@@ -122,15 +122,15 @@ D. Run it manually
 ### Question 7
 **Scenario:** A flow occasionally fails because a downstream API returns a transient error.
 
-A. Configure retry policy on the action, and add a Scope with a Configure run after path for failure handling
-B. Delete the flow
-C. Run it twice
+A. Run it twice
+B. Configure retry policy on the action, and add a Scope with a Configure run after path for failure handling
+C. Delete the flow
 D. Ignore the failures
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Retry policies handle transient errors automatically, and scopes with run-after conditions give you try, catch, and finally semantics in a flow. Without them a transient failure looks identical to a permanent one in the run history.
 </details>
@@ -140,15 +140,15 @@ D. Ignore the failures
 ### Question 8
 **Scenario:** A model-driven app should show a chart of cases by priority on the main dashboard.
 
-A. A Dataverse chart added to a dashboard
-B. An embedded Power BI report requiring a separate license for every viewer
-C. A canvas app
-D. An Excel export
+A. A canvas app
+B. An Excel export
+C. A Dataverse chart added to a dashboard
+D. An embedded Power BI report requiring a separate license for every viewer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Native Dataverse charts and dashboards need no additional licensing and respect the user's security model automatically. Embedded Power BI is the right call for richer analytics across sources, but bring the licensing implication into the design conversation rather than discovering it at go-live.
 </details>
@@ -160,8 +160,8 @@ D. An Excel export
 
 A. Configure duplicate detection rules and use an alternate key for upsert during import
 B. Import and delete duplicates later
-C. Disable duplicate detection for speed
-D. Import into a new table
+C. Import into a new table
+D. Disable duplicate detection for speed
 
 <details>
 <summary>Answer</summary>
@@ -177,9 +177,9 @@ D. Import into a new table
 **Scenario:** A consultant must document requirements before configuration begins.
 
 A. Capture functional and non-functional requirements, process maps, data model, and success measures, then validate them with stakeholders
-B. Start configuring and adjust as feedback arrives
-C. Copy a previous project's document
-D. Ask developers to decide
+B. Ask developers to decide
+C. Start configuring and adjust as feedback arrives
+D. Copy a previous project's document
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Ask developers to decide
 ### Question 11
 **Scenario:** A Copilot Studio agent should hand a conversation to a human when it cannot resolve the question.
 
-A. Configure escalation to a live agent through the Escalate system topic
-B. End the conversation
-C. Repeat the question
+A. End the conversation
+B. Repeat the question
+C. Configure escalation to a live agent through the Escalate system topic
 D. Redirect to a website
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** The Escalate topic is the built-in handoff path, and it can integrate with Omnichannel or another live-agent service. Designing the escalation path is part of designing the agent: an agent with no exit produces the worst customer experience of all.
 </details>
@@ -212,15 +212,15 @@ D. Redirect to a website
 ### Question 12
 **Scenario:** A solution must be deployed through dev, test, and production using a repeatable pipeline.
 
-A. Managed solutions promoted through Power Platform Pipelines or Azure DevOps, with connection references and environment variables
-B. Manual export and import each time
-C. Editing directly in production
-D. One shared environment
+A. Editing directly in production
+B. One shared environment
+C. Manual export and import each time
+D. Managed solutions promoted through Power Platform Pipelines or Azure DevOps, with connection references and environment variables
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Pipelines make promotion repeatable and auditable, and the parameterization pieces mean the same artifact works in every environment. Editing directly in production is the anti-pattern that leaves you with no way to reproduce or roll back what is running.
 </details>
@@ -231,9 +231,9 @@ D. One shared environment
 **Scenario:** Users must see a form with different sections depending on their role.
 
 A. Multiple forms with form order and security role assignment
-B. Hiding sections with JavaScript for everyone
-C. One form for all users
-D. Separate apps per role
+B. One form for all users
+C. Separate apps per role
+D. Hiding sections with JavaScript for everyone
 
 <details>
 <summary>Answer</summary>
@@ -248,15 +248,15 @@ D. Separate apps per role
 ### Question 14
 **Scenario:** An integration must call an external REST API that has no standard connector.
 
-A. Build a custom connector describing the API's operations and authentication
-B. Use a desktop flow
-C. Copy the data manually
-D. Store the API key in the flow
+A. Use a desktop flow
+B. Copy the data manually
+C. Store the API key in the flow
+D. Build a custom connector describing the API's operations and authentication
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** A custom connector wraps the API with a definition (OpenAPI or manual) plus an authentication configuration, making it reusable across apps and flows and manageable under DLP policy. Embedding credentials directly in a flow bypasses that governance.
 </details>
@@ -266,15 +266,15 @@ D. Store the API key in the flow
 ### Question 15
 **Scenario:** Auditing must record who changed a customer's credit limit and when.
 
-A. Enable auditing at the environment, table, and column level for that column, then read the audit history
+A. Enable Application Insights
 B. Rely on the modified-on field
 C. Add a note field
-D. Enable Application Insights
+D. Enable auditing at the environment, table, and column level for that column, then read the audit history
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Dataverse auditing must be enabled at all three levels before it records anything, which is the detail most people miss. The modified-on field tells you the last change and by whom, not the history of values. Retention for audit data is configurable and should match the compliance requirement.
 </details>

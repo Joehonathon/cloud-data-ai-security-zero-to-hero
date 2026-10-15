@@ -14,10 +14,10 @@ difficulty: beginner
 ### Question 1
 **Scenario:** What is an OCI availability domain?
 
-A. A geographic region
+A. A compartment
 B. One or more data centers within a region, isolated from other availability domains in that region
-C. A subnet
-D. A compartment
+C. A geographic region
+D. A subnet
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. A compartment
 ### Question 2
 **Scenario:** What is a fault domain?
 
-A. A separate region
-B. A grouping of hardware and infrastructure within an availability domain, so instances in different fault domains do not share a single point of failure
-C. A network gateway
+A. A grouping of hardware and infrastructure within an availability domain, so instances in different fault domains do not share a single point of failure
+B. A network gateway
+C. A separate region
 D. A billing unit
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Each AD has three fault domains, and distributing instances across them protects against hardware failure and maintenance within the AD. In a single-AD region, fault domains are the only intra-region isolation available.
 </details>
@@ -51,14 +51,14 @@ D. A billing unit
 **Scenario:** Resources must be organized for access control and cost tracking.
 
 A. Tags only
-B. Compartments, which are logical containers with their own IAM policies and cost reporting
-C. Regions
+B. Regions
+C. Compartments, which are logical containers with their own IAM policies and cost reporting
 D. Separate tenancies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Compartments are OCI's distinctive organizing construct: a resource lives in exactly one compartment, policies are written against compartments, and cost can be reported per compartment. They can nest, which supports an organizational hierarchy.
 </details>
@@ -68,15 +68,15 @@ D. Separate tenancies
 ### Question 4
 **Scenario:** An OCI IAM policy statement's structure.
 
-A. `allow <subject> to <verb> <resource-type> in <location> [where <conditions>]`
-B. A JSON document
+A. A JSON document
+B. A tag
 C. A role assignment only
-D. A tag
+D. `allow <subject> to <verb> <resource-type> in <location> [where <conditions>]`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** OCI policies are human-readable statements, for example `Allow group Admins to manage all-resources in compartment Dev`. The verbs escalate as inspect, read, use, and manage, which is the granularity you tune for least privilege.
 </details>
@@ -88,8 +88,8 @@ D. A tag
 
 A. Block Volume
 B. Object Storage, with standard and archive tiers
-C. File Storage
-D. Local NVMe
+C. Local NVMe
+D. File Storage
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. Local NVMe
 ### Question 6
 **Scenario:** Instances in a private subnet must reach the internet for updates.
 
-A. An internet gateway
-B. A NAT gateway
+A. A NAT gateway
+B. An internet gateway
 C. A service gateway
 D. A dynamic routing gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** NAT allows outbound-initiated traffic and blocks inbound. The internet gateway is for public subnets in both directions, the service gateway reaches OCI services privately, and the DRG connects to on-premises or other VCNs.
 </details>
@@ -122,10 +122,10 @@ D. A dynamic routing gateway
 ### Question 7
 **Scenario:** A VCN must reach Object Storage without traversing the internet.
 
-A. An internet gateway
+A. A local peering gateway
 B. A service gateway with the appropriate service CIDR label
-C. A NAT gateway
-D. A local peering gateway
+C. An internet gateway
+D. A NAT gateway
 
 <details>
 <summary>Answer</summary>
@@ -140,15 +140,15 @@ D. A local peering gateway
 ### Question 8
 **Scenario:** A database should require no manual patching, tuning, or backup configuration.
 
-A. A VM DB System
-B. Autonomous Database, which self-patches, self-tunes, and self-repairs
-C. A database on a compute instance
-D. NoSQL Database
+A. A database on a compute instance
+B. A VM DB System
+C. NoSQL Database
+D. Autonomous Database, which self-patches, self-tunes, and self-repairs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Autonomous Database comes in transaction processing and data warehouse flavors and removes the routine DBA work. A DB System is managed infrastructure where you still control patching windows and configuration.
 </details>
@@ -158,15 +158,15 @@ D. NoSQL Database
 ### Question 9
 **Scenario:** OCI security posture must be monitored for misconfiguration automatically.
 
-A. Manual review
-B. Cloud Guard, which detects problems against detector recipes and can take responder actions
-C. Audit logs only
-D. Vault
+A. Cloud Guard, which detects problems against detector recipes and can take responder actions
+B. Audit logs only
+C. Vault
+D. Manual review
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Cloud Guard is the posture management service, and Security Zones go further by preventing non-compliant resources from being created in the first place. Audit logs record what happened but do not evaluate configuration.
 </details>
@@ -176,9 +176,9 @@ D. Vault
 ### Question 10
 **Scenario:** Encryption keys must be managed by the customer.
 
-A. Oracle-managed keys only
+A. No encryption
 B. OCI Vault, holding customer-managed keys and secrets, optionally in a dedicated HSM partition
-C. No encryption
+C. Oracle-managed keys only
 D. Local key files
 
 <details>
@@ -194,15 +194,15 @@ D. Local key files
 ### Question 11
 **Scenario:** OCI pricing is described as consistent across regions.
 
-A. Prices vary widely by region
-B. Oracle prices the same across commercial regions, which simplifies multi-region cost planning
-C. Pricing is negotiated only
-D. All services are free
+A. Oracle prices the same across commercial regions, which simplifies multi-region cost planning
+B. Pricing is negotiated only
+C. All services are free
+D. Prices vary widely by region
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Uniform global pricing is one of OCI's stated commercial differentiators, alongside relatively low egress charges. This is examinable because the exam covers the business case for OCI as well as the technology.
 </details>
@@ -212,15 +212,15 @@ D. All services are free
 ### Question 12
 **Scenario:** Compute shapes must match a workload's needs precisely.
 
-A. Fixed shapes only
-B. Flexible shapes, where OCPU count and memory are chosen independently within a range
-C. One size
-D. Bare metal only
+A. One size
+B. Bare metal only
+C. Fixed shapes only
+D. Flexible shapes, where OCPU count and memory are chosen independently within a range
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Flexible shapes avoid paying for memory you do not need because you needed the cores. Note that an OCPU corresponds to a physical core with hyperthreading, so it is not directly comparable to a vCPU on other clouds.
 </details>
@@ -248,15 +248,15 @@ D. Neither party
 ### Question 14
 **Scenario:** A budget must alert when spend approaches a threshold.
 
-A. Check the invoice
-B. Budgets scoped to a compartment or tag, with alert rules on actual or forecast spend
-C. Nothing exists
-D. Cost is fixed
+A. Cost is fixed
+B. Nothing exists
+C. Budgets scoped to a compartment or tag, with alert rules on actual or forecast spend
+D. Check the invoice
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Scoping budgets to compartments is why compartment design and cost management are related decisions. Forecast-based alerts warn before the money is spent rather than after, which is the difference between a control and a report.
 </details>
@@ -266,15 +266,15 @@ D. Cost is fixed
 ### Question 15
 **Scenario:** High availability within a region for a web tier.
 
-A. One instance
-B. Instances across multiple fault domains (and availability domains where the region has several), behind a load balancer with health checks
-C. A larger instance
-D. Backups
+A. A larger instance
+B. Backups
+C. Instances across multiple fault domains (and availability domains where the region has several), behind a load balancer with health checks
+D. One instance
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The pattern is distribution plus health checking. Which isolation unit to spread across depends on the region: multiple ADs where available, fault domains where the region has a single AD.
 </details>

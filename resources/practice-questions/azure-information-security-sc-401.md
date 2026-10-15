@@ -9,15 +9,15 @@
 ### Question 1
 **Scenario:** Contracts must remain unreadable to anyone outside the matter team even if emailed to a personal address or copied to a USB drive. Partners must be able to open them offline while traveling.
 
-A. A DLP policy blocking egress of documents in the contracts library
-B. A sensitivity label with encryption granting permissions to the matter team, with offline access configured, published through a label policy
+A. A retention label applied to the contracts library
+B. A DLP policy blocking egress of documents in the contracts library
 C. SharePoint permissions restricted to the matter team
-D. A retention label applied to the contracts library
+D. A sensitivity label with encryption granting permissions to the matter team, with offline access configured, published through a label policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Only label-applied encryption travels with the file and continues to apply once the document has left the tenant. DLP prevents actions at a boundary but does not protect a file that legitimately left. SharePoint permissions do not follow a downloaded copy. Retention governs lifetime, not access.
 </details>
@@ -27,15 +27,15 @@ D. A retention label applied to the contracts library
 ### Question 2
 **Scenario:** Patient IDs are eight digits. A pattern-based custom sensitive information type produces hundreds of false positives because invoice numbers share the format. The compliance team holds an authoritative CSV of 400,000 real patient IDs.
 
-A. Raise the confidence level on the existing SIT
-B. Increase the instance count threshold
-C. Use exact data match with the authoritative table, adding supporting elements in a proximity window
-D. Train a custom classifier on patient records
+A. Use exact data match with the authoritative table, adding supporting elements in a proximity window
+B. Train a custom classifier on patient records
+C. Increase the instance count threshold
+D. Raise the confidence level on the existing SIT
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** EDM matches hashed values from a real list, so ambiguity with other eight-digit numbers disappears. Raising confidence reduces recall without resolving the ambiguity. Increasing instance count misses single-record leaks. Trainable classifiers identify categories of content, not known values.
 </details>
@@ -45,15 +45,15 @@ D. Train a custom classifier on patient records
 ### Question 3
 **Scenario:** Ten million existing documents in SharePoint and OneDrive must be classified without asking users to do it and without breaking access unexpectedly.
 
-A. Mandatory labeling in the label policy
-B. Client-side auto-labeling in the sensitivity label
-C. A service-side auto-labeling policy run in simulation first, initially without encryption
-D. Manual classification of the highest-risk libraries
+A. Manual classification of the highest-risk libraries
+B. A service-side auto-labeling policy run in simulation first, initially without encryption
+C. Client-side auto-labeling in the sensitivity label
+D. Mandatory labeling in the label policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Service-side auto-labeling applies to content at rest without user involvement and supports simulation. Mandatory labeling forces users to act, contradicting the requirement. Client-side auto-labeling only applies as users open and edit documents, leaving untouched content unlabeled. Applying encryption on the first automated pass is what causes unexpected access breakage.
 </details>
@@ -63,15 +63,15 @@ D. Manual classification of the highest-risk libraries
 ### Question 4
 **Scenario:** Users copy customer data to personal OneDrive and Dropbox through the browser and onto USB drives. Windows endpoints are managed by Intune.
 
-A. An Exchange-scoped DLP policy
-B. Endpoint DLP with onboarded devices, unallowed browsers configured, and removable storage restrictions
-C. A sensitivity label applied to the affected documents
-D. Group Policy blocking all USB devices
+A. Group Policy blocking all USB devices
+B. A sensitivity label applied to the affected documents
+C. An Exchange-scoped DLP policy
+D. Endpoint DLP with onboarded devices, unallowed browsers configured, and removable storage restrictions
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Browser uploads and USB copies are device-level actions, which only endpoint DLP sees, and only on onboarded devices. Configuring unallowed browsers is what turns a monitored upload into a blocked one. Exchange DLP does not see either action. A label classifies but does not stop the copy. Blanket USB blocking has no content awareness.
 </details>
@@ -81,15 +81,15 @@ D. Group Policy blocking all USB devices
 ### Question 5
 **Scenario:** A company repeatedly discovers weeks later that departing salespeople downloaded the customer list. It wants detection at the time, an investigation trail, and privacy controls on investigator access.
 
-A. A DLP policy blocking downloads from the CRM
-B. Insider Risk Management using the data theft by departing users template, the HR connector as the triggering event, sequence detection, and username anonymization
-C. Audit log search after each departure
-D. Communication Compliance policies on outbound email
+A. Insider Risk Management using the data theft by departing users template, the HR connector as the triggering event, sequence detection, and username anonymization
+B. Communication Compliance policies on outbound email
+C. A DLP policy blocking downloads from the CRM
+D. Audit log search after each departure
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Insider risk scores behavior over time anchored on a triggering event from HR data, which is what produces detection before the departure rather than after. Anonymization satisfies the privacy requirement. DLP blocks specific actions but builds no behavioral case. Audit search is the reactive approach they already have. Communication Compliance reviews message content, not file exfiltration.
 </details>
@@ -99,10 +99,10 @@ D. Communication Compliance policies on outbound email
 ### Question 6
 **Scenario:** Finance records are covered by a seven-year retention policy on the site. A document also carries a retention label set to delete after three years. A user deletes the document after one year. What happens?
 
-A. The document is deleted immediately
+A. The document is retained for three years, because the label is more specific
 B. The document is retained for seven years; retention wins over deletion and the longest retention period applies
-C. The document is retained for three years, because the label is more specific
-D. The deletion succeeds but is recoverable for 93 days
+C. The deletion succeeds but is recoverable for 93 days
+D. The document is deleted immediately
 
 <details>
 <summary>Answer</summary>
@@ -117,15 +117,15 @@ D. The deletion succeeds but is recoverable for 93 days
 ### Question 7
 **Scenario:** After an acquisition, the investment banking team and the trading team must not be able to communicate in Teams or discover each other in the directory, for regulatory reasons.
 
-A. Communication Compliance policies reviewing messages between the two groups
-B. Information Barriers with segments defined by department and block-mode policies
-C. Conditional Access policies scoped to each group
+A. Information Barriers with segments defined by department and block-mode policies
+B. Conditional Access policies scoped to each group
+C. Communication Compliance policies reviewing messages between the two groups
 D. Separate Entra tenants
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Information Barriers is the only feature that prevents communication and discovery between defined segments, and enforcement extends across Teams, SharePoint, and OneDrive. Communication Compliance reviews content after the fact rather than preventing contact. Conditional Access governs sign-in conditions. Separate tenants achieve it at enormous operational cost the scenario does not require.
 </details>
@@ -135,10 +135,10 @@ D. Separate Entra tenants
 ### Question 8
 **Scenario:** Before deploying Microsoft 365 Copilot, what is the correct first step to prevent employees surfacing documents they should not see?
 
-A. Apply DLP policies for AI applications
-B. Auto-label all sensitive content
+A. Auto-label all sensitive content
+B. Enable DSPM for AI reporting
 C. Fix oversharing at the source, using site access reviews and removing organization-wide sharing links
-D. Enable DSPM for AI reporting
+D. Apply DLP policies for AI applications
 
 <details>
 <summary>Answer</summary>
@@ -153,15 +153,15 @@ D. Enable DSPM for AI reporting
 ### Question 9
 **Scenario:** Which feature automatically applies stricter DLP enforcement only to users whose risky behavior has increased?
 
-A. Conditional Access with sign-in risk
-B. Adaptive Protection
-C. A DLP policy scoped to a dynamic group
-D. Insider Risk Management alerts
+A. Insider Risk Management alerts
+B. A DLP policy scoped to a dynamic group
+C. Conditional Access with sign-in risk
+D. Adaptive Protection
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Adaptive Protection links a user's insider risk level to enforcement strength, tightening DLP actions as risk rises without applying the strictest policy to everyone. Sign-in risk is an identity signal, not a data one. A dynamic group is static membership by attribute, not by behavior. Insider risk alerts inform investigators but do not themselves change enforcement.
 </details>
@@ -171,10 +171,10 @@ D. Insider Risk Management alerts
 ### Question 10
 **Scenario:** An organization needs protection applied to documents that are not yet classified, must not rely on users, and wants to see what would be affected before anything changes.
 
-A. Mandatory labeling with a default label
+A. A DLP policy in test mode
 B. A service-side auto-labeling policy in simulation mode
-C. A DLP policy in test mode
-D. The Purview Information Protection scanner
+C. The Purview Information Protection scanner
+D. Mandatory labeling with a default label
 
 <details>
 <summary>Answer</summary>
@@ -190,14 +190,14 @@ D. The Purview Information Protection scanner
 **Scenario:** What does Double Key Encryption give you, and what does it cost?
 
 A. Two encryption layers with no functional cost
-B. A customer-held key alongside the Microsoft key, at the cost of service-side capabilities including search, eDiscovery, and co-authoring
-C. FIPS 140-2 Level 3 validation
+B. FIPS 140-2 Level 3 validation
+C. A customer-held key alongside the Microsoft key, at the cost of service-side capabilities including search, eDiscovery, and co-authoring
 D. Automatic key rotation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** DKE means Microsoft cannot decrypt the content, which is exactly why service-side processing stops working. That trade-off is why DKE is reserved for the smallest set of genuinely most sensitive content rather than applied broadly.
 </details>
@@ -207,10 +207,10 @@ D. Automatic key rotation
 ### Question 12
 **Scenario:** Which audit capability is required to see which mailbox items a compromised account accessed?
 
-A. Purview Audit Standard
+A. A Sentinel connector for Microsoft 365
 B. Purview Audit Premium, which includes the MailItemsAccessed event
 C. Exchange message trace
-D. A Sentinel connector for Microsoft 365
+D. Purview Audit Standard
 
 <details>
 <summary>Answer</summary>
@@ -225,15 +225,15 @@ D. A Sentinel connector for Microsoft 365
 ### Question 13
 **Scenario:** A retention requirement demands that records cannot be removed even by a global administrator, and that disposal requires reviewer approval.
 
-A. A retention policy with a seven-year period
-B. A retention label declaring content a regulatory record, with disposition review enabled
-C. An eDiscovery hold
-D. A sensitivity label with encryption
+A. An eDiscovery hold
+B. A sensitivity label with encryption
+C. A retention label declaring content a regulatory record, with disposition review enabled
+D. A retention policy with a seven-year period
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Regulatory record declaration is what prevents removal even by administrators, and disposition review is what inserts the approval step. A retention policy prevents user deletion but does not declare a record. An eDiscovery hold preserves for legal process without a disposition workflow. A sensitivity label governs access, not lifetime.
 </details>
@@ -243,15 +243,15 @@ D. A sensitivity label with encryption
 ### Question 14
 **Scenario:** An organization wants to know which sensitive data types employees' AI interactions are actually touching.
 
-A. DLP for AI applications
-B. Purview DSPM for AI
-C. Communication Compliance
-D. Insider Risk Management
+A. Insider Risk Management
+B. Communication Compliance
+C. Purview DSPM for AI
+D. DLP for AI applications
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** DSPM for AI is the reporting and visibility capability for sensitive data flowing through AI interactions, including Copilot. DLP for AI is the enforcement side of the same problem. Communication Compliance reviews messages. Insider risk scores user behavior.
 </details>
@@ -261,15 +261,15 @@ D. Insider Risk Management
 ### Question 15
 **Scenario:** Which combination is required so that endpoint DLP can block a file upload through a non-Edge browser?
 
-A. A DLP policy with the Devices location selected
-B. A DLP policy with the Devices location selected, the device onboarded, and the browser listed as unallowed
-C. Intune compliance policies
-D. A sensitivity label with encryption
+A. A DLP policy with the Devices location selected, the device onboarded, and the browser listed as unallowed
+B. A sensitivity label with encryption
+C. A DLP policy with the Devices location selected
+D. Intune compliance policies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** All three are needed. Selecting the Devices location without onboarding enforces nothing. Onboarding without the unallowed-browser setting means uploads through a non-policy-aware browser are monitored rather than blocked. Compliance policies and labels address different problems.
 </details>

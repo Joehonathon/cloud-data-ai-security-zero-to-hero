@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Which principles guide building applications for cloud?
 
-A. Store state on local disk
-B. The twelve-factor principles: configuration from the environment, stateless processes, backing services as attached resources, disposability, and logs as event streams
-C. One large deployable unit
-D. Manual configuration per environment
+A. The twelve-factor principles: configuration from the environment, stateless processes, backing services as attached resources, disposability, and logs as event streams
+B. Store state on local disk
+C. Manual configuration per environment
+D. One large deployable unit
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** These principles are what make an application safe to scale horizontally and to replace at any moment. Configuration from the environment is the one that makes the same artifact promotable across environments, which is the basis of a sane pipeline.
 </details>
@@ -33,14 +33,14 @@ D. Manual configuration per environment
 **Scenario:** An application must run as a container without managing a cluster.
 
 A. Virtual servers
-B. IBM Cloud Code Engine, which runs containers, jobs, and functions with scale-to-zero
-C. Bare metal
-D. A Kubernetes cluster you operate
+B. A Kubernetes cluster you operate
+C. IBM Cloud Code Engine, which runs containers, jobs, and functions with scale-to-zero
+D. Bare metal
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Code Engine handles the platform so the deployable unit is the container image. A managed Kubernetes service is the right choice once you need the full Kubernetes API for operators, custom controllers, or complex networking.
 </details>
@@ -50,15 +50,15 @@ D. A Kubernetes cluster you operate
 ### Question 3
 **Scenario:** An application binds to a managed database.
 
-A. Hard-code the connection string
-B. Create a service credential or use a service binding, injecting the connection details as environment variables at run time
+A. Ask an administrator each time
+B. Hard-code the connection string
 C. A configuration file in the image
-D. Ask an administrator each time
+D. Create a service credential or use a service binding, injecting the connection details as environment variables at run time
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Binding injects credentials at run time so the image contains no secrets and works unchanged across environments. Anything baked into the image is in the registry, in the layer history, and in every environment that pulls it.
 </details>
@@ -68,10 +68,10 @@ D. Ask an administrator each time
 ### Question 4
 **Scenario:** A document-oriented store is needed with offline sync for mobile.
 
-A. Db2
+A. Redis
 B. Cloudant, a JSON document store with replication and offline sync
-C. Object Storage
-D. Redis
+C. Db2
+D. Object Storage
 
 <details>
 <summary>Answer</summary>
@@ -86,15 +86,15 @@ D. Redis
 ### Question 5
 **Scenario:** A large file uploaded by a user must be stored durably.
 
-A. The application's local filesystem
-B. IBM Cloud Object Storage, with the object key returned to the application
-C. A database BLOB column
-D. In memory
+A. In memory
+B. A database BLOB column
+C. IBM Cloud Object Storage, with the object key returned to the application
+D. The application's local filesystem
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Local disk disappears when the container is replaced, which is guaranteed to happen. Object storage is durable, cheap per gigabyte, and can serve the file directly with a presigned URL, keeping the bytes off your application's request path entirely.
 </details>
@@ -106,8 +106,8 @@ D. In memory
 
 A. Direct synchronous HTTP for everything
 B. A message queue or event stream such as IBM MQ or Event Streams (Kafka), decoupling producer and consumer
-C. Shared database polling
-D. Local files
+C. Local files
+D. Shared database polling
 
 <details>
 <summary>Answer</summary>
@@ -122,15 +122,15 @@ D. Local files
 ### Question 7
 **Scenario:** An application must call a watsonx or Watson service.
 
-A. Train a model first
-B. Provision the service, obtain credentials via IAM, and call the REST API or SDK with a bearer token
-C. Install the model locally
-D. Use a public endpoint with no authentication
+A. Install the model locally
+B. Use a public endpoint with no authentication
+C. Provision the service, obtain credentials via IAM, and call the REST API or SDK with a bearer token
+D. Train a model first
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** IBM Cloud services authenticate through IAM tokens derived from an API key, and the SDKs handle the exchange and refresh. The point of a consumable AI service is that no training is required to start.
 </details>
@@ -140,15 +140,15 @@ D. Use a public endpoint with no authentication
 ### Question 8
 **Scenario:** An API must be exposed to external consumers with rate limiting and keys.
 
-A. Expose the service directly
-B. An API gateway (API Connect or equivalent) handling authentication, rate limits, versioning, and analytics
-C. A load balancer
-D. A firewall
+A. A load balancer
+B. A firewall
+C. Expose the service directly
+D. An API gateway (API Connect or equivalent) handling authentication, rate limits, versioning, and analytics
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The gateway centralizes cross-cutting API concerns so each service does not reimplement them. It also gives you a stable external contract, which means you can version and refactor services behind it without breaking consumers.
 </details>
@@ -158,15 +158,15 @@ D. A firewall
 ### Question 9
 **Scenario:** Users must authenticate with social or enterprise identities.
 
-A. Build your own user store
-B. IBM Cloud App ID (or another identity provider) handling sign-in, token issuance, and federation
-C. Store passwords in the database
-D. Basic authentication
+A. Store passwords in the database
+B. Build your own user store
+C. Basic authentication
+D. IBM Cloud App ID (or another identity provider) handling sign-in, token issuance, and federation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Delegating authentication removes password storage, reset flows, and MFA from your codebase, which is a large amount of security-critical work you would otherwise own. Your application validates a token and reads claims.
 </details>
@@ -176,10 +176,10 @@ D. Basic authentication
 ### Question 10
 **Scenario:** A container image must be built and deployed on every commit.
 
-A. Manual builds
+A. Deploy from an IDE
 B. A pipeline (Continuous Delivery toolchain or another CI system) building, scanning, and deploying with environment promotion
-C. Build on a developer laptop
-D. Deploy from an IDE
+C. Manual builds
+D. Build on a developer laptop
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Deploy from an IDE
 ### Question 11
 **Scenario:** An application must handle a transient failure calling a downstream service.
 
-A. Fail immediately
-B. Retry with exponential backoff and jitter, bounded, with a circuit breaker and a timeout
-C. Retry forever
+A. Retry forever
+B. Fail immediately
+C. Retry with exponential backoff and jitter, bounded, with a circuit breaker and a timeout
 D. Ignore errors
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Transient failures are normal in distributed systems, but unbounded retries amplify an outage rather than riding it out. Jitter prevents every client retrying in the same instant, and a circuit breaker stops hammering a service that is clearly down.
 </details>
@@ -212,15 +212,15 @@ D. Ignore errors
 ### Question 12
 **Scenario:** Application logs must be searchable across instances.
 
-A. Write to local files
-B. Write structured logs to stdout and let the platform collect them into a centralized logging service
-C. Email logs
-D. Print to the console only
+A. Write structured logs to stdout and let the platform collect them into a centralized logging service
+B. Print to the console only
+C. Write to local files
+D. Email logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Treating logs as an event stream on stdout is a twelve-factor principle for exactly this reason: the platform routes them, so the application does not need log rotation or shipping code. Structure makes them queryable rather than grep-able.
 </details>
@@ -230,15 +230,15 @@ D. Print to the console only
 ### Question 13
 **Scenario:** A configuration value differs per environment.
 
-A. Separate code branches
-B. Environment variables or a configuration service, so the same image runs everywhere
+A. Environment variables or a configuration service, so the same image runs everywhere
+B. Rebuild per environment
 C. Hard-code with an if statement
-D. Rebuild per environment
+D. Separate code branches
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Rebuilding per environment means the artifact you tested is not the artifact you shipped. One image promoted through environments with external configuration is what makes staging results meaningful.
 </details>
@@ -248,15 +248,15 @@ D. Rebuild per environment
 ### Question 14
 **Scenario:** A serverless function should run when an object lands in Object Storage.
 
-A. Poll the bucket
-B. An event-driven trigger invoking the function on the object creation event
-C. A scheduled job
-D. Manual invocation
+A. An event-driven trigger invoking the function on the object creation event
+B. Poll the bucket
+C. Manual invocation
+D. A scheduled job
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Event triggers respond immediately and cost nothing while idle. Polling burns cycles finding nothing most of the time and adds latency equal to half the polling interval on average.
 </details>
@@ -266,10 +266,10 @@ D. Manual invocation
 ### Question 15
 **Scenario:** An application's dependencies must be kept current and free of known vulnerabilities.
 
-A. Update once a year
+A. Pin forever
 B. Automated dependency scanning in the pipeline with alerts and update pull requests, plus a policy for severity thresholds
 C. Update only when something breaks
-D. Pin forever
+D. Update once a year
 
 <details>
 <summary>Answer</summary>

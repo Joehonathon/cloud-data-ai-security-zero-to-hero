@@ -11,8 +11,8 @@
 
 A. Regression
 B. Classification
-C. Clustering
-D. Dimensionality reduction
+C. Dimensionality reduction
+D. Clustering
 
 <details>
 <summary>Answer</summary>
@@ -27,15 +27,15 @@ D. Dimensionality reduction
 ### Question 2
 **Scenario:** A fraud model scores 99.9% accuracy on a dataset where 99.9% of transactions are legitimate, but catches almost no fraud. What metric should be used instead?
 
-A. Accuracy is fine; the model needs more data
-B. Recall, or F1, because accuracy is misleading on imbalanced data
-C. Mean squared error
-D. R-squared
+A. Mean squared error
+B. Accuracy is fine; the model needs more data
+C. R-squared
+D. Recall, or F1, because accuracy is misleading on imbalanced data
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A model predicting "not fraud" every time scores 99.9% and is useless. Recall measures what proportion of actual fraud was caught, which is the business concern. MSE and R-squared are regression metrics.
 </details>
@@ -45,15 +45,15 @@ D. R-squared
 ### Question 3
 **Scenario:** A model performs excellently on training data and poorly on new data. What is happening, and what is one fix?
 
-A. Underfitting; use a more complex model
-B. Overfitting; use more data, regularization, or early stopping
-C. Data drift; retrain on recent data
-D. Class imbalance; resample the training set
+A. Class imbalance; resample the training set
+B. Data drift; retrain on recent data
+C. Overfitting; use more data, regularization, or early stopping
+D. Underfitting; use a more complex model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** High training performance with low test performance is the signature of overfitting: the model memorized the training data including its noise. Underfitting performs poorly on both. Drift is degradation over time in production, not a train-test gap at the outset.
 </details>
@@ -63,15 +63,15 @@ D. Class imbalance; resample the training set
 ### Question 4
 **Scenario:** A company wants to analyze sentiment in thousands of product reviews. It has no machine learning staff.
 
-A. OCI Data Science
-B. OCI Language
-C. OCI Generative AI custom model
-D. OCI Data Labeling
+A. OCI Data Labeling
+B. OCI Generative AI custom model
+C. OCI Data Science
+D. OCI Language
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** OCI Language is a ready-made service providing sentiment analysis with no model building. "Without machine learning expertise" points at the ready-made layer. Data Science is for building your own model, and Data Labeling prepares training data.
 </details>
@@ -81,9 +81,9 @@ D. OCI Data Labeling
 ### Question 5
 **Scenario:** A company must extract totals and dates from scanned supplier invoices.
 
-A. OCI Vision
+A. OCI Language
 B. OCI Document Understanding
-C. OCI Language
+C. OCI Vision
 D. OCI Speech
 
 <details>
@@ -99,15 +99,15 @@ D. OCI Speech
 ### Question 6
 **Scenario:** A chatbot must answer employee questions grounded in internal policy documents, with citations.
 
-A. OCI Generative AI base model prompting alone
-B. OCI Generative AI Agents
+A. OCI Generative AI Agents
+B. OCI Generative AI base model prompting alone
 C. Fine-tune a model on the policy documents
 D. OCI Language text classification
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Generative AI Agents provides retrieval-augmented answering over enterprise data with citations. Prompting alone gives the model no access to the documents. Fine-tuning changes behavior rather than knowledge, freezes the content at training time, and cannot cite sources.
 </details>
@@ -117,15 +117,15 @@ D. OCI Language text classification
 ### Question 7
 **Scenario:** What is the difference between a parameter and a hyperparameter?
 
-A. They are synonyms
-B. Parameters are learned during training; hyperparameters are set before training
-C. Parameters apply to deep learning only
-D. Hyperparameters are learned and parameters are fixed
+A. Parameters are learned during training; hyperparameters are set before training
+B. They are synonyms
+C. Hyperparameters are learned and parameters are fixed
+D. Parameters apply to deep learning only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Weights and biases are parameters, learned by the training process. Learning rate, epochs, batch size, and layer count are hyperparameters, chosen before training begins.
 </details>
@@ -135,15 +135,15 @@ D. Hyperparameters are learned and parameters are fixed
 ### Question 8
 **Scenario:** Which architecture is most appropriate for image classification?
 
-A. RNN
-B. CNN
+A. CNN
+B. RNN
 C. Transformer decoder
 D. Autoencoder
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Convolutional neural networks detect local spatial patterns and reuse filters across an image, which suits vision. RNNs handle sequences, transformer decoders generate text (though transformers are increasingly used for vision too), and autoencoders compress and reconstruct.
 </details>
@@ -154,9 +154,9 @@ D. Autoencoder
 **Scenario:** A model gives a confident, plausible, factually wrong answer. What is this called, and what most reduces it?
 
 A. Drift; retraining
-B. Overfitting; regularization
+B. Bias; rebalancing the dataset
 C. Hallucination; grounding the model in retrieved source text
-D. Bias; rebalancing the dataset
+D. Overfitting; regularization
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Bias; rebalancing the dataset
 ### Question 10
 **Scenario:** A team needs distributed training across many GPUs. Which OCI capability is specifically relevant?
 
-A. OCI Data Labeling
+A. OCI Language custom models
 B. RDMA cluster networking on AI infrastructure
-C. OCI Language custom models
-D. Autonomous Database
+C. Autonomous Database
+D. OCI Data Labeling
 
 <details>
 <summary>Answer</summary>
@@ -189,15 +189,15 @@ D. Autonomous Database
 ### Question 11
 **Scenario:** Which describes unsupervised learning?
 
-A. Learning to predict a label from labeled examples
-B. Finding structure in unlabeled data, such as clustering or anomaly detection
-C. Learning a policy from reward feedback
-D. Learning from a teacher model
+A. Learning a policy from reward feedback
+B. Learning to predict a label from labeled examples
+C. Learning from a teacher model
+D. Finding structure in unlabeled data, such as clustering or anomaly detection
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Unsupervised learning has no labels and finds structure. Supervised learning uses labeled data to predict a label. Reinforcement learning learns a policy from environmental reward.
 </details>
@@ -207,15 +207,15 @@ D. Learning from a teacher model
 ### Question 12
 **Scenario:** Why is a separate test set held back rather than reusing the validation set?
 
-A. To speed up training
-B. Because tuning against a set contaminates it, so an untouched set is needed for an honest final estimate
-C. Because validation sets cannot be used for classification
-D. To reduce memory use
+A. Because validation sets cannot be used for classification
+B. To reduce memory use
+C. Because tuning against a set contaminates it, so an untouched set is needed for an honest final estimate
+D. To speed up training
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The validation set is used to tune hyperparameters, so performance on it is optimistically biased. The test set is used once, at the end, to estimate real-world performance.
 </details>
@@ -225,15 +225,15 @@ D. To reduce memory use
 ### Question 13
 **Scenario:** A team wants semantic search over data that already lives in Oracle Autonomous Database, without operating a separate vector store.
 
-A. OCI Vision
-B. AI Vector Search in Autonomous Database
-C. OCI Data Science model deployment
-D. OCI Speech
+A. AI Vector Search in Autonomous Database
+B. OCI Vision
+C. OCI Speech
+D. OCI Data Science model deployment
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** AI Vector Search stores embeddings as a native column type and performs similarity search in SQL, so vectors sit beside the relational data with no second system to operate or secure.
 </details>
@@ -243,10 +243,10 @@ D. OCI Speech
 ### Question 14
 **Scenario:** Which responsible AI principle is addressed by being able to explain to a rejected loan applicant why the decision was made?
 
-A. Fairness
-B. Privacy
+A. Privacy
+B. Availability
 C. Explainability
-D. Availability
+D. Fairness
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. Availability
 ### Question 15
 **Scenario:** A team wants to train a custom model in a managed notebook environment and serve it as an API endpoint.
 
-A. OCI Generative AI
+A. OCI Document Understanding
 B. OCI Data Science, using notebook sessions, the model catalog, and model deployment
 C. OCI Language custom models
-D. OCI Document Understanding
+D. OCI Generative AI
 
 <details>
 <summary>Answer</summary>

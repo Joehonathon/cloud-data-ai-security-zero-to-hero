@@ -9,15 +9,15 @@
 ### Question 1
 **Scenario:** A pod is stuck in `Pending` state. `kubectl describe pod` shows `0/3 nodes are available: 3 Insufficient memory`. What's the right fix?
 
-A. Delete and recreate the pod
-B. Reduce the pod's memory `requests` or scale up the cluster
-C. Drain a node
+A. Reduce the pod's memory `requests` or scale up the cluster
+B. Drain a node
+C. Delete and recreate the pod
 D. Restart the kubelet
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** "Insufficient memory" means the pod's memory requests don't fit on any node. Either reduce `resources.requests.memory` in the spec or add more node capacity. Recreating won't help - same scheduling problem. Draining reduces capacity. Kubelet restart is unrelated.
 </details>
@@ -27,10 +27,10 @@ D. Restart the kubelet
 ### Question 2
 **Scenario:** You need to upgrade a 1.28 cluster to 1.29 using kubeadm. What's the correct order?
 
-A. Upgrade all worker nodes, then control plane
+A. Upgrade etcd directly with binary replacement
 B. Upgrade control plane (kubeadm + kubelet + kubectl), drain a worker, upgrade kubeadm + kubelet on that worker, uncordon, repeat
 C. Upgrade kubelet on all nodes simultaneously
-D. Upgrade etcd directly with binary replacement
+D. Upgrade all worker nodes, then control plane
 
 <details>
 <summary>Answer</summary>
@@ -64,14 +64,14 @@ D. Any of the above
 **Scenario:** You need to expose a Deployment so it's reachable on every node's IP at port 30080. What Service type?
 
 A. ClusterIP
-B. NodePort
-C. LoadBalancer
-D. ExternalName
+B. ExternalName
+C. NodePort
+D. LoadBalancer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** NodePort exposes the service on each node's IP at the specified port (range 30000-32767). LoadBalancer adds a cloud LB on top of NodePort. ClusterIP is internal-only. ExternalName is a DNS CNAME.
 </details>
@@ -82,14 +82,14 @@ D. ExternalName
 **Scenario:** etcd backup task: take a snapshot of etcd on a control plane node. Which command?
 
 A. `kubectl backup etcd`
-B. `ETCDCTL_API=3 etcdctl snapshot save /backup/snap.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key`
-C. `kubeadm reset etcd`
-D. `systemctl backup etcd`
+B. `systemctl backup etcd`
+C. `ETCDCTL_API=3 etcdctl snapshot save /backup/snap.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key`
+D. `kubeadm reset etcd`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** etcdctl with API v3 takes the snapshot. The TLS certs path is the kubeadm default. There's no `kubectl backup` command; `kubeadm reset` is destructive.
 </details>
@@ -99,15 +99,15 @@ D. `systemctl backup etcd`
 ### Question 6
 **Scenario:** A user `alice` should be able to read pods in namespace `dev` but nothing else. What objects?
 
-A. ClusterRole + ClusterRoleBinding
-B. Role + RoleBinding in `dev`
-C. NetworkPolicy
-D. ServiceAccount only
+A. Role + RoleBinding in `dev`
+B. ClusterRole + ClusterRoleBinding
+C. ServiceAccount only
+D. NetworkPolicy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Namespaced read = `Role` (not ClusterRole) in the `dev` namespace + `RoleBinding` for alice. ClusterRole+ClusterRoleBinding is cluster-wide. NetworkPolicy controls traffic, not RBAC. ServiceAccounts are for pods, not human users.
 </details>
@@ -117,10 +117,10 @@ D. ServiceAccount only
 ### Question 7
 **Scenario:** A ConfigMap is mounted in a pod. You update the ConfigMap. The pod's mounted file isn't updating. Why?
 
-A. ConfigMaps don't propagate to pods
+A. ConfigMaps require a rolling update
 B. Subkey mounts (volume.configMap.items) are not auto-updated; whole-volume mounts auto-refresh after a delay
-C. You need to restart the cluster
-D. ConfigMaps require a rolling update
+C. ConfigMaps don't propagate to pods
+D. You need to restart the cluster
 
 <details>
 <summary>Answer</summary>
@@ -154,9 +154,9 @@ D. Both A and B (PVC binding requires access mode in PV's set + storage class ma
 **Scenario:** A node is unreachable. Pods on it stay running for 5 minutes, then start failing over. Why the delay?
 
 A. `pod-eviction-timeout` defaults to 5 minutes; the controller waits before evicting
-B. Kubelet stops responding immediately
+B. There's a randomized backoff
 C. Pods crash because etcd loses node state
-D. There's a randomized backoff
+D. Kubelet stops responding immediately
 
 <details>
 <summary>Answer</summary>
@@ -190,9 +190,9 @@ D. Affinity rules
 **Scenario:** Which command shows the resource usage of all pods sorted by CPU?
 
 A. `kubectl top pods`
-B. `kubectl top pods --sort-by=cpu`
+B. `kubectl describe pods | grep CPU`
 C. `kubectl top pods -A --sort-by=cpu`
-D. `kubectl describe pods | grep CPU`
+D. `kubectl top pods --sort-by=cpu`
 
 <details>
 <summary>Answer</summary>
@@ -207,15 +207,15 @@ D. `kubectl describe pods | grep CPU`
 ### Question 12
 **Scenario:** A NetworkPolicy is created with `policyTypes: [Ingress]` and an empty ingress rule. What's the effect on selected pods?
 
-A. All ingress allowed
-B. All ingress blocked
-C. No change
-D. Egress also blocked
+A. No change
+B. Egress also blocked
+C. All ingress allowed
+D. All ingress blocked
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** A NetworkPolicy that selects pods and has an empty `ingress: []` (or no ingress block but `policyTypes: [Ingress]`) means **all ingress is denied**. To allow some, add specific `ingress` rules.
 </details>
@@ -243,15 +243,15 @@ D. Neither - use a service mesh
 ### Question 14
 **Scenario:** A Pod has a `livenessProbe` that fails. What happens?
 
-A. The pod is deleted and rescheduled
-B. The container is restarted (in-place); the pod stays scheduled
-C. The pod is moved to another node
-D. The deployment scales up
+A. The container is restarted (in-place); the pod stays scheduled
+B. The deployment scales up
+C. The pod is deleted and rescheduled
+D. The pod is moved to another node
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Liveness failures restart the **container** in the same pod (kubelet kills + restarts according to restartPolicy). The pod itself stays scheduled. Readiness failures only remove the pod from Service endpoints; they don't restart anything.
 </details>
@@ -263,8 +263,8 @@ D. The deployment scales up
 
 A. `kubectl delete node <name>`
 B. `kubectl drain <name> --ignore-daemonsets --delete-emptydir-data`
-C. `kubectl cordon <name>`
-D. `systemctl stop kubelet` on that node
+C. `systemctl stop kubelet` on that node
+D. `kubectl cordon <name>`
 
 <details>
 <summary>Answer</summary>
@@ -279,15 +279,15 @@ D. `systemctl stop kubelet` on that node
 ### Question 16
 **Scenario:** A Service of type ClusterIP isn't reachable from inside the cluster. `kubectl get endpoints <svc>` returns no addresses. What's most likely?
 
-A. The Service spec is wrong
-B. The Service's `selector` doesn't match any Pod labels
+A. The Service's `selector` doesn't match any Pod labels
+B. The Service spec is wrong
 C. The Pods are in a different namespace
 D. CoreDNS is down
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Empty endpoints means no Pods match the Service's `selector`. Either the labels in the Service selector are wrong, or the Pods don't have those labels (yet). `kubectl get pods -l <selector>` confirms. CoreDNS being down would still show endpoints if the selector matched.
 </details>
@@ -298,16 +298,16 @@ D. CoreDNS is down
 **Scenario:** You need to give a CI service account read-only access to all resources in the `staging` namespace. What's the minimal correct setup?
 
 A. ClusterRole with full read permissions, ClusterRoleBinding to the service account
-B. Role in `staging` namespace with `verbs: [get, list, watch]`, RoleBinding to the service account
+B. Run the CI as cluster-admin
 C. Edit the kube-system service account
-D. Run the CI as cluster-admin
+D. Role in `staging` namespace with `verbs: [get, list, watch]`, RoleBinding to the service account
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Role is namespace-scoped (matching "all resources in staging"); RoleBinding grants it. ClusterRole + ClusterRoleBinding (A) gives access to ALL namespaces. C is dangerous and wrong scope. D is least-privilege violation.
+**Why:** Role is namespace-scoped (matching "all resources in staging"); RoleBinding grants it. ClusterRole + ClusterRoleBinding (A) gives access to ALL namespaces. C is dangerous and wrong scope. B is least-privilege violation.
 </details>
 
 ---
@@ -316,14 +316,14 @@ D. Run the CI as cluster-admin
 **Scenario:** A pod's container exits with `OOMKilled`. What's the right first action?
 
 A. Lower `resources.limits.memory`
-B. Increase `resources.limits.memory` (and `requests` if needed)
-C. Disable OOM kills on the node
+B. Disable OOM kills on the node
+C. Increase `resources.limits.memory` (and `requests` if needed)
 D. Switch to a different node
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** OOMKilled means the container exceeded its memory limit. The fix is to raise the limit (after profiling the actual need) or to fix the memory leak. Lowering makes it worse. Disabling OOM is dangerous. Different node won't help if the limit is the issue.
 </details>
@@ -333,15 +333,15 @@ D. Switch to a different node
 ### Question 19
 **Scenario:** You want to schedule a Pod only on nodes labeled `disk=ssd`. What's the standard mechanism?
 
-A. `nodeSelector: { disk: ssd }`
+A. `priorityClassName: ssd-only`
 B. `tolerations` for `disk=ssd`
 C. Manually choose the node in the spec
-D. `priorityClassName: ssd-only`
+D. `nodeSelector: { disk: ssd }`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** `nodeSelector` is the simplest matching mechanism. For more complex rules, `nodeAffinity` is the modern replacement. Tolerations are paired with taints (different concept - taints repel; tolerations let pods land on tainted nodes). Priority is for scheduling order, not target.
 </details>
@@ -351,15 +351,15 @@ D. `priorityClassName: ssd-only`
 ### Question 20
 **Scenario:** A NetworkPolicy denies all ingress to namespace `app`. You need to allow traffic from namespace `web` only. What's the right rule?
 
-A. NetworkPolicy with `podSelector: {}` and ingress from a `namespaceSelector` matching `web`
-B. RBAC role
-C. Service Account binding
-D. Edit the CNI directly
+A. Edit the CNI directly
+B. Service Account binding
+C. RBAC role
+D. NetworkPolicy with `podSelector: {}` and ingress from a `namespaceSelector` matching `web`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** NetworkPolicy is the K8s primitive for L3/L4 traffic control. `podSelector: {}` selects all pods in the policy's namespace; ingress from `namespaceSelector` allows traffic from another namespace. RBAC is API-level, not network-level. Editing CNI directly is wrong abstraction layer. Note: the cluster's CNI must support NetworkPolicy (Calico, Cilium yes; flannel without extensions no).
 </details>
@@ -389,8 +389,8 @@ D. Disable health checks
 
 A. K8s recreates pod-1 with the same name and same PVC binding
 B. K8s renames the remaining pods sequentially (pod-0, pod-1)
-C. The StatefulSet enters a degraded state
-D. The PVC is deleted
+C. The PVC is deleted
+D. The StatefulSet enters a degraded state
 
 <details>
 <summary>Answer</summary>
@@ -405,15 +405,15 @@ D. The PVC is deleted
 ### Question 23
 **Scenario:** You need to expose a Deployment to the internet on a managed K8s service (EKS / AKS / GKE). What's the standard way?
 
-A. `Service` of type `LoadBalancer`
+A. Manually configure cloud LB outside K8s
 B. Pod with `hostNetwork: true`
-C. Manually configure cloud LB outside K8s
+C. `Service` of type `LoadBalancer`
 D. NodePort + manual cloud LB pointing at NodePort
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** `Service` type `LoadBalancer` provisions a cloud LB automatically (ELB/ALB on AWS, ALB on Azure, NLB on GCP). For HTTP/L7 you'd typically use Ingress + an Ingress controller, but for any single port the LoadBalancer Service is the K8s-native pattern. B is anti-pattern. D is what `LoadBalancer` does for you.
 </details>
@@ -441,15 +441,15 @@ D. `systemctl stop etcd && tar -czf etcd.tar.gz /var/lib/etcd`
 ### Question 25
 **Scenario:** You need to enforce that all pods in a namespace must have CPU/memory `requests` and `limits` set. What's the right tool?
 
-A. LimitRange + ResourceQuota in the namespace
-B. NetworkPolicy
-C. PodSecurityPolicy
-D. ClusterRole
+A. NetworkPolicy
+B. PodSecurityPolicy
+C. ClusterRole
+D. LimitRange + ResourceQuota in the namespace
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** LimitRange enforces per-pod / per-container defaults and constraints (default requests / limits, max / min). ResourceQuota enforces aggregate namespace limits. Together they ensure every pod has resource specs. NetworkPolicy is networking. PSP is deprecated (replaced by Pod Security Admission). ClusterRole is RBAC.
 </details>

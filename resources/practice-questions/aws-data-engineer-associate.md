@@ -33,9 +33,9 @@ D. Use AWS DMS with Kinesis source.
 ### Question 2
 **Scenario:** A company is migrating an on-prem Oracle 12c database to Aurora PostgreSQL with continuous replication. Schema dialects differ.
 
-A. AWS DataSync + DMS Full Load
+A. AWS Glue ETL + Lambda
 B. AWS Schema Conversion Tool (SCT) + DMS Full Load + CDC
-C. AWS Glue ETL + Lambda
+C. AWS DataSync + DMS Full Load
 D. Native Oracle Data Pump export to S3 + Glue Crawler
 
 <details>
@@ -54,14 +54,14 @@ D. Native Oracle Data Pump export to S3 + Glue Crawler
 **Scenario:** A team uses Apache Airflow extensively. They need to orchestrate a nightly Glue + Athena CTAS + Redshift COPY pipeline while keeping their existing DAGs.
 
 A. AWS Step Functions with the Glue and Redshift Data API integrations
-B. Amazon MWAA
-C. Amazon EventBridge schedules
-D. AWS Lambda with cron
+B. Amazon EventBridge schedules
+C. AWS Lambda with cron
+D. Amazon MWAA
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** MWAA preserves existing Airflow DAGs and operator ecosystem. Step Functions would require rewriting orchestration logic. EventBridge alone can't represent multi-step DAGs with branching and retries. Lambda has a 15-minute cap and isn't a full orchestrator.
 
@@ -73,15 +73,15 @@ D. AWS Lambda with cron
 ### Question 4
 **Scenario:** A nightly Spark batch job processes 100 GB and is interruption-tolerant. Cost is the primary requirement.
 
-A. EMR on EC2 with all on-demand instances
+A. EMR on EC2 with Spot task nodes, on-demand core nodes, auto-termination after job completion
 B. AWS Glue ETL with G.8X workers
-C. EMR on EC2 with Spot task nodes, on-demand core nodes, auto-termination after job completion
+C. EMR on EC2 with all on-demand instances
 D. Lambda functions in parallel
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Spot reduces task-node cost by 70-90%. Auto-termination prevents idle billing. Core nodes stay on-demand to protect HDFS data. Glue with G.8X is more expensive than Spot EMR for this workload. Lambda has a 15-min cap and isn't suited for 100 GB Spark jobs.
 
@@ -93,10 +93,10 @@ D. Lambda functions in parallel
 ### Question 5
 **Scenario:** A pipeline must convert streaming JSON to Parquet during S3 delivery, with no infrastructure to manage.
 
-A. Kinesis Data Streams + Lambda consumer that writes Parquet
+A. AWS Glue Streaming ETL
 B. Kinesis Data Firehose with format conversion enabled (Glue Data Catalog schema)
 C. MSK Connect with S3 sink
-D. AWS Glue Streaming ETL
+D. Kinesis Data Streams + Lambda consumer that writes Parquet
 
 <details>
 <summary>Answer</summary>
@@ -115,15 +115,15 @@ D. AWS Glue Streaming ETL
 ### Question 6
 **Scenario:** A 5 PB lake of historical sensor data is queried weekly. Reads must complete in seconds. Cost is critical.
 
-A. S3 Standard
-B. S3 Glacier Deep Archive
-C. S3 Glacier Instant Retrieval
-D. S3 Standard-IA
+A. S3 Glacier Deep Archive
+B. S3 Standard-IA
+C. S3 Standard
+D. S3 Glacier Instant Retrieval
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: D**
 
 **Why:** Glacier Instant Retrieval gives ms-level retrieval at ~50% lower cost than Standard. Glacier Deep Archive can't meet the seconds requirement (12+ hours retrieval). Standard-IA fits monthly access, not weekly with cost criticality.
 
@@ -136,14 +136,14 @@ D. S3 Standard-IA
 **Scenario:** Auditors require ACID transactions, time-travel reads, and schema evolution on the data lake.
 
 A. Plain Parquet on S3 + Athena
-B. Apache Iceberg tables on S3 + Athena
-C. Apache Avro + Glue
+B. Apache Avro + Glue
+C. Apache Iceberg tables on S3 + Athena
 D. CSV with versioned S3 buckets
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Iceberg natively provides ACID, time travel, and schema evolution; Athena/Glue/EMR/Redshift Spectrum all support it. Plain Parquet doesn't have ACID or time travel. Avro is row-oriented and doesn't add ACID. S3 versioning isn't a query-level time-travel mechanism.
 
@@ -156,14 +156,14 @@ D. CSV with versioned S3 buckets
 **Scenario:** A 50 TB Redshift RA3 cluster sees long queue waits during business-hour peaks with 200 concurrent BI users.
 
 A. Resize to a larger node type
-B. Migrate to Redshift Serverless
-C. Enable Concurrency Scaling
-D. Switch to DynamoDB
+B. Switch to DynamoDB
+C. Migrate to Redshift Serverless
+D. Enable Concurrency Scaling
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: D**
 
 **Why:** Concurrency Scaling adds transient compute for short read bursts and provides free credits proportional to baseline usage. It addresses queue waits with no migration. Resizing helps for steady throughput but doesn't add elasticity. Redshift Serverless is a bigger migration. DynamoDB is wrong for analytical SQL.
 
@@ -175,15 +175,15 @@ D. Switch to DynamoDB
 ### Question 9
 **Scenario:** A multi-region IoT app needs single-digit-ms key-value reads with active-active replication across us-east-1 and eu-west-1.
 
-A. Aurora Global Database
-B. DynamoDB Global Tables
+A. DynamoDB Global Tables
+B. Aurora Global Database
 C. RDS Multi-AZ
 D. ElastiCache Global Datastore
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Global Tables provide active-active multi-region replication with single-digit-ms latency. Aurora Global is active-passive (one writer region). RDS Multi-AZ is single-region HA only. ElastiCache Global Datastore is for Redis caching, not primary key-value persistence.
 
@@ -195,15 +195,15 @@ D. ElastiCache Global Datastore
 ### Question 10
 **Scenario:** A producer account wants to share a curated lake table with three consumer accounts. Data must not be copied. Permissions should be centrally managed.
 
-A. Replicate the S3 bucket to each consumer account
-B. Lake Formation cross-account share with LF-Tags
-C. S3 bucket policies granting consumer accounts read access
-D. AWS DataSync to consumer-account buckets
+A. Lake Formation cross-account share with LF-Tags
+B. AWS DataSync to consumer-account buckets
+C. Replicate the S3 bucket to each consumer account
+D. S3 bucket policies granting consumer accounts read access
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Lake Formation cross-account sharing avoids copies, scales via LF-Tags, and centralizes governance in the producer account. Bucket policies work at the S3 level but don't provide table-level / column-level control. Replication and DataSync make copies.
 
@@ -217,10 +217,10 @@ D. AWS DataSync to consumer-account buckets
 ### Question 11
 **Scenario:** A team is concerned about runaway Athena queries scanning the full 200 TB lake. They need a hard cap on data scanned per query.
 
-A. CloudWatch alarm on Athena DataScannedInBytes
+A. IAM policy limiting Athena calls
 B. Athena workgroup with per-query data scan limit
-C. IAM policy limiting Athena calls
-D. Restrict Glue Data Catalog access
+C. Restrict Glue Data Catalog access
+D. CloudWatch alarm on Athena DataScannedInBytes
 
 <details>
 <summary>Answer</summary>
@@ -238,14 +238,14 @@ D. Restrict Glue Data Catalog access
 **Scenario:** A nightly Glue ETL job sometimes silently produces empty output when upstream data is stale. Detect this without writing custom Spark code.
 
 A. Add a Lambda post-processor that counts rows
-B. AWS Glue Data Quality with DQDL rules (RowCount, Freshness), set to fail the job
-C. CloudWatch metric filter on Glue logs
-D. Step Functions Catch state
+B. Step Functions Catch state
+C. AWS Glue Data Quality with DQDL rules (RowCount, Freshness), set to fail the job
+D. CloudWatch metric filter on Glue logs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Glue Data Quality (built on Deequ) provides RowCount, Freshness, Completeness, and Uniqueness rules without custom code. Rule failures can fail the job. Other options work but require custom code or only catch errors, not data-quality issues.
 
@@ -257,10 +257,10 @@ D. Step Functions Catch state
 ### Question 13
 **Scenario:** A Lambda Kinesis consumer is falling behind. Alert before SLA breach.
 
-A. Lambda Errors metric alarm
-B. Lambda Duration metric alarm
+A. CloudTrail event on Kinesis
+B. Lambda Errors metric alarm
 C. CloudWatch alarm on IteratorAgeMilliseconds
-D. CloudTrail event on Kinesis
+D. Lambda Duration metric alarm
 
 <details>
 <summary>Answer</summary>
@@ -277,10 +277,10 @@ D. CloudTrail event on Kinesis
 ### Question 14
 **Scenario:** Reduce Athena cost by 80% on a noisy CSV-heavy lake.
 
-A. Switch all data to JSON
+A. Increase the EC2 instance type behind Athena
 B. Convert CSV to Parquet, partition by date, compress with Snappy
-C. Increase the EC2 instance type behind Athena
-D. Cache results in Redshift
+C. Cache results in Redshift
+D. Switch all data to JSON
 
 <details>
 <summary>Answer</summary>
@@ -297,10 +297,10 @@ D. Cache results in Redshift
 ### Question 15
 **Scenario:** Long-term log retention with cost-effective ad-hoc query.
 
-A. Keep all logs in CloudWatch Logs forever
+A. Store logs in DynamoDB
 B. CloudWatch Logs subscription filter → Firehose → S3 → Athena
-C. Stream logs to OpenSearch Provisioned with 7-year retention
-D. Store logs in DynamoDB
+C. Keep all logs in CloudWatch Logs forever
+D. Stream logs to OpenSearch Provisioned with 7-year retention
 
 <details>
 <summary>Answer</summary>
@@ -319,15 +319,15 @@ D. Store logs in DynamoDB
 ### Question 16
 **Scenario:** Encrypt all S3 data at rest with customer-managed keys, with a complete audit trail of every decryption.
 
-A. SSE-S3
-B. SSE-KMS with a customer-managed CMK + CloudTrail data events on KMS
-C. SSE-C with rotating client-side keys
-D. Enable S3 Versioning
+A. SSE-C with rotating client-side keys
+B. Enable S3 Versioning
+C. SSE-S3
+D. SSE-KMS with a customer-managed CMK + CloudTrail data events on KMS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** SSE-KMS with a customer-managed CMK gives full key policy control. CloudTrail data events on KMS log every Decrypt call. SSE-S3 uses AWS-managed keys (less control, less audit). SSE-C requires the client to send the key on every request and isn't centrally auditable. Versioning has nothing to do with encryption.
 
@@ -339,15 +339,15 @@ D. Enable S3 Versioning
 ### Question 17
 **Scenario:** EU analysts must see only EU customer rows; NA analysts only NA rows. Same source table.
 
-A. Build separate physical tables per region
-B. Lake Formation row-level filter using a region column with LF-Tags
+A. Athena views per analyst persona
+B. Build separate physical tables per region
 C. IAM policy with conditional resource ARNs
-D. Athena views per analyst persona
+D. Lake Formation row-level filter using a region column with LF-Tags
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Lake Formation row-level security with LF-Tags is the canonical row-filter pattern at scale. Separate tables explode storage and ETL. IAM resource ARNs can't filter rows. Views are workable but harder to govern at scale and audit.
 
@@ -359,15 +359,15 @@ D. Athena views per analyst persona
 ### Question 18
 **Scenario:** Identify any S3 buckets with unprotected PII before opening them to a broader analyst group.
 
-A. Run a custom Glue ETL job scanning every object
-B. Amazon Macie scheduled discovery jobs
-C. AWS Config rule
-D. CloudTrail data events filtered for sensitive prefixes
+A. Amazon Macie scheduled discovery jobs
+B. Run a custom Glue ETL job scanning every object
+C. CloudTrail data events filtered for sensitive prefixes
+D. AWS Config rule
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Macie performs ML-based PII / credentials / secrets discovery in S3. Pre-broader-access scans are a canonical Macie use case. Custom Glue ETL is reinventing Macie. Config evaluates resource configuration, not file content. CloudTrail logs API calls.
 
@@ -379,15 +379,15 @@ D. CloudTrail data events filtered for sensitive prefixes
 ### Question 19
 **Scenario:** A Glue ETL job in a private subnet can't reach S3. Internet egress is blocked.
 
-A. Add a NAT Gateway
-B. Add an S3 Gateway VPC Endpoint to the subnet's route table
-C. Move the Glue job to a public subnet
-D. Allowlist S3 IP ranges in the security group
+A. Add an S3 Gateway VPC Endpoint to the subnet's route table
+B. Move the Glue job to a public subnet
+C. Allowlist S3 IP ranges in the security group
+D. Add a NAT Gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Gateway endpoints route to S3 without internet egress and are free. NAT Gateway works but costs $$ and is overkill. Public subnet violates security policy. S3 IP ranges change frequently and aren't operationally sound to allowlist.
 
@@ -400,14 +400,14 @@ D. Allowlist S3 IP ranges in the security group
 **Scenario:** A Lambda Firehose transformer must call a third-party API with an API key. Compliance prohibits hardcoded secrets in code or plain-text environment variables.
 
 A. Hardcode the key in the Lambda
-B. Store in AWS Secrets Manager and fetch at runtime
-C. Store in a public S3 bucket with restrictive ACLs
+B. Store in a public S3 bucket with restrictive ACLs
+C. Store in AWS Secrets Manager and fetch at runtime
 D. Pass via Firehose record headers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Secrets Manager (or Parameter Store SecureString) is purpose-built for this. Hardcoding violates basic security. Public S3 is wrong on its face. Firehose record headers aren't a secrets channel.
 
@@ -419,15 +419,15 @@ D. Pass via Firehose record headers
 ### Question 21
 **Scenario:** A daily ETL writes ~5 GB of small Parquet files to S3 then queries with Athena. Queries are slow. Best fix?
 
-A. Add more memory to Athena
-B. Compact small files into ~128 MB files (use AWS Glue compaction / Iceberg compaction / a periodic Glue job that bin-packs); also partition by frequently filtered columns to enable partition pruning
-C. Switch to Redshift
-D. Use larger instance types
+A. Compact small files into ~128 MB files (use AWS Glue compaction / Iceberg compaction / a periodic Glue job that bin-packs); also partition by frequently filtered columns to enable partition pruning
+B. Use larger instance types
+C. Add more memory to Athena
+D. Switch to Redshift
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Athena (and most query engines on S3) suffers from the small-file problem - per-file overhead dominates. Aim for 128 MB-1 GB files, columnar format (Parquet/ORC), and partitioned by query predicates. Iceberg or Delta with their compaction utilities automate this.
 </details>
@@ -437,15 +437,15 @@ D. Use larger instance types
 ### Question 22
 **Scenario:** A streaming pipeline writes to Kinesis Data Streams. Consumer can't keep up; iterator age grows. What's the canonical scaling lever?
 
-A. Larger consumer instance
-B. Increase shards (resharding) - throughput scales linearly with shard count; consumer needs to be sharded too (KCL workers, Lambda parallelization factor, or Kinesis Data Firehose parallelism)
+A. Add SQS
+B. Larger consumer instance
 C. Smaller batch size
-D. Add SQS
+D. Increase shards (resharding) - throughput scales linearly with shard count; consumer needs to be sharded too (KCL workers, Lambda parallelization factor, or Kinesis Data Firehose parallelism)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Kinesis Data Streams scales by shards (1 MB/sec or 1000 records/sec write per shard, 2 MB/sec read). When iterator age (consumer lag) grows, either scale up shards or scale up consumers. Enhanced fan-out gives each consumer dedicated 2 MB/sec.
 </details>
@@ -456,14 +456,14 @@ D. Add SQS
 **Scenario:** A team needs slowly-changing dimensions (Type 2) on a Redshift fact-and-dimension model. Best implementation?
 
 A. Multiple tables
-B. SCD Type 2 logic via MERGE or stored procedure: when a dim row changes, expire the old row (set effective_end_date) and insert a new row with the new values and a new surrogate key; downstream facts join on surrogate keys for point-in-time accuracy
-C. Drop and recreate
+B. Drop and recreate
+C. SCD Type 2 logic via MERGE or stored procedure: when a dim row changes, expire the old row (set effective_end_date) and insert a new row with the new values and a new surrogate key; downstream facts join on surrogate keys for point-in-time accuracy
 D. Truncate dim daily
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** SCD Type 2 preserves historical dimension states. Standard analytical pattern for "as-of" reporting. Redshift supports MERGE; alternatively use UPDATE + INSERT in a transaction. The surrogate key + effective dates is the textbook pattern.
 </details>
@@ -474,14 +474,14 @@ D. Truncate dim daily
 **Scenario:** Data quality - a pipeline must reject batches that violate schema or row-count thresholds before downstream loads. Best AWS service?
 
 A. Manual SQL checks
-B. AWS Glue Data Quality (DQDL rules) attached to a Glue job - validates schema, completeness, freshness, distribution; can fail the job, route bad data to quarantine, and emit metrics to CloudWatch
-C. Athena alone
-D. Lambda crons
+B. Lambda crons
+C. AWS Glue Data Quality (DQDL rules) attached to a Glue job - validates schema, completeness, freshness, distribution; can fail the job, route bad data to quarantine, and emit metrics to CloudWatch
+D. Athena alone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Glue Data Quality is the AWS-native data quality framework. DQDL declarative rules cover the common quality checks. Integrates with Glue jobs and Glue Studio. Open-source alternative: Great Expectations or Deequ.
 </details>
@@ -491,15 +491,15 @@ D. Lambda crons
 ### Question 25
 **Scenario:** A team migrates a 50 TB on-prem Hadoop cluster to AWS. Which combination minimizes total project risk?
 
-A. Lift-and-shift to EC2
-B. Phased: data first (DataSync or Snowball Edge for the bulk + DataSync delta for ongoing changes) → metadata to Glue Catalog → workloads incrementally to EMR or refactored to Athena/Redshift, with parallel run for validation
+A. Phased: data first (DataSync or Snowball Edge for the bulk + DataSync delta for ongoing changes) → metadata to Glue Catalog → workloads incrementally to EMR or refactored to Athena/Redshift, with parallel run for validation
+B. Lift-and-shift to EC2
 C. Big bang cutover
 D. Use only S3
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Phased migrations with parallel-run validation are the lower-risk path for large data systems. DataSync handles ongoing sync; Snowball Edge for the initial bulk if network is slow. Refactoring to managed services (Athena, Redshift) where possible reduces ongoing ops.
 </details>

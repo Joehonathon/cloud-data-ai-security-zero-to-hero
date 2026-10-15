@@ -9,15 +9,15 @@
 ### Question 1
 **Scenario:** A web server runs an unpatched library with a known remote code execution flaw. Attack groups are actively scanning for it. The server holds payment records. Which term describes the unpatched library?
 
-A. Threat
-B. Vulnerability
-C. Risk
-D. Asset
+A. Asset
+B. Threat
+C. Vulnerability
+D. Risk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A vulnerability is the weakness. The attack groups are the threat, the payment records and server are assets, and the risk is the combination of the likelihood of exploitation and the impact if it happens.
 </details>
@@ -27,10 +27,10 @@ D. Asset
 ### Question 2
 **Scenario:** A company installs a visible warning sign stating that an area is under camera surveillance. What control function is the sign?
 
-A. Preventive
-B. Detective
+A. Detective
+B. Corrective
 C. Deterrent
-D. Corrective
+D. Preventive
 
 <details>
 <summary>Answer</summary>
@@ -45,15 +45,15 @@ D. Corrective
 ### Question 3
 **Scenario:** An organization buys cyber insurance to cover the financial consequence of a breach it cannot fully prevent. Which risk treatment is this?
 
-A. Avoid
-B. Mitigate
-C. Transfer
+A. Transfer
+B. Avoid
+C. Mitigate
 D. Accept
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Transfer moves the financial consequence to another party. Avoid means stopping the activity, mitigate means applying controls to reduce likelihood or impact, and accept means documenting and taking no further action.
 </details>
@@ -63,15 +63,15 @@ D. Accept
 ### Question 4
 **Scenario:** A government system labels documents Secret and Top Secret, and the system enforces clearance levels that users cannot override. Which access control model is this?
 
-A. DAC
-B. MAC
-C. RBAC
-D. ABAC
+A. ABAC
+B. RBAC
+C. MAC
+D. DAC
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Mandatory access control is system-enforced from labels and clearances, and users cannot change it. DAC lets the data owner decide, RBAC attaches permissions to roles, and ABAC evaluates attributes at access time.
 </details>
@@ -83,8 +83,8 @@ D. ABAC
 
 A. Least privilege
 B. Need to know
-C. Separation of duties
-D. Job rotation
+C. Job rotation
+D. Separation of duties
 
 <details>
 <summary>Answer</summary>
@@ -99,15 +99,15 @@ D. Job rotation
 ### Question 6
 **Scenario:** A payments company can tolerate at most 15 minutes of lost transactions. Which objective does that define, and what does it drive?
 
-A. RTO; it drives recovery capability
-B. RPO; it drives backup and replication frequency
-C. MTD; it drives the continuity plan
-D. SLA; it drives vendor selection
+A. SLA; it drives vendor selection
+B. MTD; it drives the continuity plan
+C. RTO; it drives recovery capability
+D. RPO; it drives backup and replication frequency
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Recovery point objective is the maximum acceptable data loss measured in time, and it is satisfied by how often data is captured. Recovery time objective is the maximum acceptable downtime and is satisfied by recovery architecture.
 </details>
@@ -117,9 +117,9 @@ D. SLA; it drives vendor selection
 ### Question 7
 **Scenario:** During a ransomware incident, clinical staff switch to paper forms so patient care continues. Which discipline owns this activity?
 
-A. Incident response
+A. Disaster recovery
 B. Business continuity
-C. Disaster recovery
+C. Incident response
 D. Change management
 
 <details>
@@ -135,15 +135,15 @@ D. Change management
 ### Question 8
 **Scenario:** Which is the correct order of incident response phases?
 
-A. Detection, preparation, containment, recovery, eradication, lessons learned
-B. Preparation, detection and analysis, containment, eradication, recovery, post-incident activity
-C. Containment, detection, eradication, preparation, recovery
-D. Preparation, containment, detection, recovery, eradication
+A. Preparation, detection and analysis, containment, eradication, recovery, post-incident activity
+B. Preparation, containment, detection, recovery, eradication
+C. Detection, preparation, containment, recovery, eradication, lessons learned
+D. Containment, detection, eradication, preparation, recovery
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Preparation comes first because it is everything done before an incident. Eradication removes the cause and must precede recovery, or you restore into the same compromise. Post-incident activity is where lessons learned improve both controls and the plan.
 </details>
@@ -153,8 +153,8 @@ D. Preparation, containment, detection, recovery, eradication
 ### Question 9
 **Scenario:** A system must store user passwords so they cannot be recovered. Which cryptographic approach applies?
 
-A. Symmetric encryption
-B. Asymmetric encryption
+A. Asymmetric encryption
+B. Symmetric encryption
 C. Hashing with a salt
 D. Digital signatures
 
@@ -172,14 +172,14 @@ D. Digital signatures
 **Scenario:** In a SaaS deployment, who is responsible for configuring which users can access the application?
 
 A. The provider
-B. The customer
-C. Shared equally
-D. It depends on the SLA
+B. Shared equally
+C. It depends on the SLA
+D. The customer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Two responsibilities never shift regardless of service model: physical datacenter security is always the provider's, and data and access configuration are always the customer's. Everything between them moves toward the provider from IaaS to SaaS.
 </details>
@@ -189,15 +189,15 @@ D. It depends on the SLA
 ### Question 11
 **Scenario:** Which document type is recommended rather than mandatory?
 
-A. Policy
-B. Standard
+A. Guideline
+B. Policy
 C. Procedure
-D. Guideline
+D. Standard
 
 <details>
 <summary>Answer</summary>
 
-**Correct: D**
+**Correct: A**
 
 **Why:** Guidelines are recommendations. Policies state mandatory intent, standards state mandatory specific requirements, and procedures are mandatory step-by-step instructions. This distinction appears reliably on the exam.
 </details>
@@ -207,15 +207,15 @@ D. Guideline
 ### Question 12
 **Scenario:** A device sits inline and blocks traffic matching known attack signatures. What is it?
 
-A. IDS
-B. IPS
-C. Proxy
-D. Load balancer
+A. Load balancer
+B. Proxy
+C. IDS
+D. IPS
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** An intrusion prevention system sits inline and blocks. An intrusion detection system observes and alerts without blocking. The IDS versus IPS distinction is one of the most reliably tested items in the network security domain.
 </details>
@@ -226,14 +226,14 @@ D. Load balancer
 **Scenario:** Which authentication combination constitutes multi-factor authentication?
 
 A. A password and a security question
-B. A password and a PIN
-C. A password and a code from a hardware token
+B. A password and a code from a hardware token
+C. A password and a PIN
 D. A fingerprint and a facial scan
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** MFA requires factors from different categories: something you know, something you have, something you are. A password with a security question or PIN is two things you know. A fingerprint plus a face is two things you are.
 </details>
@@ -243,15 +243,15 @@ D. A fingerprint and a facial scan
 ### Question 14
 **Scenario:** A physical control permits only one person through a door at a time, preventing an unauthorized person following an authorized one. What is it, and what attack does it address?
 
-A. A turnstile; piggybacking
-B. A mantrap or access control vestibule; tailgating
-C. A badge reader; shoulder surfing
-D. CCTV; dumpster diving
+A. A mantrap or access control vestibule; tailgating
+B. A badge reader; shoulder surfing
+C. CCTV; dumpster diving
+D. A turnstile; piggybacking
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A mantrap, also called an access control vestibule, allows one person through at a time. Tailgating is following an authorized person through without authenticating; piggybacking is being knowingly let through.
 </details>
@@ -261,9 +261,9 @@ D. CCTV; dumpster diving
 ### Question 15
 **Scenario:** Which backup type creates backups fastest but takes longest to restore?
 
-A. Full
+A. Differential
 B. Incremental
-C. Differential
+C. Full
 D. Snapshot
 
 <details>

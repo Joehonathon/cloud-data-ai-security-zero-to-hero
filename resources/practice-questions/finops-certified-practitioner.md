@@ -9,9 +9,9 @@
 ### Question 1
 **Scenario:** A company is in the **Crawl** phase of FinOps maturity. Which capability should they focus on first?
 
-A. Optimize unit economics
+A. Predictive cost modeling
 B. Cost allocation, tagging, and basic visibility
-C. Predictive cost modeling
+C. Optimize unit economics
 D. Automated rightsizing
 
 <details>
@@ -27,15 +27,15 @@ D. Automated rightsizing
 ### Question 2
 **Scenario:** What are the FinOps Foundation's three principal personas/roles?
 
-A. Engineer / Manager / Executive
-B. Engineering / Finance / Product/Business
-C. CFO / CIO / CTO
-D. DevOps / FinOps / SecOps
+A. CFO / CIO / CTO
+B. Engineer / Manager / Executive
+C. DevOps / FinOps / SecOps
+D. Engineering / Finance / Product/Business
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** FinOps lives at the intersection of **Engineering, Finance, and Product/Business**. Engineers care about performance and reliability; Finance cares about budgets and forecasts; Product/Business cares about feature velocity and unit economics. The FinOps practitioner translates between them.
 </details>
@@ -46,14 +46,14 @@ D. DevOps / FinOps / SecOps
 **Scenario:** A team's cloud bill spikes 40% month-over-month. What's the FIRST FinOps action?
 
 A. Cancel all non-essential workloads
-B. Investigate via Cost Explorer / per-tag drill-down to identify the source of the spike
-C. Negotiate harder with the cloud provider
-D. Ignore until next quarter
+B. Negotiate harder with the cloud provider
+C. Ignore until next quarter
+D. Investigate via Cost Explorer / per-tag drill-down to identify the source of the spike
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The first phase of any anomaly response is **inform** - identify what changed (which service, which team, which environment) before acting. Random cuts without diagnosis cause outages. Tagging hygiene makes this fast.
 </details>
@@ -64,9 +64,9 @@ D. Ignore until next quarter
 **Scenario:** Reserved Instances and Savings Plans share what core FinOps tradeoff?
 
 A. They reduce on-demand cost in exchange for a commitment (1 or 3 years), trading flexibility for discount
-B. They're free
+B. They're identical
 C. They only apply to compute
-D. They're identical
+D. They're free
 
 <details>
 <summary>Answer</summary>
@@ -81,15 +81,15 @@ D. They're identical
 ### Question 5
 **Scenario:** "Unit economics" in FinOps means what?
 
-A. Total cost
-B. Cost per unit of business value (e.g., $/customer, $/transaction, $/GB processed)
+A. Cost per unit of business value (e.g., $/customer, $/transaction, $/GB processed)
+B. Total cost
 C. Per-team cost
 D. Cost per VM
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Unit economics ties cloud spend to business outcomes - cost per active user, per order shipped, per GB processed. This lets product teams reason about whether to optimize (high cost per unit) or invest (low cost per unit, scaling well).
 </details>
@@ -99,15 +99,15 @@ D. Cost per VM
 ### Question 6
 **Scenario:** What's the FOCUS specification?
 
-A. A new cloud provider
-B. The FinOps Foundation's open standard for cloud billing data so it's comparable across providers (FinOps Open Cost and Usage Specification)
-C. A budgeting tool
-D. A type of discount
+A. The FinOps Foundation's open standard for cloud billing data so it's comparable across providers (FinOps Open Cost and Usage Specification)
+B. A type of discount
+C. A new cloud provider
+D. A budgeting tool
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** FOCUS is an open spec from the FinOps Foundation defining a normalized format for cloud cost and usage data. Goal: make cross-cloud cost analysis tractable instead of every CSP having different schemas.
 </details>
@@ -117,15 +117,15 @@ D. A type of discount
 ### Question 7
 **Scenario:** A "showback" report tells engineering teams what they spent. A "chargeback" report does what differently?
 
-A. Showback informs; chargeback bills the team's budget
-B. They're identical
+A. They're identical
+B. Showback informs; chargeback bills the team's budget
 C. Chargeback is mandatory; showback is optional
 D. Chargeback only applies to public cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** **Showback** = visibility (here's what your team spent). **Chargeback** = financial accountability (the cost is debited to the team's actual budget). Chargeback creates stronger incentives for cost optimization but requires more org maturity.
 </details>
@@ -136,14 +136,14 @@ D. Chargeback only applies to public cloud
 **Scenario:** What's the appropriate metric for a FinOps team's success?
 
 A. Total cloud spend (lower is always better)
-B. Engineering NPS only
-C. Unit cost trends + commitment utilization + budget variance + tag coverage
-D. Number of cost optimization tickets closed
+B. Unit cost trends + commitment utilization + budget variance + tag coverage
+C. Number of cost optimization tickets closed
+D. Engineering NPS only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Lower spend isn't always better - it might mean you're under-investing. Mature FinOps tracks: unit cost (improving over time as scale grows), commitment utilization (>80% target), budget variance (predictability), and tag coverage (visibility hygiene).
 </details>
@@ -171,15 +171,15 @@ D. None - it's not FinOps
 ### Question 10
 **Scenario:** A team relies on Spot Instances for batch jobs. Spot can be interrupted with 2 minutes' notice. What's the right FinOps mindset?
 
-A. Avoid Spot - it's risky
-B. Use Spot for interruption-tolerant workloads; mix On-Demand for steady-state; the savings (up to 90%) outweigh the engineering cost when properly architected
-C. Use only Spot to maximize savings
-D. Spot is always cheaper than RIs
+A. Use Spot for interruption-tolerant workloads; mix On-Demand for steady-state; the savings (up to 90%) outweigh the engineering cost when properly architected
+B. Avoid Spot - it's risky
+C. Spot is always cheaper than RIs
+D. Use only Spot to maximize savings
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Spot suits stateless, batch, fault-tolerant workloads. Mix matters: Spot for task nodes / batch, On-Demand or Reserved for core/control. The architecture work to handle interruptions is the cost; for the right workload it pays back many times over.
 </details>
@@ -189,15 +189,15 @@ D. Spot is always cheaper than RIs
 ### Question 11
 **Scenario:** Tag governance recommendations include:
 
-A. Mandatory tags (cost-center, environment, owner, project) enforced at resource creation via policy
-B. Optional tags only
-C. One mandatory tag (cost-center)
-D. No tagging policy needed
+A. Optional tags only
+B. No tagging policy needed
+C. Mandatory tags (cost-center, environment, owner, project) enforced at resource creation via policy
+D. One mandatory tag (cost-center)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Effective FinOps requires comprehensive tag coverage. Common mandatory tag set: `cost-center`, `environment` (prod/staging/dev), `owner` (team or person), `project` or `application`. Enforce via cloud-native policy (AWS Service Control Policies, Azure Policy, GCP Org Policy) or IaC linting.
 </details>
@@ -207,15 +207,15 @@ D. No tagging policy needed
 ### Question 12
 **Scenario:** A new cloud workload is being designed. When in the lifecycle should FinOps engage?
 
-A. After deployment, when costs become an issue
-B. At the design phase - architecture choices (RI/SP commitments, instance family, region, storage class) lock in 70%+ of future costs
-C. Quarterly
+A. At the design phase - architecture choices (RI/SP commitments, instance family, region, storage class) lock in 70%+ of future costs
+B. Quarterly
+C. After deployment, when costs become an issue
 D. Only during budget season
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** FinOps best practice is "shift left" on cost - influence architecture decisions before deployment. Choices like serverless vs always-on, region selection, storage class, and instance family are hard to change later. Late-stage cost cleanup is expensive.
 </details>
@@ -225,15 +225,15 @@ D. Only during budget season
 ### Question 13
 **Scenario:** A team chooses to use Reserved Instances (or Savings Plans) for 80% of their steady-state compute. What FinOps principle does this best illustrate?
 
-A. Cost cutting
-B. Rate optimization - lowering the unit price of resources you'd use anyway, distinct from usage optimization (using less)
-C. Tagging
+A. Tagging
+B. Cost cutting
+C. Rate optimization - lowering the unit price of resources you'd use anyway, distinct from usage optimization (using less)
 D. Showback
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** FinOps splits cost optimization into two levers: rate (unit price - RIs, SPs, volume discounts) and usage (consumption - rightsizing, autoscaling, decommissioning). Both must work in concert; over-committing on rate when usage is uncertain creates waste.
 </details>
@@ -244,14 +244,14 @@ D. Showback
 **Scenario:** A FinOps team is asked: "Should we go multi-cloud?" What's the FinOps-aligned response?
 
 A. Always yes
-B. Multi-cloud creates complexity (per-cloud commitment math, data egress costs, tooling proliferation) that often outweighs theoretical pricing benefits; evaluate it on business need (DR, regulatory, capability gaps), not on price arbitrage
-C. Always no
-D. Move all to AWS
+B. Always no
+C. Move all to AWS
+D. Multi-cloud creates complexity (per-cloud commitment math, data egress costs, tooling proliferation) that often outweighs theoretical pricing benefits; evaluate it on business need (DR, regulatory, capability gaps), not on price arbitrage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** "Multi-cloud for cost" rarely pencils out: data egress fees, divided commitment leverage, doubled engineering and FinOps tooling. Multi-cloud is justified by business reasons; FinOps' job is to surface true cost including the operational tax.
 </details>
@@ -261,15 +261,15 @@ D. Move all to AWS
 ### Question 15
 **Scenario:** A monthly business review shows engineering spent 15% over budget. What's the constructive FinOps response?
 
-A. Penalize the team
-B. Investigate the variance: was usage higher than forecast (legitimate growth), was rate optimization missed (commit gap), or was there waste (drift)? Each cause has different remediation
-C. Cut the team's budget
-D. Block all spending
+A. Block all spending
+B. Penalize the team
+C. Investigate the variance: was usage higher than forecast (legitimate growth), was rate optimization missed (commit gap), or was there waste (drift)? Each cause has different remediation
+D. Cut the team's budget
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Variance analysis is a core FinOps capability. Drives "act decisively" with specific actions. Punishment culture kills the cooperation between engineering and finance that FinOps requires. The output: targeted action, not blanket restriction.
 </details>
@@ -279,10 +279,10 @@ D. Block all spending
 ### Question 16
 **Scenario:** Unit economics: a SaaS company tracks "cost per active user". Why is this more useful than total cloud spend?
 
-A. Easier to calculate
+A. Required for compliance
 B. It normalizes for growth - rising spend on a flat or declining cost-per-user is healthy growth; spend rising in lockstep with cost-per-user is a margin problem; this metric tells the business story
 C. Smaller numbers
-D. Required for compliance
+D. Easier to calculate
 
 <details>
 <summary>Answer</summary>
@@ -334,14 +334,14 @@ D. Block resource creation
 **Scenario:** Which FinOps capability is most directly responsible for forecasting future cloud spend?
 
 A. Rate optimization
-B. Forecasting capability (in the FinOps Framework) - includes seasonality, growth modeling, commitment alignment, and variance analysis. Outputs: budgets, cash-flow projections, business-unit forecasts
-C. Tagging
-D. Anomaly detection
+B. Tagging
+C. Anomaly detection
+D. Forecasting capability (in the FinOps Framework) - includes seasonality, growth modeling, commitment alignment, and variance analysis. Outputs: budgets, cash-flow projections, business-unit forecasts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Forecasting is its own FinOps capability. Modern tools blend historical usage trends with planned changes (deployments, retirements, new products) and confidence intervals. Anomaly detection looks backward; forecasting looks forward.
 </details>
@@ -351,15 +351,15 @@ D. Anomaly detection
 ### Question 20
 **Scenario:** A startup hits a sudden cost spike on day 12 of the month. What's the right FinOps response sequence?
 
-A. Wait until end of month
-B. Anomaly detection alerts → drill into the resource and account → identify root cause (deploy bug, leaked test workload, intentional growth) → remediate or notify the responsible team → document for future detection rule tuning
+A. Anomaly detection alerts → drill into the resource and account → identify root cause (deploy bug, leaked test workload, intentional growth) → remediate or notify the responsible team → document for future detection rule tuning
+B. Block the AWS account
 C. Cancel all instances
-D. Block the AWS account
+D. Wait until end of month
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Anomaly detection is mid-month's "fire alarm". The full loop is detect → investigate → act → learn. AWS Cost Anomaly Detection, Azure Cost Management alerts, GCP Recommender all support this pattern.
 </details>
@@ -369,15 +369,15 @@ D. Block the AWS account
 ### Question 21
 **Scenario:** A team uses spot/preemptible instances for batch ML training. Which best practice maximizes savings while managing reliability?
 
-A. Spot for everything
-B. Spot with checkpointing every N steps so a preemption resumes from the last checkpoint rather than restarting; combine with diversification across instance types and AZs to reduce simultaneous interruption risk
-C. On-demand only
+A. Spot with checkpointing every N steps so a preemption resumes from the last checkpoint rather than restarting; combine with diversification across instance types and AZs to reduce simultaneous interruption risk
+B. On-demand only
+C. Spot for everything
 D. Reserved capacity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Spot saves 60-90% but requires architectural readiness. Checkpointing makes interruption tolerable. Diversification (e.g., AWS Spot Instance Pools or Karpenter consolidation) reduces correlated reclaims. Critical workloads should not be spot-only.
 </details>
@@ -387,15 +387,15 @@ D. Reserved capacity
 ### Question 22
 **Scenario:** Which is the most common FinOps maturity progression?
 
-A. Run → Walk → Crawl
-B. Crawl → Walk → Run: visibility (tagging, reporting, allocation) → optimization (rightsizing, commitments) → operate (forecasting, unit economics, automation)
-C. Random
-D. Run skips Walk
+A. Random
+B. Run skips Walk
+C. Run → Walk → Crawl
+D. Crawl → Walk → Run: visibility (tagging, reporting, allocation) → optimization (rightsizing, commitments) → operate (forecasting, unit economics, automation)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** FinOps Foundation framing: maturity advances along each capability. You can be Walk in Anomaly Management while Crawl in Forecasting. The framework lets teams identify which capability to mature next based on impact and readiness.
 </details>
@@ -406,14 +406,14 @@ D. Run skips Walk
 **Scenario:** Cloud egress costs - which strategy reduces them most reliably?
 
 A. Compress everything once
-B. Architectural: keep data and compute in the same region/AZ, leverage CloudFront/CDN for repeat egress, use private connectivity (Direct Connect, ExpressRoute, Interconnect) for steady high-volume egress to lower per-GB rates
-C. Disable internet access
+B. Disable internet access
+C. Architectural: keep data and compute in the same region/AZ, leverage CloudFront/CDN for repeat egress, use private connectivity (Direct Connect, ExpressRoute, Interconnect) for steady high-volume egress to lower per-GB rates
 D. Move to a different cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Egress is one of the hardest costs to optimize after the fact. The real lever is architecture - co-locate, cache, and use private connectivity. CloudFront/CDN egress to viewer is cheaper than direct cross-region. Direct Connect data transfer is significantly lower than internet egress at high volume.
 </details>
@@ -423,15 +423,15 @@ D. Move to a different cloud
 ### Question 24
 **Scenario:** Which stakeholder group is most often missing from a stalled FinOps program?
 
-A. Finance
-B. Engineering - FinOps without engineers is reporting; with engineers it's optimization. Engagement requires aligned incentives, embedded metrics in team scorecards, and executive air cover, not just dashboards
+A. Vendors
+B. Finance
 C. Procurement
-D. Vendors
+D. Engineering - FinOps without engineers is reporting; with engineers it's optimization. Engagement requires aligned incentives, embedded metrics in team scorecards, and executive air cover, not just dashboards
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Most FinOps practices launch from finance. The hard work is bringing engineering to the table - and that requires showing them metrics they care about (per-feature cost, cost per request) and removing toil (automated rightsizing recommendations, IaC modules with sane defaults).
 </details>
@@ -441,15 +441,15 @@ D. Vendors
 ### Question 25
 **Scenario:** A FinOps team is asked: "What's our cost of carbon?". Which capability does sustainability fall under?
 
-A. It doesn't apply
-B. Sustainability is an emerging FinOps capability - tracks emissions per cloud spend, factors in regional carbon intensity for workload placement, and ties into corporate ESG reporting; major cloud providers all publish carbon dashboards now
-C. Same as anomaly detection
-D. Manual estimates only
+A. Same as anomaly detection
+B. Manual estimates only
+C. Sustainability is an emerging FinOps capability - tracks emissions per cloud spend, factors in regional carbon intensity for workload placement, and ties into corporate ESG reporting; major cloud providers all publish carbon dashboards now
+D. It doesn't apply
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** AWS Customer Carbon Footprint Tool, Microsoft Cloud for Sustainability, Google Cloud Carbon Footprint all expose Scope 2/3 emissions tied to cloud spend. FinOps Foundation has formally added sustainability as a capability. Workload placement (lower-carbon regions) is a real optimization lever.
 </details>

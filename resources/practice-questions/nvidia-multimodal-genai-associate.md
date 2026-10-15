@@ -15,14 +15,14 @@ difficulty: intermediate
 **Scenario:** What makes a model multimodal?
 
 A. It runs on multiple GPUs
-B. It accepts or produces more than one modality, such as text and images, in a shared representation
-C. It uses multiple prompts
-D. It has more parameters
+B. It uses multiple prompts
+C. It has more parameters
+D. It accepts or produces more than one modality, such as text and images, in a shared representation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The defining feature is a shared representation space that lets the model relate content across modalities, so an image and its description land near each other. Multi-GPU execution and parameter count are unrelated properties.
 </details>
@@ -33,14 +33,14 @@ D. It has more parameters
 **Scenario:** CLIP-style training aligns images and text. What objective does it use?
 
 A. Next-token prediction
-B. Contrastive learning: matching image-text pairs are pulled together and mismatched pairs pushed apart
-C. Diffusion denoising
-D. Reinforcement learning
+B. Reinforcement learning
+C. Contrastive learning: matching image-text pairs are pulled together and mismatched pairs pushed apart
+D. Diffusion denoising
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Contrastive pretraining over large image-caption datasets is what produces a joint embedding space, which is what enables zero-shot classification and text-to-image retrieval. Diffusion is the generative mechanism used later, and next-token prediction is the language modeling objective.
 </details>
@@ -50,15 +50,15 @@ D. Reinforcement learning
 ### Question 3
 **Scenario:** How does a diffusion model generate an image?
 
-A. It predicts pixels left to right
-B. It starts from noise and iteratively denoises, guided by the conditioning (such as a text embedding)
+A. It uses a GAN discriminator
+B. It predicts pixels left to right
 C. It retrieves the closest training image
-D. It uses a GAN discriminator
+D. It starts from noise and iteratively denoises, guided by the conditioning (such as a text embedding)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Training teaches the model to reverse a noising process; generation runs that reversal from pure noise. The number of denoising steps is the main quality-versus-speed knob, and latent diffusion runs the process in a compressed latent space to make it affordable.
 </details>
@@ -68,15 +68,15 @@ D. It uses a GAN discriminator
 ### Question 4
 **Scenario:** A text-to-image model must follow the prompt more closely.
 
-A. Lower the guidance scale
-B. Raise the classifier-free guidance scale, accepting reduced diversity and possible artifacts at high values
-C. Reduce the number of steps
-D. Change the random seed
+A. Raise the classifier-free guidance scale, accepting reduced diversity and possible artifacts at high values
+B. Lower the guidance scale
+C. Change the random seed
+D. Reduce the number of steps
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Guidance scale trades prompt adherence against diversity and naturalness. Pushing it too high produces over-saturated, artifact-heavy output, so there is a usable band rather than a "higher is better" relationship. The seed changes which sample you get, not how closely it follows the prompt.
 </details>
@@ -86,15 +86,15 @@ D. Change the random seed
 ### Question 5
 **Scenario:** A vision-language model must answer questions about a chart in an uploaded image.
 
-A. OCR only
-B. A VLM that encodes the image and reasons jointly over the visual and textual content
-C. A text-only LLM
-D. An embedding model alone
+A. A text-only LLM
+B. An embedding model alone
+C. A VLM that encodes the image and reasons jointly over the visual and textual content
+D. OCR only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Chart question answering needs both reading and reasoning over spatial structure, which a VLM does end to end. OCR extracts text but loses the relationships between axes, series, and values. Embeddings support retrieval rather than answering.
 </details>
@@ -104,15 +104,15 @@ D. An embedding model alone
 ### Question 6
 **Scenario:** Which NVIDIA product provides speech recognition and text-to-speech services?
 
-A. NVIDIA Riva
-B. NVIDIA Merlin
+A. NVIDIA Merlin
+B. NVIDIA Riva
 C. NVIDIA Morpheus
 D. NVIDIA Clara
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Riva is the speech AI stack, covering ASR, TTS, and translation with GPU-optimized deployment. Merlin targets recommenders, Morpheus is cybersecurity AI, and Clara is healthcare.
 </details>
@@ -140,9 +140,9 @@ D. Ignore images
 ### Question 8
 **Scenario:** Generated video is temporally inconsistent: objects flicker between frames.
 
-A. Increase resolution
+A. Change the prompt wording only
 B. Temporal coherence is a known challenge; use models with temporal attention or conditioning on prior frames, and evaluate consistency explicitly
-C. Change the prompt wording only
+C. Increase resolution
 D. Reduce the frame rate
 
 <details>
@@ -159,14 +159,14 @@ D. Reduce the frame rate
 **Scenario:** An image generation feature must not produce content resembling identifiable real people.
 
 A. Rely on the prompt
-B. Layered controls: prompt and output classification, restricted model or LoRA selection, and a documented policy with human review for edge cases
-C. Add a disclaimer
-D. Reduce image resolution
+B. Reduce image resolution
+C. Layered controls: prompt and output classification, restricted model or LoRA selection, and a documented policy with human review for edge cases
+D. Add a disclaimer
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Likeness and deepfake risk is a real harm and a legal exposure, so it needs enforcement rather than intent. Input filtering catches the obvious requests, output classification catches what slips through, and provenance metadata such as C2PA credentials supports downstream accountability.
 </details>
@@ -176,15 +176,15 @@ D. Reduce image resolution
 ### Question 10
 **Scenario:** How should a multimodal model's quality be evaluated?
 
-A. Human judgment only
-B. Task-appropriate metrics plus human evaluation: for example FID or CLIP score for images, WER for speech recognition, and grounded accuracy for VQA
-C. Parameter count
-D. Inference latency
+A. Inference latency
+B. Human judgment only
+C. Task-appropriate metrics plus human evaluation: for example FID or CLIP score for images, WER for speech recognition, and grounded accuracy for VQA
+D. Parameter count
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Each modality has its own established metrics, and none of them fully capture perceived quality, which is why human evaluation stays in the loop. Reporting a single number across modalities hides where a system is actually failing.
 </details>
@@ -194,15 +194,15 @@ D. Inference latency
 ### Question 11
 **Scenario:** An image must be edited so only a specified region changes.
 
-A. Regenerate the whole image
-B. Inpainting with a mask, so the model regenerates only the masked region conditioned on the surroundings
-C. Increase guidance
+A. Inpainting with a mask, so the model regenerates only the masked region conditioned on the surroundings
+B. Increase guidance
+C. Regenerate the whole image
 D. Use a larger model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Masked inpainting preserves the rest of the image exactly, which is what "edit this part" requires. Regenerating from a modified prompt changes everything, including details the user wanted kept. Outpainting is the same mechanism extended beyond the original boundary.
 </details>
@@ -212,15 +212,15 @@ D. Use a larger model
 ### Question 12
 **Scenario:** A custom style must be applied consistently to generated images with only 20 reference examples.
 
-A. Full fine-tuning
-B. LoRA or DreamBooth-style adaptation on the small reference set
+A. LoRA or DreamBooth-style adaptation on the small reference set
+B. Prompt engineering alone
 C. Train from scratch
-D. Prompt engineering alone
+D. Full fine-tuning
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Lightweight adaptation methods learn a style or subject from a handful of images while keeping the base model frozen, which is both feasible and reversible. Full training needs orders of magnitude more data, and prompts alone rarely reproduce a specific visual identity consistently.
 </details>
@@ -230,15 +230,15 @@ D. Prompt engineering alone
 ### Question 13
 **Scenario:** Which describes the trade-off in reducing diffusion sampling steps?
 
-A. No trade-off
-B. Fewer steps means faster generation with typically lower fidelity, though distilled or consistency models narrow the gap substantially
+A. Steps affect only memory
+B. No trade-off
 C. Fewer steps improves quality
-D. Steps affect only memory
+D. Fewer steps means faster generation with typically lower fidelity, though distilled or consistency models narrow the gap substantially
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Step count directly sets both latency and cost. Distillation techniques have compressed high-quality generation into very few steps, which is why the naive "more steps is better" rule no longer holds across model families.
 </details>
@@ -248,9 +248,9 @@ D. Steps affect only memory
 ### Question 14
 **Scenario:** Audio transcription accuracy is poor on domain-specific terminology.
 
-A. Increase the sample rate
+A. Use a larger microphone gain
 B. Adapt the model or use custom vocabulary and language model biasing for the domain terms
-C. Use a larger microphone gain
+C. Increase the sample rate
 D. Reduce the audio length
 
 <details>
@@ -266,15 +266,15 @@ D. Reduce the audio length
 ### Question 15
 **Scenario:** A multimodal application must run where data cannot leave the premises.
 
-A. It is not possible
-B. Deploy the models on-premises, for example with NIM microservices or NeMo on local GPU infrastructure
+A. Deploy the models on-premises, for example with NIM microservices or NeMo on local GPU infrastructure
+B. It is not possible
 C. Anonymize and send to a public API
 D. Use a smaller model in the cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Self-hosting is the answer to a data residency constraint, and containerized microservices make it a deployment choice rather than a rewrite. Anonymization is rarely sufficient for images and audio, which carry identifying signal that is hard to remove.
 </details>

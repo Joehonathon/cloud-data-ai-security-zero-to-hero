@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A developer tries to push a commit containing an API key.
 
-A. The push succeeds and an alert is raised later
-B. With push protection enabled, the push is blocked and the developer is prompted to remove the secret or provide a bypass reason
-C. The key is encrypted automatically
+A. With push protection enabled, the push is blocked and the developer is prompted to remove the secret or provide a bypass reason
+B. The key is encrypted automatically
+C. The push succeeds and an alert is raised later
 D. Nothing happens
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Push protection stops the secret before it enters history, which is the only outcome that avoids rotation. Once a secret is pushed, treat it as compromised and rotate it: removing the commit does not undo the exposure, especially in a public repository.
 </details>
@@ -32,15 +32,15 @@ D. Nothing happens
 ### Question 2
 **Scenario:** CodeQL must find injection vulnerabilities in application code.
 
-A. It matches patterns of bad strings
-B. It builds a queryable database of the code and runs semantic queries, including data flow analysis from sources to sinks
-C. It runs the application
-D. It checks dependencies only
+A. It runs the application
+B. It matches patterns of bad strings
+C. It checks dependencies only
+D. It builds a queryable database of the code and runs semantic queries, including data flow analysis from sources to sinks
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Taint tracking is what distinguishes CodeQL from a regular-expression scanner: it follows untrusted input through the code to a dangerous sink, which finds real vulnerabilities and suppresses cases where the input is sanitized on the way.
 </details>
@@ -50,15 +50,15 @@ D. It checks dependencies only
 ### Question 3
 **Scenario:** A code scanning alert is a false positive.
 
-A. Delete the code
-B. Dismiss the alert with a reason (false positive, used in tests, or won't fix), which is recorded and auditable
-C. Disable code scanning
+A. Disable code scanning
+B. Delete the code
+C. Dismiss the alert with a reason (false positive, used in tests, or won't fix), which is recorded and auditable
 D. Ignore it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Dismissing with a reason keeps the alert list meaningful while preserving the decision and who made it. Disabling scanning to silence one finding removes coverage everywhere, and an unmanaged backlog quickly makes the whole tool ignored.
 </details>
@@ -69,14 +69,14 @@ D. Ignore it
 **Scenario:** Dependabot must open pull requests for vulnerable dependencies.
 
 A. Dependabot alerts only
-B. Enable Dependabot security updates, which open pull requests upgrading to a patched version, alongside alerts
-C. Manual dependency review
+B. Manual dependency review
+C. Enable Dependabot security updates, which open pull requests upgrading to a patched version, alongside alerts
 D. Secret scanning
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Alerts tell you; security updates act. Version updates are the separate feature that keeps dependencies current regardless of vulnerabilities, configured in `dependabot.yml` with a schedule and grouping.
 </details>
@@ -86,10 +86,10 @@ D. Secret scanning
 ### Question 5
 **Scenario:** A pull request adds a dependency with a known critical vulnerability.
 
-A. It merges normally
+A. Only after merge
 B. Dependency review on the pull request surfaces it, and can be enforced as a required check that blocks the merge
-C. Nothing detects it
-D. Only after merge
+C. It merges normally
+D. Nothing detects it
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Only after merge
 ### Question 6
 **Scenario:** Code scanning must run on a schedule as well as on pull requests.
 
-A. Pull requests only
+A. Once at setup
 B. Configure the workflow with `pull_request`, `push` to the default branch, and a `schedule` trigger, since new queries can find issues in unchanged code
 C. Manual runs only
-D. Once at setup
+D. Pull requests only
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Once at setup
 ### Question 7
 **Scenario:** A monorepo has code in several languages.
 
-A. CodeQL scans all languages automatically in one run
+A. Only one language can be scanned
 B. Configure a matrix with one analysis per supported language, since CodeQL databases are per-language
-C. Only one language can be scanned
-D. Use secret scanning instead
+C. Use secret scanning instead
+D. CodeQL scans all languages automatically in one run
 
 <details>
 <summary>Answer</summary>
@@ -140,15 +140,15 @@ D. Use secret scanning instead
 ### Question 8
 **Scenario:** Scanning results from a third-party tool must appear in the GitHub security tab.
 
-A. It is not possible
-B. Upload results in SARIF format, which the code scanning API accepts from any tool
-C. Only CodeQL is supported
-D. Paste them into an issue
+A. Upload results in SARIF format, which the code scanning API accepts from any tool
+B. It is not possible
+C. Paste them into an issue
+D. Only CodeQL is supported
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** SARIF is the interoperability format, so linters, SAST tools, and container scanners can all feed the same alert experience with deduplication and pull request annotations. This is what makes code scanning a hub rather than a single tool.
 </details>
@@ -158,15 +158,15 @@ D. Paste them into an issue
 ### Question 9
 **Scenario:** A secret was pushed and is now in git history.
 
-A. Delete the commit and consider it resolved
-B. Rotate the credential first, then optionally rewrite history; assume it was harvested
-C. Make the repository private
-D. Add it to `.gitignore`
+A. Rotate the credential first, then optionally rewrite history; assume it was harvested
+B. Add it to `.gitignore`
+C. Delete the commit and consider it resolved
+D. Make the repository private
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Automated scrapers find secrets in public repositories within minutes, so rotation is the only reliable remediation and it comes first. History rewriting is cleanup; it does not recall what was already cloned or indexed.
 </details>
@@ -176,15 +176,15 @@ D. Add it to `.gitignore`
 ### Question 10
 **Scenario:** GHAS must be rolled out across a large enterprise without overwhelming teams.
 
-A. Enable everything everywhere at once
-B. Phase it: start with secret scanning and push protection, then dependency management, then code scanning per language, with an owner for triage at each stage
-C. Enable code scanning only
-D. Leave it to individual teams
+A. Leave it to individual teams
+B. Enable everything everywhere at once
+C. Phase it: start with secret scanning and push protection, then dependency management, then code scanning per language, with an owner for triage at each stage
+D. Enable code scanning only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Secret scanning has the highest signal-to-noise ratio and needs the least developer effort, which builds credibility. Turning on everything at once produces a backlog nobody triages, and an ignored alert list is worse than no scanning because it looks like coverage.
 </details>
@@ -194,10 +194,10 @@ D. Leave it to individual teams
 ### Question 11
 **Scenario:** Which explains secret scanning's partner program?
 
-A. Secrets are shared with partners
+A. It applies only to private repositories
 B. When a partner's credential pattern is detected in a public repository, GitHub notifies the provider so they can revoke it
 C. Partners write the scanner
-D. It applies only to private repositories
+D. Secrets are shared with partners
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. It applies only to private repositories
 ### Question 12
 **Scenario:** A custom CodeQL query must encode an organization-specific rule.
 
-A. Not supported
-B. Write a custom query or query pack in QL and include it in the code scanning configuration
-C. Use a regular expression in CI
-D. Ask GitHub
+A. Ask GitHub
+B. Use a regular expression in CI
+C. Not supported
+D. Write a custom query or query pack in QL and include it in the code scanning configuration
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Custom queries let you encode internal rules such as banned APIs or required wrappers, with the same data flow capability as the built-in suites. Query packs make them distributable across repositories.
 </details>
@@ -231,14 +231,14 @@ D. Ask GitHub
 **Scenario:** A vulnerability is found in a repository's own code and must be fixed privately.
 
 A. Open a public issue
-B. A private repository security advisory, with a temporary private fork for collaboration, then publish a CVE when the fix is released
-C. Fix it silently
-D. Email everyone
+B. Email everyone
+C. A private repository security advisory, with a temporary private fork for collaboration, then publish a CVE when the fix is released
+D. Fix it silently
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Advisories provide private collaboration space until a fix is available, and publishing adds the advisory to the GitHub Advisory Database so downstream consumers get Dependabot alerts. A public issue tells attackers before users can patch.
 </details>
@@ -248,15 +248,15 @@ D. Email everyone
 ### Question 14
 **Scenario:** Alert volume from code scanning is high on a legacy codebase.
 
-A. Dismiss everything
-B. Focus on new alerts introduced by pull requests, set a severity threshold for blocking, and burn down the historical backlog on a plan
+A. Fix all alerts before merging anything
+B. Dismiss everything
 C. Disable scanning
-D. Fix all alerts before merging anything
+D. Focus on new alerts introduced by pull requests, set a severity threshold for blocking, and burn down the historical backlog on a plan
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Blocking on pre-existing findings stops all delivery and gets the tool turned off. Preventing new issues while scheduling the backlog is what teams actually sustain, and it means the trend improves from day one.
 </details>
@@ -266,15 +266,15 @@ D. Fix all alerts before merging anything
 ### Question 15
 **Scenario:** GHAS licensing is described.
 
-A. It is free for all repositories
-B. Advanced Security features are free on public repositories; private repositories require licensing, historically committer-based and now also available as separate Code Security and Secret Protection products
-C. It is per repository
+A. Advanced Security features are free on public repositories; private repositories require licensing, historically committer-based and now also available as separate Code Security and Secret Protection products
+B. It is per repository
+C. It is free for all repositories
 D. It is included in all plans
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The distinction between public and private licensing is examinable, and the packaging has changed, so verify current terms before planning a rollout budget. Active committer counting is what drives cost in the committer-based model.
 </details>

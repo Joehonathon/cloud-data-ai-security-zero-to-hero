@@ -16,15 +16,15 @@ CISM is a management exam. When two answers are both technically defensible, the
 ### Question 1
 **Scenario:** What most influences the design of an information security strategy?
 
-A. The latest threat intelligence
-B. The organization's business objectives and risk appetite
-C. Available security products
-D. Peer organizations' programs
+A. Available security products
+B. Peer organizations' programs
+C. The organization's business objectives and risk appetite
+D. The latest threat intelligence
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Alignment to business objectives is the recurring CISM theme, and it is what separates a security program from a shopping list. Threats inform the risk assessment, but they do not set the strategy's direction on their own.
 </details>
@@ -34,15 +34,15 @@ D. Peer organizations' programs
 ### Question 2
 **Scenario:** Senior management does not support a proposed security investment.
 
-A. Implement it anyway
-B. Present a business case quantifying risk reduction in business terms, with options and their residual risk
-C. Escalate to the board
-D. Reduce the scope silently
+A. Reduce the scope silently
+B. Escalate to the board
+C. Implement it anyway
+D. Present a business case quantifying risk reduction in business terms, with options and their residual risk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Communicating risk in business language is a core CISM competency, and "we need it for security" is not a business case. Offering options with their residual risk lets management make an informed decision, which is where the decision belongs.
 </details>
@@ -52,15 +52,15 @@ D. Reduce the scope silently
 ### Question 3
 **Scenario:** Who should own the risk acceptance decision for a residual risk?
 
-A. The security manager
-B. The business owner accountable for the affected process, at a level of authority matching the risk
+A. The business owner accountable for the affected process, at a level of authority matching the risk
+B. The security manager
 C. The IT department
 D. The auditor
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Security advises, the business accepts. A security manager accepting risk on the business's behalf misplaces accountability, which is why the seniority of the accepting party should scale with the size of the risk.
 </details>
@@ -70,15 +70,15 @@ D. The auditor
 ### Question 4
 **Scenario:** Which best demonstrates the value of the security program to the board?
 
-A. The number of blocked attacks
-B. Metrics tied to business outcomes: risk reduction against appetite, control coverage of critical assets, and incident impact trends
-C. Patch counts
+A. Metrics tied to business outcomes: risk reduction against appetite, control coverage of critical assets, and incident impact trends
+B. Patch counts
+C. The number of blocked attacks
 D. Tool inventory
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Activity counts show effort, not effectiveness, and blocked attacks in particular reward noisy environments. Board-level metrics answer whether risk is inside appetite and moving in the right direction.
 </details>
@@ -88,15 +88,15 @@ D. Tool inventory
 ### Question 5
 **Scenario:** A risk assessment identifies a high risk with an expensive control.
 
-A. Always implement the control
-B. Evaluate the treatment options - mitigate, transfer, avoid, or accept - against cost and business impact, and recommend accordingly
-C. Accept the risk
-D. Transfer it via insurance always
+A. Evaluate the treatment options - mitigate, transfer, avoid, or accept - against cost and business impact, and recommend accordingly
+B. Always implement the control
+C. Transfer it via insurance always
+D. Accept the risk
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A control costing more than the risk it removes is a poor decision even when the risk is high. Insurance transfers financial loss but not regulatory or reputational consequence, which is the limit of transfer as a strategy.
 </details>
@@ -106,15 +106,15 @@ D. Transfer it via insurance always
 ### Question 6
 **Scenario:** What is the primary purpose of information security governance?
 
-A. To implement controls
-B. To ensure security supports and is aligned with business strategy, with clear accountability and measurable outcomes
-C. To pass audits
+A. To pass audits
+B. To implement controls
+C. To ensure security supports and is aligned with business strategy, with clear accountability and measurable outcomes
 D. To manage the security team
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Governance sets direction and accountability; management executes within it. The six outcomes ISACA names are strategic alignment, risk management, value delivery, resource management, performance measurement, and assurance process integration.
 </details>
@@ -124,15 +124,15 @@ D. To manage the security team
 ### Question 7
 **Scenario:** A new regulation applies to the organization.
 
-A. Implement every requirement immediately
-B. Perform a gap analysis against current controls, assess risk and effort, and build a prioritized remediation plan with business input
-C. Wait for enforcement
-D. Buy a compliance tool
+A. Buy a compliance tool
+B. Wait for enforcement
+C. Perform a gap analysis against current controls, assess risk and effort, and build a prioritized remediation plan with business input
+D. Implement every requirement immediately
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Gap analysis before action is the manager's move. Many requirements will already be satisfied by existing controls, and identifying those first is what makes the remaining plan proportionate rather than a wholesale rebuild.
 </details>
@@ -143,14 +143,14 @@ D. Buy a compliance tool
 **Scenario:** During an incident, who decides whether to shut down a critical production system?
 
 A. The security analyst
-B. Business management, informed by security's assessment, following the escalation path defined in the incident response plan
+B. The system administrator
 C. The CISO alone
-D. The system administrator
+D. Business management, informed by security's assessment, following the escalation path defined in the incident response plan
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Containment that stops the business is a business decision, and the time to agree who decides is before the incident, not during it. Predefined escalation criteria are what stop the argument happening at 3am.
 </details>
@@ -160,10 +160,10 @@ D. The system administrator
 ### Question 9
 **Scenario:** What is the first phase of incident response?
 
-A. Containment
+A. Eradication
 B. Preparation, which includes the plan, roles, tooling, and training that make every later phase possible
 C. Detection
-D. Eradication
+D. Containment
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Eradication
 ### Question 10
 **Scenario:** Post-incident review identifies the same root cause as three previous incidents.
 
-A. Close the incident
+A. Retrain the team
 B. Escalate it as a systemic issue requiring a governance-level decision on remediation and resourcing
-C. Retrain the team
-D. Add monitoring
+C. Add monitoring
+D. Close the incident
 
 <details>
 <summary>Answer</summary>
@@ -196,15 +196,15 @@ D. Add monitoring
 ### Question 11
 **Scenario:** A third-party vendor will process sensitive data.
 
-A. Rely on their certifications
-B. Perform due diligence proportionate to the risk, set security requirements in the contract with a right to audit, and monitor throughout the relationship
-C. Prohibit third parties
-D. Require an on-site audit always
+A. Prohibit third parties
+B. Require an on-site audit always
+C. Perform due diligence proportionate to the risk, set security requirements in the contract with a right to audit, and monitor throughout the relationship
+D. Rely on their certifications
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Certifications are a point-in-time input, not the whole assessment, and they may not cover the service you are buying. The lifecycle view is what CISM tests: due diligence, contractual requirements, ongoing monitoring, and a defined exit.
 </details>
@@ -214,15 +214,15 @@ D. Require an on-site audit always
 ### Question 12
 **Scenario:** Security policies exist but staff do not follow them.
 
-A. Add more policies
-B. Investigate why: unclear, impractical, unenforced, or poorly communicated, then address the cause with awareness, process change, or enforcement
-C. Discipline offenders
-D. Remove the policies
+A. Remove the policies
+B. Discipline offenders
+C. Add more policies
+D. Investigate why: unclear, impractical, unenforced, or poorly communicated, then address the cause with awareness, process change, or enforcement
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Policies that conflict with how work actually gets done are routed around, and no amount of enforcement changes that. Diagnosing the cause before choosing the remedy is the management answer.
 </details>
@@ -232,15 +232,15 @@ D. Remove the policies
 ### Question 13
 **Scenario:** Which is the best indicator that a security awareness program is effective?
 
-A. Completion rates
-B. Behavioral change: fewer phishing simulation clicks, more reported suspicious emails, and fewer policy violations
-C. Training hours
+A. Behavioral change: fewer phishing simulation clicks, more reported suspicious emails, and fewer policy violations
+B. Training hours
+C. Completion rates
 D. Satisfaction scores
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Completion measures attendance rather than learning. Reporting rate is often the more valuable metric than click rate, because a workforce that reports quickly shortens detection time even when someone does click.
 </details>
@@ -250,10 +250,10 @@ D. Satisfaction scores
 ### Question 14
 **Scenario:** A business unit deploys a cloud service without security review.
 
-A. Shut it down immediately
+A. Report the unit
 B. Assess the risk, work with the unit to bring it into compliance, and address the process gap that let it happen unnoticed
-C. Report the unit
-D. Ignore it
+C. Ignore it
+D. Shut it down immediately
 
 <details>
 <summary>Answer</summary>

@@ -10,9 +10,9 @@
 **Scenario:** A platform team spent a year building a deployment system. Six months post-launch, 4 of 40 teams use it. Leadership proposes mandating it.
 
 A. Mandate it to drive adoption
-B. Add more features
+B. Build a portal on top to improve discoverability
 C. Run user research with the 36 non-adopting teams and make the golden path genuinely easier than their current approach
-D. Build a portal on top to improve discoverability
+D. Add more features
 
 <details>
 <summary>Answer</summary>
@@ -27,15 +27,15 @@ D. Build a portal on top to improve discoverability
 ### Question 2
 **Scenario:** A platform hosts 40 trusted internal teams, a regulated payments division, and an external partner running code the company does not control.
 
-A. Namespace isolation for all three
+A. Namespaces for internal teams, dedicated nodes or a cluster for payments aligned to the compliance boundary, and a dedicated cluster with a sandboxed runtime for the partner
 B. A dedicated cluster for all three
-C. Namespaces for internal teams, dedicated nodes or a cluster for payments aligned to the compliance boundary, and a dedicated cluster with a sandboxed runtime for the partner
+C. Namespace isolation for all three
 D. Virtual control planes for all three
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Match isolation to trust level and compliance boundary. Namespace isolation shares a kernel and control plane, so it is not a boundary against untrusted code. A dedicated cluster for all 40 internal teams is cost and operational load with no corresponding benefit.
 </details>
@@ -46,14 +46,14 @@ D. Virtual control planes for all three
 **Scenario:** A team needs a GPU workload with a custom scheduler that the golden path does not support.
 
 A. Refuse the exception to keep the platform consistent
-B. Grant the exception with no guardrails
-C. Grant it while keeping the thin conformance layer (policy, telemetry, supply chain), and record it as product input
-D. Immediately build GPU support into the golden path
+B. Grant it while keeping the thin conformance layer (policy, telemetry, supply chain), and record it as product input
+C. Immediately build GPU support into the golden path
+D. Grant the exception with no guardrails
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Golden paths are the easiest route, not the only route. Refusing drives shadow platforms and loses visibility. What must never be optional is the conformance layer. Building GPU support for one team is premature; wait for the pattern to repeat.
 </details>
@@ -63,10 +63,10 @@ D. Immediately build GPU support into the golden path
 ### Question 4
 **Scenario:** Developers wait five days for a database because they file a ticket and the platform team runs Terraform manually. Self-service is required without giving developers cloud credentials.
 
-A. Give developers Terraform and scoped cloud credentials
-B. A web form that files the ticket faster
+A. Expose the full cloud resource as a custom resource
+B. Give developers Terraform and scoped cloud credentials
 C. A control plane pattern: a composite resource definition and composition, with developers submitting a small claim constrained by policy
-D. Expose the full cloud resource as a custom resource
+D. A web form that files the ticket faster
 
 <details>
 <summary>Answer</summary>
@@ -81,15 +81,15 @@ D. Expose the full cloud resource as a custom resource
 ### Question 5
 **Scenario:** A platform team is asked to justify its budget and proposes reporting features shipped, lines of platform code, and tickets closed.
 
-A. These are reasonable measures of team output
-B. Replace them with DORA metrics, adoption, time to first deployment, satisfaction, and platform SLOs
-C. Add uptime as a fourth measure and keep the rest
-D. Report only cost savings
+A. Add uptime as a fourth measure and keep the rest
+B. Report only cost savings
+C. These are reasonable measures of team output
+D. Replace them with DORA metrics, adoption, time to first deployment, satisfaction, and platform SLOs
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** All three proposed measures are vanity metrics. Tickets closed is actively misleading, because a successful self-service platform drives the ticket count down. Uptime is necessary but not sufficient: a reliable platform nobody uses has still failed.
 </details>
@@ -99,15 +99,15 @@ D. Report only cost savings
 ### Question 6
 **Scenario:** Leadership asks the team to "build an IDP" and points at Backstage. Three months after installing it and importing a catalog, developers report no improvement.
 
-A. Install more Backstage plugins
-B. The capability layer was never built; a portal without a platform behind it is a catalog of links
-C. Abandon the portal
-D. The catalog metadata is incomplete
+A. The capability layer was never built; a portal without a platform behind it is a catalog of links
+B. Install more Backstage plugins
+C. The catalog metadata is incomplete
+D. Abandon the portal
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** An Internal Developer Platform is the capability layer; an Internal Developer Portal is an interface onto it. The ordering was wrong. Build self-service provisioning, a golden path, and delivery automation, then use the portal for discovery and scaffolding.
 </details>
@@ -119,13 +119,13 @@ D. The catalog metadata is incomplete
 
 A. Manual security review per release
 B. A check in the CI pipeline
-C. Policy as code enforced at admission, rolled out in audit mode first, with a golden path that satisfies the policy by default
-D. Documentation and training
+C. Documentation and training
+D. Policy as code enforced at admission, rolled out in audit mode first, with a golden path that satisfies the policy by default
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: D**
 
 **Why:** Admission control is the enforcement point because everything reaching the cluster passes through it; a CI-only check is bypassable by anyone deploying outside the pipeline. Audit mode first prevents breaking delivery on day one, and a compliant golden path makes the right thing the easiest thing.
 </details>
@@ -135,15 +135,15 @@ D. Documentation and training
 ### Question 8
 **Scenario:** Which best describes a golden path?
 
-A. The only permitted way to deploy
-B. An opinionated, supported, documented route that is the easiest option, with escape hatches for legitimate exceptions
-C. A document describing best practices
-D. A set of approved tools teams may choose from
+A. A set of approved tools teams may choose from
+B. A document describing best practices
+C. An opinionated, supported, documented route that is the easiest option, with escape hatches for legitimate exceptions
+D. The only permitted way to deploy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A path that forbids alternatives is a gate, not a paved road, and teams route around gates. A document is not a path because it does not make anything easier. A list of tools is not opinionated enough to reduce cognitive load.
 </details>
@@ -153,10 +153,10 @@ D. A set of approved tools teams may choose from
 ### Question 9
 **Scenario:** What is the central justification for platform engineering?
 
-A. Standardizing tooling across the organization
+A. Centralizing control of production
 B. Reducing extraneous cognitive load so teams spend capacity on their own domain
-C. Reducing infrastructure cost
-D. Centralizing control of production
+C. Standardizing tooling across the organization
+D. Reducing infrastructure cost
 
 <details>
 <summary>Answer</summary>
@@ -171,15 +171,15 @@ D. Centralizing control of production
 ### Question 10
 **Scenario:** An organization has a recognized platform team that responds to requests through a ticket queue, with some standardization but little self-service. Which maturity level does this describe?
 
-A. Provisional
-B. Operational
-C. Scalable
-D. Optimizing
+A. Scalable
+B. Provisional
+C. Optimizing
+D. Operational
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Provisional is ad hoc individual effort. Operational means a team exists but works reactively, typically through tickets. Scalable adds self-service and product management. Optimizing means decisions are driven by measurement. The ticket queue is the operational-level tell.
 </details>
@@ -207,15 +207,15 @@ D. Number of policies enforced
 ### Question 12
 **Scenario:** What is the "thinnest viable platform" idea?
 
-A. Running the platform on minimal infrastructure
-B. Building the least that delivers value, preferring managed services over building your own
-C. Supporting only one language and framework
-D. Keeping the platform team small
+A. Building the least that delivers value, preferring managed services over building your own
+B. Keeping the platform team small
+C. Running the platform on minimal infrastructure
+D. Supporting only one language and framework
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A wiki page and two scripts can be a legitimate first platform. Every capability is a permanent operational commitment, so capability should follow demonstrated demand. Rebuilding what a managed service already provides is a named anti-pattern.
 </details>
@@ -225,15 +225,15 @@ D. Keeping the platform team small
 ### Question 13
 **Scenario:** Which isolation model gives many tenants cluster-level API access without provisioning a full cluster each?
 
-A. Namespace per tenant
-B. Node pool per tenant
-C. Virtual control plane per tenant
-D. Cluster per tenant
+A. Virtual control plane per tenant
+B. Cluster per tenant
+C. Node pool per tenant
+D. Namespace per tenant
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** A virtual control plane gives each tenant its own API server on shared infrastructure, so tenants can create cluster-scoped objects without affecting each other. Namespaces do not offer cluster-level API access, and a cluster each is the expensive option this pattern exists to avoid.
 </details>
@@ -243,15 +243,15 @@ D. Cluster per tenant
 ### Question 14
 **Scenario:** Why is the Kubernetes API a common foundation for platform APIs, even for capabilities unrelated to containers?
 
-A. It is the fastest API server available
-B. Custom resources inherit RBAC, admission control, audit logging, kubectl, GitOps agents, and the reconciliation model for free
-C. It requires no schema
+A. It requires no schema
+B. It is the fastest API server available
+C. Custom resources inherit RBAC, admission control, audit logging, kubectl, GitOps agents, and the reconciliation model for free
 D. It is the only API that supports YAML
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Extending an existing, well-understood API server means every surrounding capability already works against your new type. That reuse, rather than raw performance, is why platform capabilities are typically exposed as custom resources.
 </details>
@@ -263,8 +263,8 @@ D. It is the only API that supports YAML
 
 A. Teams submit screenshots during an audit
 B. The platform generates it as a by-product: policy decisions logged, admission denials recorded, provenance stored, access audited
-C. The platform team compiles a report quarterly
-D. Auditors are given cluster access
+C. Auditors are given cluster access
+D. The platform team compiles a report quarterly
 
 <details>
 <summary>Answer</summary>

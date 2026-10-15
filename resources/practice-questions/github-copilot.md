@@ -16,8 +16,8 @@ difficulty: beginner
 
 A. A search of public repositories at request time
 B. A large language model given context from your open files, surrounding code, and prompt
-C. A fixed snippet library
-D. Your git history only
+C. Your git history only
+D. A fixed snippet library
 
 <details>
 <summary>Answer</summary>
@@ -33,14 +33,14 @@ D. Your git history only
 **Scenario:** A suggestion compiles and looks correct.
 
 A. Accept it without review
-B. Review it as you would a colleague's code: correctness, security, performance, and whether it fits the codebase
-C. Trust it because it compiles
+B. Trust it because it compiles
+C. Review it as you would a colleague's code: correctness, security, performance, and whether it fits the codebase
 D. Run it in production to test
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The developer who commits the code is responsible for it. Generated code compiles far more reliably than it is correct, and the plausible-but-subtly-wrong case is the one that costs the most to find later.
 </details>
@@ -50,10 +50,10 @@ D. Run it in production to test
 ### Question 3
 **Scenario:** An organization is concerned Copilot might suggest code matching public repositories.
 
-A. Nothing can be done
+A. Manually check every suggestion
 B. Enable the duplication detection filter, which blocks suggestions matching public code
-C. Disable Copilot
-D. Manually check every suggestion
+C. Nothing can be done
+D. Disable Copilot
 
 <details>
 <summary>Answer</summary>
@@ -68,15 +68,15 @@ D. Manually check every suggestion
 ### Question 4
 **Scenario:** Copilot must not use an organization's code to train models.
 
-A. It always trains on your code
-B. Copilot Business and Enterprise do not use customer code for model training, and admins control telemetry and data retention settings
-C. Only individual plans are safe
-D. Training cannot be controlled
+A. Training cannot be controlled
+B. Only individual plans are safe
+C. It always trains on your code
+D. Copilot Business and Enterprise do not use customer code for model training, and admins control telemetry and data retention settings
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The data handling difference between individual and business plans is a standard exam and procurement question. Knowing that prompts and suggestions are not retained for training on business plans is usually what unblocks adoption.
 </details>
@@ -86,10 +86,10 @@ D. Training cannot be controlled
 ### Question 5
 **Scenario:** A developer wants Copilot to write a function matching a specific behavior.
 
-A. A vague comment
+A. An empty file
 B. A specific comment or docstring stating inputs, outputs, and edge cases, plus a descriptive function name and nearby examples
-C. An empty file
-D. Random keystrokes
+C. Random keystrokes
+D. A vague comment
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. Random keystrokes
 ### Question 6
 **Scenario:** Copilot Chat is asked to explain unfamiliar code.
 
-A. It cannot explain code
-B. Select the code and ask, using slash commands such as `/explain`, `/fix`, and `/tests` for common tasks
-C. Only inline completion exists
+A. Select the code and ask, using slash commands such as `/explain`, `/fix`, and `/tests` for common tasks
+B. Only inline completion exists
+C. It cannot explain code
 D. Copy the code to a web search
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Chat with a selection is the fastest way into unfamiliar code, and the slash commands wrap the common intents. Onboarding to a new codebase is one of the strongest documented use cases, ahead of writing brand-new code.
 </details>
@@ -122,15 +122,15 @@ D. Copy the code to a web search
 ### Question 7
 **Scenario:** Which Copilot capability reviews a pull request?
 
-A. There is none
-B. Copilot code review, which comments on a pull request with suggested changes
-C. Secret scanning
-D. Dependabot
+A. Copilot code review, which comments on a pull request with suggested changes
+B. Secret scanning
+C. Dependabot
+D. There is none
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Copilot can review a pull request and leave suggestions, which catches straightforward issues before a human reviewer spends attention on them. It supplements human review rather than replacing the judgment about design and intent.
 </details>
@@ -140,15 +140,15 @@ D. Dependabot
 ### Question 8
 **Scenario:** Tests must be generated for existing code.
 
-A. Copilot cannot write tests
-B. Ask Copilot to generate tests, then review that they assert meaningful behavior and cover edge cases rather than just passing
-C. Tests are always correct
-D. Only the developer can write tests
+A. Ask Copilot to generate tests, then review that they assert meaningful behavior and cover edge cases rather than just passing
+B. Tests are always correct
+C. Only the developer can write tests
+D. Copilot cannot write tests
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Test generation is a strong use case because the surrounding code supplies clear context. The review that matters is whether the assertions are meaningful: tests generated from an implementation can encode the current behavior, including its bugs.
 </details>
@@ -158,10 +158,10 @@ D. Only the developer can write tests
 ### Question 9
 **Scenario:** Copilot suggests code using a deprecated API.
 
-A. Use it anyway
+A. Report it as a bug
 B. Verify against current documentation, since the model's knowledge has a cutoff and may predate recent changes
-C. Assume it is current
-D. Report it as a bug
+C. Use it anyway
+D. Assume it is current
 
 <details>
 <summary>Answer</summary>
@@ -176,15 +176,15 @@ D. Report it as a bug
 ### Question 10
 **Scenario:** An organization wants Copilot to understand its internal codebase and standards.
 
-A. Not possible
-B. Copilot Enterprise features such as knowledge bases and repository indexing, plus repository custom instructions
-C. Fine-tune the model yourself
-D. Paste standards into every prompt
+A. Fine-tune the model yourself
+B. Paste standards into every prompt
+C. Copilot Enterprise features such as knowledge bases and repository indexing, plus repository custom instructions
+D. Not possible
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Custom instructions in the repository apply automatically to Copilot's context, and Enterprise knowledge bases index documentation so chat can answer from internal sources. Both remove the need to restate context on every request.
 </details>
@@ -194,15 +194,15 @@ D. Paste standards into every prompt
 ### Question 11
 **Scenario:** Which describes a limitation developers should know?
 
-A. Copilot is always correct
-B. It can produce code with bugs, security flaws, or licensing concerns, and it does not know your runtime state or your requirements
-C. It cannot generate code
-D. It only works on Python
+A. It cannot generate code
+B. Copilot is always correct
+C. It only works on Python
+D. It can produce code with bugs, security flaws, or licensing concerns, and it does not know your runtime state or your requirements
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Being able to state the limitations is explicitly part of the responsible use domain. The one people underweight is that Copilot cannot know your requirements: it produces plausible code for the context, not correct code for your intent.
 </details>
@@ -212,15 +212,15 @@ D. It only works on Python
 ### Question 12
 **Scenario:** Copilot must be disabled for specific file types containing secrets.
 
-A. Not configurable
-B. Content exclusions configured at repository or organization level, so Copilot ignores specified paths
-C. Delete the files
+A. Delete the files
+B. Not configurable
+C. Content exclusions configured at repository or organization level, so Copilot ignores specified paths
 D. Disable Copilot entirely
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Content exclusions stop configured paths being used as context or receiving completions, which is how you keep `.env` files and key material out of the request. It is a per-repository or organization admin setting rather than a per-developer choice.
 </details>
@@ -231,14 +231,14 @@ D. Disable Copilot entirely
 **Scenario:** Where can Copilot be used?
 
 A. One IDE only
-B. In IDEs (VS Code, Visual Studio, JetBrains, Neovim), on GitHub.com, in the CLI, and in mobile, depending on plan
+B. Only on Windows
 C. Only in the browser
-D. Only on Windows
+D. In IDEs (VS Code, Visual Studio, JetBrains, Neovim), on GitHub.com, in the CLI, and in mobile, depending on plan
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Surface coverage differs by plan, and the CLI integration for shell commands plus chat on GitHub.com for pull requests and issues are the two people most often do not realize exist.
 </details>
@@ -249,14 +249,14 @@ D. Only on Windows
 **Scenario:** A team wants to measure whether Copilot is helping.
 
 A. Lines of code generated
-B. Adoption and acceptance metrics from the Copilot metrics API, alongside outcome measures such as cycle time and developer survey results
-C. Count suggestions
+B. Count suggestions
+C. Adoption and acceptance metrics from the Copilot metrics API, alongside outcome measures such as cycle time and developer survey results
 D. It cannot be measured
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Lines of code is a famously poor proxy that rewards verbosity. Usage metrics tell you whether people are using it; delivery and satisfaction measures tell you whether it is helping, and only the pair is meaningful.
 </details>
@@ -266,15 +266,15 @@ D. It cannot be measured
 ### Question 15
 **Scenario:** Prompt engineering for Copilot in one principle.
 
-A. Write less
-B. Give it context and specificity: clear names, a stated goal, relevant files open, and iterative refinement when the first suggestion misses
+A. Give it context and specificity: clear names, a stated goal, relevant files open, and iterative refinement when the first suggestion misses
+B. Prompting does not matter
 C. Use single letters
-D. Prompting does not matter
+D. Write less
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Context and specificity are the levers. Treating a poor suggestion as a signal to add detail, rather than as a failure, is the working habit that separates productive use from frustration.
 </details>

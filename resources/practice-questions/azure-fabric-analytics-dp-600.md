@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What storage layer underpins every Fabric workload?
 
-A. Azure Blob Storage with CSV files
-B. OneLake, a single logical data lake per tenant storing data in Delta Parquet
-C. Azure SQL Database
-D. Cosmos DB
+A. Azure SQL Database
+B. Cosmos DB
+C. Azure Blob Storage with CSV files
+D. OneLake, a single logical data lake per tenant storing data in Delta Parquet
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** OneLake is provisioned once per tenant and every workload writes Delta Parquet into it, which is what lets a lakehouse table be queried by Spark, the SQL analytics endpoint, and Direct Lake without copying. "One copy of the data" is the central Fabric idea.
 </details>
@@ -32,15 +32,15 @@ D. Cosmos DB
 ### Question 2
 **Scenario:** A team needs to query existing data in an ADLS Gen2 account from Fabric without copying it.
 
-A. A pipeline copy activity
-B. A OneLake shortcut to the external location
-C. Dataflow Gen2
+A. Dataflow Gen2
+B. A pipeline copy activity
+C. A OneLake shortcut to the external location
 D. Export to CSV
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Shortcuts create a reference to data in ADLS Gen2, Amazon S3, or another Fabric item, so it appears in your lakehouse without duplication or a refresh schedule. Copy activities and dataflows both move data, which adds cost, latency, and a second copy to keep consistent.
 </details>
@@ -50,15 +50,15 @@ D. Export to CSV
 ### Question 3
 **Scenario:** A semantic model must query lakehouse Delta tables directly at import-like speed without scheduled refresh.
 
-A. Import mode
-B. DirectQuery
-C. Direct Lake mode
-D. Live connection
+A. DirectQuery
+B. Direct Lake mode
+C. Live connection
+D. Import mode
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
 **Why:** Direct Lake reads Delta Parquet from OneLake into the engine's memory on demand, giving import-like performance with no refresh and no per-query trip to a source system. When a query cannot be served that way it falls back to DirectQuery, which is why watching for fallback is part of tuning a Direct Lake model.
 </details>
@@ -86,15 +86,15 @@ D. Power BI dataset
 ### Question 5
 **Scenario:** A dimensional model should perform well and be easy to write DAX against.
 
-A. A single wide flat table
-B. A star schema: one fact table joined to dimension tables with single-direction one-to-many relationships
+A. Many-to-many relationships throughout
+B. A single wide flat table
 C. A fully normalized snowflake
-D. Many-to-many relationships throughout
+D. A star schema: one fact table joined to dimension tables with single-direction one-to-many relationships
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The VertiPaq engine and DAX filter propagation are both built around star schemas, so this is not just tidiness: it changes performance and makes measures behave predictably. Bidirectional and many-to-many relationships introduce ambiguity and are the usual root cause of "the number is wrong depending on which slicer I use."
 </details>
@@ -104,15 +104,15 @@ D. Many-to-many relationships throughout
 ### Question 6
 **Scenario:** A measure must ignore all filters from slicers on the report page.
 
-A. `CALCULATE([Sales], ALL(Table))`
-B. `SUM(Table[Sales])`
-C. `CALCULATE([Sales], KEEPFILTERS(Table))`
+A. `SUM(Table[Sales])`
+B. `CALCULATE([Sales], KEEPFILTERS(Table))`
+C. `CALCULATE([Sales], ALL(Table))`
 D. `RELATED(Table[Sales])`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** `ALL()` removes filters from the specified table or columns inside the `CALCULATE` modification. `KEEPFILTERS` does the opposite, intersecting rather than replacing. A bare `SUM` respects the filter context, and `RELATED` looks up a value across a relationship.
 </details>
@@ -122,15 +122,15 @@ D. `RELATED(Table[Sales])`
 ### Question 7
 **Scenario:** A capacity is throttled and interactive reports are slow while a large Spark job runs.
 
-A. Buy more Power BI Pro licenses
-B. Review capacity metrics, and either scale the SKU, move the workload to another capacity, or reschedule the background job
-C. Delete the semantic model
-D. Switch to DirectQuery
+A. Review capacity metrics, and either scale the SKU, move the workload to another capacity, or reschedule the background job
+B. Switch to DirectQuery
+C. Buy more Power BI Pro licenses
+D. Delete the semantic model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Fabric capacity units are shared across all workloads in a workspace's capacity, so a heavy background job can crowd out interactive queries, and smoothing plus bursting only absorbs so much. The Capacity Metrics app shows which items consumed the units, which is the prerequisite for any of the three fixes.
 </details>
@@ -178,8 +178,8 @@ D. Report visuals
 
 A. Warehouse
 B. Eventhouse with a KQL database
-C. Lakehouse batch pipeline
-D. Dataflow Gen2
+C. Dataflow Gen2
+D. Lakehouse batch pipeline
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Dataflow Gen2
 ### Question 11
 **Scenario:** A workspace must promote content from development to production with review.
 
-A. Copy items by hand
-B. Git integration for source control plus deployment pipelines with dev, test, and production stages
+A. Git integration for source control plus deployment pipelines with dev, test, and production stages
+B. Share the workspace
 C. Export and import PBIX files
-D. Share the workspace
+D. Copy items by hand
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Git integration versions the item definitions so changes are reviewable, and deployment pipelines move content between workspace stages with rules that rebind data sources per stage. Manual copying loses history and reliably drifts.
 </details>
@@ -212,15 +212,15 @@ D. Share the workspace
 ### Question 12
 **Scenario:** A DAX measure calculates year-to-date sales.
 
-A. `TOTALYTD([Sales], 'Date'[Date])` with a marked date table
-B. `SUM(Sales[Amount])`
-C. `COUNTROWS('Date')`
+A. `SUM(Sales[Amount])`
+B. `COUNTROWS('Date')`
+C. `TOTALYTD([Sales], 'Date'[Date])` with a marked date table
 D. `RELATED(Sales[Amount])`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Time intelligence functions require a proper date table marked as a date table, with a contiguous set of dates covering the full range. Without that, functions such as `TOTALYTD` and `SAMEPERIODLASTYEAR` return wrong or blank results, which is the most common time-intelligence bug.
 </details>
@@ -231,14 +231,14 @@ D. `RELATED(Sales[Amount])`
 **Scenario:** A large fact table's Direct Lake model keeps falling back to DirectQuery.
 
 A. Nothing can be done
-B. Investigate the cause: unsupported features, guardrail limits for the SKU, or views instead of Delta tables, then remove the blocker
+B. Increase the refresh frequency
 C. Switch every model to import
-D. Increase the refresh frequency
+D. Investigate the cause: unsupported features, guardrail limits for the SKU, or views instead of Delta tables, then remove the blocker
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Fallback is a signal, not a setting. Common causes are querying a SQL view rather than a Delta table, row counts beyond the SKU guardrail, or unsupported model constructs. You can also set the fallback behavior to error so the problem is visible instead of silently slow.
 </details>
@@ -248,15 +248,15 @@ D. Increase the refresh frequency
 ### Question 14
 **Scenario:** Data lineage must be traceable from a report back to its source tables.
 
-A. The lineage view in the workspace, plus item-level impact analysis
+A. The audit log
 B. The activity log
-C. Manual documentation
-D. The audit log
+C. The lineage view in the workspace, plus item-level impact analysis
+D. Manual documentation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Lineage view renders the dependency graph across pipelines, lakehouses, semantic models, and reports, and impact analysis shows what breaks downstream if you change an item. Activity and audit logs record user actions rather than data dependencies.
 </details>
@@ -266,15 +266,15 @@ D. The audit log
 ### Question 15
 **Scenario:** A Delta table accumulates thousands of small files and queries slow down.
 
-A. Convert to CSV
-B. Run `OPTIMIZE` (with V-Order) and `VACUUM` to compact files and clean old versions
-C. Increase capacity
-D. Rewrite the queries
+A. Run `OPTIMIZE` (with V-Order) and `VACUUM` to compact files and clean old versions
+B. Convert to CSV
+C. Rewrite the queries
+D. Increase capacity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The small file problem is the classic lakehouse performance issue: each file adds read overhead. `OPTIMIZE` compacts them into fewer, larger files, V-Order improves compression for the Fabric engines, and `VACUUM` removes files no longer referenced after the retention window.
 </details>

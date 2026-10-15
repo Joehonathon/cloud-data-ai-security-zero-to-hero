@@ -15,14 +15,14 @@ difficulty: advanced
 **Scenario:** A business wants to "use AI to improve retention." What is the first engineering step?
 
 A. Choose a model architecture
-B. Frame it as an ML problem: define the prediction target, the decision it informs, the label source, and the success metric tied to a business outcome
-C. Collect more data
-D. Provision GPUs
+B. Provision GPUs
+C. Frame it as an ML problem: define the prediction target, the decision it informs, the label source, and the success metric tied to a business outcome
+D. Collect more data
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The exam consistently rewards framing before building. A churn model is useless unless someone acts on the score, so the decision and intervention define the label window, the prediction horizon, and the metric. Skipping this produces a technically fine model nobody uses.
 </details>
@@ -32,15 +32,15 @@ D. Provision GPUs
 ### Question 2
 **Scenario:** Features must be shared consistently between training and online serving.
 
-A. Recompute them in each system
-B. Vertex AI Feature Store, serving the same feature values offline for training and online for inference
-C. A spreadsheet
+A. Vertex AI Feature Store, serving the same feature values offline for training and online for inference
+B. A spreadsheet
+C. Recompute them in each system
 D. Cache in the application
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A feature store exists to remove training-serving skew by making one definition the source for both paths, and it provides point-in-time correct historical retrieval so training does not accidentally use future values. Recomputing in two systems guarantees eventual divergence.
 </details>
@@ -50,15 +50,15 @@ D. Cache in the application
 ### Question 3
 **Scenario:** Which Vertex AI capability trains a model with no code on tabular data?
 
-A. AutoML
-B. Custom training with a container
-C. Vertex AI Workbench
-D. Model Garden
+A. Model Garden
+B. Vertex AI Workbench
+C. AutoML
+D. Custom training with a container
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** AutoML handles feature engineering, architecture search, and tuning for tabular, image, text, and video tasks. Custom training is the escape hatch when you need your own code, and Model Garden is the catalog of pretrained and foundation models.
 </details>
@@ -68,15 +68,15 @@ D. Model Garden
 ### Question 4
 **Scenario:** A training job needs to run reproducibly with data prep, training, evaluation, and conditional deployment.
 
-A. A notebook run manually
-B. Vertex AI Pipelines (Kubeflow Pipelines or TFX) with components and a conditional deploy step
-C. A shell script on a VM
-D. Cloud Functions
+A. Vertex AI Pipelines (Kubeflow Pipelines or TFX) with components and a conditional deploy step
+B. A shell script on a VM
+C. Cloud Functions
+D. A notebook run manually
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Pipelines give a versioned DAG with artifact lineage and caching, and the conditional step turns the evaluation into an enforced gate. Notebooks are for exploration; they do not produce the reproducibility or audit trail a production model needs.
 </details>
@@ -87,14 +87,14 @@ D. Cloud Functions
 **Scenario:** An online prediction endpoint must serve two model versions with traffic split.
 
 A. Two endpoints
-B. One endpoint with multiple deployed models and a traffic split percentage
-C. A load balancer in front of two services
+B. A load balancer in front of two services
+C. One endpoint with multiple deployed models and a traffic split percentage
 D. Batch prediction
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Vertex AI endpoints support several deployed models with a traffic split, so canary rollout and rollback are configuration changes rather than client changes. Each deployed model has its own machine type and autoscaling settings.
 </details>
@@ -104,15 +104,15 @@ D. Batch prediction
 ### Question 6
 **Scenario:** Predictions are needed for 100 million rows overnight.
 
-A. Online prediction
-B. Batch prediction reading from BigQuery or Cloud Storage and writing results back
-C. One request per row
-D. A Cloud Function per row
+A. Batch prediction reading from BigQuery or Cloud Storage and writing results back
+B. A Cloud Function per row
+C. Online prediction
+D. One request per row
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Batch prediction parallelizes across workers and avoids paying per-request overhead 100 million times. Online endpoints are for latency-sensitive single predictions, and using them for bulk scoring is both slow and disproportionately expensive.
 </details>
@@ -122,9 +122,9 @@ D. A Cloud Function per row
 ### Question 7
 **Scenario:** A deployed model's inputs are drifting from the training distribution.
 
-A. Nothing can be detected
+A. Cloud Monitoring CPU metrics
 B. Vertex AI Model Monitoring, comparing serving inputs against a training baseline and alerting on skew and drift
-C. Cloud Monitoring CPU metrics
+C. Nothing can be detected
 D. Manual sampling
 
 <details>
@@ -140,15 +140,15 @@ D. Manual sampling
 ### Question 8
 **Scenario:** A model must explain individual predictions for a regulated decision.
 
-A. Vertex Explainable AI with feature attributions (integrated gradients, sampled Shapley, or XRAI)
-B. The training loss
-C. Model size
+A. Model size
+B. Vertex Explainable AI with feature attributions (integrated gradients, sampled Shapley, or XRAI)
+C. The training loss
 D. The confusion matrix
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Explainable AI attributes a specific prediction to input features, which is what an adverse-decision explanation requires. The method depends on the model type: gradient-based for differentiable models, sampled Shapley for non-differentiable ones.
 </details>
@@ -159,14 +159,14 @@ D. The confusion matrix
 **Scenario:** Training data in BigQuery must be prepared for a TensorFlow model at scale.
 
 A. Export to CSV and load into pandas
-B. Use BigQuery for aggregation and Dataflow (Apache Beam) or TFX components for distributed transformation, writing TFRecords
-C. Process row by row in Python
+B. Process row by row in Python
+C. Use BigQuery for aggregation and Dataflow (Apache Beam) or TFX components for distributed transformation, writing TFRecords
 D. Use a single VM
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Pushing aggregation into BigQuery and heavy transformation into Dataflow keeps the work distributed, and TFX Transform has the important property that the same transformation graph is applied at serving time, which prevents skew.
 </details>
@@ -176,15 +176,15 @@ D. Use a single VM
 ### Question 10
 **Scenario:** Hyperparameter tuning must be efficient on an expensive training job.
 
-A. Grid search
-B. Vertex AI hyperparameter tuning with Bayesian optimization and early stopping
+A. Random search over the full space with no stopping
+B. Grid search
 C. One configuration
-D. Random search over the full space with no stopping
+D. Vertex AI hyperparameter tuning with Bayesian optimization and early stopping
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Bayesian search conditions each trial on previous results, so it converges in far fewer runs than grid search when each run is expensive. Early stopping of underperforming trials is where the rest of the savings comes from.
 </details>
@@ -195,14 +195,14 @@ D. Random search over the full space with no stopping
 **Scenario:** A team wants a foundation model grounded in their own documents on Google Cloud.
 
 A. Fine-tune from scratch
-B. Vertex AI Search and grounding, or a RAG pipeline with an embedding model and Vector Search
-C. Paste documents into every prompt
-D. Train a new LLM
+B. Paste documents into every prompt
+C. Train a new LLM
+D. Vertex AI Search and grounding, or a RAG pipeline with an embedding model and Vector Search
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Grounding keeps answers tied to retrievable sources with citations and updates as the documents update. Fine-tuning would encode a snapshot of the knowledge into weights, which is both expensive to refresh and impossible to cite.
 </details>
@@ -212,15 +212,15 @@ D. Train a new LLM
 ### Question 12
 **Scenario:** A training job must use preemptible or Spot VMs safely.
 
-A. Never checkpoint
-B. Checkpoint to Cloud Storage frequently and resume from the last checkpoint after preemption
+A. Checkpoint to Cloud Storage frequently and resume from the last checkpoint after preemption
+B. Never checkpoint
 C. Use only on-demand
 D. Restart from scratch each time
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Spot capacity cuts cost substantially, and checkpointing is what converts a preemption from a lost run into a short delay. The checkpoint interval is a trade-off between storage writes and the work you are willing to lose.
 </details>
@@ -232,8 +232,8 @@ D. Restart from scratch each time
 
 A. Trust the data
 B. Use Cloud DLP to inspect and de-identify (mask, tokenize, or bucket) before training, and document what was removed
-C. Delete the model afterward
-D. Encrypt the training job
+C. Encrypt the training job
+D. Delete the model afterward
 
 <details>
 <summary>Answer</summary>
@@ -248,9 +248,9 @@ D. Encrypt the training job
 ### Question 14
 **Scenario:** An ML system must retrain automatically when performance drops.
 
-A. Retrain on a fixed schedule regardless
+A. Retrain manually when someone notices
 B. Trigger retraining from monitoring signals (drift or degraded outcome metrics) through a pipeline, with an evaluation gate before deployment
-C. Retrain manually when someone notices
+C. Retrain on a fixed schedule regardless
 D. Never retrain
 
 <details>
@@ -266,15 +266,15 @@ D. Never retrain
 ### Question 15
 **Scenario:** Which best describes the responsible AI step before launching a model that affects people?
 
-A. Check accuracy only
-B. Evaluate disaggregated performance across affected groups, document the model's intended use and limitations, and define a human review and appeal path
+A. Get legal sign-off only
+B. Check accuracy only
 C. Add a disclaimer
-D. Get legal sign-off only
+D. Evaluate disaggregated performance across affected groups, document the model's intended use and limitations, and define a human review and appeal path
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Aggregate accuracy hides subgroup failure, so disaggregated evaluation is the measurement that matters. Model cards document intended use and limits, and a human path handles the cases the model gets wrong, which is the part that determines real-world harm.
 </details>

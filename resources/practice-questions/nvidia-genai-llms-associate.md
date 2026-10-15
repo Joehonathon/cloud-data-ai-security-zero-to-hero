@@ -15,14 +15,14 @@ difficulty: intermediate
 **Scenario:** What does the self-attention mechanism in a transformer compute?
 
 A. The order of words in a sentence
-B. A weighted relationship between every token and every other token in the sequence
-C. The model's loss
+B. The model's loss
+C. A weighted relationship between every token and every other token in the sequence
 D. The tokenizer vocabulary
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Attention lets each position attend to all others, weighting them by learned query-key similarity, which is what captures long-range dependencies. Order comes from positional encoding, not attention itself, because attention alone is permutation-invariant.
 </details>
@@ -32,15 +32,15 @@ D. The tokenizer vocabulary
 ### Question 2
 **Scenario:** A model has a 128k token context window. What does that limit?
 
-A. The number of parameters
-B. The combined tokens of the input plus the generated output for a single request
+A. The combined tokens of the input plus the generated output for a single request
+B. The number of parameters
 C. The training data size
 D. The vocabulary size
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The context window is the working memory for one request and covers prompt and completion together, which is why a long prompt reduces the room left for output. It is unrelated to parameter count, which is model capacity, and to the training corpus.
 </details>
@@ -50,15 +50,15 @@ D. The vocabulary size
 ### Question 3
 **Scenario:** Which customization approach best teaches a model a specific output style and format with a few hundred examples?
 
-A. Pretraining from scratch
-B. Parameter-efficient fine-tuning such as LoRA
-C. RAG
+A. RAG
+B. Pretraining from scratch
+C. Parameter-efficient fine-tuning such as LoRA
 D. Raising temperature
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** LoRA trains small low-rank adapter matrices while freezing the base weights, so it needs far less data, memory, and time than full fine-tuning, and adapters can be swapped per task. RAG injects knowledge rather than behavior, and pretraining needs orders of magnitude more data.
 </details>
@@ -68,15 +68,15 @@ D. Raising temperature
 ### Question 4
 **Scenario:** A chatbot invents a policy that does not exist in the company handbook.
 
-A. The model is broken
-B. Hallucination: ground the answer with retrieval, require citations, and evaluate groundedness
-C. The temperature is too low
-D. The context window is too large
+A. The context window is too large
+B. The temperature is too low
+C. The model is broken
+D. Hallucination: ground the answer with retrieval, require citations, and evaluate groundedness
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Language models generate plausible continuations and have no built-in notion of truth, so ungrounded factual questions are the highest-risk case. Retrieval plus a requirement to cite the retrieved passage is the standard mitigation, and a groundedness metric turns it into something you can measure.
 </details>
@@ -86,10 +86,10 @@ D. The context window is too large
 ### Question 5
 **Scenario:** In a RAG pipeline, what does the embedding model do?
 
-A. Generates the answer
+A. Ranks the final output
 B. Converts text into vectors so semantically similar text is close in vector space
-C. Stores the documents
-D. Ranks the final output
+C. Generates the answer
+D. Stores the documents
 
 <details>
 <summary>Answer</summary>
@@ -104,15 +104,15 @@ D. Ranks the final output
 ### Question 6
 **Scenario:** Which index type in a vector database trades a small amount of recall for much faster search?
 
-A. Exact k-nearest-neighbor (flat)
-B. Approximate nearest neighbor such as HNSW or IVF
+A. Hash index
+B. Exact k-nearest-neighbor (flat)
 C. B-tree
-D. Hash index
+D. Approximate nearest neighbor such as HNSW or IVF
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** ANN indexes such as HNSW build a navigable graph that finds close-enough neighbors in sublinear time. Flat search is exact but scales linearly with corpus size. B-trees and hash indexes serve exact-match and range queries, not similarity in high-dimensional space.
 </details>
@@ -122,15 +122,15 @@ D. Hash index
 ### Question 7
 **Scenario:** Prompt output quality improves noticeably when the model is asked to "think step by step."
 
-A. Chain-of-thought prompting
-B. Few-shot prompting
-C. Retrieval augmentation
-D. Quantization
+A. Few-shot prompting
+B. Chain-of-thought prompting
+C. Quantization
+D. Retrieval augmentation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Chain of thought elicits intermediate reasoning, which helps most on multi-step arithmetic and logic. Few-shot provides examples, which is a different lever aimed mainly at format and edge cases. The two combine well.
 </details>
@@ -140,15 +140,15 @@ D. Quantization
 ### Question 8
 **Scenario:** Which NVIDIA offering packages an optimized model as a container with a standard inference API?
 
-A. NVIDIA NIM
-B. NVIDIA DCGM
-C. RAPIDS
+A. NVIDIA DCGM
+B. RAPIDS
+C. NVIDIA NIM
 D. Nsight Systems
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** NIM microservices bundle the model, the optimized runtime (typically TensorRT-LLM), and an OpenAI-compatible API into a deployable container. DCGM is GPU monitoring, RAPIDS is GPU data science, and Nsight is a profiler.
 </details>
@@ -158,15 +158,15 @@ D. Nsight Systems
 ### Question 9
 **Scenario:** A model must run on a smaller GPU with acceptable quality loss.
 
-A. Increase the batch size
-B. Quantize the weights to a lower precision such as INT8 or FP8
-C. Increase the context window
-D. Add more layers
+A. Quantize the weights to a lower precision such as INT8 or FP8
+B. Add more layers
+C. Increase the batch size
+D. Increase the context window
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Quantization reduces the bits per weight, cutting memory footprint and often increasing throughput, at some accuracy cost that varies by method and model. Post-training quantization is the quick path; quantization-aware training recovers more quality when the drop matters.
 </details>
@@ -176,10 +176,10 @@ D. Add more layers
 ### Question 10
 **Scenario:** What is tokenization?
 
-A. Encrypting the prompt
+A. Removing stop words
 B. Splitting text into subword units the model actually processes, each mapped to an integer ID
-C. Assigning API keys
-D. Removing stop words
+C. Encrypting the prompt
+D. Assigning API keys
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. Removing stop words
 ### Question 11
 **Scenario:** Which NVIDIA framework provides programmable guardrails for conversational AI applications?
 
-A. NeMo Guardrails
+A. cuDF
 B. Triton Inference Server
-C. cuDF
-D. Omniverse
+C. Omniverse
+D. NeMo Guardrails
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** NeMo Guardrails defines topical, safety, and security rails in a configuration language, sitting between the user and the model. Triton serves models, cuDF is GPU dataframes, and Omniverse is the simulation and 3D platform.
 </details>
@@ -213,14 +213,14 @@ D. Omniverse
 **Scenario:** A responsible AI review flags that the training data may under-represent a demographic group.
 
 A. Ignore it if accuracy is high overall
-B. Evaluate performance per subgroup, document the limitation, and address it with data or mitigation before deployment
-C. Increase model size
-D. Add a disclaimer only
+B. Add a disclaimer only
+C. Evaluate performance per subgroup, document the limitation, and address it with data or mitigation before deployment
+D. Increase model size
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Aggregate accuracy hides subgroup failure, so disaggregated evaluation is the control. Documentation (model cards) and mitigation are both expected, and a disclaimer alone shifts the burden to users without reducing the harm.
 </details>
@@ -230,15 +230,15 @@ D. Add a disclaimer only
 ### Question 13
 **Scenario:** Which describes RLHF?
 
-A. Retrieval from a large corpus
-B. Reinforcement learning from human feedback: training a reward model on human preferences, then optimizing the policy against it
+A. Reinforcement learning from human feedback: training a reward model on human preferences, then optimizing the policy against it
+B. A vector index
 C. A quantization scheme
-D. A vector index
+D. Retrieval from a large corpus
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** RLHF is the alignment stage that shapes helpfulness and harmlessness after pretraining and supervised fine-tuning. Direct preference optimization is a more recent alternative that skips the separate reward model.
 </details>
@@ -248,10 +248,10 @@ D. A vector index
 ### Question 14
 **Scenario:** Two chunking strategies are compared for a RAG system over legal contracts.
 
-A. Chunk size is irrelevant
+A. Always use one sentence per chunk
 B. Chunk boundaries matter: too small loses context, too large dilutes relevance, and overlapping chunks help avoid splitting a fact
 C. Always use one chunk per document
-D. Always use one sentence per chunk
+D. Chunk size is irrelevant
 
 <details>
 <summary>Answer</summary>
@@ -266,15 +266,15 @@ D. Always use one sentence per chunk
 ### Question 15
 **Scenario:** How should an LLM feature be evaluated before release?
 
-A. Manual review of a handful of prompts
-B. A held-out evaluation set with task metrics plus safety tests, run automatically on every model or prompt change
-C. Latency benchmarks only
+A. A held-out evaluation set with task metrics plus safety tests, run automatically on every model or prompt change
+B. Latency benchmarks only
+C. Manual review of a handful of prompts
 D. User feedback after launch
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Evals are the regression suite for a nondeterministic system, and they only earn their keep if they run on every change: prompt edits and model upgrades both change behavior. Post-launch feedback is a lagging signal that arrives after users are affected.
 </details>

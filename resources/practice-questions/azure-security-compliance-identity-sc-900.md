@@ -16,9 +16,9 @@ SC-900 tests whether you can name the right capability for a requirement, not wh
 ### Question 1
 **Scenario:** Which principle states that no request is trusted based on network location alone?
 
-A. Defense in depth
+A. Least privilege
 B. Zero trust
-C. Least privilege
+C. Defense in depth
 D. Separation of duties
 
 <details>
@@ -35,14 +35,14 @@ D. Separation of duties
 **Scenario:** A user proves identity with a password plus a code from an authenticator app.
 
 A. Single sign-on
-B. Multi-factor authentication
-C. Federation
-D. Conditional Access
+B. Conditional Access
+C. Multi-factor authentication
+D. Federation
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** MFA combines factors from different categories: something you know, something you have, and something you are. SSO means authenticating once for multiple applications. Federation is trust between identity systems. Conditional Access is the policy engine that can require MFA under given conditions.
 </details>
@@ -53,9 +53,9 @@ D. Conditional Access
 **Scenario:** Access to a finance app should require MFA only when the sign-in comes from outside the corporate network.
 
 A. A Conditional Access policy with a location condition and an MFA grant control
-B. Turning on per-user MFA for everyone
-C. Privileged Identity Management
-D. A sensitivity label
+B. Privileged Identity Management
+C. A sensitivity label
+D. Turning on per-user MFA for everyone
 
 <details>
 <summary>Answer</summary>
@@ -70,15 +70,15 @@ D. A sensitivity label
 ### Question 4
 **Scenario:** An administrator should hold the Global Administrator role only for approved windows, with justification and approval.
 
-A. Conditional Access
-B. Microsoft Entra Privileged Identity Management with just-in-time activation
-C. Access reviews
-D. Entitlement management
+A. Entitlement management
+B. Conditional Access
+C. Microsoft Entra Privileged Identity Management with just-in-time activation
+D. Access reviews
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** PIM makes a role assignment eligible rather than active, so it must be activated with justification, optional approval, and a time limit. Access reviews periodically confirm whether existing access is still needed, which is a different and complementary control.
 </details>
@@ -106,15 +106,15 @@ D. Microsoft Purview
 ### Question 6
 **Scenario:** Which capability lets an external partner sign in to your resources using their own organization's credentials?
 
-A. Entra External ID (B2B collaboration)
-B. Managed identities
-C. Service principals
-D. Passwordless sign-in
+A. Managed identities
+B. Entra External ID (B2B collaboration)
+C. Passwordless sign-in
+D. Service principals
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** B2B collaboration invites guests who authenticate at their home tenant, so you never manage their credentials or their offboarding. Managed identities are for Azure resources authenticating to services, and service principals represent applications.
 </details>
@@ -125,9 +125,9 @@ D. Passwordless sign-in
 **Scenario:** A workload in Azure must call Azure Storage without any stored credential.
 
 A. A managed identity granted an RBAC role on the storage account
-B. A shared access signature in the app config
+B. A user account with a password
 C. The storage account key
-D. A user account with a password
+D. A shared access signature in the app config
 
 <details>
 <summary>Answer</summary>
@@ -143,14 +143,14 @@ D. A user account with a password
 **Scenario:** Which service provides cloud security posture management and workload protection across Azure, AWS, and GCP?
 
 A. Microsoft Sentinel
-B. Microsoft Defender for Cloud
-C. Microsoft Purview
-D. Azure Monitor
+B. Microsoft Purview
+C. Azure Monitor
+D. Microsoft Defender for Cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Defender for Cloud combines CSPM (secure score, recommendations, regulatory compliance) with CWPP (Defender plans for servers, containers, storage, databases) and is multicloud. Sentinel is the SIEM and SOAR. Purview is data governance. Azure Monitor is telemetry.
 </details>
@@ -161,8 +161,8 @@ D. Azure Monitor
 **Scenario:** A security team needs to collect logs from many sources, correlate them, and run automated response playbooks.
 
 A. Microsoft Sentinel
-B. Defender for Cloud
-C. Entra ID Protection
+B. Entra ID Protection
+C. Defender for Cloud
 D. Compliance Manager
 
 <details>
@@ -179,14 +179,14 @@ D. Compliance Manager
 **Scenario:** Which Microsoft 365 capability classifies a document as Confidential and encrypts it so protection travels with the file?
 
 A. Data loss prevention
-B. Sensitivity labels
-C. Retention policies
-D. eDiscovery
+B. eDiscovery
+C. Sensitivity labels
+D. Retention policies
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A sensitivity label can apply encryption and rights so the protection persists even when the file leaves the tenant. DLP prevents actions at a boundary such as sending or copying. Retention governs how long content is kept, and eDiscovery finds and preserves content for legal matters.
 </details>
@@ -196,15 +196,15 @@ D. eDiscovery
 ### Question 11
 **Scenario:** An organization must stop credit card numbers from being emailed externally.
 
-A. A sensitivity label
-B. A DLP policy with the credit card sensitive information type, blocking external sharing
-C. A retention label
-D. Insider Risk Management
+A. Insider Risk Management
+B. A retention label
+C. A DLP policy with the credit card sensitive information type, blocking external sharing
+D. A sensitivity label
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** DLP detects sensitive information types in content and enforces an action at the moment of sharing, with policy tips and optional user override. Labels classify but do not by themselves block a send. Insider risk detects patterns of risky user behavior over time.
 </details>
@@ -214,15 +214,15 @@ D. Insider Risk Management
 ### Question 12
 **Scenario:** Which tool gives a score and improvement actions mapped to regulations such as GDPR and ISO 27001?
 
-A. Secure Score
-B. Compliance Manager
-C. Service Trust Portal
-D. Azure Advisor
+A. Compliance Manager
+B. Secure Score
+C. Azure Advisor
+D. Service Trust Portal
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Compliance Manager tracks improvement actions against regulatory templates and produces a compliance score. Secure Score measures security posture rather than regulatory alignment. The Service Trust Portal publishes Microsoft's own audit reports and certifications.
 </details>
@@ -250,15 +250,15 @@ D. It varies by month
 ### Question 14
 **Scenario:** Sign-ins from an anonymous IP address should be flagged as risky and challenged automatically.
 
-A. Microsoft Entra ID Protection risk policies, combined with Conditional Access
+A. A retention policy
 B. A firewall rule
 C. Purview auditing
-D. A retention policy
+D. Microsoft Entra ID Protection risk policies, combined with Conditional Access
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** ID Protection calculates sign-in risk and user risk from signals such as impossible travel, anonymous IPs, and leaked credentials, and Conditional Access consumes that risk level as a condition to require MFA or a password change. Auditing records events but takes no action.
 </details>
@@ -270,8 +270,8 @@ D. A retention policy
 
 A. They are the same
 B. Authentication proves who you are; authorization decides what you may do
-C. Authorization happens first
-D. Authentication applies only to administrators
+C. Authentication applies only to administrators
+D. Authorization happens first
 
 <details>
 <summary>Answer</summary>

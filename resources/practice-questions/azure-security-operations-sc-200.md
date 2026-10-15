@@ -16,8 +16,8 @@ difficulty: intermediate
 
 A. `SigninLogs | where IPAddress == "1.2.3.4" | where TimeGenerated > ago(7d)`
 B. `SigninLogs | search "1.2.3.4"`
-C. `search *`
-D. Export to Excel and filter
+C. Export to Excel and filter
+D. `search *`
 
 <details>
 <summary>Answer</summary>
@@ -32,15 +32,15 @@ D. Export to Excel and filter
 ### Question 2
 **Scenario:** Which KQL operator joins alert data to enrichment data on a shared column?
 
-A. `union`
-B. `join`
-C. `summarize`
-D. `project`
+A. `join`
+B. `project`
+C. `union`
+D. `summarize`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** `join` correlates two result sets on a key, with kinds such as `inner`, `leftouter`, and `leftanti`. `leftanti` is the one worth memorizing because it answers "which of these had no match," which is how you find first-time-seen behavior. `union` stacks rows, `summarize` aggregates, and `project` selects columns.
 </details>
@@ -50,15 +50,15 @@ D. `project`
 ### Question 3
 **Scenario:** A Defender for Endpoint alert shows a device with suspicious activity that must be cut off from the network but remain investigable.
 
-A. Delete the device from the portal
-B. Isolate the device, which blocks network traffic while keeping the Defender connection
-C. Power it off remotely
+A. Power it off remotely
+B. Delete the device from the portal
+C. Isolate the device, which blocks network traffic while keeping the Defender connection
 D. Run a full antivirus scan only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Isolation preserves the connection back to Defender so you can still run live response, collect an investigation package, and release it afterward. Powering off destroys volatile memory evidence and stops your telemetry. Deleting the device removes your visibility entirely.
 </details>
@@ -69,14 +69,14 @@ D. Run a full antivirus scan only
 **Scenario:** Sentinel should ingest AWS CloudTrail logs.
 
 A. It is not possible
-B. A data connector for AWS, configured with a role Sentinel can assume
-C. Manual CSV upload
-D. A syslog forwarder only
+B. A syslog forwarder only
+C. A data connector for AWS, configured with a role Sentinel can assume
+D. Manual CSV upload
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Sentinel has first-party connectors for AWS, GCP, and many third-party sources; the AWS one uses a cross-account IAM role with an external ID. Being multicloud is a large part of why organizations pick Sentinel as the SIEM over a single-cloud tool.
 </details>
@@ -86,15 +86,15 @@ D. A syslog forwarder only
 ### Question 5
 **Scenario:** An analytics rule generates 400 alerts a day for the same benign administrative activity.
 
-A. Disable the rule
-B. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into a single incident
-C. Ignore the alerts
-D. Increase the ingestion cap
+A. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into a single incident
+B. Increase the ingestion cap
+C. Disable the rule
+D. Ignore the alerts
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Alert fatigue is a real security failure, because analysts stop reading. Tuning keeps the detection while removing the known cause, and incident grouping collapses repeated alerts into one investigable unit. Disabling the rule outright loses coverage for the malicious version of the same behavior.
 </details>
@@ -104,10 +104,10 @@ D. Increase the ingestion cap
 ### Question 6
 **Scenario:** A phishing email reached 50 mailboxes and must be removed from all of them.
 
-A. Ask users to delete it
+A. A transport rule for future mail only
 B. Threat Explorer in Defender for Office 365 with a soft-delete or hard-delete remediation action
-C. A transport rule for future mail only
-D. Reset all 50 passwords
+C. Reset all 50 passwords
+D. Ask users to delete it
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Reset all 50 passwords
 ### Question 7
 **Scenario:** Which Defender product protects against identity attacks such as Pass-the-Hash against on-premises Active Directory?
 
-A. Defender for Endpoint
+A. Defender for Cloud Apps
 B. Defender for Identity
-C. Defender for Cloud Apps
-D. Defender for Office 365
+C. Defender for Office 365
+D. Defender for Endpoint
 
 <details>
 <summary>Answer</summary>
@@ -140,15 +140,15 @@ D. Defender for Office 365
 ### Question 8
 **Scenario:** A user's session in a SaaS app should be blocked from downloading sensitive files on an unmanaged device.
 
-A. Defender for Cloud Apps session policy with Conditional Access App Control
-B. A NSG rule
-C. An analytics rule
-D. A retention label
+A. An analytics rule
+B. A retention label
+C. Defender for Cloud Apps session policy with Conditional Access App Control
+D. A NSG rule
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Conditional Access App Control proxies the session so Cloud Apps can inspect and block actions in real time, including download, upload, copy, and print. Conditional Access alone can allow or deny the sign-in but cannot control what happens inside an allowed session.
 </details>
@@ -158,15 +158,15 @@ D. A retention label
 ### Question 9
 **Scenario:** An incident must trigger an automatic Teams message and ticket creation.
 
-A. A workbook
-B. An automation rule invoking a Logic Apps playbook
-C. A hunting query
-D. A watchlist
+A. An automation rule invoking a Logic Apps playbook
+B. A workbook
+C. A watchlist
+D. A hunting query
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Automation rules define when to act (incident created, updated, matching conditions) and playbooks are the Logic Apps that perform the actions. Workbooks visualize, hunting queries search proactively, and watchlists are reference data you join against.
 </details>
@@ -176,10 +176,10 @@ D. A watchlist
 ### Question 10
 **Scenario:** A hunting hypothesis is "an attacker used a rarely seen parent-child process pair." What is the right Sentinel feature?
 
-A. An analytics rule
+A. A workbook
 B. A hunting query, saved and optionally promoted to an analytics rule once validated
-C. A workbook
-D. A data connector
+C. A data connector
+D. An analytics rule
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. A data connector
 ### Question 11
 **Scenario:** Log ingestion costs are rising and much of the volume is verbose, low-value data needed only for occasional audit.
 
-A. Stop collecting it
+A. Reduce retention to one day
 B. Route it to a cheaper tier such as auxiliary or basic logs, or archive with long-term retention, keeping analytics tier for data used in detections
-C. Reduce retention to one day
-D. Sample randomly
+C. Sample randomly
+D. Stop collecting it
 
 <details>
 <summary>Answer</summary>
@@ -212,15 +212,15 @@ D. Sample randomly
 ### Question 12
 **Scenario:** During triage you need to see the full attack story: which device, which user, which files, in sequence.
 
-A. The incident graph and the unified incident timeline in the Defender portal
-B. The raw table
-C. Secure Score
-D. Compliance Manager
+A. Compliance Manager
+B. Secure Score
+C. The incident graph and the unified incident timeline in the Defender portal
+D. The raw table
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Incident correlation stitches related alerts across Defender workloads and Sentinel into one incident with entities and a timeline, which is the difference between a pile of alerts and an attack narrative. Raw tables are where you go for detail after you know what to look at.
 </details>
@@ -230,15 +230,15 @@ D. Compliance Manager
 ### Question 13
 **Scenario:** A device group should get a more aggressive attack surface reduction rule set than the rest of the estate.
 
-A. Device groups in Defender for Endpoint with a targeted ASR policy
+A. Conditional Access
 B. A single tenant-wide policy
-C. Conditional Access
-D. A firewall rule
+C. A firewall rule
+D. Device groups in Defender for Endpoint with a targeted ASR policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Device groups let you scope policy and also scope analyst permissions by group. Rolling ASR rules out in audit mode to a pilot group first, then enforcing, is the standard approach because some rules break legitimate line-of-business software.
 </details>
@@ -248,15 +248,15 @@ D. A firewall rule
 ### Question 14
 **Scenario:** After containment, what should close out the incident process?
 
-A. Delete the incident
-B. Eradication and recovery, then a post-incident review capturing detection gaps and turning them into new rules
-C. Reboot the affected servers
-D. Nothing further
+A. Reboot the affected servers
+B. Delete the incident
+C. Nothing further
+D. Eradication and recovery, then a post-incident review capturing detection gaps and turning them into new rules
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The standard lifecycle is preparation, detection and analysis, containment, eradication, recovery, and lessons learned. The last stage is where a SOC actually improves: each incident should leave behind a new detection, a tuned rule, or a closed gap. Deleting the incident destroys the record you need for that.
 </details>
@@ -266,15 +266,15 @@ D. Nothing further
 ### Question 15
 **Scenario:** A rule must detect five failed sign-ins followed by a success from the same account within 10 minutes.
 
-A. A scheduled analytics rule with a KQL query using `summarize` over a time window and a `join` for the success
-B. A Fusion rule
-C. A watchlist
-D. A workbook
+A. A Fusion rule
+B. A watchlist
+C. A workbook
+D. A scheduled analytics rule with a KQL query using `summarize` over a time window and a `join` for the success
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Scheduled rules run KQL on an interval with a lookback window, which is where you express multi-event logic like this. Fusion is Microsoft's built-in multistage attack detection using machine learning and is not something you author. Workbooks and watchlists do not generate incidents.
 </details>

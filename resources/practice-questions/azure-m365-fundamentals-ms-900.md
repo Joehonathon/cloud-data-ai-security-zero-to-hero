@@ -16,15 +16,15 @@ MS-900 is a business-and-vocabulary exam. It rewards knowing what each product i
 ### Question 1
 **Scenario:** Which cloud deployment model combines on-premises infrastructure with public cloud services?
 
-A. Public cloud
-B. Private cloud
-C. Hybrid cloud
-D. Community cloud
+A. Hybrid cloud
+B. Community cloud
+C. Private cloud
+D. Public cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: A**
 
 **Why:** Hybrid keeps some workloads on-premises, often for latency, regulation, or legacy dependency, while consuming cloud services alongside. Microsoft 365 is delivered as SaaS from the public cloud, and hybrid identity through Entra Connect is the most common hybrid pattern organizations run.
 </details>
@@ -35,14 +35,14 @@ D. Community cloud
 **Scenario:** Which describes the difference between capital expenditure and operating expenditure in a cloud move?
 
 A. CapEx is monthly subscription; OpEx is upfront purchase
-B. CapEx is upfront purchase of assets; OpEx is ongoing consumption-based spending
-C. They are the same
+B. They are the same
+C. CapEx is upfront purchase of assets; OpEx is ongoing consumption-based spending
 D. OpEx applies only to hardware
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Buying servers is CapEx: a large upfront cost depreciated over years. Subscribing to Microsoft 365 is OpEx: a predictable recurring cost that scales with headcount. The finance shift is one of the standard business-value arguments the exam tests.
 </details>
@@ -52,15 +52,15 @@ D. OpEx applies only to hardware
 ### Question 3
 **Scenario:** Which service is the hub for teamwork, combining chat, meetings, and file collaboration?
 
-A. Microsoft Teams
-B. SharePoint Online
-C. Exchange Online
-D. Power BI
+A. Exchange Online
+B. Microsoft Teams
+C. Power BI
+D. SharePoint Online
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Teams is the collaboration front end, and it is built on the others: files live in SharePoint, chat and calendar data touches Exchange, and identity comes from Entra ID. Understanding that Teams composes the platform rather than replacing it is the useful mental model.
 </details>
@@ -72,8 +72,8 @@ D. Power BI
 
 A. OneDrive for Business
 B. SharePoint Online
-C. Exchange Online
-D. Microsoft Viva
+C. Microsoft Viva
+D. Exchange Online
 
 <details>
 <summary>Answer</summary>
@@ -88,15 +88,15 @@ D. Microsoft Viva
 ### Question 5
 **Scenario:** Which tool automates a workflow, such as saving email attachments to SharePoint?
 
-A. Power Automate
-B. Power BI
+A. Power BI
+B. Power Automate
 C. Power Apps
 D. Dataverse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Power Automate builds triggered and scheduled flows across connectors. Power Apps builds low-code applications, Power BI does analytics and reporting, and Dataverse is the underlying data platform the Power Platform uses.
 </details>
@@ -107,14 +107,14 @@ D. Dataverse
 **Scenario:** Which describes Microsoft 365 Copilot's data access model?
 
 A. It trains on your tenant data and shares it with other tenants
-B. It respects existing permissions, so a user can only surface content they already have access to
-C. It bypasses permissions for productivity
-D. It only works on public web data
+B. It only works on public web data
+C. It respects existing permissions, so a user can only surface content they already have access to
+D. It bypasses permissions for productivity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Copilot grounds responses in Microsoft Graph within the user's existing permission boundary. The practical consequence is that Copilot surfaces oversharing that already existed, which is why permission cleanup and Purview DSPM for AI are recommended before rollout rather than after.
 </details>
@@ -124,15 +124,15 @@ D. It only works on public web data
 ### Question 7
 **Scenario:** Which portal do administrators use to manage devices, app protection, and compliance policies?
 
-A. Microsoft Intune admin center
-B. Exchange admin center
-C. Power Platform admin center
+A. Exchange admin center
+B. Power Platform admin center
+C. Microsoft Intune admin center
 D. Azure portal only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Intune is the endpoint management service for enrollment, configuration profiles, compliance policies, and app protection policies, including for personal devices. Each other admin center manages its own workload.
 </details>
@@ -142,15 +142,15 @@ D. Azure portal only
 ### Question 8
 **Scenario:** An organization needs Microsoft 365 with advanced threat protection, Intune, and Entra ID P2 in one license.
 
-A. Microsoft 365 Business Basic
-B. Microsoft 365 E5
+A. Microsoft 365 E5
+B. Microsoft 365 Business Basic
 C. Office 365 E1
 D. Microsoft 365 Apps for enterprise
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** E5 is the top enterprise bundle and includes Defender, Entra ID P2, Purview advanced compliance, and Power BI Pro. E3 has the productivity plus baseline security and compliance. Office 365 plans lack the Windows and Intune components, and Apps for enterprise is the Office applications alone.
 </details>
@@ -160,15 +160,15 @@ D. Microsoft 365 Apps for enterprise
 ### Question 9
 **Scenario:** What does the Microsoft 365 service level agreement of 99.9% mean in practice?
 
-A. No downtime is possible
-B. A financially backed uptime commitment with service credits if Microsoft misses it
-C. A best-effort target with no remedy
-D. A guarantee covering the customer's network
+A. A best-effort target with no remedy
+B. A guarantee covering the customer's network
+C. No downtime is possible
+D. A financially backed uptime commitment with service credits if Microsoft misses it
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** An SLA is a contractual commitment with a defined remedy, normally service credits the customer must claim. It covers Microsoft's service, not your internet connection, your devices, or misconfiguration on your side, which is a distinction the exam likes.
 </details>
@@ -180,8 +180,8 @@ D. A guarantee covering the customer's network
 
 A. The Microsoft 365 admin center Service health and Message center
 B. The Azure pricing calculator
-C. Compliance Manager
-D. The Service Trust Portal
+C. The Service Trust Portal
+D. Compliance Manager
 
 <details>
 <summary>Answer</summary>
@@ -196,15 +196,15 @@ D. The Service Trust Portal
 ### Question 11
 **Scenario:** Which describes the difference between Microsoft 365 and Office 365?
 
-A. They are identical
-B. Microsoft 365 includes Office 365 plus Windows and enterprise mobility and security components
-C. Office 365 includes Windows
-D. Microsoft 365 is on-premises only
+A. Office 365 includes Windows
+B. Microsoft 365 is on-premises only
+C. They are identical
+D. Microsoft 365 includes Office 365 plus Windows and enterprise mobility and security components
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Office 365 is the productivity cloud services. Microsoft 365 bundles those with Windows licensing and Enterprise Mobility + Security, including Intune and Entra ID. Naming has shifted over time, so the exam expects the current bundle relationship.
 </details>
@@ -214,15 +214,15 @@ D. Microsoft 365 is on-premises only
 ### Question 12
 **Scenario:** A retention policy is applied to a mailbox for 7 years. A user deletes an email after 2 years.
 
-A. The email is permanently gone
-B. The email is preserved in the recoverable items area until the retention period ends
-C. Retention only applies to SharePoint
-D. The mailbox is locked
+A. The mailbox is locked
+B. Retention only applies to SharePoint
+C. The email is preserved in the recoverable items area until the retention period ends
+D. The email is permanently gone
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Retention wins over user deletion: the content is preserved invisibly for compliance and only truly removed when retention expires. This is why retention is a compliance control rather than a user-facing feature, and why "delete" in a governed tenant does not mean what users assume.
 </details>
@@ -232,10 +232,10 @@ D. The mailbox is locked
 ### Question 13
 **Scenario:** Which support option is included with a standard Microsoft 365 subscription?
 
-A. A dedicated technical account manager
+A. No support at all
 B. Access to online support requests and the admin center support experience for all customers
-C. On-site engineering
-D. No support at all
+C. A dedicated technical account manager
+D. On-site engineering
 
 <details>
 <summary>Answer</summary>
@@ -250,15 +250,15 @@ D. No support at all
 ### Question 14
 **Scenario:** An organization wants to try Microsoft 365 before committing to annual billing.
 
-A. There is no trial
-B. A free trial for a limited number of users and days, and monthly billing options if flexibility matters more than price
-C. Only annual commitment exists
-D. Trials require a partner
+A. Only annual commitment exists
+B. There is no trial
+C. Trials require a partner
+D. A free trial for a limited number of users and days, and monthly billing options if flexibility matters more than price
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Trials exist for most plans, and the licensing choice afterward is a trade: annual commitment is cheaper per seat, monthly costs more but lets you reduce seats. Knowing that trade-off is the kind of business question MS-900 asks.
 </details>
@@ -268,15 +268,15 @@ D. Trials require a partner
 ### Question 15
 **Scenario:** Which best describes Microsoft Purview in the Microsoft 365 context?
 
-A. A device management tool
-B. The data governance, protection, and compliance solution set: classification, labels, DLP, retention, insider risk, and eDiscovery
-C. An identity provider
+A. The data governance, protection, and compliance solution set: classification, labels, DLP, retention, insider risk, and eDiscovery
+B. An identity provider
+C. A device management tool
 D. A virtual desktop service
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Purview is the umbrella for data governance and compliance across Microsoft 365 and beyond. Intune manages devices, Entra ID is identity, and Azure Virtual Desktop is the desktop service. Matching the product to the requirement is the whole skill this exam measures.
 </details>

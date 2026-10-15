@@ -14,15 +14,15 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An instance must access Object Storage without any credential stored on it.
 
-A. An API key in a file
-B. A dynamic group matching the instance, with a policy granting that dynamic group access (instance principals)
+A. A public bucket
+B. An API key in a file
 C. A shared password
-D. A public bucket
+D. A dynamic group matching the instance, with a policy granting that dynamic group access (instance principals)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Instance principals let a compute instance authenticate as itself, so there is no key to rotate or leak. The dynamic group's matching rule defines which instances are included, typically by compartment or by a defined tag.
 </details>
@@ -32,15 +32,15 @@ D. A public bucket
 ### Question 2
 **Scenario:** Two VCNs in the same region must communicate privately.
 
-A. An internet gateway
-B. A local peering gateway in each VCN, with route rules and non-overlapping CIDRs
-C. A NAT gateway
-D. A service gateway
+A. A local peering gateway in each VCN, with route rules and non-overlapping CIDRs
+B. An internet gateway
+C. A service gateway
+D. A NAT gateway
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Local peering connects VCNs in the same region; remote peering through DRGs connects across regions. Both require non-overlapping address space and explicit route rules and security list entries on each side.
 </details>
@@ -50,10 +50,10 @@ D. A service gateway
 ### Question 3
 **Scenario:** Many VCNs and an on-premises network must interconnect with centralized routing.
 
-A. A mesh of local peering gateways
+A. A load balancer
 B. A dynamic routing gateway with route tables and route distribution (transit routing)
 C. Separate internet gateways
-D. A load balancer
+D. A mesh of local peering gateways
 
 <details>
 <summary>Answer</summary>
@@ -87,14 +87,14 @@ D. They are identical
 **Scenario:** A workload must scale out automatically based on CPU.
 
 A. Manual instance creation
-B. An instance pool from an instance configuration, with an autoscaling policy on a metric
-C. A larger shape
-D. A load balancer alone
+B. A larger shape
+C. A load balancer alone
+D. An instance pool from an instance configuration, with an autoscaling policy on a metric
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The instance configuration is the template, the pool manages the set, and the autoscaling configuration adds and removes members. Scheduled autoscaling is the alternative when the load pattern is known in advance.
 </details>
@@ -104,15 +104,15 @@ D. A load balancer alone
 ### Question 6
 **Scenario:** Block volume performance must be increased for a database.
 
-A. Add more volumes only
-B. Change the volume performance level (balanced, higher performance, or ultra high performance), since IOPS scales with size and performance units
-C. Change the instance shape
+A. Change the volume performance level (balanced, higher performance, or ultra high performance), since IOPS scales with size and performance units
+B. Change the instance shape
+C. Add more volumes only
 D. Use Object Storage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** OCI block volumes have selectable performance tiers, and the setting can be changed on a live volume. Note that performance also scales with volume size, so a small volume at a high tier still has a ceiling.
 </details>
@@ -122,15 +122,15 @@ D. Use Object Storage
 ### Question 7
 **Scenario:** A database must survive an availability domain failure with minimal data loss.
 
-A. Backups only
-B. Data Guard in synchronous (maximum availability) mode to a standby in another AD or region
-C. A read replica
+A. A read replica
+B. Backups only
+C. Data Guard in synchronous (maximum availability) mode to a standby in another AD or region
 D. A larger shape
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Data Guard maintains a standby that can take over, with the protection mode setting the RPO: maximum availability gives near-zero data loss at the cost of commit latency, while maximum performance is asynchronous with a larger RPO.
 </details>
@@ -140,15 +140,15 @@ D. A larger shape
 ### Question 8
 **Scenario:** Administrative access to a private instance is needed without a public IP.
 
-A. A jump host with a public IP
-B. OCI Bastion service, creating time-limited managed SSH sessions to private resources
-C. Open port 22 to the internet
-D. A VPN for every user
+A. Open port 22 to the internet
+B. A jump host with a public IP
+C. A VPN for every user
+D. OCI Bastion service, creating time-limited managed SSH sessions to private resources
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The Bastion service provides ephemeral sessions with a defined TTL and IAM control over who may create them, so there is no permanently exposed jump host to patch and defend. Sessions are also audited.
 </details>
@@ -158,10 +158,10 @@ D. A VPN for every user
 ### Question 9
 **Scenario:** A load balancer must terminate TLS and route by URL path.
 
-A. A network load balancer
+A. A NAT gateway
 B. A flexible load balancer operating at layer 7, with a certificate and path-based routing rules
-C. DNS round robin
-D. A NAT gateway
+C. A network load balancer
+D. DNS round robin
 
 <details>
 <summary>Answer</summary>
@@ -177,14 +177,14 @@ D. A NAT gateway
 **Scenario:** Object Storage costs must fall for data accessed rarely.
 
 A. Delete it
-B. Lifecycle policy rules transitioning objects to infrequent access and then archive tiers
-C. Compress it only
-D. Move to Block Volume
+B. Move to Block Volume
+C. Lifecycle policy rules transitioning objects to infrequent access and then archive tiers
+D. Compress it only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Lifecycle rules automate tiering and deletion. The archive tier is much cheaper per gigabyte but requires a restore before the object can be read, so it suits compliance retention rather than anything that must be available on demand.
 </details>
@@ -194,15 +194,15 @@ D. Move to Block Volume
 ### Question 11
 **Scenario:** A compartment's resources must be constrained so nobody can create non-compliant configurations.
 
-A. Documentation
-B. A Security Zone attached to the compartment, which denies operations violating the zone's policies
-C. Tags
+A. A Security Zone attached to the compartment, which denies operations violating the zone's policies
+B. Tags
+C. Documentation
 D. Budgets
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Security Zones are preventive: they refuse the create or update operation, for example a public bucket or an unencrypted volume. Cloud Guard is the detective counterpart that finds problems after the fact.
 </details>
@@ -212,15 +212,15 @@ D. Budgets
 ### Question 12
 **Scenario:** An alarm must notify a team when CPU exceeds a threshold.
 
-A. Check manually
-B. A Monitoring alarm on the metric with a notification topic, subscribed by email, a function, or another endpoint
+A. A Monitoring alarm on the metric with a notification topic, subscribed by email, a function, or another endpoint
+B. An event only
 C. A log search
-D. An event only
+D. Check manually
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Alarms evaluate metric queries and publish to Notifications topics, which fan out to subscriptions. Events are the separate, resource-lifecycle mechanism that fires on state changes such as an instance being created.
 </details>
@@ -248,15 +248,15 @@ D. Split evenly
 ### Question 14
 **Scenario:** A file share must be mounted by many instances concurrently.
 
-A. Block Volume attached to each
-B. File Storage service, providing NFS shares with mount targets in a subnet
-C. Object Storage
-D. Local disk
+A. Object Storage
+B. Local disk
+C. File Storage service, providing NFS shares with mount targets in a subnet
+D. Block Volume attached to each
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** File Storage gives POSIX semantics with concurrent access, which is what shared application state or home directories need. Block volumes support multi-attach only with a cluster-aware filesystem, which is a more specialized arrangement.
 </details>
@@ -266,9 +266,9 @@ D. Local disk
 ### Question 15
 **Scenario:** An architecture must span two regions for disaster recovery.
 
-A. One region with backups
+A. A second availability domain
 B. Cross-region replication for data (Object Storage replication, Data Guard, or volume backup copies), plus infrastructure defined as code so the second region can be built and a rehearsed failover procedure
-C. A second availability domain
+C. One region with backups
 D. Larger instances
 
 <details>

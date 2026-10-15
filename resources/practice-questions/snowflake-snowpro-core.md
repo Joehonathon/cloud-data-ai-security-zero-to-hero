@@ -10,14 +10,14 @@
 **Scenario:** A query is running slow. The team checks the query profile and sees 80% of time spent in Remote Spilling. What does that mean?
 
 A. Network is slow
-B. The warehouse ran out of memory and is spilling to local disk and remote storage; needs a bigger warehouse
+B. Storage is slow
 C. Snowflake is broken
-D. Storage is slow
+D. The warehouse ran out of memory and is spilling to local disk and remote storage; needs a bigger warehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Spilling = warehouse memory insufficient for the query. First spills to local SSD, then to remote storage (much slower). Fix: scale up warehouse size (X-Small → Small → Medium...) or rewrite the query to be more memory-efficient.
 </details>
@@ -27,15 +27,15 @@ D. Storage is slow
 ### Question 2
 **Scenario:** Which Snowflake feature lets you query data without loading it (read directly from cloud storage)?
 
-A. External Tables
-B. Internal Stages
-C. Secure Views
-D. Stored Procedures
+A. Stored Procedures
+B. Secure Views
+C. Internal Stages
+D. External Tables
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** External Tables let you query files in S3/Azure Blob/GCS directly. Pay only for compute (no storage charge in Snowflake). Performance is slower than native tables; useful for occasional access to lake data.
 </details>
@@ -45,9 +45,9 @@ D. Stored Procedures
 ### Question 3
 **Scenario:** A team accidentally drops a table. How do they recover it?
 
-A. Restore from backup
+A. Cannot recover
 B. `UNDROP TABLE <name>` (within Time Travel retention period, default 1 day for Standard, up to 90 for Enterprise)
-C. Cannot recover
+C. Restore from backup
 D. File a support ticket
 
 <details>
@@ -82,14 +82,14 @@ D. All editions
 **Scenario:** Snowflake's storage layer is:
 
 A. Replicated across cloud regions automatically
-B. Centralized columnar storage on the cloud provider's object store (S3 / ADLS / GCS), separated from compute
-C. EBS volumes attached to compute
+B. EBS volumes attached to compute
+C. Centralized columnar storage on the cloud provider's object store (S3 / ADLS / GCS), separated from compute
 D. Local SSD only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Snowflake's three-layer architecture: storage (columnar, on cloud object storage), compute (virtual warehouses), services (metadata, optimizer). Storage and compute scale independently. Replication is configurable, not automatic.
 </details>
@@ -99,15 +99,15 @@ D. Local SSD only
 ### Question 6
 **Scenario:** A virtual warehouse is sized X-Small. To halve query time, you'd typically:
 
-A. Resize to Small (X-Small × 2)
-B. Resize to 4X-Large
-C. Add more clusters
-D. Restart Snowflake
+A. Restart Snowflake
+B. Add more clusters
+C. Resize to Small (X-Small × 2)
+D. Resize to 4X-Large
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Each warehouse size doubles compute. X-Small → Small ~halves query time on parallelizable queries. Diminishing returns after queries can no longer split work. Multi-cluster doesn't speed up a single query - it adds capacity for concurrent queries.
 </details>
@@ -117,15 +117,15 @@ D. Restart Snowflake
 ### Question 7
 **Scenario:** A team wants to share a curated dataset with an external partner without copying it. Which feature?
 
-A. Secure Data Sharing (cross-account share, no copies, partner pays for compute)
+A. CSV email
 B. Data export to S3
-C. CSV email
-D. CDC replication
+C. CDC replication
+D. Secure Data Sharing (cross-account share, no copies, partner pays for compute)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: D**
 
 **Why:** Secure Data Sharing lets you share live tables/views/UDFs with another Snowflake account at no cost to you. Partner pays compute when they query. The Marketplace is built on this primitive.
 </details>
@@ -135,15 +135,15 @@ D. CDC replication
 ### Question 8
 **Scenario:** What's a "zero-copy clone"?
 
-A. A clone that costs nothing
-B. Snowflake clones share underlying storage; only changed micro-partitions consume new storage
-C. Empty clones
-D. A backup mechanism
+A. A backup mechanism
+B. Empty clones
+C. A clone that costs nothing
+D. Snowflake clones share underlying storage; only changed micro-partitions consume new storage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Zero-copy clones are metadata operations - the clone references the same micro-partitions as the source. Storage cost grows only when the clone diverges (writes). Cheap for dev/test environments.
 </details>
@@ -153,15 +153,15 @@ D. A backup mechanism
 ### Question 9
 **Scenario:** Loading data: COPY INTO vs Snowpipe?
 
-A. COPY INTO is bulk load on demand; Snowpipe is continuous, file-arrival-triggered serverless ingestion
-B. Identical
+A. COPY INTO is faster
+B. COPY INTO is bulk load on demand; Snowpipe is continuous, file-arrival-triggered serverless ingestion
 C. Snowpipe is for real-time streams only
-D. COPY INTO is faster
+D. Identical
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** COPY INTO is run-to-completion bulk loading from a stage. Snowpipe auto-ingests new files arriving in cloud storage (notification-driven), serverless, with per-file billing. Use COPY INTO for batch; Snowpipe for streams of files.
 </details>
@@ -190,8 +190,8 @@ D. No hierarchy
 **Scenario:** Resource Monitors do what?
 
 A. Monitor warehouse usage and trigger actions (notify, suspend) when credit thresholds are crossed
-B. Track query performance only
-C. Track network
+B. Track network
+C. Track query performance only
 D. Backup data
 
 <details>
@@ -208,9 +208,9 @@ D. Backup data
 **Scenario:** Which is fastest for analytical aggregations over 100M rows?
 
 A. Materialized View on the aggregation
-B. Plain query
-C. External Table
-D. Stored procedure
+B. Stored procedure
+C. Plain query
+D. External Table
 
 <details>
 <summary>Answer</summary>
@@ -225,15 +225,15 @@ D. Stored procedure
 ### Question 13
 **Scenario:** Search Optimization Service helps which workload?
 
-A. Point-lookup queries (`WHERE id = ?`) on large tables
-B. Big aggregations
+A. Streaming inserts
+B. Point-lookup queries (`WHERE id = ?`) on large tables
 C. Time-series
-D. Streaming inserts
+D. Big aggregations
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** SOS adds an inverted-index-like structure to speed up selective filters and equality predicates. Bigger gain on text columns and high-cardinality keys. Adds cost; enable per-table.
 </details>
@@ -243,15 +243,15 @@ D. Streaming inserts
 ### Question 14
 **Scenario:** Snowpark vs SQL?
 
-A. Snowpark is a programmatic API (Python, Scala, Java) that compiles to SQL and runs on Snowflake's engine - useful for complex data engineering and ML feature engineering
-B. They're identical
-C. Snowpark replaces SQL
-D. Snowpark is slower
+A. They're identical
+B. Snowpark is slower
+C. Snowpark is a programmatic API (Python, Scala, Java) that compiles to SQL and runs on Snowflake's engine - useful for complex data engineering and ML feature engineering
+D. Snowpark replaces SQL
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Snowpark lets you write data transformations in Python/Scala/Java with DataFrame API; lazy-compiles to optimized SQL pushdown. UDFs and stored procs in those languages. Brings Spark-like ergonomics to Snowflake.
 </details>
@@ -261,15 +261,15 @@ D. Snowpark is slower
 ### Question 15
 **Scenario:** A team wants to query semi-structured JSON. What's idiomatic?
 
-A. Parse JSON in application code
-B. Snowflake's VARIANT type and FLATTEN function allow native SQL on JSON / XML / Avro / Parquet
-C. External Spark
-D. JSON isn't supported
+A. External Spark
+B. Parse JSON in application code
+C. JSON isn't supported
+D. Snowflake's VARIANT type and FLATTEN function allow native SQL on JSON / XML / Avro / Parquet
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** VARIANT stores semi-structured data; access via dot or `:` notation (`v:user.name`). FLATTEN pivots arrays into rows. Native, fast, and SQL-friendly.
 </details>
@@ -279,15 +279,15 @@ D. JSON isn't supported
 ### Question 16
 **Scenario:** A team queries a 1 TB table frequently filtered by `transaction_date`. Performance is poor. What helps most?
 
-A. Add a B-tree index
-B. Define a clustering key on `transaction_date` so micro-partitions are co-located by date and pruning is effective
-C. Larger warehouse only
-D. Disable result cache
+A. Define a clustering key on `transaction_date` so micro-partitions are co-located by date and pruning is effective
+B. Larger warehouse only
+C. Disable result cache
+D. Add a B-tree index
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Snowflake doesn't have B-tree indexes. Clustering keys re-organize micro-partitions on the chosen columns so queries that filter on those columns scan fewer partitions. Use Automatic Clustering for steady maintenance. Reclustering has cost - apply only on heavily filtered, large tables.
 </details>
@@ -297,15 +297,15 @@ D. Disable result cache
 ### Question 17
 **Scenario:** A virtual warehouse is X-Small but queries are slow due to long scans. The bottleneck shows full-scan on a 5 TB table. What's the lever?
 
-A. Add more rows
-B. Resize the warehouse (X-Small to Small / Medium / Large) - more compute scales scan throughput linearly; combine with clustering / pruning to reduce data read
+A. Resize the warehouse (X-Small to Small / Medium / Large) - more compute scales scan throughput linearly; combine with clustering / pruning to reduce data read
+B. Disable result cache
 C. Switch to Standard edition
-D. Disable result cache
+D. Add more rows
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Warehouse size doubles with each step (X-Small=1 credit/hr, Small=2, etc.) and roughly doubles compute. For pure scan-bound queries, larger warehouses help proportionally. Better: prune so you scan less in the first place. The two strategies stack.
 </details>
@@ -315,15 +315,15 @@ D. Disable result cache
 ### Question 18
 **Scenario:** Time Travel default retention for a permanent Standard-edition table?
 
-A. 0 days
-B. 1 day (configurable up to 1 day on Standard, up to 90 days on Enterprise+)
-C. 30 days
-D. Forever
+A. 30 days
+B. Forever
+C. 1 day (configurable up to 1 day on Standard, up to 90 days on Enterprise+)
+D. 0 days
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Standard edition: 1 day. Enterprise+: up to 90 days. Time Travel allows AT/BEFORE queries, UNDROP, and CLONE from a past point. Fail-safe (additional 7 days, recoverable only by Snowflake support) follows Time Travel.
 </details>
@@ -333,10 +333,10 @@ D. Forever
 ### Question 19
 **Scenario:** Loading a 1 TB nightly dump from S3 - what's the fastest approach?
 
-A. Many small INSERT statements
+A. Bulk PUT from a laptop
 B. COPY INTO from a stage with files split into ~100-250 MB compressed chunks, multiple files in parallel; the warehouse parallelizes file ingestion across compute nodes
-C. Single 1 TB file
-D. Bulk PUT from a laptop
+C. Many small INSERT statements
+D. Single 1 TB file
 
 <details>
 <summary>Answer</summary>
@@ -351,10 +351,10 @@ D. Bulk PUT from a laptop
 ### Question 20
 **Scenario:** Streams and Tasks - which describes their relationship?
 
-A. Streams replace tables
+A. Streams require external Kafka
 B. Streams capture row-level changes (CDC) on a table; Tasks schedule SQL/Procedure execution. Combine them: a task runs on a schedule, consumes the stream's changes, processes them, advancing the stream offset on commit
-C. Tasks send email
-D. Streams require external Kafka
+C. Streams replace tables
+D. Tasks send email
 
 <details>
 <summary>Answer</summary>
@@ -369,15 +369,15 @@ D. Streams require external Kafka
 ### Question 21
 **Scenario:** Sharing data with a partner outside your account without copying?
 
-A. SFTP export
-B. Secure Data Sharing - producer creates a share with selected objects; consumer accounts query in real time without data movement
-C. S3 bucket
-D. Snowpipe
+A. S3 bucket
+B. Snowpipe
+C. SFTP export
+D. Secure Data Sharing - producer creates a share with selected objects; consumer accounts query in real time without data movement
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Secure Data Sharing is the native Snowflake feature. Zero-copy, no ETL, near-real-time. Consumer pays only for compute when querying. Use the Marketplace for monetized sharing or for browsing public datasets.
 </details>
@@ -389,8 +389,8 @@ D. Snowpipe
 
 A. Manual filtering in every query
 B. Column-level Dynamic Data Masking policy applied to the column - masks values for unauthorized roles, returns clear values for authorized roles, transparent at query time
-C. Encrypt with KMS
-D. Drop the column
+C. Drop the column
+D. Encrypt with KMS
 
 <details>
 <summary>Answer</summary>
@@ -405,15 +405,15 @@ D. Drop the column
 ### Question 23
 **Scenario:** A user reports: "the query returned in 0 ms, no compute used." What happened?
 
-A. Bug
-B. Result cache hit - identical query within the cache TTL (default 24h) returned the prior result without using a warehouse
-C. Time Travel
-D. Snowpipe
+A. Result cache hit - identical query within the cache TTL (default 24h) returned the prior result without using a warehouse
+B. Time Travel
+C. Snowpipe
+D. Bug
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Snowflake's result cache returns prior results for byte-identical queries (same SQL, same role, no time-dependent functions, underlying micro-partitions unchanged). Free, instantaneous. To force re-compute, suspend cache or modify the query.
 </details>
@@ -423,15 +423,15 @@ D. Snowpipe
 ### Question 24
 **Scenario:** Query history shows a query "spilled to remote storage" - what does that mean?
 
-A. Network failure
-B. Query needed more memory than the warehouse had so it spilled intermediate results to local SSD and then to remote (S3) storage - significantly slower; resize warehouse, optimize query, or reduce data scanned
+A. Query needed more memory than the warehouse had so it spilled intermediate results to local SSD and then to remote (S3) storage - significantly slower; resize warehouse, optimize query, or reduce data scanned
+B. Network failure
 C. Backup completed
 D. Streaming write
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Snowflake spills (1) to local SSD, then (2) to remote storage when local is exhausted. Remote spill is a strong signal that the warehouse is undersized for the workload or that the query is producing massive intermediate state.
 </details>
@@ -441,15 +441,15 @@ D. Streaming write
 ### Question 25
 **Scenario:** Account-level security baseline beyond basic users/roles?
 
-A. Public access only
-B. Network policies (allow-list IPs), MFA enforcement, SCIM for user lifecycle from your IdP, key-pair auth for service accounts, password policies, audit via ACCESS_HISTORY view
-C. Disable encryption
-D. Single shared admin
+A. Single shared admin
+B. Disable encryption
+C. Network policies (allow-list IPs), MFA enforcement, SCIM for user lifecycle from your IdP, key-pair auth for service accounts, password policies, audit via ACCESS_HISTORY view
+D. Public access only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Layered baseline: network controls + identity (MFA/SCIM) + service account keys + audit trail. ACCESS_HISTORY (Enterprise+) tracks who accessed what columns/tables - critical for compliance reporting.
 </details>

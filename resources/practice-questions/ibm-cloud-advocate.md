@@ -15,14 +15,14 @@ difficulty: beginner
 **Scenario:** Which describes the essential characteristics of cloud computing?
 
 A. Virtualization only
-B. On-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service
-C. Remote hosting
+B. Remote hosting
+C. On-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service
 D. Containerization
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** These are the five NIST characteristics, and they are what distinguish cloud from a hosted server you rent by the year. Measured service is the one that underpins consumption billing, which is the commercial change that follows from the technical one.
 </details>
@@ -32,15 +32,15 @@ D. Containerization
 ### Question 2
 **Scenario:** A regulated bank must run workloads with dedicated, single-tenant hardware.
 
-A. Public multi-tenant only
-B. Dedicated or bare metal options within IBM Cloud, or IBM Cloud Satellite for distributed locations
-C. It is impossible in cloud
-D. Shared virtual servers
+A. Dedicated or bare metal options within IBM Cloud, or IBM Cloud Satellite for distributed locations
+B. Shared virtual servers
+C. Public multi-tenant only
+D. It is impossible in cloud
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Single-tenant isolation addresses regulatory requirements that forbid sharing physical hosts, and IBM's financial services focus is built around exactly this constraint. Satellite extends IBM Cloud services into other locations, including on-premises.
 </details>
@@ -50,10 +50,10 @@ D. Shared virtual servers
 ### Question 3
 **Scenario:** IBM's confidential computing offering protects data while it is in use.
 
-A. Encryption at rest only
+A. Firewalls
 B. Hyper Protect services and Secure Execution, which protect data in use so even privileged operators cannot read it
 C. TLS only
-D. Firewalls
+D. Encryption at rest only
 
 <details>
 <summary>Answer</summary>
@@ -68,15 +68,15 @@ D. Firewalls
 ### Question 4
 **Scenario:** A customer must hold their own encryption keys such that IBM cannot access them.
 
-A. Provider-managed keys
-B. Keep Your Own Key with IBM Cloud Hyper Protect Crypto Services, backed by a dedicated HSM
-C. No encryption
-D. Key Protect only
+A. Key Protect only
+B. No encryption
+C. Provider-managed keys
+D. Keep Your Own Key with IBM Cloud Hyper Protect Crypto Services, backed by a dedicated HSM
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Key Protect is the multi-tenant managed key service; Hyper Protect Crypto Services adds a dedicated, customer-controlled HSM with the "keep your own key" property that IBM cannot access the key material. The distinction between the two is exactly the kind of thing this exam tests.
 </details>
@@ -86,15 +86,15 @@ D. Key Protect only
 ### Question 5
 **Scenario:** Watson services are used in an application.
 
-A. They require training a model from scratch
-B. They are consumable AI services (language, speech, and now watsonx foundation models) called through APIs
-C. They are only for chatbots
+A. They are only for chatbots
+B. They require training a model from scratch
+C. They are consumable AI services (language, speech, and now watsonx foundation models) called through APIs
 D. They run on-premises only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The value is that AI capability arrives as an API rather than a research project. watsonx is the current generation, covering foundation models (watsonx.ai), data (watsonx.data), and governance (watsonx.governance).
 </details>
@@ -105,14 +105,14 @@ D. They run on-premises only
 **Scenario:** A workload must survive a zone failure.
 
 A. One zone
-B. Deploy across multiple zones within a multi-zone region, with load balancing across them
-C. Backups only
-D. A larger server
+B. A larger server
+C. Deploy across multiple zones within a multi-zone region, with load balancing across them
+D. Backups only
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Multi-zone regions are the standard availability construct: independent power, cooling, and networking with low-latency links between them. Backups address data loss but not availability, and a bigger single server has the same single failure domain.
 </details>
@@ -122,15 +122,15 @@ D. A larger server
 ### Question 7
 **Scenario:** Which describes IBM Cloud's Kubernetes offering?
 
-A. Only self-managed Kubernetes
-B. IBM Cloud Kubernetes Service for managed upstream Kubernetes, and Red Hat OpenShift on IBM Cloud for the OpenShift platform
-C. Docker only
-D. Serverless only
+A. Serverless only
+B. Docker only
+C. Only self-managed Kubernetes
+D. IBM Cloud Kubernetes Service for managed upstream Kubernetes, and Red Hat OpenShift on IBM Cloud for the OpenShift platform
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The Red Hat relationship is central to IBM's hybrid cloud strategy: OpenShift gives one platform that runs on IBM Cloud, other clouds, and on-premises, which is the portability argument behind most IBM hybrid cloud proposals.
 </details>
@@ -140,10 +140,10 @@ D. Serverless only
 ### Question 8
 **Scenario:** Costs must be understood before deploying.
 
-A. Deploy and see
+A. Costs are fixed
 B. Use the cost estimator and pricing calculator, then set budgets and monitor usage against them
 C. Ask support
-D. Costs are fixed
+D. Deploy and see
 
 <details>
 <summary>Answer</summary>
@@ -158,15 +158,15 @@ D. Costs are fixed
 ### Question 9
 **Scenario:** Access to IBM Cloud resources must follow least privilege.
 
-A. Give everyone administrator
-B. IBM Cloud IAM with access groups, policies scoped to resource groups and services, and service IDs for applications
-C. Shared credentials
-D. No access control
+A. IBM Cloud IAM with access groups, policies scoped to resource groups and services, and service IDs for applications
+B. Shared credentials
+C. No access control
+D. Give everyone administrator
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Access groups are the manageable unit: assign policies to a group and manage membership rather than granting per user. Service IDs give applications their own identity, so an application's access does not depend on a person's account.
 </details>
@@ -178,8 +178,8 @@ D. No access control
 
 A. Virtual servers
 B. IBM Cloud Code Engine or Cloud Functions, scaling to zero when idle
-C. Bare metal
-D. A container registry
+C. A container registry
+D. Bare metal
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. A container registry
 ### Question 11
 **Scenario:** Compliance posture must be monitored continuously.
 
-A. An annual audit
-B. IBM Cloud Security and Compliance Center, evaluating resources against profiles such as CIS or industry regulations
-C. Manual spreadsheets
+A. Manual spreadsheets
+B. An annual audit
+C. IBM Cloud Security and Compliance Center, evaluating resources against profiles such as CIS or industry regulations
 D. Trust the provider
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Continuous evaluation catches drift between audits, which is when most non-compliance actually appears. It also produces evidence automatically, which is usually the most expensive part of an audit to assemble by hand.
 </details>
@@ -214,8 +214,8 @@ D. Trust the provider
 
 A. Always rewrite
 B. Assess per application against the migration options: rehost, replatform, refactor, repurchase, retire, or retain
-C. Always lift and shift
-D. Never migrate
+C. Never migrate
+D. Always lift and shift
 
 <details>
 <summary>Answer</summary>
@@ -230,15 +230,15 @@ D. Never migrate
 ### Question 13
 **Scenario:** Hybrid cloud is described.
 
-A. Two public clouds
-B. An architecture combining on-premises infrastructure with public cloud, with workload portability and consistent management across them
+A. An architecture combining on-premises infrastructure with public cloud, with workload portability and consistent management across them
+B. Multiple regions
 C. Private cloud only
-D. Multiple regions
+D. Two public clouds
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** IBM's positioning treats hybrid as the normal end state rather than a transition, which is why OpenShift and Satellite matter to them. Multicloud is the related but distinct term for using several public providers.
 </details>
@@ -248,15 +248,15 @@ D. Multiple regions
 ### Question 14
 **Scenario:** Object storage is needed for backups and static content.
 
-A. Block storage
-B. IBM Cloud Object Storage with storage classes matched to access frequency
-C. File storage
-D. A database
+A. IBM Cloud Object Storage with storage classes matched to access frequency
+B. Block storage
+C. A database
+D. File storage
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Object storage is the durable, scalable choice for unstructured data, and matching class to access frequency is the main cost lever. Block storage attaches to a single instance and file storage provides shared POSIX access, both of which cost more per gigabyte.
 </details>
@@ -267,14 +267,14 @@ D. A database
 **Scenario:** The shared responsibility model in IBM Cloud.
 
 A. IBM is responsible for everything
-B. IBM secures the cloud infrastructure; the customer remains responsible for data, identities, access configuration, and application security, with the boundary shifting by service model
+B. There is no model
 C. The customer is responsible for everything
-D. There is no model
+D. IBM secures the cloud infrastructure; the customer remains responsible for data, identities, access configuration, and application security, with the boundary shifting by service model
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The customer always owns data and identity regardless of service model. What shifts between IaaS, PaaS, and SaaS is who patches the operating system and runtime, and misreading that boundary is the most common source of cloud misconfiguration.
 </details>

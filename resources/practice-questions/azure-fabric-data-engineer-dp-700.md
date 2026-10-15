@@ -17,9 +17,9 @@ DP-700 is the engineering counterpart to DP-600: more pipelines and Spark, less 
 **Scenario:** You must ingest 500 GB nightly from an on-premises SQL Server into a lakehouse with the least transformation logic.
 
 A. A Data Factory pipeline Copy activity using an on-premises data gateway
-B. Dataflow Gen2 with Power Query transformations
-C. A notebook reading over the public internet
-D. Manual CSV export
+B. A notebook reading over the public internet
+C. Manual CSV export
+D. Dataflow Gen2 with Power Query transformations
 
 <details>
 <summary>Answer</summary>
@@ -35,14 +35,14 @@ D. Manual CSV export
 **Scenario:** Which choice best fits transforming data with complex custom logic over hundreds of millions of rows?
 
 A. Dataflow Gen2
-B. A Spark notebook in the lakehouse
-C. A pipeline expression
+B. A pipeline expression
+C. A Spark notebook in the lakehouse
 D. A KQL query
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Spark gives you distributed compute and full PySpark, Scala, or Spark SQL for arbitrary logic at scale. Dataflow Gen2 targets low-code shaping and is not the right tool for heavy custom transformation. Pipeline expressions are for control flow, not data processing.
 </details>
@@ -52,15 +52,15 @@ D. A KQL query
 ### Question 3
 **Scenario:** Streaming events must be captured continuously and be queryable within seconds.
 
-A. Eventstream into an eventhouse KQL database
-B. A pipeline on a 15-minute schedule
-C. Dataflow Gen2 refresh
-D. A notebook run daily
+A. A pipeline on a 15-minute schedule
+B. Eventstream into an eventhouse KQL database
+C. A notebook run daily
+D. Dataflow Gen2 refresh
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Eventstream ingests from sources such as Event Hubs, IoT Hub, and custom endpoints and routes to destinations without code, and an eventhouse is built for immediate query over high-velocity data. Everything else in the list is batch and puts a floor under your latency.
 </details>
@@ -70,15 +70,15 @@ D. A notebook run daily
 ### Question 4
 **Scenario:** A pipeline must run activity B only when activity A fails.
 
-A. Chain on the Success output
-B. Chain on the Failure output of activity A
-C. Use a Wait activity
-D. Run them in parallel
+A. Chain on the Failure output of activity A
+B. Run them in parallel
+C. Chain on the Success output
+D. Use a Wait activity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Pipeline dependencies come in Success, Failure, Completion, and Skipped, and choosing the right one is how you build error handling. Completion is the "either way" case, which is useful for cleanup steps that must always run.
 </details>
@@ -88,15 +88,15 @@ D. Run them in parallel
 ### Question 5
 **Scenario:** A Delta table needs to merge daily changes: update existing rows, insert new ones.
 
-A. Overwrite the whole table
-B. `MERGE INTO` on the Delta table keyed on the business key
-C. Append everything
-D. Delete then insert
+A. `MERGE INTO` on the Delta table keyed on the business key
+B. Overwrite the whole table
+C. Delete then insert
+D. Append everything
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** MERGE is the upsert primitive Delta provides and it is atomic, so readers never see a half-applied batch. Overwriting is wasteful and loses history. Delete-then-insert is not atomic and leaves a window where the data is missing.
 </details>
@@ -108,8 +108,8 @@ D. Delete then insert
 
 A. Restore from backup
 B. Delta time travel: query or restore the table `VERSION AS OF` or `TIMESTAMP AS OF` the earlier state
-C. Re-ingest from source
-D. It is not possible
+C. It is not possible
+D. Re-ingest from source
 
 <details>
 <summary>Answer</summary>
@@ -124,15 +124,15 @@ D. It is not possible
 ### Question 7
 **Scenario:** Notebook runs fail intermittently with out-of-memory errors on a wide join.
 
-A. Increase the Spark pool node size or enable a larger executor configuration, and reduce shuffle by broadcasting the small side
-B. Reduce the number of columns in the output
-C. Switch to Dataflow Gen2
-D. Run at night
+A. Reduce the number of columns in the output
+B. Run at night
+C. Increase the Spark pool node size or enable a larger executor configuration, and reduce shuffle by broadcasting the small side
+D. Switch to Dataflow Gen2
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** A join between a large and a small table is the standard broadcast case: broadcasting the small side avoids the shuffle that causes the memory pressure. Sizing is the other half. Moving to a lower-scale tool would make it worse, and scheduling does not change memory requirements.
 </details>
@@ -142,15 +142,15 @@ D. Run at night
 ### Question 8
 **Scenario:** Several workspaces need the same lakehouse table without copying it.
 
-A. Export to CSV and share
-B. A shortcut to the source lakehouse table from the consuming workspaces
-C. Duplicate the pipeline in each workspace
-D. Grant capacity admin to everyone
+A. Duplicate the pipeline in each workspace
+B. Grant capacity admin to everyone
+C. Export to CSV and share
+D. A shortcut to the source lakehouse table from the consuming workspaces
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Internal shortcuts point one Fabric item at another so there is one physical copy and one refresh. Duplicating pipelines multiplies cost and guarantees the copies drift. Granting broad admin permissions is not a data-sharing mechanism.
 </details>
@@ -160,15 +160,15 @@ D. Grant capacity admin to everyone
 ### Question 9
 **Scenario:** Access to a warehouse must be limited so a group can query only rows for their region.
 
-A. Row-level security with a predicate on the region column
-B. Separate warehouses per region
-C. Workspace roles
-D. Report-level filters
+A. Workspace roles
+B. Row-level security with a predicate on the region column
+C. Report-level filters
+D. Separate warehouses per region
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** RLS is enforced by the engine on every query path. Workspace roles are coarse and grant or deny whole items. Report filters are cosmetic. Splitting into separate warehouses per region works but multiplies operational overhead for what a predicate solves.
 </details>
@@ -178,15 +178,15 @@ D. Report-level filters
 ### Question 10
 **Scenario:** A pipeline should process only rows changed since the last run.
 
-A. Full reload each time
-B. Incremental load using a watermark column, storing the last processed value between runs
-C. Randomly sample
-D. Rely on Spark caching
+A. Rely on Spark caching
+B. Randomly sample
+C. Incremental load using a watermark column, storing the last processed value between runs
+D. Full reload each time
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** A high-watermark on a monotonic column such as a modified timestamp or an identity value is the standard incremental pattern, with the watermark persisted so the next run picks up from it. Watch for late-arriving data, which is why a small overlap window is common practice.
 </details>
@@ -197,9 +197,9 @@ D. Rely on Spark caching
 **Scenario:** You need to know why a scheduled pipeline stopped producing output last Tuesday.
 
 A. Monitoring hub run history with the failed activity's error detail
-B. The Fabric roadmap
-C. The semantic model refresh log only
-D. Guess from the data
+B. Guess from the data
+C. The Fabric roadmap
+D. The semantic model refresh log only
 
 <details>
 <summary>Answer</summary>
@@ -214,15 +214,15 @@ D. Guess from the data
 ### Question 12
 **Scenario:** A lakehouse table is queried through the SQL analytics endpoint and a newly written column is missing.
 
-A. The endpoint is read-only and metadata sync can lag; refresh the endpoint metadata
-B. The column was not written
+A. The column was not written
+B. The endpoint is read-only and metadata sync can lag; refresh the endpoint metadata
 C. SQL endpoints do not support new columns
 D. Recreate the lakehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** The SQL analytics endpoint reflects the Delta tables through a metadata sync that is not instantaneous. Knowing that the endpoint is read-only and eventually consistent with Spark writes prevents a lot of wasted debugging.
 </details>
@@ -232,15 +232,15 @@ D. Recreate the lakehouse
 ### Question 13
 **Scenario:** Choose between a warehouse and a lakehouse for a team whose skills are entirely T-SQL and who need multi-table transactions.
 
-A. Lakehouse
-B. Warehouse
+A. Semantic model
+B. Lakehouse
 C. KQL database
-D. Semantic model
+D. Warehouse
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** The warehouse supports full T-SQL DDL and DML with multi-table transactions. The lakehouse's SQL endpoint is read-only, so writes must go through Spark. Matching the item to the team's skills and write pattern is the decision DP-700 tests repeatedly.
 </details>
@@ -250,15 +250,15 @@ D. Semantic model
 ### Question 14
 **Scenario:** Secrets for an external API must be used inside a notebook without appearing in code.
 
-A. Store them in Azure Key Vault and retrieve them at runtime through a workspace connection or `mssparkutils.credentials`
-B. Put them in a markdown cell
-C. Hard-code them and restrict the workspace
+A. Put them in a markdown cell
+B. Hard-code them and restrict the workspace
+C. Store them in Azure Key Vault and retrieve them at runtime through a workspace connection or `mssparkutils.credentials`
 D. Pass them as pipeline parameters in plain text
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Key Vault keeps the secret out of code, out of git, and out of run history, and rotation happens in one place. Anything embedded in a notebook or a parameter value is visible to anyone with read access to the item and often ends up in exported artifacts.
 </details>
@@ -268,15 +268,15 @@ D. Pass them as pipeline parameters in plain text
 ### Question 15
 **Scenario:** A capacity is repeatedly throttled by background jobs, causing report timeouts.
 
-A. Delete old items
-B. Use the Capacity Metrics app to identify the consuming items, then reschedule, optimize, or move them to a separate capacity
-C. Ask users to retry
-D. Switch every report to DirectQuery
+A. Ask users to retry
+B. Switch every report to DirectQuery
+C. Delete old items
+D. Use the Capacity Metrics app to identify the consuming items, then reschedule, optimize, or move them to a separate capacity
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Fabric smooths background operations over time but sustained overuse leads to throttling that affects interactive users. The metrics app attributes consumption per item, which is the only way to decide between optimizing a job, moving it, or buying capacity. DirectQuery would add load rather than remove it.
 </details>

@@ -16,15 +16,15 @@ ICA is performance-based in a live cluster. These questions target the configura
 ### Question 1
 **Scenario:** Traffic must be split 90/10 between two versions of a service. Which two resources are required?
 
-A. Gateway and ServiceEntry
-B. VirtualService for the weights and DestinationRule defining the subsets
+A. VirtualService for the weights and DestinationRule defining the subsets
+B. PeerAuthentication and AuthorizationPolicy
 C. VirtualService alone
-D. PeerAuthentication and AuthorizationPolicy
+D. Gateway and ServiceEntry
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** The VirtualService routes and carries the weights, but it refers to subsets by name, and those names have to be defined in a DestinationRule with the label selectors that identify each version. Forgetting the DestinationRule produces a route to a subset that does not resolve, which is a classic first mistake.
 </details>
@@ -34,15 +34,15 @@ D. PeerAuthentication and AuthorizationPolicy
 ### Question 2
 **Scenario:** You want strict mTLS for all workloads in the `payments` namespace.
 
-A. A `PeerAuthentication` in the `payments` namespace with `mtls.mode: STRICT`
-B. An `AuthorizationPolicy` with `action: ALLOW`
-C. A `DestinationRule` with `tls.mode: DISABLE`
-D. A NetworkPolicy
+A. An `AuthorizationPolicy` with `action: ALLOW`
+B. A NetworkPolicy
+C. A `PeerAuthentication` in the `payments` namespace with `mtls.mode: STRICT`
+D. A `DestinationRule` with `tls.mode: DISABLE`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** PeerAuthentication controls whether the sidecar accepts plaintext. `STRICT` refuses non-mTLS traffic. AuthorizationPolicy decides who may call what once identity is established, which is a different question. A DestinationRule with `DISABLE` would do the opposite on the client side, and NetworkPolicy operates at L3/L4 without identity.
 </details>
@@ -53,14 +53,14 @@ D. A NetworkPolicy
 **Scenario:** After enabling STRICT mTLS, one legacy client without a sidecar starts failing.
 
 A. Delete the PeerAuthentication
-B. Use a workload-scoped PeerAuthentication in `PERMISSIVE` mode for that workload while it is migrated
+B. Add a Gateway
 C. Disable the mesh
-D. Add a Gateway
+D. Use a workload-scoped PeerAuthentication in `PERMISSIVE` mode for that workload while it is migrated
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** PeerAuthentication can be scoped mesh-wide, per namespace, or per workload with a selector, and more specific wins. `PERMISSIVE` accepts both mTLS and plaintext, which is exactly the migration mode. Reverting the whole namespace throws away the security you just gained for one laggard.
 </details>
@@ -70,15 +70,15 @@ D. Add a Gateway
 ### Question 4
 **Scenario:** External HTTP traffic must enter the mesh on a hostname with TLS termination.
 
-A. A Gateway resource binding the host and TLS config, plus a VirtualService attached to that gateway
-B. A VirtualService alone
-C. A ServiceEntry
+A. A VirtualService alone
+B. A ServiceEntry
+C. A Gateway resource binding the host and TLS config, plus a VirtualService attached to that gateway
 D. A Sidecar resource
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** The Gateway configures the ingress proxy's listener, ports, hosts, and TLS. The VirtualService must then list that gateway in its `gateways` field to attach routing rules to it. A VirtualService without the gateway reference applies only to mesh-internal traffic.
 </details>
@@ -89,8 +89,8 @@ D. A Sidecar resource
 **Scenario:** A workload must reach an external API not registered in the mesh, and the mesh outbound policy is `REGISTRY_ONLY`.
 
 A. A ServiceEntry describing the external host
-B. A DestinationRule
-C. A NetworkPolicy
+B. A NetworkPolicy
+C. A DestinationRule
 D. Nothing, external traffic always works
 
 <details>
@@ -106,15 +106,15 @@ D. Nothing, external traffic always works
 ### Question 6
 **Scenario:** Which AuthorizationPolicy behavior is correct when a namespace has one policy with `action: ALLOW` and rules matching only `service-a`?
 
-A. All traffic is allowed
-B. Only traffic matching the rule is allowed; everything else to selected workloads is denied
-C. Only `service-a` is denied
-D. The policy is ignored without a PeerAuthentication
+A. Only `service-a` is denied
+B. All traffic is allowed
+C. The policy is ignored without a PeerAuthentication
+D. Only traffic matching the rule is allowed; everything else to selected workloads is denied
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Once any ALLOW policy selects a workload, that workload is default-deny for anything not matched. This surprises people who expect an allow-list to be additive on top of open access. DENY policies are evaluated before ALLOW, and CUSTOM policies delegate to an external authorizer.
 </details>
@@ -124,15 +124,15 @@ D. The policy is ignored without a PeerAuthentication
 ### Question 7
 **Scenario:** A service should stop receiving traffic from a client after 5 consecutive 5xx responses.
 
-A. A retry policy
-B. Outlier detection in the DestinationRule's `trafficPolicy`
-C. A timeout
-D. A fault injection rule
+A. Outlier detection in the DestinationRule's `trafficPolicy`
+B. A timeout
+C. A fault injection rule
+D. A retry policy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Outlier detection is Istio's circuit breaking for unhealthy endpoints: consecutive errors eject the host from the load balancing pool for a base ejection time. Retries would send more traffic at a failing host. Timeouts bound a single request. Fault injection deliberately creates failures for testing.
 </details>
@@ -142,15 +142,15 @@ D. A fault injection rule
 ### Question 8
 **Scenario:** You want to test how the application behaves when a dependency is slow, without changing the dependency.
 
-A. Fault injection with a `delay` in the VirtualService
-B. Reduce the dependency's replicas
+A. Reduce the dependency's replicas
+B. Fault injection with a `delay` in the VirtualService
 C. Add a timeout
 D. Enable tracing
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Fault injection lets you add a fixed delay or an abort to a percentage of requests declaratively, which is chaos testing without touching either service. Scaling down changes capacity unpredictably rather than injecting a controlled fault. Timeouts and tracing observe or bound behavior instead of causing it.
 </details>
@@ -160,15 +160,15 @@ D. Enable tracing
 ### Question 9
 **Scenario:** `istioctl analyze` reports a VirtualService referencing a host that does not exist.
 
-A. Ignore it, analysis is advisory
-B. It is a real misconfiguration: the route will not resolve, so fix the host or add a ServiceEntry
-C. Restart istiod
-D. Reinstall the mesh
+A. Restart istiod
+B. Reinstall the mesh
+C. Ignore it, analysis is advisory
+D. It is a real misconfiguration: the route will not resolve, so fix the host or add a ServiceEntry
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** `istioctl analyze` catches exactly the class of errors that produce silent 404s and no obvious log line. An unresolvable host means Envoy has no cluster to route to. Treat analyzer errors as blocking, and use `istioctl proxy-config` to confirm what the sidecar actually received.
 </details>
@@ -178,15 +178,15 @@ D. Reinstall the mesh
 ### Question 10
 **Scenario:** A sidecar is not injected into new pods in a namespace.
 
-A. Check the `istio-injection=enabled` label on the namespace or the `sidecar.istio.io/inject` annotation on the pod
+A. Reinstall Istio
 B. Restart the pods
-C. Reinstall Istio
+C. Check the `istio-injection=enabled` label on the namespace or the `sidecar.istio.io/inject` annotation on the pod
 D. Check the NetworkPolicy
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Automatic injection is driven by a mutating webhook that keys off the namespace label (or the revision label when using revisions). Pod-level annotations can opt individual workloads in or out. Injection also only happens at pod creation, so existing pods need to be recreated after labeling.
 </details>
@@ -216,8 +216,8 @@ D. It only works on a single cluster
 
 A. Istio generates spans in the sidecars, but applications must propagate the trace headers
 B. Istio produces complete traces with no application change
-C. Tracing requires rewriting services with the OpenTelemetry SDK
-D. Traces come from Prometheus
+C. Traces come from Prometheus
+D. Tracing requires rewriting services with the OpenTelemetry SDK
 
 <details>
 <summary>Answer</summary>
@@ -232,15 +232,15 @@ D. Traces come from Prometheus
 ### Question 13
 **Scenario:** A large mesh has slow sidecar startup and high memory use because every proxy receives config for every service.
 
-A. Add more CPU
-B. Use a `Sidecar` resource to scope each workload's visible services
-C. Disable mTLS
-D. Reduce the number of VirtualServices
+A. Disable mTLS
+B. Reduce the number of VirtualServices
+C. Use a `Sidecar` resource to scope each workload's visible services
+D. Add more CPU
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** By default istiod pushes the full service registry to every proxy. A `Sidecar` resource with an `egress.hosts` list restricts what a workload is told about, which cuts config size and push cost substantially in big meshes. `exportTo` on services and VirtualServices achieves a similar narrowing from the other direction.
 </details>
@@ -250,10 +250,10 @@ D. Reduce the number of VirtualServices
 ### Question 14
 **Scenario:** Which upgrade approach lets you move workloads to a new Istio version gradually?
 
-A. In-place upgrade of istiod
+A. Upgrading the CNI only
 B. Revision-based (canary) upgrade with a new control plane revision and namespace revision labels
-C. Delete and reinstall
-D. Upgrading the CNI only
+C. In-place upgrade of istiod
+D. Delete and reinstall
 
 <details>
 <summary>Answer</summary>
@@ -268,15 +268,15 @@ D. Upgrading the CNI only
 ### Question 15
 **Scenario:** Two clusters should share one mesh with services reachable across both.
 
-A. A multi-primary or primary-remote setup with a shared trust root and east-west gateways
-B. Two independent meshes with a VPN
-C. A single Gateway resource
-D. Federating Prometheus
+A. Two independent meshes with a VPN
+B. A multi-primary or primary-remote setup with a shared trust root and east-west gateways
+C. Federating Prometheus
+D. A single Gateway resource
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Multi-cluster requires a common root of trust so workload identities validate across clusters, endpoint discovery between control planes, and east-west gateways when pod IPs are not directly routable. A VPN gives connectivity without shared identity or service discovery, and Prometheus federation is only observability.
 </details>

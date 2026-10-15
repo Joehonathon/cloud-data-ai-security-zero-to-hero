@@ -14,15 +14,15 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Inference throughput is low because requests wait for the longest sequence in each batch to finish.
 
-A. Increase the batch size
-B. Enable in-flight (continuous) batching so finished sequences are evicted and new ones join mid-batch
-C. Reduce the context window
-D. Use a smaller GPU
+A. Reduce the context window
+B. Use a smaller GPU
+C. Increase the batch size
+D. Enable in-flight (continuous) batching so finished sequences are evicted and new ones join mid-batch
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Static batching wastes GPU cycles on padding and on slots held by finished sequences. Continuous batching, which TensorRT-LLM and vLLM implement, replaces completed sequences immediately and typically multiplies throughput several times over. Simply raising batch size makes the head-of-line problem worse.
 </details>
@@ -33,8 +33,8 @@ D. Use a smaller GPU
 **Scenario:** KV cache memory dominates GPU usage at long context lengths.
 
 A. Paged attention style KV cache management, plus KV cache quantization or grouped-query attention
-B. Increase max_tokens
-C. Disable the cache entirely
+B. Disable the cache entirely
+C. Increase max_tokens
 D. Add more layers
 
 <details>
@@ -50,15 +50,15 @@ D. Add more layers
 ### Question 3
 **Scenario:** A 70B parameter model does not fit on a single GPU.
 
-A. Tensor parallelism to shard each layer across GPUs, optionally with pipeline parallelism across nodes
-B. Data parallelism
-C. Gradient accumulation
-D. A larger batch size
+A. Gradient accumulation
+B. A larger batch size
+C. Tensor parallelism to shard each layer across GPUs, optionally with pipeline parallelism across nodes
+D. Data parallelism
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Data parallelism replicates the whole model per device, so it does not help when the model itself does not fit. Tensor parallelism splits individual matrices across GPUs with high communication needs, which is why it stays within an NVLink domain, while pipeline parallelism splits layers and tolerates slower inter-node links.
 </details>
@@ -68,15 +68,15 @@ D. A larger batch size
 ### Question 4
 **Scenario:** A fine-tuning run must minimize GPU memory while keeping most of the quality of full fine-tuning.
 
-A. LoRA or QLoRA with a frozen base model
+A. Prompt tuning only
 B. Full fine-tuning at FP32
-C. Training from scratch
-D. Prompt tuning only
+C. LoRA or QLoRA with a frozen base model
+D. Training from scratch
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** LoRA trains a small number of adapter parameters, so optimizer state (the dominant memory cost in training) shrinks dramatically. QLoRA adds a quantized frozen base to cut it further. Prompt tuning is even lighter but has less capacity for genuinely new behavior.
 </details>
@@ -87,8 +87,8 @@ D. Prompt tuning only
 **Scenario:** Which technique reduces the latency of generating tokens by proposing several tokens ahead and verifying them in one pass?
 
 A. Speculative decoding with a smaller draft model
-B. Beam search
-C. Top-k sampling
+B. Top-k sampling
+C. Beam search
 D. Gradient checkpointing
 
 <details>
@@ -122,15 +122,15 @@ D. The learning rate is wrong
 ### Question 7
 **Scenario:** A production serving stack needs multiple models, multiple frameworks, dynamic batching, and model versioning.
 
-A. NVIDIA Triton Inference Server
-B. A single Flask app
-C. cuDF
-D. NeMo Curator
+A. NeMo Curator
+B. cuDF
+C. NVIDIA Triton Inference Server
+D. A single Flask app
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** Triton serves TensorRT, PyTorch, ONNX, and Python backends concurrently with dynamic batching, concurrent model instances, model repositories with versions, and ensemble pipelines. NIM builds on this stack for packaged LLM deployment.
 </details>
@@ -140,10 +140,10 @@ D. NeMo Curator
 ### Question 8
 **Scenario:** FP8 quantization is applied and quality drops noticeably on a reasoning benchmark.
 
-A. Accept the loss
+A. Increase temperature
 B. Investigate calibration data and per-layer sensitivity, and consider keeping sensitive layers at higher precision (mixed precision)
 C. Revert to FP32 everywhere
-D. Increase temperature
+D. Accept the loss
 
 <details>
 <summary>Answer</summary>
@@ -159,14 +159,14 @@ D. Increase temperature
 **Scenario:** A RAG system must handle queries that mix an exact product code with a natural-language description.
 
 A. Pure vector search
-B. Hybrid search combining sparse (BM25 or keyword) and dense retrieval, then rerank
+B. Increase the embedding dimension
 C. Keyword search only
-D. Increase the embedding dimension
+D. Hybrid search combining sparse (BM25 or keyword) and dense retrieval, then rerank
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Dense embeddings are weak on rare exact tokens such as SKUs and error codes, which is precisely where sparse retrieval excels. Fusing both and applying a cross-encoder reranker gives the best of each. Raising dimensionality does not fix the exact-match weakness.
 </details>
@@ -176,10 +176,10 @@ D. Increase the embedding dimension
 ### Question 10
 **Scenario:** Which describes the NeMo framework's role?
 
-A. A GPU monitoring tool
+A. A vector database
 B. An end-to-end framework for building, customizing, and deploying generative models, including data curation, training, PEFT, alignment, and export
-C. A vector database
-D. A container registry
+C. A container registry
+D. A GPU monitoring tool
 
 <details>
 <summary>Answer</summary>
@@ -194,15 +194,15 @@ D. A container registry
 ### Question 11
 **Scenario:** Time to first token is acceptable but inter-token latency is poor under load.
 
-A. The prefill phase is the bottleneck
-B. The decode phase is memory-bandwidth bound; consider larger batches, better KV cache handling, quantization, or a GPU with higher bandwidth
-C. The tokenizer is slow
-D. Network latency
+A. The decode phase is memory-bandwidth bound; consider larger batches, better KV cache handling, quantization, or a GPU with higher bandwidth
+B. The prefill phase is the bottleneck
+C. Network latency
+D. The tokenizer is slow
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Prefill is compute bound and determines time to first token; decode is memory-bandwidth bound and determines inter-token latency because each step reads the full weight set. Knowing which phase a symptom belongs to points at completely different fixes, and chunked prefill exists to stop long prefills stalling decode.
 </details>
@@ -213,14 +213,14 @@ D. Network latency
 **Scenario:** Several fine-tuned variants of one base model must be served cost-effectively.
 
 A. Deploy each as a separate full model
-B. Serve one base model with multiple LoRA adapters loaded and selected per request
+B. Retrain a single model on everything
 C. Merge them all into one model
-D. Retrain a single model on everything
+D. Serve one base model with multiple LoRA adapters loaded and selected per request
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Multi-LoRA serving keeps one copy of the base weights in memory and swaps small adapters per request, which is dramatically cheaper than one full deployment per variant. Merging adapters is appropriate when you want a single fixed behavior with no per-request switching.
 </details>
@@ -248,10 +248,10 @@ D. Compare benchmark scores published by the vendor
 ### Question 14
 **Scenario:** GPU utilization sits at 40% during inference despite queued requests.
 
-A. Add more GPUs
+A. Increase the model size
 B. Profile with Nsight or Triton metrics to find the actual bottleneck: tokenization, host-device transfer, small batches, or CPU-side preprocessing
-C. Increase the model size
-D. Reduce the context window
+C. Reduce the context window
+D. Add more GPUs
 
 <details>
 <summary>Answer</summary>

@@ -17,14 +17,14 @@ PromQL is the largest domain and the one candidates most often under-practice, s
 **Scenario:** A counter `http_requests_total` resets to zero when the process restarts. Which function handles that correctly when computing per-second traffic?
 
 A. `delta()`
-B. `rate()`
-C. `changes()`
-D. `deriv()`
+B. `changes()`
+C. `deriv()`
+D. `rate()`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** `rate()` is built for counters and explicitly compensates for resets by treating a decrease as a restart. `delta()` and `deriv()` are for gauges and would produce a large negative value at a reset. `changes()` counts how often a value changed, which is a different question entirely.
 </details>
@@ -36,8 +36,8 @@ D. `deriv()`
 
 A. `quantile(0.95, http_duration_seconds_bucket)`
 B. `histogram_quantile(0.95, rate(http_duration_seconds_bucket[5m]))`
-C. `topk(0.95, http_duration_seconds_bucket)`
-D. `avg(http_duration_seconds_bucket) * 0.95`
+C. `avg(http_duration_seconds_bucket) * 0.95`
+D. `topk(0.95, http_duration_seconds_bucket)`
 
 <details>
 <summary>Answer</summary>
@@ -52,15 +52,15 @@ D. `avg(http_duration_seconds_bucket) * 0.95`
 ### Question 3
 **Scenario:** How does Prometheus normally acquire metrics?
 
-A. Applications push metrics to Prometheus
-B. Prometheus scrapes HTTP endpoints exposed by targets on an interval
-C. Prometheus reads log files
-D. An agent forwards syslog
+A. An agent forwards syslog
+B. Prometheus reads log files
+C. Prometheus scrapes HTTP endpoints exposed by targets on an interval
+D. Applications push metrics to Prometheus
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** The pull model is fundamental: Prometheus discovers targets and fetches `/metrics` on a schedule. Pull makes target health observable (`up` becomes 0 when a scrape fails) and makes it trivial to check a target by hand with curl. The Pushgateway exists only for short-lived batch jobs that die before a scrape can reach them.
 </details>
@@ -70,9 +70,9 @@ D. An agent forwards syslog
 ### Question 4
 **Scenario:** `rate(http_requests_total[1m])` returns no data for a target scraped every 60 seconds.
 
-A. The metric does not exist
+A. `rate()` cannot be used on counters
 B. A range needs at least two samples; the window is too short relative to the scrape interval
-C. `rate()` cannot be used on counters
+C. The metric does not exist
 D. The target is down
 
 <details>
@@ -88,15 +88,15 @@ D. The target is down
 ### Question 5
 **Scenario:** Which metric type fits "current number of items in a queue"?
 
-A. Counter
-B. Gauge
-C. Histogram
-D. Summary
+A. Gauge
+B. Histogram
+C. Summary
+D. Counter
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** A gauge can go up and down and represents a value at a point in time. Counters only increase (and reset to zero). Histograms and summaries describe distributions of observations such as request durations or response sizes.
 </details>
@@ -107,16 +107,16 @@ D. Summary
 **Scenario:** You want total requests per second across all instances of a job, broken out by HTTP status code.
 
 A. `sum(rate(http_requests_total[5m])) by (status)`
-B. `rate(sum(http_requests_total) by (status)[5m])`
-C. `sum by (instance) (http_requests_total)`
-D. `avg(rate(http_requests_total[5m]))`
+B. `sum by (instance) (http_requests_total)`
+C. `avg(rate(http_requests_total[5m]))`
+D. `rate(sum(http_requests_total) by (status)[5m])`
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Always `rate()` first, then `sum()`. Summing raw counters across instances produces nonsense at restarts because one series resetting drags the sum down. Option B is not valid syntax anyway. Averaging rates gives per-instance average, not total.
+**Why:** Always `rate()` first, then `sum()`. Summing raw counters across instances produces nonsense at restarts because one series resetting drags the sum down. Option D is not valid syntax anyway. Averaging rates gives per-instance average, not total.
 </details>
 
 ---
@@ -124,15 +124,15 @@ D. `avg(rate(http_requests_total[5m]))`
 ### Question 7
 **Scenario:** An alert should only fire if the condition has held continuously for 10 minutes.
 
-A. Set `for: 10m` in the alerting rule
+A. Set `evaluation_interval: 10m`
 B. Set `group_wait: 10m` in Alertmanager
-C. Use `[10m]` in the expression
-D. Set `evaluation_interval: 10m`
+C. Set `for: 10m` in the alerting rule
+D. Use `[10m]` in the expression
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
 **Why:** `for` makes the alert stay pending until the expression has been true for that whole duration, which is the standard flap suppression. `group_wait` delays the first notification for a group after an alert already fired. A range selector changes what the query computes. The evaluation interval changes how often rules run.
 </details>
@@ -142,10 +142,10 @@ D. Set `evaluation_interval: 10m`
 ### Question 8
 **Scenario:** Which component sends notifications to Slack, PagerDuty, and email?
 
-A. Prometheus server
+A. Grafana
 B. Alertmanager
-C. Grafana
-D. Node exporter
+C. Node exporter
+D. Prometheus server
 
 <details>
 <summary>Answer</summary>
@@ -160,15 +160,15 @@ D. Node exporter
 ### Question 9
 **Scenario:** A team needs metrics from a system that cannot be modified to expose `/metrics`.
 
-A. Write a recording rule
-B. Deploy an exporter that translates the system's data into Prometheus format
+A. Increase the scrape interval
+B. Write a recording rule
 C. Use the Pushgateway
-D. Increase the scrape interval
+D. Deploy an exporter that translates the system's data into Prometheus format
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Exporters exist exactly for this: they sit beside a system, read its native interface, and expose Prometheus metrics. There are exporters for databases, hardware, SNMP, and much more. Pushgateway is for ephemeral batch jobs, and recording rules precompute queries over data you already have.
 </details>
@@ -178,15 +178,15 @@ D. Increase the scrape interval
 ### Question 10
 **Scenario:** A dashboard query is slow because it aggregates a costly expression evaluated over many series.
 
-A. Add more labels
-B. Create a recording rule that precomputes the expression at evaluation time
-C. Lower the scrape interval
-D. Increase retention
+A. Create a recording rule that precomputes the expression at evaluation time
+B. Increase retention
+C. Add more labels
+D. Lower the scrape interval
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: A**
 
 **Why:** Recording rules store the result of an expression as a new time series, so the dashboard reads one cheap series instead of recomputing. Adding labels increases cardinality and makes it worse. Scrape interval and retention are not the bottleneck here.
 </details>
@@ -196,15 +196,15 @@ D. Increase retention
 ### Question 11
 **Scenario:** A metric is labeled with a user ID. What is the concern?
 
-A. Nothing, labels are free
-B. High cardinality: each distinct label value creates a separate time series and can exhaust memory
-C. Labels must be numeric
-D. Prometheus rejects string labels
+A. Labels must be numeric
+B. Prometheus rejects string labels
+C. High cardinality: each distinct label value creates a separate time series and can exhaust memory
+D. Nothing, labels are free
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Cardinality is the number one operational hazard in Prometheus. Unbounded label values such as user IDs, request IDs, or full URLs multiply series count without bound. Keep labels to values from a small, known set, and put the high-cardinality detail in logs or traces instead.
 </details>
@@ -214,15 +214,15 @@ D. Prometheus rejects string labels
 ### Question 12
 **Scenario:** How do you check whether a scrape target is currently reachable?
 
-A. `up{job="myjob"}`
-B. `scrape_duration_seconds`
+A. `prometheus_build_info`
+B. `up{job="myjob"}`
 C. `process_start_time_seconds`
-D. `prometheus_build_info`
+D. `scrape_duration_seconds`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
 **Why:** Prometheus synthesizes an `up` metric per target on every scrape: 1 for success, 0 for failure. `absent(up{job="myjob"})` covers the harder case where the target has disappeared from service discovery entirely, which is worth knowing because a missing target produces no `up == 0` at all.
 </details>
@@ -232,15 +232,15 @@ D. `prometheus_build_info`
 ### Question 13
 **Scenario:** Which service discovery mechanism would you use for pods in a Kubernetes cluster?
 
-A. `static_configs`
-B. `kubernetes_sd_configs`
-C. `file_sd_configs`
-D. `dns_sd_configs`
+A. `file_sd_configs`
+B. `dns_sd_configs`
+C. `kubernetes_sd_configs`
+D. `static_configs`
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: C**
 
 **Why:** Kubernetes SD queries the API server for nodes, pods, services, endpoints, and ingresses, and relabeling turns those into scrape targets. Static configs cannot follow a changing pod set. File SD and DNS SD are generic alternatives that would require you to maintain the mapping yourself.
 </details>
@@ -251,9 +251,9 @@ D. `dns_sd_configs`
 **Scenario:** You need to drop a noisy metric before it is stored.
 
 A. `metric_relabel_configs` with a `drop` action matching `__name__`
-B. `relabel_configs` on the target
-C. A recording rule
-D. Delete it after ingestion
+B. A recording rule
+C. Delete it after ingestion
+D. `relabel_configs` on the target
 
 <details>
 <summary>Answer</summary>
@@ -269,14 +269,14 @@ D. Delete it after ingestion
 **Scenario:** A long-term storage and global query view is needed across several Prometheus servers.
 
 A. Increase local retention to 5 years
-B. Use remote write to a system such as Thanos, Cortex, or Mimir
-C. Run one enormous Prometheus
-D. Federate every metric from every server
+B. Run one enormous Prometheus
+C. Federate every metric from every server
+D. Use remote write to a system such as Thanos, Cortex, or Mimir
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
 **Why:** Prometheus local storage is deliberately designed for the recent window on a single node, with no clustering. Remote write ships samples to a horizontally scalable backend that provides long retention and a global query layer. Federation exists but is intended for pulling a small set of aggregated series, not everything.
 </details>
