@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-14] (2) - Cloud Architect brought up to the current exam guide
+
+### Fixed
+
+- **Section weights and structure.** README and fact sheet carried an older weighting. Now ~25 / 17.5 / 17.5 / 15 / 12.5 / 12.5, with section 6 as solution and operations excellence.
+- **Case studies.** The notes taught Mountkirk Games, TerramEarth, Helicopter Racing League and Dress4Win. The current guide uses Altostrat Media, Cymbal Retail, EHR Healthcare and KnightMotives Automotive. Strategy, practice plan (week 8), README and fact sheet now point at the new four; the old four are marked retired.
+- **Practice questions: every answer was B.** All 40 existing questions had B as the correct option. Options are shuffled, and the explanations' (A)/(B) references remapped.
+- **Dead exam-guide link** (`certification/guides/professional-cloud-architect`) replaced.
+
+### Added
+
+- `notes/case-studies.md` - own-words summaries of the four cases, requirement-to-design tables, traps, cross-case patterns, links to Google's PDFs.
+- `notes/ai-gemini-and-agent-platform.md` - Vertex AI to Agent Platform rename, AI decision ladder, Google AI APIs, Model Garden, grounding and RAG, Gemini Enterprise and NotebookLM, AI Hypercomputer, Model Armor, Sensitive Data Protection, Gemini Cloud Assist, Migration Center.
+- `notes/well-architected-and-operations.md` - the six pillars (sustainability added), section 4 processes and DR patterns, programmatic access and emulators, observability, chaos / pen / load testing, VMware Engine, Chrome Enterprise Premium.
+- 26 questions (66 total) on the case studies, AI and operations; 6 scenarios (14 total); sustainability pillar in the Well-Architected resource page.
+
 ## [2026-10-14] - Workspace Administrator re-levelled to Associate and rebuilt; Cloud Architect gap list
 
 Checked both GCP exams against Google's current official exam guides (read from the PDFs).

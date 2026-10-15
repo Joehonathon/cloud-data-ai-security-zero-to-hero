@@ -1,10 +1,10 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-14
 ---
 
 # GCP Professional Cloud Architect (PCA) - Exam Scenarios
 
-> Eight worked scenarios mirroring PCA question style. Illustrative, not real exam questions. PCA tests architecture trade-offs across compute, network, storage, data, security, and ops. The exam includes case studies (e.g., Mountkirk Games, EHR Healthcare) - questions reference fictional companies whose context constrains the right answer.
+> Fourteen worked scenarios mirroring PCA question style. Illustrative, not real exam questions. PCA tests architecture trade-offs across compute, network, storage, data, security, AI and ops. The exam includes case studies (currently Altostrat Media, Cymbal Retail, EHR Healthcare and KnightMotives Automotive; see [notes/case-studies.md](notes/case-studies.md)). Questions reference fictional companies whose context constrains the right answer. Scenarios 9 to 14 are written in that style.
 
 ---
 
@@ -173,3 +173,129 @@ A is right: Global External HTTPS LB with serverless NEGs is the canonical multi
 **Answer:** A
 
 **Key takeaway:** Multi-region Cloud Run = Global LB with serverless NEGs. The same pattern works for App Engine, GKE, and Compute Engine backends.
+
+---
+
+## Scenario 9 - Hybrid health SaaS, 99.9% target (EHR Healthcare style)
+
+A SaaS provider leaves two colocation sites. Customer apps are containerized. Insurer integrations must stay on-premises. The availability target is 99.9% and cost matters.
+
+Which fits?
+
+A. Multi-region active-active GKE with global database replication and migrate the insurer systems too.
+B. Regional GKE clusters across zones, a global load balancer, a highly available managed database, and redundant Interconnect with VPN backup to the insurer systems.
+C. One zonal GKE cluster with nightly backups and a single VPN tunnel.
+D. Compute Engine VMs only, moved by hand.
+
+**Analysis**
+
+B is right: a multi-zone regional design meets 99.9%, hybrid connectivity respects the legacy constraint, and cost stays moderate. A exceeds the target and moves what the case says stays. C cannot reach the target and has a single point of failure. D adds operational work the company wants to cut.
+
+**Answer:** B
+
+**Key takeaway:** Read the stated target. 99.9% rarely needs multi-region, and legacy that will not move needs hybrid links, not migration.
+
+---
+
+## Scenario 10 - Gen AI that writes to a catalog (Cymbal Retail style)
+
+A retailer uses a multimodal model to draft product attributes from supplier text and images. Errors in the live catalog are costly.
+
+Which fits?
+
+A. Write model output directly to the catalog and correct later.
+B. Fine-tune a model until it is perfect, then publish automatically.
+C. Show output to associates in a review app, write only approved or edited items, and log decisions.
+D. Run the model in the customer's browser.
+
+**Analysis**
+
+C is right: a human-in-the-loop step controls risk and gives an audit trail. A and B accept unreviewed errors, and D does not control the output.
+
+**Answer:** C
+
+**Key takeaway:** Gen AI that changes a system of record gets a human approval step.
+
+---
+
+## Scenario 11 - Lowering media storage cost (Altostrat Media style)
+
+A media company's library grows each month. Some assets are hot for a week and then rarely read, others stay popular for years. Staff cannot predict which.
+
+Which fits?
+
+A. Cloud Storage Autoclass, which moves objects between classes based on access.
+B. Keep everything in Standard.
+C. Delete anything older than a year.
+D. Move assets to Persistent Disk.
+
+**Analysis**
+
+A is right: Autoclass handles unpredictable patterns without manual rules. B wastes money, C loses assets, and D costs more and does not scale.
+
+**Answer:** A
+
+**Key takeaway:** Unpredictable access means Autoclass. Predictable ageing means lifecycle rules.
+
+---
+
+## Scenario 12 - EU data control (KnightMotives style)
+
+A car maker collects vehicle data from EU customers. Regulation requires EU residency, and the security team wants control of encryption keys and proof of enforcement.
+
+Which fits?
+
+A. A US multi-region bucket with Google-managed keys.
+B. Any region with application-level encryption only.
+C. A global database for lowest latency.
+D. EU regions, Assured Workloads for the EU, a resource-location org policy, CMEK or External Key Manager, and audit logs.
+
+**Analysis**
+
+D is right: it combines residency, enforcement, key control and evidence. The others place data outside the EU or give up control.
+
+**Answer:** D
+
+**Key takeaway:** EU rules mean residency, key control and auditability together.
+
+---
+
+## Scenario 13 - Protecting an AI assistant
+
+A customer-facing assistant uses an LLM with company data. Security wants protection from prompt injection and from leaking card numbers or personal data.
+
+Which fits?
+
+A. Model Armor on prompts and responses with Sensitive Data Protection, private networking, least-privilege IAM, and logging.
+B. A network firewall in front of the model.
+C. A longer system prompt asking the model to be careful.
+D. Turn off logging so nothing is stored.
+
+**Analysis**
+
+A is right: layered controls screen both directions, detect sensitive data, limit access and keep evidence. A firewall cannot read prompts, a prompt instruction is not a control, and removing logs removes auditability.
+
+**Answer:** A
+
+**Key takeaway:** Model Armor, Sensitive Data Protection and VPC Service Controls are layers.
+
+---
+
+## Scenario 14 - Choosing a DR pattern
+
+A business accepts about 15 minutes of downtime and a few minutes of data loss. Active-active is out of budget.
+
+Which fits?
+
+A. Backup and restore.
+B. Warm standby: data replicated continuously, compute running at small scale and scaled up on failover.
+C. Pilot light with nothing running.
+D. Active-active in two regions.
+
+**Analysis**
+
+B is right: it meets a minutes-level RTO and low RPO at moderate cost. A takes hours, C takes longer than 15 minutes to start everything, and D exceeds the budget.
+
+**Answer:** B
+
+**Key takeaway:** Pick the cheapest pattern that meets both RTO and RPO.

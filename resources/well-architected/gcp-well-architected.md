@@ -8,6 +8,8 @@ The Google Cloud Architecture Framework provides best practices and recommendati
 
 ## The Framework Pillars
 
+The framework has six pillars: operational excellence; security, privacy and compliance; reliability; performance optimization; cost optimization; and sustainability. The exam guide for the Professional Cloud Architect names all six.
+
 ### 1. Operational Excellence
 
 | Principle | Description | Key Services |
@@ -72,7 +74,16 @@ The Google Cloud Architecture Framework provides best practices and recommendati
 ### 5. Cost Optimization
 
 | Principle | Description | Key Services |
+|### 6. Sustainability
+
+| Principle | Description | Key Services |
 |-----------|-------------|-------------|
+| Measure impact | See the emissions from your usage | Carbon Footprint |
+| Choose efficient locations | Prefer regions with more carbon-free energy where latency and residency allow | Region selection |
+| Remove waste | Right-size and stop idle resources | Active Assist recommenders, autoscaling |
+| Design efficiently | Serverless, tiered storage, process data near where it lives | Cloud Run, Cloud Storage classes, BigQuery |
+
+-----------|-------------|-------------|
 | Establish cost governance | Visibility and accountability | Billing reports, budgets, quotas |
 | Monitor and control cost | Track spending against budgets | Billing export to BigQuery, alerts |
 | Optimize cost | Reduce waste, use commitments | CUDs, Spot VMs, Recommender |

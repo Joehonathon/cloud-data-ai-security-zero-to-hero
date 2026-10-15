@@ -1,5 +1,5 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-14
 ---
 
 # GCP Professional Cloud Architect (PCA) - Exam Strategy
@@ -9,7 +9,7 @@ last-updated: 2026-05-03
 - 50-60 questions, 120 minutes
 - Pass mark: not published; widely reported as ~70-75% based on community feedback
 - Multiple choice + multiple response
-- Includes case study questions referencing fictional companies (Mountkirk Games, EHR Healthcare, Helicopter Racing League, TerramEarth)
+- Includes case study questions referencing fictional companies. Current cases: Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive (see notes/case-studies.md)
 
 ## Top traps
 
@@ -51,10 +51,13 @@ last-updated: 2026-05-03
 
 ## Case study tactics
 
-The PCA case studies are real - questions for each case study reference specific constraints in the company's Existing Environment and Business Requirements sections. Read the case study once carefully; for each subsequent question, jump back to the relevant constraint.
+The PCA case studies are published ahead of time (four in the current guide: Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive) - questions for each case study reference specific constraints in the company's Existing Environment and Business Requirements sections. Read the case study once carefully; for each subsequent question, jump back to the relevant constraint.
 
 Common case study traps:
-- "Existing Java app" - rules out Cloud Functions (Python/Node/Go runtime, though Java exists in Functions Gen2)
+- "Legacy systems will not move" (EHR Healthcare, Altostrat) - answers that migrate them fail; integrate over hybrid connectivity
+- "Alerts are ignored" - fix routing, ownership and SLO-based alerting, not more email
+- "No budget for new equipment" (KnightMotives dealers) - browser-based or SaaS, no on-site hardware
+- "Humans must review AI output" (Cymbal) - keep a human-in-the-loop step before writes to the catalog
 - "Cannot move data outside the EU" - rules out multi-region us / global Spanner
 - "Must minimize cost" - prefer Cloud Run over GKE, Cloud Functions over Cloud Run for spiky
 - "Must minimize operational overhead" - prefer fully-managed (Cloud Run, BigQuery, Cloud SQL) over self-managed

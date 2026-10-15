@@ -2317,7 +2317,7 @@
       "format": null,
       "languages": null,
       "path": "exams/gcp/cloud-architect",
-      "notes_count": 10,
+      "notes_count": 13,
       "files": {
         "README.md": true,
         "fact-sheet.md": true,
@@ -2325,7 +2325,7 @@
         "scenarios.md": true,
         "strategy.md": true
       },
-      "last_updated": "2026-05-03",
+      "last_updated": "2026-10-14",
       "exam_version": null,
       "exam_retires": null
     },

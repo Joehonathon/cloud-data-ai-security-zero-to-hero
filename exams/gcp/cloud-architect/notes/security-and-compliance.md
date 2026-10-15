@@ -3418,7 +3418,7 @@ gcloud compute security-policies update POLICY_NAME \
 - [Shared Responsibility Model](https://cloud.google.com/architecture/framework/security/shared-responsibility-shared-fate)
 
 ### Professional Cloud Architect Exam
-- [Exam Guide](https://cloud.google.com/certification/guides/professional-cloud-architect)
+- [Exam Guide](https://cloud.google.com/learn/certification/cloud-architect)
 - [Sample Questions](https://cloud.google.com/certification/sample-questions/cloud-architect)
 - [Practice Exam](https://cloud.google.com/certification/practice-exam/cloud-architect)
 

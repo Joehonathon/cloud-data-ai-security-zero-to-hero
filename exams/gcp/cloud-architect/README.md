@@ -1,3 +1,8 @@
+---
+last-updated: 2026-10-14
+applies-to: Professional Cloud Architect exam guide, checked 2026-10-14
+---
+
 # Google Cloud Professional Cloud Architect Certification
 
 ## Exam Overview
@@ -15,36 +20,42 @@ The Google Cloud Professional Cloud Architect certification demonstrates your ab
 
 ## Exam Domains
 
-### Domain 1: Designing and planning a cloud solution architecture (24%)
-- Designing solution infrastructure that meets business requirements
-- Designing a solution infrastructure that meets technical requirements
-- Designing network, storage, and compute resources
-- Creating a migration plan
-- Envisioning future solution improvements
+Weights and topics from the current exam guide (checked 2026-10-14). Earlier versions of this page carried an older weighting.
 
-### Domain 2: Managing and provisioning solution infrastructure (20%)
-- Configuring network topologies
-- Configuring individual storage systems
-- Configuring compute systems
-- Managing infrastructure resources and configurations
+### Section 1: Designing and planning a cloud solution architecture (~25%)
+- Business requirements: use cases, KPIs and ROI, build/buy/modify/deprecate, trade-offs
+- Technical requirements: Well-Architected Framework, HA and failover, scalability, Gemini Cloud Assist, backup and recovery
+- Network, storage and compute design, including AI/ML solutions (Gemini, Agent Builder, Model Garden, AI Hypercomputer), Private Service Connect, shared VPC
+- Migration plan (Migration Center, dependency and license planning)
+- Future improvements
 
-### Domain 3: Designing for security and compliance (18%)
-- Designing for security requirements
-- Designing for legal compliance requirements
-- Implementing security controls and access policies
+### Section 2: Managing and provisioning a cloud solution infrastructure (~17.5%)
+- Network topologies: hybrid, multicloud, firewalls, VPC design and load balancing
+- Storage systems: allocation, lifecycle, protection
+- Compute systems: Spot vs standard, GKE, serverless, VMware Engine, patching
+- Agent Platform for end-to-end ML workflows (pipelines, data integration, AI Hypercomputer)
+- Prebuilt solutions and APIs (Google AI APIs, Gemini Enterprise, Model Garden)
 
-### Domain 4: Analyzing and optimizing technical and business processes (18%)
-- Analyzing and defining technical processes
-- Analyzing and defining business processes
-- Developing procedures to ensure reliability of solutions in production
+### Section 3: Designing for security and compliance (~17.5%)
+- IAM, resource hierarchy, key management (CMEK), separation of duties, VPC Service Controls, org policy
+- Secure remote access (IAP, impersonation, Chrome Enterprise Premium, Workload Identity Federation)
+- Software supply chain and securing AI (Model Armor, Sensitive Data Protection)
+- Compliance: regulation, PII, certifications (SOC 2), audits
 
-### Domain 5: Managing implementation of cloud architecture (10%)
-- Advising development/operation teams to ensure successful deployment
-- Interacting with Google Cloud programmatically
+### Section 4: Analyzing and optimizing technical and business processes (~15%)
+- SDLC, CI/CD, root cause analysis, testing, service catalog, disaster recovery
+- Stakeholders, change management, skills readiness, CapEx/OpEx, business continuity
 
-### Domain 6: Ensuring solution and operations reliability (10%)
-- Monitoring/logging/profiling/alerting solution performance
-- Optimizing solutions for performance and cost
+### Section 5: Managing implementation (~12.5%)
+- Advising teams: deployment, API management (Apigee), testing, migration tooling, Gemini Cloud Assist
+- Programmatic access: Cloud Shell, Cloud Code, SDKs, emulators, Terraform, client libraries
+
+### Section 6: Ensuring solution and operations excellence (~12.5%)
+- Operational excellence pillar, observability (monitoring, logging, profiling, alerting)
+- Deployment and release management, support, quality control
+- Production reliability: chaos engineering, penetration testing, load testing
+
+**[📖 Professional Cloud Architect exam guide (PDF)](https://services.google.com/fh/files/misc/professional_cloud_architect_exam_guide_english.pdf)** - the authoritative list. Re-check it before you sit the exam.
 
 ## Key Study Areas
 
@@ -143,11 +154,9 @@ The Google Cloud Professional Cloud Architect certification demonstrates your ab
 5. **Security Implementation:** Implement comprehensive security controls
 
 ### Case Study Analysis
-**Official Case Studies:**
-- **Helicopter Racing League:** Real-time analytics and global streaming
-- **Mountkirk Games:** Gaming platform migration and scaling
-- **TerramEarth:** IoT data processing and analytics
-- **Dress4Win:** E-commerce platform modernization
+**Current case studies (exam guide):** Altostrat Media, Cymbal Retail, EHR Healthcare and KnightMotives Automotive. Study them with [notes/case-studies.md](notes/case-studies.md).
+
+**Retired cases (older guides):** Helicopter Racing League, Mountkirk Games, TerramEarth and Dress4Win. Not in the current exam guide, so do not spend case-study time on them.
 
 **Study Approach:**
 - Analyze current state and requirements

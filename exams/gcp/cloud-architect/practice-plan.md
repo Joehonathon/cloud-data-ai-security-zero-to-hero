@@ -205,26 +205,24 @@
 
 ### Week 8: Case Study Preparation
 
-#### Day 1-2: Helicopter Racing League (HRL)
-- [ ] Analyze current state: architecture, challenges, requirements
-- [ ] Design target architecture: real-time analytics, global scale
-- [ ] Plan migration strategy: phases, risks, timeline
-- [ ] Estimate costs: infrastructure, migration, operations
-- [ ] **Practice:** Present solution to stakeholders
+Use [notes/case-studies.md](notes/case-studies.md) and Google's four case-study PDFs.
 
-#### Day 3-4: Mountkirk Games
-- [ ] Study gaming platform requirements: scaling, analytics, global reach
-- [ ] Design architecture: game servers, analytics, player data
-- [ ] Plan implementation: phases, testing, rollout
-- [ ] Address challenges: latency, data consistency, costs
-- [ ] **Practice:** Create technical presentation
+#### Day 1-2: EHR Healthcare
+- [ ] Read the case. List the constraints: 99.9% availability, legacy insurer links stay on-premises, ignored alerts, compliance
+- [ ] Design the hybrid network, container platform and logging/alerting
+- [ ] Plan the colocation exit in waves with Migration Center
+- [ ] **Practice:** Defend why regional (not multi-region) meets 99.9%
 
-#### Day 5-7: TerramEarth and Dress4Win
-- [ ] Analyze IoT and e-commerce use cases
-- [ ] Design appropriate architectures for each scenario
-- [ ] Compare solution alternatives and trade-offs
-- [ ] Create implementation roadmaps
-- [ ] **Practice:** Defend architecture decisions
+#### Day 3-4: Altostrat Media and Cymbal Retail
+- [ ] Altostrat: hybrid Kubernetes, storage cost, auditable and explainable AI
+- [ ] Cymbal: gen AI catalog enrichment with human review, conversational discovery, database and ETL modernization
+- [ ] Write the Model Armor, Sensitive Data Protection and VPC Service Controls layers for each
+- [ ] **Practice:** Present both designs in one page each
+
+#### Day 5-7: KnightMotives Automotive
+- [ ] Residency and key control for EU rules, data monetization platform, AI Hypercomputer for simulation
+- [ ] Mainframe and ERP modernization path, dealer tooling with no new hardware
+- [ ] **Practice:** Defend architecture decisions against each requirement
 
 #### Week 8 Assessment
 - [ ] Case study practice exam

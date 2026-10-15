@@ -1,5 +1,5 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-14
 ---
 
 # Google Cloud Professional Cloud Architect - Fact Sheet
@@ -17,14 +17,16 @@ last-updated: 2026-05-03
 
 ## Exam Domains
 
-| Domain | Weight | Key Focus |
+| Section | Weight | Key Focus |
 |--------|--------|-----------|
-| Designing and planning a cloud solution architecture | 24% | Business requirements, application design, infrastructure design |
-| Managing and provisioning solution infrastructure | 15% | Network topology, storage, compute resources |
-| Designing for security and compliance | 18% | Identity and access, data protection, separation of duties |
-| Analyzing and optimizing technical and business processes | 17% | Technical analysis, business analysis, procedures |
-| Managing implementation | 10% | Advising development teams, managing changes |
-| Ensuring solution and operations reliability | 16% | Monitoring, logging, incident response, supporting product launches |
+| Designing and planning a cloud solution architecture | ~25% | Business and technical requirements, network/storage/compute and AI design, migration plan |
+| Managing and provisioning solution infrastructure | ~17.5% | Hybrid networking, storage, compute, Agent Platform ML workflows, prebuilt APIs |
+| Designing for security and compliance | ~17.5% | IAM, hierarchy, CMEK, VPC-SC, remote access, supply chain, securing AI, compliance |
+| Analyzing and optimizing technical and business processes | ~15% | SDLC, CI/CD, RCA, DR, stakeholders, change, CapEx/OpEx |
+| Managing implementation | ~12.5% | Advising teams, Apigee, programmatic access, emulators, IaC |
+| Ensuring solution and operations excellence | ~12.5% | Observability, release management, reliability testing |
+
+Case studies in the current guide: Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive. See [notes/case-studies.md](notes/case-studies.md).
 
 ## Core Architecture Principles
 

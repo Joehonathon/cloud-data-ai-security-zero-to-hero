@@ -12,7 +12,7 @@ Study guides for GCP in this repo. For the full picture across every provider, s
 | [Google Cloud Generative AI Leader](generative-ai-leader/) | - | Foundational | Ready | 4 |
 | [Google Cloud Associate Cloud Engineer Certification](cloud-engineer/) | Associate Cloud Engineer | Associate | Ready | 10 |
 | [Google Cloud Associate Google Workspace Administrator Certification](workspace-administrator/) | Associate Google Workspace Administrator | Associate | Ready | 7 |
-| [Google Cloud Professional Cloud Architect Certification](cloud-architect/) | Professional Cloud Architect | Professional | Ready | 10 |
+| [Google Cloud Professional Cloud Architect Certification](cloud-architect/) | Professional Cloud Architect | Professional | Ready | 13 |
 | [Google Cloud Professional Cloud Developer Certification](cloud-developer/) | - | Professional | Ready | 3 |
 | [Google Cloud Professional Cloud DevOps Engineer Certification](cloud-devops-engineer/) | - | Professional | Ready | 3 |
 | [Google Cloud Professional Cloud Network Engineer Certification](cloud-network-engineer/) | - | Professional | Ready | 3 |

@@ -24,12 +24,9 @@ Read-only fleet audit (9 agents, nothing changed). Each line: effort S (<half da
 ## GCP exam refresh (2026-10-14)
 
 - [x] 2026-10-14 Workspace Administrator re-levelled to Associate and rebuilt (7 notes, flashcards, 23 scenarios, 45 questions). Strict site build passes; pushed 2026-10-14.
-- [ ] **Cloud Architect refresh** (next batch). Checked against the current exam guide; `exams/gcp/cloud-architect` still follows an older one:
-  - README weights are 24/20/18/18/10/10; current are ~25/17.5/17.5/15/12.5/12.5, and section 6 is now "solution and operations excellence" (Well-Architected operational excellence pillar).
-  - Case studies are now **Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive**. The notes still teach Mountkirk Games, TerramEarth and Helicopter Racing League. Add own-words summaries of the four (link Google's pages, no pasted text); mark the old three as legacy.
-  - Zero coverage of: Gemini Cloud Assist, Migration Center, Agent Builder / Model Garden, AI Hypercomputer, Model Armor, Agent Platform pipelines, NotebookLM / Gemini Enterprise. Add a note.
-  - Add a Well-Architected Framework pillar sheet (six pillars incl. sustainability) and case-study practice questions.
-  - Fix the dead `professional-cloud-architect` guide link already listed under the 2026-10-12 link-rot item.
+- [x] 2026-10-14 Cloud Architect refreshed to the current guide: weights, four case studies (own words), AI / Agent Platform note, Well-Architected and operations note, 26 new questions, 6 scenarios, shuffled answer key, dead guide link fixed.
+- [ ] **Rename sweep.** The older Cloud Architect notes (and `resources/`) still say "Vertex AI". Google renamed it Gemini Enterprise Agent Platform on 2026-04-22. Sweep once the names settle; the new AI note carries the mapping. Also `exams/gcp/machine-learning-engineer` and the GCP genai tracks.
+- [ ] **Answer-position skew in other GCP question files** (counted 2026-10-14, correct = B): devops-engineer 40/40, digital-leader 40/40, security-engineer 40/40, data-engineer 40/40, cloud-developer 36/40, cloud-engineer 31/40; the 15-question files sit at 10-13/15. The Cloud Architect file had the same problem and was shuffled. Shuffle with a seeded script that also remaps `(A)`-style letters in the explanations, then check each file's answer key. Likely the same in other providers' files.
 - [ ] **By 2026-12-01: re-check both exam guides** (Associate Workspace Administrator and Professional Cloud Architect PDFs) for revisions, and update `last-updated`. The PCA guide already mentions products renamed in 2026 (Agent Platform), so expect churn.
 - [ ] Scenarios for Workspace (`scenarios.md`) still skew to answer B in places; shuffle when next edited (the analysis text names option letters, so edit by hand).
 

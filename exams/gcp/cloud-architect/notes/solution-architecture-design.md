@@ -2122,10 +2122,7 @@ BigQuery (job complete) → Eventarc → Cloud Function (send notification)
 
 ### Practice Resources
 
-1. **Official GCP Case Studies**:
-   - Mountkirk Games (gaming)
-   - Dress4Win (e-commerce/fashion)
-   - TerramEarth (IoT/heavy equipment)
+1. **Official GCP Case Studies** (current exam guide): Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive. See [case-studies.md](case-studies.md). The older Mountkirk Games, Dress4Win, TerramEarth and Helicopter Racing League cases are retired.
 
 2. **Hands-On Practice**:
    - Create sample architectures in draw.io or Lucidchart
@@ -2145,7 +2142,7 @@ BigQuery (job complete) → Eventarc → Cloud Function (send notification)
 ## Study Tips
 
 ### Architecture Design Practice
-1. **Case Study Analysis**: Work through official GCP case studies (Mountkirk Games, Dress4Win, TerramEarth)
+1. **Case Study Analysis**: Work through the four current case studies (see [case-studies.md](case-studies.md))
 2. **Draw Architectures**: Practice creating architecture diagrams using standard notation
 3. **Cost Calculations**: Estimate costs for different designs using GCP Pricing Calculator
 4. **Trade-off Analysis**: Compare multiple approaches for same problem (cost vs. performance vs. complexity)
