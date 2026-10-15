@@ -75,21 +75,21 @@ D. S3 with lifecycle policies, expiring session objects after a configured numbe
 ---
 
 ### Question 4
-**Scenario:** A developer is building a Lambda function that needs to make 100 parallel API calls to an external service. The function times out at the default 3-second limit. What should the developer do?
+**Scenario:** A developer has a Lambda function that makes 100 parallel calls to an external API. The calls spend their time waiting on the network, and the full set takes about 20 seconds. The function fails at the default 3-second timeout. What should the developer do?
 
 A. Use Provisioned Concurrency
-B. Increase Lambda memory allocation
-C. Implement async processing with Step Functions
-D. Increase the Lambda timeout to 20 minutes
+B. Increase the Lambda memory allocation so the function gets more CPU for the calls
+C. Rebuild the work as a Step Functions workflow that fans out the calls
+D. Raise the function timeout to 30 seconds
 
 <details>
 <summary>Answer</summary>
 
-**Correct: B**
+**Correct: D**
 
-**Why:** Increasing Lambda memory also increases CPU allocation proportionally, which speeds up parallel processing. The maximum Lambda timeout is 15 minutes, so a 20-minute setting is not possible, and a longer timeout alone does not speed up CPU-bound work. Provisioned Concurrency reduces cold starts, not execution time. Step Functions add complexity unnecessary for this use case.
+**Why:** The function is stopped at the 3-second default timeout, and the calls need about 20 seconds. Raising the timeout fixes that (the maximum is 15 minutes). More memory adds CPU, which does not help when the function is waiting on the network. Provisioned Concurrency reduces cold starts, not run time. Step Functions adds complexity that is not needed.
 
-**Key Concept:** [Lambda Memory and CPU](https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html)
+**Key Concept:** [Lambda Function Timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)
 </details>
 
 ---
@@ -337,21 +337,21 @@ D. IAM authorization, with SigV4 signed requests created from the JWT claims
 ---
 
 ### Question 17
-**Scenario:** A developer needs to encrypt sensitive data before storing it in DynamoDB. The encryption key must be managed by AWS but dedicated to this application. What should they use?
+**Scenario:** A developer needs to encrypt sensitive data in a DynamoDB table with an AWS KMS key that is dedicated to this application. The team must control the key policy and rotation. What should they use?
 
-A. DynamoDB default encryption
+A. DynamoDB default encryption with an AWS owned key
 B. Client-side encryption with a self-managed key
-C. AWS managed key in KMS, shared by every DynamoDB table in the account
-D. Customer managed key (CMK) in KMS, with its own key policy
+C. The AWS managed key for DynamoDB, which is shared by every DynamoDB table in the account
+D. A customer managed key in AWS KMS, with its own key policy and rotation settings
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** A customer managed key (CMK) in KMS is managed by AWS but dedicated to the application with full control over key policies. Default encryption uses AWS owned keys with no control. AWS managed keys are shared by every table in the account and cannot be given a custom key policy. Self-managed keys require more operational overhead.
+**Why:** A customer managed key lives in your account, can be dedicated to one application, and you control its key policy and rotation. AWS owned keys cannot be viewed or managed. The AWS managed key (aws/dynamodb) is shared by every table in the account and its permissions cannot be changed. A self-managed client-side key adds work and does not use KMS.
 
-**Key Concept:** [DynamoDB Encryption](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html)
+**Key Concept:** [DynamoDB Encryption at Rest](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/encryption.howitworks.html)
 </details>
 
 ---
@@ -457,21 +457,21 @@ D. Network ACLs
 ---
 
 ### Question 23
-**Scenario:** A developer needs to encrypt environment variables in a Lambda function. The application code needs to decrypt them at runtime. What should they do?
+**Scenario:** A developer must keep sensitive values in Lambda environment variables. The values must be protected by a KMS key the team controls, and the code decrypts them at runtime. What should they do?
 
 A. Keep the values encrypted in the package and decrypt with a key embedded in the function
 B. Enable KMS encryption on the deployment package, which also covers environment variables
-C. Use Secrets Manager instead, which stores the values and removes the need for any environment variables in the function
-D. Enable Lambda environment variable encryption with KMS and decrypt in code with the encryption helpers
+C. Move the values to AWS Secrets Manager and remove the environment variables from the function entirely, so no KMS key is needed
+D. Set a customer managed KMS key on the function, enable the encryption helpers, and decrypt in code
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Lambda automatically encrypts environment variables at rest using KMS. Enabling encryption helpers provides automatic decryption at runtime. Pre-encrypted values with a key embedded in the function defeat the purpose of KMS. Secrets Manager is better for secrets that need rotation. Deployment package encryption doesn't help environment variables.
+**Why:** Lambda always encrypts environment variables at rest with a KMS key, and a customer managed key gives the team control of it. The console encryption helpers encrypt values client-side for protection in transit, and the code decrypts them with KMS at runtime. Secrets Manager is a good store but would remove the environment variables the scenario keeps. A key embedded in the function defeats KMS. Package encryption does not cover environment variables.
 
-**Key Concept:** [Lambda Environment Variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html)
+**Key Concept:** [Securing Lambda Environment Variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars-encryption.html)
 </details>
 
 ---
@@ -619,7 +619,7 @@ D. Custom Docker scripts
 ---
 
 ### Question 31
-**Scenario:** A developer needs to store and version Lambda function deployment packages. They want to maintain multiple versions and roll back if needed. What should they use?
+**Scenario:** A developer needs a place outside Lambda to store and version ZIP deployment packages. They want to keep multiple versions and roll back if needed. What should they use?
 
 A. S3 bucket with versioning enabled
 B. Lambda layers
@@ -761,21 +761,21 @@ D. Partition key design causing hot partitions
 ---
 
 ### Question 38
-**Scenario:** A developer needs to analyze Lambda function errors and group them by error type. They want to set up alerts for new error patterns. What should they use?
+**Scenario:** A developer needs to find Lambda function errors, group them by log pattern, and get alerted on new error patterns. What should they use?
 
 A. CloudWatch Application Insights
 B. CloudWatch Contributor Insights
-C. CloudWatch Logs with metric filters, one filter per error pattern you want to count
-D. Lambda Insights, which collects function-level metrics
+C. Lambda Insights, which collects function-level metrics such as duration, memory and error counts
+D. CloudWatch Logs anomaly detection on the function's log group, with an alarm on anomalies
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Lambda Insights provides automatic collection of function metrics including errors grouped by type, plus custom dashboard for analysis. Metric filters require manual setup for each error pattern. Contributor Insights is for high-cardinality data. Application Insights is for application health, not Lambda-specific errors.
+**Why:** CloudWatch Logs anomaly detection learns the normal patterns in a log group and flags new or unusual ones as anomalies, and you can alarm on them. Lambda Insights gives function metrics, not errors grouped by pattern. Contributor Insights ranks top contributors for fields you define but does not detect new patterns. Application Insights monitors application stacks.
 
-**Key Concept:** [Lambda Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights.html)
+**Key Concept:** [CloudWatch Logs Anomaly Detection](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/LogsAnomalyDetection.html)
 </details>
 
 ---
@@ -801,10 +801,10 @@ D. Increase Lambda timeout
 ---
 
 ### Question 40
-**Scenario:** A developer notices their SQS-triggered Lambda function is processing messages slowly. The function takes 10 seconds per message, and there are 1000 messages in the queue. How can they improve throughput?
+**Scenario:** A developer notices an SQS-triggered Lambda function is processing messages slowly. The function takes 10 seconds per message, 1000 messages are queued, and the function's reserved concurrency is set to 5, so invocations are throttled. How can they improve throughput?
 
 A. Decrease visibility timeout so messages become visible sooner
-B. Increase Lambda reserved concurrency so more instances run in parallel
+B. Raise the function's reserved concurrency so more instances run in parallel
 C. Increase batch size so each invocation gets more messages
 D. Use FIFO queue to guarantee ordering and exactly-once processing across the whole queue
 
@@ -813,9 +813,9 @@ D. Use FIFO queue to guarantee ordering and exactly-once processing across the w
 
 **Correct: B**
 
-**Why:** Increasing Lambda concurrency allows more function instances to process messages in parallel. With 10 seconds per message, higher concurrency directly improves throughput. Batch size processes multiple messages per invocation but each still takes 10 seconds. FIFO queues limit throughput. Decreasing visibility timeout risks duplicate processing.
+**Why:** Reserved concurrency caps how many instances of the function can run, so the limit of 5 is the bottleneck. Raising it lets the SQS event source mapping scale out and process more messages at once. A larger batch still takes 10 seconds per message. FIFO queues limit throughput. Decreasing visibility timeout risks duplicate processing.
 
-**Key Concept:** [SQS Lambda Concurrency](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html)
+**Key Concept:** [Scaling SQS Event Source Mappings](https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-scaling.html)
 </details>
 
 ---
@@ -827,7 +827,7 @@ D. Use FIFO queue to guarantee ordering and exactly-once processing across the w
 | 1 | C | Development |
 | 2 | D | Development |
 | 3 | C | Development |
-| 4 | B | Development |
+| 4 | D | Development |
 | 5 | C | Development |
 | 6 | B | Development |
 | 7 | B | Development |

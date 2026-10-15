@@ -252,26 +252,26 @@ pipeline = Pipeline(
 
 | Component | GCP Service | Purpose |
 |-----------|------------|---------|
-| **ML Platform** | Vertex AI | Unified ML platform |
-| **Feature Store** | Vertex AI Feature Store | Online and offline features |
-| **Experiment Tracking** | Vertex AI Experiments | Track training runs |
-| **Training** | Vertex AI Training | Custom and AutoML training |
+| **ML Platform** | Agent Platform (formerly Vertex AI) | Unified ML platform |
+| **Feature Store** | Agent Platform Feature Store | Online and offline features |
+| **Experiment Tracking** | Experiments on Agent Platform | Track training runs |
+| **Training** | Agent Platform Managed Training | Custom and AutoML training |
 | **Tuning** | Vertex AI Vizier | Hyperparameter optimization |
-| **Model Registry** | Vertex AI Model Registry | Model versioning |
-| **Serving** | Vertex AI Prediction | Online and batch prediction |
-| **Pipelines** | Vertex AI Pipelines (Kubeflow) | ML workflow orchestration |
-| **Monitoring** | Vertex AI Model Monitoring | Drift and quality monitoring |
-| **AutoML** | Vertex AI AutoML | Automated model building |
+| **Model Registry** | Agent Platform Model Registry | Model versioning |
+| **Serving** | Agent Platform Inference | Online and batch prediction |
+| **Pipelines** | Agent Platform Pipelines (Kubeflow) | ML workflow orchestration |
+| **Monitoring** | Model Monitoring on Agent Platform | Drift and quality monitoring |
+| **AutoML** | Agent Platform AutoML | Automated model building |
 
 ### Architecture Pattern
 
 - GCS stores raw data and training datasets
 - BigQuery for feature computation and analysis
-- Vertex AI Feature Store serves features for training and serving
-- Vertex AI Training runs on managed GPU/TPU instances
-- Vertex AI Experiments with TensorBoard integration
+- Agent Platform Feature Store serves features for training and serving
+- Agent Platform Managed Training runs on managed GPU/TPU instances
+- Experiments on Agent Platform with TensorBoard integration
 - Model Registry manages versions with deployment targets
-- Vertex AI Prediction endpoints with traffic splitting for A/B tests
+- Agent Platform Inference endpoints with traffic splitting for A/B tests
 - Model Monitoring tracks feature skew and prediction drift
 
 ### Vertex AI Pipeline Example
@@ -292,10 +292,10 @@ def pipeline():
 ```
 
 **Documentation:**
-- [Vertex AI](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)
-- [Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)
-- [Vertex AI Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/overview)
-- [Vertex AI Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)
+- [Agent Platform](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)
+- [Agent Platform Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)
+- [Agent Platform Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/overview)
+- [Model Monitoring on Agent Platform](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)
 
 ---
 
@@ -352,7 +352,7 @@ def pipeline():
 
 ### Cross-Cloud Comparison
 
-| Feature | SageMaker Feature Store | Azure ML Feature Store | Vertex AI Feature Store |
+| Feature | SageMaker Feature Store | Azure ML Feature Store | Agent Platform Feature Store |
 |---------|------------------------|----------------------|------------------------|
 | **Online Store** | DynamoDB | Managed (Azure SQL) | Bigtable |
 | **Offline Store** | S3 (Parquet) | ADLS Gen2 | BigQuery |
@@ -421,11 +421,11 @@ def pipeline():
 
 | Component | Service | Estimated Cost |
 |-----------|---------|---------------|
-| Training | Vertex AI (n1-standard-4 + T4, 100 hrs) | ~$450/month |
+| Training | Agent Platform (n1-standard-4 + T4, 100 hrs) | ~$450/month |
 | Feature Store | Online + Offline | ~$100-200/month |
-| Serving | Vertex AI Prediction | ~$80/month |
+| Serving | Agent Platform Inference | ~$80/month |
 | Storage | GCS (1 TB) | ~$20/month |
-| Pipelines | Vertex AI Pipelines | ~$50/month |
+| Pipelines | Agent Platform Pipelines | ~$50/month |
 | Monitoring | Model Monitoring | ~$50/month |
 | **Total** | | **~$750-850/month** |
 
@@ -444,7 +444,7 @@ def pipeline():
 
 ### Model Training
 
-- [ ] Training pipeline automated with SageMaker/Azure ML/Vertex AI Pipelines
+- [ ] Training pipeline automated with SageMaker/Azure ML/Agent Platform Pipelines
 - [ ] Experiment tracking configured
 - [ ] Hyperparameter tuning integrated
 - [ ] Distributed training configured for large models

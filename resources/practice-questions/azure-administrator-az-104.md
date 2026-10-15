@@ -144,21 +144,21 @@ D. Azure Blueprints assigned to each subscription, with a different blueprint de
 </details>
 
 ### Question 8
-**Scenario:** A company needs to provision consistent environments for new projects including virtual networks, VMs, policies, and role assignments. They want a template that can be versioned and assigned to subscriptions. What should they use?
+**Scenario:** A company needs to provision consistent environments for new projects, including virtual networks and VMs. They want to store the template in Azure as a versioned resource, control who can deploy it with Azure RBAC, and deploy it to many subscriptions. What should they use?
 
-A. ARM templates
-B. Azure Blueprints, which package templates, policies and role assignments into versioned definitions
-C. Azure Resource Graph
-D. Azure Policy initiatives
+A. A Bicep file kept on an administrator's laptop and emailed to teams whenever they ask for it
+B. Template specs, which store a versioned ARM template as an Azure resource that is shared and deployed with RBAC
+C. Azure Resource Graph queries that read the resources in each subscription
+D. Azure Policy initiatives, which group policy definitions for assignment
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Azure Blueprints package ARM templates, policies, role assignments, and resource groups into versioned, assignable artifacts. They maintain the relationship between definition and deployment, enabling updates and compliance tracking. ARM templates (A) deploy resources but don't include policies/RBAC in a managed package. Resource Graph (C) is for querying. Policy initiatives (D) are policy-only.
+**Why:** Template specs store an ARM template or Bicep file as an Azure resource with versions. Access is controlled with Azure RBAC, and users can deploy it to any subscription scope. Azure Blueprints used to package this, but it is being retired (January 31, 2027) in favor of template specs and Deployment Stacks. A local file (A) has no versioning or access control. Resource Graph (C) only queries resources. Initiatives (D) group policies only.
 
-**Key Concept:** [Azure Blueprints](https://learn.microsoft.com/en-us/azure/governance/blueprints/overview)
+**Key Concept:** [Template specs](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/template-specs)
 </details>
 
 ### Question 9
@@ -398,9 +398,9 @@ D. Resize the disk while the VM is running, and the OS then uses the new space a
 
 **Correct: C**
 
-**Why:** OS disk resizing requires the VM to be stopped (deallocated). After Azure resizes the disk, the VM is started and the partition must be extended within the OS to use the new space. Even when a disk can be expanded online (D), the partition must still be extended inside the OS. Creating a new disk (B) is more complex. Data disk (A) doesn't solve OS disk space issues.
+**Why:** OS disk resizing requires the VM to be stopped (deallocated). After Azure resizes the disk, the VM is started and the partition must be extended within the OS to use the new space. Only eligible data disks can be expanded without deallocating the VM, so an OS disk cannot be resized while running (D). The partition must also be extended inside the OS. Creating a new disk (B) is more complex. Data disk (A) doesn't solve OS disk space issues.
 
-**Key Concept:** [Resize Managed Disks](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk)
+**Key Concept:** [Expand virtual hard disks attached to a Windows VM](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-disks)
 </details>
 
 ### Question 22
@@ -685,7 +685,7 @@ D. Azure Service Health alerts for their subscriptions and regions
 **Scenario:** A VM in Azure needs regular maintenance including Windows Updates. The company wants to control when updates are applied to avoid impacting business hours. What should they configure?
 
 A. Manual patching by an administrator, who signs in to each VM during a weekend window and runs the updates
-B. Azure Update Management with maintenance windows
+B. Azure Update Manager with maintenance windows
 C. Disable updates on the VMs and rebuild them from a new image once a quarter, with the patches already in it
 D. Windows Update automatic updates with default settings, with no maintenance window or schedule
 
@@ -694,9 +694,9 @@ D. Windows Update automatic updates with default settings, with no maintenance w
 
 **Correct: B**
 
-**Why:** Update management (Azure Update Manager, the successor to Automation Update Management) allows scheduling update deployments during maintenance windows. You can define schedules (e.g., weekends at 2 AM) and control which updates to apply. Default automatic updates (D) set no maintenance window. Manual patching (A) is labor-intensive. Disabling updates (C) is a security risk.
+**Why:** Azure Update Manager schedules update deployments within customer-defined maintenance windows for Azure VMs and Arc-enabled servers. It replaced Azure Automation Update Management. Default automatic updates (D) set no maintenance window. Manual patching (A) is labor-intensive. Disabling updates (C) is a security risk.
 
-**Key Concept:** [Update Management](https://learn.microsoft.com/en-us/azure/automation/update-management/overview)
+**Key Concept:** [Azure Update Manager](https://learn.microsoft.com/en-us/azure/update-manager/overview)
 </details>
 
 ### Question 38
@@ -704,7 +704,7 @@ D. Windows Update automatic updates with default settings, with no maintenance w
 
 A. Azure Blueprints
 B. Azure Advisor recommendations
-C. Azure Security Center with its secure score
+C. Microsoft Defender for Cloud with its secure score
 D. Azure Policy
 
 <details>

@@ -22,6 +22,6 @@ Random Search (ml development and training),"Moderate parameter space, explorati
 Bayesian (Vizier) (ml development and training),"Large parameter space, expensive training, best performance","notes,ml-development-and-training"
 BigQuery ML (ml development and training),"SQL users, data already in BigQuery, simple models","notes,ml-development-and-training"
 AutoML (ml development and training),"Quick POC, no ML expertise, standard problems","notes,ml-development-and-training"
-Vertex AI Training (ml development and training),"Custom code, specific requirements, research","notes,ml-development-and-training"
+Agent Platform Managed Training (ml development and training),"Custom code, specific requirements, research","notes,ml-development-and-training"
 Pre-trained APIs (ml development and training),"No training data, standard tasks, immediate results","notes,ml-development-and-training"
 Answer (ml development and training),AutoML Vision (8000 milli node hours budget),"notes,ml-development-and-training"

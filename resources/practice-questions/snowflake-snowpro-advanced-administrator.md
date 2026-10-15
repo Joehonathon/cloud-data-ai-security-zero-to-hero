@@ -48,19 +48,19 @@ D. ACCOUNTADMIN, which should be limited to a small number of users with MFA enf
 ---
 
 ### Question 3
-**Scenario:** A query ran successfully yesterday but its results must be recovered without rerunning it.
+**Scenario:** A query ran successfully a few hours ago but its results must be recovered without rerunning it.
 
 A. `RESULT_SCAN` against the query ID, within the 24-hour result cache retention
 B. Not possible
 C. Fail-safe
-D. Query the QUERY_HISTORY view, which stores the rows returned by each statement for 14 days
+D. Query the ACCOUNT_USAGE QUERY_HISTORY view, which returns the rows each statement produced for 14 days
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** The result cache holds results for 24 hours, extended on reuse up to 31 days, and serves them with no warehouse running at all. Time Travel restores table state rather than query results, and Fail-safe is a Snowflake-managed recovery of last resort.
+**Why:** Snowflake keeps persisted query results for 24 hours (extended on reuse up to 31 days from first execution), and RESULT_SCAN reads them, serving them them with no warehouse running at all. Time Travel restores table state rather than query results, and Fail-safe is a Snowflake-managed recovery of last resort.
 </details>
 
 ---

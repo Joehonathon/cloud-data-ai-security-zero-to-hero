@@ -218,6 +218,8 @@ D. Purview Audit Standard, searched for FileAccessed events across the SharePoin
 **Correct: B**
 
 **Why:** MailItemsAccessed is the mailbox auditing event that records which mail items an account accessed, and it is the specific record used in mailbox compromise investigations. It is available in Audit Standard as well as Audit Premium, and Premium keeps it for longer. File access events (D) do not cover mailbox items. Message trace shows mail flow, not item access. A Sentinel connector transports events but cannot create ones that were never generated.
+
+**Key Concept:** [Use MailItemsAccessed to investigate compromised accounts](https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts)
 </details>
 
 ---

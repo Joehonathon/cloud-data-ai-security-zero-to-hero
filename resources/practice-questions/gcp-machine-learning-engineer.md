@@ -5,7 +5,7 @@ difficulty: advanced
 
 # Google Cloud Professional Machine Learning Engineer - Practice Questions
 
-15 questions for the Professional ML Engineer exam, covering problem framing, data and model development on Vertex AI, pipeline automation, serving, and monitoring.
+15 questions for the Professional ML Engineer exam, covering problem framing, data and model development on Agent Platform (formerly Vertex AI), pipeline automation, serving, and monitoring.
 
 > **Cert page:** [exams/gcp/machine-learning-engineer/](../../exams/gcp/machine-learning-engineer/)
 
@@ -32,7 +32,7 @@ D. Collect more data from every system the company owns first, since more data a
 ### Question 2
 **Scenario:** Features must be shared consistently between training and online serving.
 
-A. Vertex AI Feature Store, serving the same feature values offline for training and online for inference
+A. Agent Platform Feature Store, serving the same feature values offline for training and online for inference
 B. A shared spreadsheet documenting each feature's formula, which engineers then reimplement separately in training and serving code
 C. Recompute them in each system from the raw data, using whatever library each team knows
 D. Cache the computed values in the application's memory and read them back during training runs as well as serving
@@ -48,10 +48,10 @@ D. Cache the computed values in the application's memory and read them back duri
 ---
 
 ### Question 3
-**Scenario:** Which Vertex AI capability trains a model with no code on tabular data?
+**Scenario:** Which Agent Platform capability trains a model with no code on tabular data?
 
 A. Model Garden
-B. Vertex AI Workbench
+B. Agent Platform Workbench
 C. AutoML
 D. Custom training with a container
 
@@ -68,7 +68,7 @@ D. Custom training with a container
 ### Question 4
 **Scenario:** A training job needs to run reproducibly with data prep, training, evaluation, and conditional deployment.
 
-A. Vertex AI Pipelines (Kubeflow Pipelines or TFX) with components and a conditional deploy step
+A. Agent Platform Pipelines (Kubeflow Pipelines or TFX) with components and a conditional deploy step
 B. A shell script on a VM that runs each step in order and is started by a cron entry every night, with logs kept on the disk
 C. Cloud Functions chained together by Pub/Sub messages, each function running one step of the workflow
 D. A notebook run manually by a data scientist, with results saved in a shared folder
@@ -96,7 +96,7 @@ D. Batch prediction jobs that score a sample of requests with the new model vers
 
 **Correct: C**
 
-**Why:** Vertex AI endpoints support several deployed models with a traffic split, so canary rollout and rollback are configuration changes rather than client changes. Each deployed model has its own machine type and autoscaling settings.
+**Why:** Agent Platform endpoints support several deployed models with a traffic split, so canary rollout and rollback are configuration changes rather than client changes. Each deployed model has its own machine type and autoscaling settings.
 </details>
 
 ---
@@ -123,7 +123,7 @@ D. One request per row sent in a loop from a script running on a single VM
 **Scenario:** A deployed model's inputs are drifting from the training distribution.
 
 A. Cloud Monitoring CPU and memory metrics on the endpoint, with an alert whenever utilization stays high for long
-B. Vertex AI Model Monitoring, comparing serving inputs to a training baseline to alert on skew and drift
+B. Model Monitoring on Agent Platform, comparing serving inputs to a training baseline to alert on skew and drift
 C. Nothing can be detected until users complain about the quality
 D. Manual sampling of predictions by an analyst each quarter, checked against later labels
 
@@ -179,7 +179,7 @@ D. Use a single large VM with as much memory as possible and run the preprocessi
 A. Random search over the full space with no stopping, running every trial to the end of training
 B. Grid search over every combination of the parameter values, which tests the whole space exhaustively
 C. One configuration chosen by the team's most experienced engineer and trained for a long time
-D. Vertex AI hyperparameter tuning with Bayesian optimization and early stopping
+D. Agent Platform hyperparameter tuning with Bayesian optimization and early stopping
 
 <details>
 <summary>Answer</summary>
@@ -197,7 +197,7 @@ D. Vertex AI hyperparameter tuning with Bayesian optimization and early stopping
 A. Fine-tune on the documents so that the model memorizes every fact they contain
 B. Paste the documents into every prompt, even past the context window
 C. Train a new LLM from scratch on the documents so that it knows the content natively, with no retrieval step
-D. Vertex AI Search and grounding, or a RAG pipeline with embeddings and Vector Search for retrieval
+D. Agent Search and grounding, or a RAG pipeline with embeddings and Vector Search for retrieval
 
 <details>
 <summary>Answer</summary>

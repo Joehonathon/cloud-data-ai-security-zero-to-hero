@@ -189,7 +189,7 @@ Choose based on your primary cloud:
 ### Cloud ML Services
 - **AWS:** SageMaker, Bedrock, Comprehend, Rekognition, Textract
 - **Azure:** Azure ML, OpenAI Service, Cognitive Services, AI Studio
-- **GCP:** Vertex AI, AutoML, AI Platform, Gemini API
+- **GCP:** Agent Platform (formerly Vertex AI), AutoML, AI Platform, Gemini API
 
 ### LLMs and Generative AI
 - Transformer architecture understanding
@@ -246,7 +246,7 @@ Salary ranges are approximate for the US market (2025).
 ## Hands-On Projects
 
 ### Project 1 - End-to-End ML Pipeline
-- Build a model training pipeline with SageMaker/Vertex AI/Azure ML
+- Build a model training pipeline with SageMaker/Agent Platform/Azure ML
 - Implement feature engineering, training, evaluation
 - Deploy to a real-time endpoint with monitoring
 - Add A/B testing between model versions
@@ -296,5 +296,5 @@ Salary ranges are approximate for the US market (2025).
 - Hugging Face Documentation: https://huggingface.co/docs
 - MLflow Documentation: https://mlflow.org/docs/latest/
 - AWS SageMaker: https://docs.aws.amazon.com/sagemaker/
-- Vertex AI: https://docs.cloud.google.com/gemini-enterprise-agent-platform
+- Agent Platform: https://docs.cloud.google.com/gemini-enterprise-agent-platform
 - Azure ML: https://learn.microsoft.com/en-us/azure/machine-learning/

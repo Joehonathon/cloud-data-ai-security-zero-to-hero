@@ -2,11 +2,11 @@
 
 ## Overview
 
-Comprehensive ML integration for data engineers covering BigQuery ML, Vertex AI, AutoML, and MLOps practices. This guide focuses on data engineering aspects of ML pipelines, model deployment, and production ML workflows on GCP.
+Comprehensive ML integration for data engineers covering BigQuery ML, Agent Platform (formerly Vertex AI), AutoML, and MLOps practices. This guide focuses on data engineering aspects of ML pipelines, model deployment, and production ML workflows on GCP.
 
 **Key Focus Areas**:
 - BigQuery ML for SQL-based machine learning (primary tool for data engineers)
-- Vertex AI integration for advanced ML workflows
+- Agent Platform integration for advanced ML workflows
 - Data preparation and feature engineering for ML
 - ML pipeline orchestration and automation
 - Model serving patterns (batch vs real-time)
@@ -17,10 +17,10 @@ Comprehensive ML integration for data engineers covering BigQuery ML, Vertex AI,
 ## Key Topics
 
 1. **BigQuery ML** - SQL-based ML (linear/logistic regression, DNN, K-means, time series, AutoML)
-2. **Vertex AI for Data Engineers** - AutoML, custom training, pipelines, feature store
+2. **Agent Platform for Data Engineers** - AutoML, custom training, pipelines, feature store
 3. **Data Preparation for ML** - Feature engineering, preprocessing, transformations
-4. **ML Pipeline Integration** - Vertex AI Pipelines, Kubeflow, Dataflow ML
-5. **Model Serving** - Vertex AI endpoints, BigQuery predictions, batch vs real-time
+4. **ML Pipeline Integration** - Agent Platform Pipelines, Kubeflow, Dataflow ML
+5. **Model Serving** - Agent Platform endpoints, BigQuery predictions, batch vs real-time
 6. **MLOps Patterns** - Versioning, monitoring, retraining, A/B testing
 7. **Pre-built ML APIs** - Vision, NLP, Translation for data enrichment
 
@@ -922,17 +922,17 @@ OPTIONS(
    - Limit AutoML `budget_hours` to control costs
    - Export models for repeated predictions outside BigQuery
 
-## Vertex AI for Data Engineers
+## Agent Platform for Data Engineers
 
-### Vertex AI Overview
+### Agent Platform Overview
 
-Vertex AI is GCP's unified ML platform for training, deploying, and managing ML models. Data engineers use it for advanced ML workflows beyond BigQuery ML capabilities.
+Agent Platform is GCP's unified ML platform for training, deploying, and managing ML models. Data engineers use it for advanced ML workflows beyond BigQuery ML capabilities.
 
-**When to use Vertex AI vs BigQuery ML**:
+**When to use Agent Platform vs BigQuery ML**:
 - **BigQuery ML**: SQL-based, simple models, data already in BigQuery, quick prototyping
-- **Vertex AI**: Complex models, custom algorithms, need for production deployment infrastructure, PyTorch/TensorFlow models
+- **Agent Platform**: Complex models, custom algorithms, need for production deployment infrastructure, PyTorch/TensorFlow models
 
-### Vertex AI AutoML
+### Agent Platform AutoML
 
 AutoML provides automatic model selection, feature engineering, and hyperparameter tuning without code.
 
@@ -1028,7 +1028,7 @@ image_model = image_job.run(
 )
 ```
 
-### Custom Training with Vertex AI
+### Custom Training with Agent Platform
 
 **Complete Example**: Custom TensorFlow training
 ```python
@@ -1169,7 +1169,7 @@ hpt_job = job.run(
 )
 ```
 
-### Vertex AI Feature Store
+### Agent Platform Feature Store
 
 Feature Store provides centralized feature management, serving, and monitoring for ML.
 
@@ -1623,9 +1623,9 @@ run_feature_pipeline(
 
 ## ML Pipelines
 
-### Vertex AI Pipelines
+### Agent Platform Pipelines
 
-Vertex AI Pipelines orchestrate end-to-end ML workflows using Kubeflow Pipelines (KFP).
+Agent Platform Pipelines orchestrate end-to-end ML workflows using Kubeflow Pipelines (KFP).
 
 **Complete Example**: Production ML pipeline
 ```python
@@ -2100,7 +2100,7 @@ def run_realtime_ml_pipeline():
         # Batch predictions (via separate scheduled query on BigQuery ML)
 ```
 
-**Pattern 3**: Dataflow → Feature Store → Vertex AI Endpoint
+**Pattern 3**: Dataflow → Feature Store → Agent Platform Endpoint
 ```python
 # Real-time prediction pipeline
 def run_realtime_prediction_pipeline():
@@ -2177,7 +2177,7 @@ ORDER BY version;
 
 ### Model Monitoring
 
-**Complete Example**: Vertex AI Model Monitoring setup
+**Complete Example**: Model Monitoring on Agent Platform setup
 ```python
 from google.cloud import aiplatform
 from google.cloud.aiplatform import model_monitoring
@@ -2483,7 +2483,7 @@ ORDER BY model_version;
 | Pattern | Latency | Throughput | Use Case | GCP Service |
 |---------|---------|------------|----------|-------------|
 | **Batch** | Minutes to hours | Very high (millions/hour) | Daily scoring, reports | BigQuery ML, Vertex AI Batch |
-| **Real-time** | <100ms | Medium (thousands/sec) | User-facing predictions | Vertex AI Endpoints |
+| **Real-time** | <100ms | Medium (thousands/sec) | User-facing predictions | Agent Platform Endpoints |
 | **Near real-time** | Seconds | High | Stream processing | Dataflow + BigQuery ML |
 | **Micro-batch** | Minutes | High | Periodic updates | Scheduled queries |
 
@@ -2648,7 +2648,7 @@ END;
 ```
 
 **Key Decisions**:
-- Use BigQuery ML (not Vertex AI) because data is already in BigQuery and batch processing is sufficient
+- Use BigQuery ML (not Agent Platform) because data is already in BigQuery and batch processing is sufficient
 - Use BOOSTED_TREE_CLASSIFIER for best accuracy on tabular data
 - Schedule with BigQuery scheduled queries for simplicity
 
@@ -2752,7 +2752,7 @@ run_fraud_detection_pipeline()
 ```
 
 **Key Decisions**:
-- Use Vertex AI Endpoint (not BigQuery ML) for low-latency real-time predictions
+- Use Agent Platform Endpoint (not BigQuery ML) for low-latency real-time predictions
 - Use Bigtable for fast feature lookup and result storage
 - Use Dataflow for stream processing and feature engineering
 - Store predictions in BigQuery for model retraining
@@ -3076,7 +3076,7 @@ endpoint = model.deploy(
 ```
 
 **Key Decisions**:
-- Use Vertex AI AutoML Vision for image classification without custom code
+- Use Agent Platform AutoML Vision for image classification without custom code
 - Use Cloud Functions for event-driven processing
 - Store metadata in Firestore for low-latency application access
 - Store analytics in BigQuery for reporting
@@ -3193,9 +3193,9 @@ GROUP BY product_id;
 
 ### Key Decision Framework
 
-**When to use BigQuery ML vs Vertex AI**:
+**When to use BigQuery ML vs Agent Platform**:
 
-| Factor | Use BigQuery ML | Use Vertex AI |
+| Factor | Use BigQuery ML | Use Agent Platform |
 |--------|----------------|---------------|
 | **Data location** | Data in BigQuery | Data in GCS or distributed |
 | **Model complexity** | Linear/logistic regression, DNN, K-means, ARIMA | Custom TensorFlow/PyTorch, complex architectures |
@@ -3214,9 +3214,9 @@ GROUP BY product_id;
 - **Auto selection**: AUTOML_CLASSIFIER, AUTOML_REGRESSOR
 
 **Serving pattern decisions**:
-- **Batch** (millions/day): BigQuery ML predictions, Vertex AI batch prediction
-- **Real-time** (<100ms): Vertex AI endpoints with auto-scaling
-- **Near real-time** (seconds): Dataflow + BigQuery ML or Vertex AI
+- **Batch** (millions/day): BigQuery ML predictions, Agent Platform batch prediction
+- **Real-time** (<100ms): Agent Platform endpoints with auto-scaling
+- **Near real-time** (seconds): Dataflow + BigQuery ML or Agent Platform
 - **Micro-batch** (minutes): Scheduled BigQuery queries
 
 ### Common Exam Question Patterns
@@ -3226,7 +3226,7 @@ GROUP BY product_id;
 - **Why**: Data already in BigQuery, batch predictions sufficient, SQL-based
 
 **Pattern 2**: "Real-time fraud detection with <200ms latency requirement"
-- **Answer**: Vertex AI endpoint with Dataflow for feature engineering
+- **Answer**: Agent Platform endpoint with Dataflow for feature engineering
 - **Why**: Low latency requirement, real-time serving needed
 
 **Pattern 3**: "Forecast sales for 50,000 products over next 30 days"
@@ -3238,7 +3238,7 @@ GROUP BY product_id;
 - **Why**: Pre-trained NLP model, streaming data, scale to millions
 
 **Pattern 5**: "Classify product images uploaded by users"
-- **Answer**: Cloud Storage → Cloud Functions → Vertex AI AutoML Vision
+- **Answer**: Cloud Storage → Cloud Functions → Agent Platform AutoML Vision
 - **Why**: Image classification, event-driven, no ML expertise needed
 
 **Pattern 6**: "Product recommendations for millions of users"
@@ -3246,11 +3246,11 @@ GROUP BY product_id;
 - **Why**: Collaborative filtering, batch processing, serve from cache
 
 **Pattern 7**: "Model performance degrading, need automated retraining"
-- **Answer**: Cloud Monitoring alerts → Pub/Sub → Cloud Functions → Vertex AI Pipelines
+- **Answer**: Cloud Monitoring alerts → Pub/Sub → Cloud Functions → Agent Platform Pipelines
 - **Why**: Monitoring-driven automation, retraining workflow orchestration
 
 **Pattern 8**: "A/B test two model versions"
-- **Answer**: Vertex AI endpoint with traffic splitting
+- **Answer**: Agent Platform endpoint with traffic splitting
 - **Why**: Built-in traffic management, gradual rollout capability
 
 ### Critical Exam Knowledge
@@ -3274,7 +3274,7 @@ GROUP BY product_id;
 - Hyperparameter tuning with HyperparameterTuningJobSpec
 - Feature Store for centralized feature management
 - Model monitoring for drift detection
-- Vertex AI Pipelines (Kubeflow) for ML workflows
+- Agent Platform Pipelines (Kubeflow) for ML workflows
 
 **Feature Engineering Techniques**:
 - Temporal features (EXTRACT, DATE functions)
@@ -3296,37 +3296,37 @@ GROUP BY product_id;
 
 **Data Pipeline Integration**:
 - BigQuery → BigQuery ML (simplest for batch)
-- Pub/Sub → Dataflow → Vertex AI Endpoint (real-time)
-- Dataflow → Feature Store → Vertex AI (feature management)
+- Pub/Sub → Dataflow → Agent Platform Endpoint (real-time)
+- Dataflow → Feature Store → Agent Platform (feature management)
 - Cloud Composer → BigQuery ML (orchestrated batch ML)
-- Vertex AI Pipelines (end-to-end ML workflow automation)
+- Agent Platform Pipelines (end-to-end ML workflow automation)
 
 **Cost Optimization**:
 - BigQuery ML: Optimize query costs (partitioned tables, clustered columns)
-- Vertex AI training: Right-size machine types, use preemptible instances
-- Vertex AI serving: Auto-scaling, batch predictions for non-real-time use cases
+- Agent Platform training: Right-size machine types, use preemptible instances
+- Agent Platform serving: Auto-scaling, batch predictions for non-real-time use cases
 - Pre-trained APIs: Batch API calls, cache results
 - Feature Store: Optimize online/offline serving based on use case
 
 ### Hands-on Practice Checklist
 
 - [ ] Create BigQuery ML models for all major types (LINEAR_REG, LOGISTIC_REG, DNN, KMEANS, ARIMA_PLUS)
-- [ ] Train and deploy Vertex AI AutoML model (Tabular or Vision)
-- [ ] Build custom training job with TensorFlow on Vertex AI
-- [ ] Deploy model to Vertex AI endpoint and make predictions
+- [ ] Train and deploy Agent Platform AutoML model (Tabular or Vision)
+- [ ] Build custom training job with TensorFlow on Agent Platform
+- [ ] Deploy model to Agent Platform endpoint and make predictions
 - [ ] Create Vertex AI Pipeline with multiple components
 - [ ] Set up model monitoring for drift detection
 - [ ] Implement A/B testing with traffic splitting
-- [ ] Build Dataflow pipeline with ML.PREDICT or Vertex AI endpoint calls
+- [ ] Build Dataflow pipeline with ML.PREDICT or Agent Platform endpoint calls
 - [ ] Create Cloud Composer DAG for ML retraining
 - [ ] Use Natural Language API or Vision API in data pipeline
 - [ ] Implement feature engineering with window functions and ML functions
-- [ ] Export BigQuery ML model and import into Vertex AI
+- [ ] Export BigQuery ML model and import into Agent Platform
 
 ### Common Pitfalls to Avoid
 
-1. **Using Vertex AI when BigQuery ML is sufficient** - If data is in BigQuery and batch predictions work, use BigQuery ML
-2. **Not considering latency requirements** - Real-time (<100ms) requires Vertex AI endpoints, not BigQuery ML
+1. **Using Agent Platform when BigQuery ML is sufficient** - If data is in BigQuery and batch predictions work, use BigQuery ML
+2. **Not considering latency requirements** - Real-time (<100ms) requires Agent Platform endpoints, not BigQuery ML
 3. **Forgetting auto_class_weights for imbalanced data** - Always use for classification with class imbalance
 4. **Not using time_series_id_col for multiple time series** - Efficient way to forecast many series at once
 5. **Ignoring feature engineering** - Temporal features, lag features, and window aggregations are critical
@@ -3389,11 +3389,11 @@ gcloud ai batch-prediction-jobs create --region=us-central1 --model=MODEL_ID --j
 
 ### Official Documentation
 - [BigQuery ML Documentation](https://cloud.google.com/bigquery-ml/docs) - Complete BigQuery ML reference
-- [Vertex AI Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform) - Unified ML platform guide
+- [Agent Platform documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform) - Unified ML platform guide
 - [ML on GCP Best Practices](https://cloud.google.com/architecture/ml-on-gcp-best-practices) - Architecture patterns
 - [MLOps Maturity Model](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) - Production ML workflows
 - [BigQuery ML Tutorial](https://cloud.google.com/bigquery-ml/docs/tutorials) - Step-by-step guides
-- [Vertex AI Samples](https://github.com/GoogleCloudPlatform/vertex-ai-samples) - Code examples
+- [Agent Platform samples](https://github.com/GoogleCloudPlatform/vertex-ai-samples) - Code examples
 
 ### Key Reference Pages
 - [BigQuery ML Model Types](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create) - All model types and options
@@ -3416,7 +3416,7 @@ gcloud ai batch-prediction-jobs create --region=us-central1 --model=MODEL_ID --j
 **Document Statistics**:
 - Original length: 238 lines
 - Enhanced length: ~3,400 lines
-- Coverage: Comprehensive BigQuery ML (all model types), Vertex AI integration, complete ML scenarios, MLOps patterns, and exam-focused tips
+- Coverage: Comprehensive BigQuery ML (all model types), Agent Platform integration, complete ML scenarios, MLOps patterns, and exam-focused tips
 - Code examples: 50+ complete implementations
 - Scenarios: 6 end-to-end data engineering ML scenarios
 - Focus: Professional Data Engineer exam requirements for ML operations

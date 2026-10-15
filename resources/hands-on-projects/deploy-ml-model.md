@@ -180,7 +180,7 @@ model = ml_client.models.create_or_update(
 
 **Docs:** https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-models
 
-### GCP Vertex AI Model Registry
+### GCP Agent Platform Model Registry
 
 ```bash
 gcloud ai models upload \
@@ -267,7 +267,7 @@ ml_client.online_deployments.begin_create_or_update(deployment).result()
 
 **Docs:** https://learn.microsoft.com/en-us/azure/machine-learning/how-to-deploy-online-endpoints
 
-### GCP Vertex AI Endpoint
+### GCP Agent Platform Endpoint
 
 ```bash
 # Create endpoint
@@ -319,7 +319,7 @@ endpoint.traffic = {"v1": 90, "v2": 10}
 ml_client.online_endpoints.begin_create_or_update(endpoint).result()
 ```
 
-**GCP Vertex AI**
+**GCP Agent Platform (formerly Vertex AI)**
 ```bash
 gcloud ai endpoints deploy-model ENDPOINT_ID \
   --region us-central1 \
@@ -385,7 +385,7 @@ monitor.create_monitoring_schedule(
 )
 ```
 
-**GCP Vertex AI Model Monitoring**
+**GCP Model Monitoring on Agent Platform**
 ```bash
 gcloud ai model-monitoring-jobs create \
   --display-name churn-monitoring \
@@ -423,6 +423,6 @@ gcloud ai model-monitoring-jobs create \
 
 - [AWS SageMaker Developer Guide](https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html)
 - [Azure Machine Learning Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/)
-- [GCP Vertex AI Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)
+- [GCP Agent Platform documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)
 - [MLflow Documentation](https://mlflow.org/docs/latest/index.html)
 - [scikit-learn Documentation](https://scikit-learn.org/stable/documentation.html)

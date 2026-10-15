@@ -169,7 +169,7 @@ D. Separate GCP accounts for each environment, with a copy of the container imag
 **Scenario:** A machine learning team needs to train models on large datasets. Training jobs run for hours and require GPUs. They want to minimize cost while maintaining performance. What compute solution should they use?
 
 A. Persistent GPU VMs running continuously on on-demand pricing, so training jobs never wait for capacity
-B. Vertex AI Training with preemptible/spot VMs, or GKE with spot node pools
+B. Agent Platform Managed Training (formerly Vertex AI Training) with preemptible/spot VMs, or GKE with spot node pools
 C. Cloud Functions for ML training
 D. Standard VMs without GPUs
 
@@ -178,9 +178,9 @@ D. Standard VMs without GPUs
 
 **Correct: B**
 
-**Why:** Vertex AI Training manages ML jobs with automatic infrastructure provisioning. Preemptible/spot VMs cost up to 91% less than regular VMs. Training jobs can checkpoint and resume if preempted. GKE with spot node pools provides similar benefits for custom training. Persistent VMs (A) waste money when not training. Functions (C) have time limits and no GPUs. Non-GPU VMs (D) are slower.
+**Why:** Agent Platform Managed Training manages ML jobs with automatic infrastructure provisioning. Preemptible/spot VMs cost up to 91% less than regular VMs. Training jobs can checkpoint and resume if preempted. GKE with spot node pools provides similar benefits for custom training. Persistent VMs (A) waste money when not training. Functions (C) have time limits and no GPUs. Non-GPU VMs (D) are slower.
 
-**Key Concept:** [Vertex AI Training](https://cloud.google.com/vertex-ai/docs/training/overview)
+**Key Concept:** [Agent Platform Managed Training](https://cloud.google.com/vertex-ai/docs/training/overview)
 </details>
 
 ## Domain 2: Manage and Provision Cloud Solution Infrastructure (Questions 11-16)
@@ -852,7 +852,7 @@ D. Train a custom model from scratch on supplier data
 ### Question 47
 **Scenario:** Cymbal Retail customers should find products by describing them in natural language, and the team wants a managed solution.
 
-A. Vertex AI Search for commerce (Discovery AI) behind a conversational agent
+A. Agent Search for commerce (Discovery AI) behind a conversational agent
 B. A custom ranking model on GPUs, trained on click data and served from a self-managed endpoint behind the storefront
 C. A custom keyword query against the relational database, with a synonym table kept by hand
 D. A Cloud Storage bucket of static product pages that customers browse by category and brand

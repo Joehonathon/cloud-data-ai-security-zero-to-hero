@@ -258,7 +258,7 @@ D. Azure Regions
 ### Question 13
 **Scenario:** An organization has multiple Azure subscriptions across different business units. They want to apply consistent policies across all subscriptions. What should they use?
 
-A. Azure Blueprints, which define repeatable environments for one deployment
+A. Azure Advisor, which recommends improvements to existing resources
 B. Management Groups, applied above subscriptions
 C. Resource Groups
 D. Resource Tags
@@ -268,7 +268,7 @@ D. Resource Tags
 
 **Correct: B**
 
-**Why:** Management Groups allow organizing multiple subscriptions and applying policies across them hierarchically. Resource Groups organize resources within subscriptions. Tags are for metadata. Blueprints define repeatable environments but Management Groups control policy inheritance.
+**Why:** Management Groups allow organizing multiple subscriptions and applying policies across them hierarchically. Resource Groups organize resources within subscriptions. Tags are for metadata. Advisor recommends improvements but does not apply policy.
 
 **Key Concept:** [Management Groups](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
 </details>
@@ -541,7 +541,7 @@ D. Locally Redundant Storage (LRS), within one datacenter
 **Scenario:** A company wants to ensure all deployed resources have a "CostCenter" tag for billing purposes. How can they enforce this automatically?
 
 A. Azure Management Groups
-B. Azure Blueprints
+B. Azure Advisor
 C. Azure Resource Groups
 D. Azure Policy, which enforces rules on resources
 
@@ -550,7 +550,7 @@ D. Azure Policy, which enforces rules on resources
 
 **Correct: D**
 
-**Why:** Azure Policy can enforce tagging requirements, either denying resources without required tags or automatically adding them. Resource Groups organize resources. Blueprints define environments. Management Groups manage subscriptions. Policy enforces compliance rules.
+**Why:** Azure Policy can enforce tagging requirements, either denying resources without required tags or automatically adding them. Resource Groups organize resources. Advisor only recommends improvements. Management Groups manage subscriptions. Policy enforces compliance rules.
 
 **Key Concept:** [Azure Policy](https://docs.microsoft.com/en-us/azure/governance/policy/overview)
 </details>
@@ -718,21 +718,21 @@ D. Microsoft Entra ID (Azure AD)
 ---
 
 ### Question 36
-**Scenario:** A company wants to standardize deployments by creating a repeatable set of Azure resources including VMs, networking, and policies. What should they use?
+**Scenario:** A company wants to standardize deployments by defining a repeatable set of Azure resources, including VMs and networking, as code. What should they use?
 
 A. Azure Policy
-B. ARM Templates, declarative JSON resource definitions
-C. Azure Blueprints, packaged definitions
-D. Azure Resource Groups, containers for resources
+B. ARM templates or Bicep files, which declare the resources to deploy
+C. Azure Advisor, which gives recommendations on existing resources and workloads
+D. Azure Resource Groups, which are containers that organize related resources
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
-**Why:** Azure Blueprints packages ARM templates, policies, role assignments, and resource groups into a versioned, repeatable definition. ARM Templates define resources but not policies or roles together. Policy enforces rules. Resource Groups organize resources.
+**Why:** ARM templates (and Bicep, which compiles to ARM templates) declare Azure resources as code, so the same deployment can be repeated with the same result. Azure Policy enforces rules. Azure Advisor only gives recommendations. Resource Groups organize resources but do not define them. Azure Blueprints, which once packaged this, is being retired.
 
-**Key Concept:** [Azure Blueprints](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview)
+**Key Concept:** [ARM templates overview](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)
 </details>
 
 ---
@@ -778,21 +778,21 @@ D. Network Security Groups
 ---
 
 ### Question 39
-**Scenario:** What is the maximum number of subscriptions that can be managed under a single management group?
+**Scenario:** How many levels of depth does a management group tree support, not counting the root level or the subscription level?
 
-A. 100
-B. 10,000 subscriptions
-C. Unlimited, with no stated cap on subscriptions
-D. 1,000
+A. 3 levels
+B. 6 levels of management groups
+C. 10 levels
+D. Unlimited, with no stated cap on depth
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** A management group can contain up to 10,000 subscriptions. This hierarchical structure helps organize large enterprise environments with consistent policy application.
+**Why:** A management group tree supports up to six levels of depth. This limit does not include the root level or the subscription level. A single directory can hold 10,000 management groups. Each management group or subscription can have only one parent.
 
-**Key Concept:** [Management Group Limits](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview#hierarchy-of-management-groups-and-subscriptions)
+**Key Concept:** [Management group limits](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview#important-facts-about-management-groups)
 </details>
 
 ---
@@ -856,7 +856,7 @@ D. Azure Advisor
 | 33 | A | Management & Governance |
 | 34 | D | Management & Governance |
 | 35 | D | Management & Governance |
-| 36 | C | Management & Governance |
+| 36 | B | Management & Governance |
 | 37 | A | Management & Governance |
 | 38 | C | Management & Governance |
 | 39 | B | Management & Governance |

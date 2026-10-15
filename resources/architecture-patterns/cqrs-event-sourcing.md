@@ -252,7 +252,7 @@ flowchart LR
 | **Event Distribution** | Pub/Sub + Eventarc | Event fan-out |
 | **Command Processing** | Cloud Run / Cloud Functions | Command handlers |
 | **Read Store (SQL)** | Cloud SQL / AlloyDB | Relational projections |
-| **Read Store (Search)** | Vertex AI Search | Search projections |
+| **Read Store (Search)** | Agent Search (formerly Vertex AI Search) | Search projections |
 | **Read Store (Cache)** | Memorystore for Redis | Low-latency projections |
 | **Projection Processing** | Cloud Functions (Pub/Sub trigger) | Build read models |
 | **API** | Cloud Endpoints / Apigee | Command and query endpoints |

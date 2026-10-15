@@ -572,7 +572,7 @@ D. Aggregate latency metrics per service, broken down by endpoint and compared a
 ### Question 31
 **Scenario:** A team wants to detect anomalous behavior in their metrics - sudden drops in traffic, unusual error patterns, or unexpected resource consumption - without manually setting thresholds for every metric. What approach enables this?
 
-A. Use Cloud Monitoring anomaly detection / ML-based alerting policies
+A. Use PromQL alerts that compare values with the same period last week
 B. No anomaly detection - rely on manual observation
 C. Only alert on absolute values, using one fixed number per metric that never changes
 D. Set static thresholds for all metrics, reviewed and adjusted by the on-call team every quarter
@@ -582,9 +582,9 @@ D. Set static thresholds for all metrics, reviewed and adjusted by the on-call t
 
 **Correct: A**
 
-**Why:** Cloud Monitoring supports anomaly detection that learns normal patterns and alerts on deviations. This catches issues without manually tuning every threshold. It adapts to changing baselines (e.g., different weekend traffic). Static thresholds (D) require maintenance and may miss pattern changes. Absolute values (C) don't account for variability. Manual observation (B) doesn't scale.
+**Why:** Cloud Monitoring has no built-in ML anomaly condition, but PromQL alerting policies can detect anomalies by comparing the last 5 minutes to the same period a week ago, or by alerting beyond 3 standard deviations from an average. This avoids hand-tuned static thresholds and follows weekly patterns. Static thresholds (D) require maintenance and may miss pattern changes. Absolute values (C) don't account for variability. Manual observation (B) doesn't scale.
 
-**Key Concept:** [Anomaly Detection in Cloud Monitoring](https://cloud.google.com/monitoring/alerts/concepts-indepth#anomaly-detection)
+**Key Concept:** [PromQL-based alerting policies](https://docs.cloud.google.com/monitoring/promql/promql-in-alerting)
 </details>
 
 ### Question 32

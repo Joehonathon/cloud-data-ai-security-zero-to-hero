@@ -265,7 +265,7 @@ Organization
 
 #### 1. AI and Machine Learning Heritage
 **Business Context:** Google built the AI that powers Search, Gmail, Google Photos, and YouTube
-- **Vertex AI:** Enterprise AI platform built on same technology as Google's consumer products
+- **Agent Platform (formerly Vertex AI):** Enterprise AI platform built on same technology as Google's consumer products
   - Business benefit: Access to battle-tested AI that processes billions of queries daily
   - Competitive advantage: 15+ years of ML innovation vs competitors' 5-7 years
 - **Gemini (formerly Bard):** Multimodal AI for business applications
@@ -355,7 +355,7 @@ Organization
 
 #### When to Choose Google Cloud
 **Best fit scenarios:**
-1. **Data analytics and AI/ML workloads:** BigQuery and Vertex AI are industry-leading
+1. **Data analytics and AI/ML workloads:** BigQuery and Agent Platform are industry-leading
 2. **Containerized applications:** Kubernetes heritage provides best-in-class container platform
 3. **Open source preference:** Strong commitment to open standards and portability
 4. **Sustainability requirements:** Strongest environmental track record
@@ -462,7 +462,7 @@ Organization
 #### Customer Examples
 - **Mayo Clinic:** Uses GCP for genomics research
 - **Optum:** Healthcare analytics on BigQuery
-- **Sanofi:** Drug discovery using Vertex AI
+- **Sanofi:** Drug discovery using Agent Platform
 
 ### Financial Services and Insurance
 
@@ -580,7 +580,7 @@ Organization
 Partners earn specializations in:
 - **Infrastructure:** Migration, optimization, managed services
 - **Data Analytics:** BigQuery, Looker implementations
-- **AI/ML:** Vertex AI, custom model development
+- **AI/ML:** Agent Platform, custom model development
 - **Industry verticals:** Healthcare, retail, financial services
 - **Application Development:** Modernization, cloud-native development
 
@@ -766,7 +766,7 @@ Partners earn specializations in:
 **Why GCP:**
 - IoT Core ingests millions of sensor readings per second
 - BigQuery ML builds predictive models without data science team
-- Vertex AI provides pre-built maintenance models
+- Agent Platform provides pre-built maintenance models
 - Looker dashboards provide real-time factory visibility
 
 **Business outcome:**
@@ -783,7 +783,7 @@ Partners earn specializations in:
 - Avoid vendor lock-in
 
 **Why GCP:**
-- Vertex AI provides ready-to-use AI models
+- Agent Platform provides ready-to-use AI models
 - Cloud Run serverless platform (pay only for requests)
 - Free tier and startup credits reduce initial costs
 - Open source technologies (Kubernetes, TensorFlow) prevent lock-in
@@ -803,7 +803,7 @@ Partners earn specializations in:
 **What you need to know:**
 - BigQuery is serverless, separates storage from compute, best for analytics
 - GKE is most mature Kubernetes offering (Google created Kubernetes)
-- Vertex AI brings together Google's 15+ years of ML innovation
+- Agent Platform brings together Google's 15+ years of ML innovation
 - Sustainability: Google carbon-neutral since 2007, strongest environmental record
 
 **Sample question:**

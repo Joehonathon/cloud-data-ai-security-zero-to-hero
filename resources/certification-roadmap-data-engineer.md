@@ -1066,7 +1066,7 @@ The **AWS Certified Data Engineer - Associate (DEA-C01)** is the modern AWS data
 
 3. **Operationalize Machine Learning Models (23%)**
    - BigQuery ML
-   - Vertex AI
+   - Agent Platform (formerly Vertex AI)
    - Model deployment
    - Feature stores
 

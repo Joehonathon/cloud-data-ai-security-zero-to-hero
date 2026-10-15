@@ -36,7 +36,7 @@ D. Azure Blob Storage with a single container and flat namespace, where zones ar
 ### Question 2
 **Scenario:** A company needs to store time-series IoT sensor data with high write throughput (millions of records per second) and fast range queries by device ID and time window. They need automatic scaling and global distribution. Which database service is BEST suited?
 
-A. Azure Cosmos DB with time series optimized container and partition key on device ID
+A. Azure Cosmos DB for NoSQL with a partition key built from device ID and a time bucket, and autoscale throughput
 B. Azure SQL Database with a Hyperscale tier and a clustered index on device ID and timestamp, which scales reads well but not to millions of writes per second worldwide
 C. Azure Database for PostgreSQL
 D. Azure Table Storage
@@ -46,9 +46,9 @@ D. Azure Table Storage
 
 **Correct: A**
 
-**Why:** Cosmos DB provides unlimited scale with automatic partitioning. Device ID as partition key ensures co-located device data for efficient range queries. Time series containers optimize for append-heavy workloads. Global distribution with multi-region writes supports IoT scale. SQL Database (B) has scaling limits. Table Storage (D) has limited query capabilities. PostgreSQL (C) requires manual sharding at scale.
+**Why:** Cosmos DB scales out through automatic partitioning and offers global distribution with multi-region writes. A partition key of device ID plus a time bucket spreads the heavy write load across many logical partitions, avoids a hot partition per device, and keeps a device's time-window query within a few partitions. Autoscale throughput follows the load. SQL Database (B) has scaling limits for this write rate. Table Storage (D) has limited query capabilities. PostgreSQL (C) requires manual sharding at scale.
 
-**Key Concept:** [Cosmos DB for IoT](https://docs.microsoft.com/azure/cosmos-db/use-cases#iot-and-telematics)
+**Key Concept:** [Partitioning and horizontal scaling in Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning)
 </details>
 
 ### Question 3
@@ -108,7 +108,7 @@ D. Separate storage accounts per hospital with Purview governance and aggregatio
 ### Question 6
 **Scenario:** A company is migrating a 10TB SQL Server data warehouse to Azure. They need to minimize downtime during migration, validate data integrity, and optimize for Azure's architecture. What migration approach should they use?
 
-A. Azure Database Migration Service with online migration and continuous replication, followed by Synapse-specific optimizations (distribution, indexing)
+A. Bulk-load the data with a Synapse pipeline using COPY INTO, then run incremental loads until cutover, validate row counts, and set table distributions and columnstore indexes
 B. Backup and restore directly from the on-premises server, which freezes the source during the copy
 C. Export to CSV and reimport with a bulk loader, which loses constraints and column types
 D. Rebuild from scratch in Azure with new ETL jobs, which takes months and gives no validation against the old warehouse
@@ -118,9 +118,9 @@ D. Rebuild from scratch in Azure with new ETL jobs, which takes months and gives
 
 **Correct: A**
 
-**Why:** Azure DMS provides online migration with continuous replication, minimizing downtime (cutover only requires catching up recent changes). After migration, optimize for Synapse: choose appropriate distribution (hash for large tables, replicate for small dimension tables), create columnstore indexes, and partition large fact tables. Backup/restore (B) requires extended downtime. CSV export (C) loses schema details. Rebuild (D) is time-consuming.
+**Why:** A dedicated SQL pool is loaded with COPY or PolyBase from files staged in the data lake, and pipelines orchestrate the transfer. An initial full load followed by incremental loads of changed rows keeps the final cutover window short, and row counts or checksums validate integrity. After loading, choose distributions (hash for large tables, replicated for small dimensions), columnstore indexes, and partitions for large fact tables. Backup and restore (B) means extended downtime. CSV export (C) loses schema details. A rebuild (D) is time-consuming.
 
-**Key Concept:** [Azure Database Migration Service](https://docs.microsoft.com/azure/dms/dms-overview)
+**Key Concept:** [Migrate a data warehouse to a dedicated SQL pool](https://learn.microsoft.com/en-us/azure/synapse-analytics/migration-guides/migrate-to-synapse-analytics-guide)
 </details>
 
 ### Question 7
@@ -236,10 +236,10 @@ D. Ignore the problem because the Spark scheduler will merge small files itself 
 </details>
 
 ### Question 13
-**Scenario:** A data pipeline must ensure exactly-once processing semantics when writing to multiple targets (data lake, data warehouse, operational database). A failure mid-pipeline should not result in partial data in any target. What approach provides this guarantee?
+**Scenario:** A data pipeline must ensure exactly-once processing semantics when writing to multiple targets (data lake, data warehouse, operational database). A failure mid-pipeline must not leave duplicate or permanently partial data in any target. What approach provides this guarantee?
 
 A. Retry the whole pipeline from the beginning on any failure, which repeats writes that already succeeded and so can duplicate data in targets
-B. Implement transactional writes using Delta Lake with ACID transactions, and database transactions for warehouse writes
+B. Make every target write idempotent with a batch ID (upsert or MERGE) and checkpoint progress, so a retry is safe
 C. Hope failures don't happen by running on reliable infrastructure
 D. Write to targets sequentially, with the data lake first and the warehouse next, which orders the writes but does not make them atomic
 
@@ -248,9 +248,9 @@ D. Write to targets sequentially, with the data lake first and the warehouse nex
 
 **Correct: B**
 
-**Why:** Delta Lake provides ACID transactions on data lakes - writes are atomic and either fully succeed or are rolled back. Database transactions provide similar guarantees for warehouse writes. Orchestrate with checkpointing so partial pipeline failure can resume from checkpoint without duplicating completed work. Hope (C) isn't reliable. Sequential writes (D) don't guarantee atomicity. Full retry (A) causes duplicates.
+**Why:** No single transaction spans a data lake, a warehouse, and an operational database. Delta Lake's ACID guarantee applies to one table. Exactly-once results across targets come from idempotent writes (for example Delta MERGE keyed on a batch ID, and upserts in the warehouse) plus checkpointing, so a retry finishes the missing work without duplicating completed work. Full retry with appends (A) duplicates data. Hope (C) isn't reliable. Sequential writes (D) order the work but are not atomic.
 
-**Key Concept:** [Delta Lake ACID Transactions](https://docs.microsoft.com/azure/databricks/delta/delta-batch)
+**Key Concept:** [What is Delta Lake in Azure Databricks?](https://learn.microsoft.com/en-us/azure/databricks/delta/)
 </details>
 
 ### Question 14
@@ -740,5 +740,5 @@ D. Trust users to add WHERE clauses for their region on every query, which relie
 
 **Why:** Row-Level Security creates a security predicate function that filters rows based on user context (e.g., SUSER_SNAME() mapped to region). Applied as security policy on the table, it transparently filters all queries. Users automatically see only their data. Separate tables (C) complicate queries and maintenance. Application filtering (B) can be bypassed with direct SQL access. Trust (D) isn't enforcement.
 
-**Key Concept:** [Row-Level Security](https://docs.microsoft.com/azure/synapse-analytics/sql-data-warehouse/column-level-security)
+**Key Concept:** [Row-Level Security](https://learn.microsoft.com/en-us/sql/relational-databases/security/row-level-security)
 </details>

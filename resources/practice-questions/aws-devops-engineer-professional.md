@@ -37,21 +37,21 @@ D. Use Step Functions to orchestrate deployment with manual approval and rollbac
 </details>
 
 ### Question 2
-**Scenario:** A company uses CodeCommit for source control. They want to enforce that all commits are GPG-signed and that no one can push directly to the main branch without a pull request review.
+**Scenario:** A company uses CodeCommit for source control. They want to make sure that no one can push directly to the main branch and that every change reaches main only through an approved pull request.
 
-A. Use an AWS Organizations SCP that requires signed commits for every CodeCommit repository in the member accounts
+A. Use an AWS Organizations SCP that requires pull requests for every CodeCommit repository in the member accounts
 B. Deny codecommit:GitPush to main with IAM and add approval rule templates
-C. Set up a repository trigger that invokes Lambda after each push to scan for unsigned commits and alert the team
-D. Configure the CodeCommit repository settings to require signed commits and block direct pushes to main, enforced for every IAM user in the account
+C. Set up a repository trigger that invokes Lambda after each push to main and alerts the team
+D. Turn on a repository setting that requires pull requests for main, enforced for every IAM user in the account
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** CodeCommit approval rule templates enforce pull request reviews. IAM policies can deny direct pushes to specific branches using conditions. CodeCommit does not verify GPG signatures server-side, so no option here can truly enforce signing; B delivers the enforceable part (no direct pushes to main, required review). A trigger (C) runs after the push and cannot block it. Option D describes a setting that doesn't exist. SCPs (A) have no condition for commit signing.
+**Why:** An IAM policy that denies pushes and merges to main (using the branch context key) blocks direct pushes, and approval rule templates require approvals before a pull request can be merged. A trigger (C) runs after the push and cannot block it. CodeCommit has no repository setting that requires pull requests on its own (D). SCPs (A) cannot require pull requests.
 
-**Key Concept:** [CodeCommit Approval Rules](https://docs.aws.amazon.com/codecommit/latest/userguide/approval-rule-templates.html)
+**Key Concept:** [Limit pushes and merges to branches in CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-conditional-branch.html)
 </details>
 
 ### Question 3
@@ -293,9 +293,9 @@ D. Use Packer with CodeBuild scheduled by EventBridge each month, with a Lambda 
 </details>
 
 ### Question 16
-**Scenario:** A team has CloudFormation stacks deployed across multiple regions. They need to update a parameter value (e.g., AMI ID) in all regions atomically. If any region fails, all should roll back.
+**Scenario:** A team has CloudFormation stacks deployed across multiple Regions. They need to update a parameter value (such as an AMI ID) one Region at a time and stop the rollout at the first Region that fails, so later Regions are not touched.
 
-A. Use StackSets with operation preferences that set failure tolerance to 0, so the first failure stops the operation
+A. Use StackSets with sequential Region deployment and a failure tolerance of 0, so a failure in one Region stops the operation in every later Region
 B. Use CodePipeline with parallel deploy actions
 C. Use StackSets with the SEQUENTIAL operation preference and a failure tolerance of 100 percent
 D. Update stacks sequentially in each region
@@ -305,9 +305,9 @@ D. Update stacks sequentially in each region
 
 **Correct: A**
 
-**Why:** StackSets with failure tolerance of 0 stops operations on first failure. Combined with max concurrent operations, you can control rollout. However, StackSets don't provide atomic rollback across regions - they stop on failure but don't undo completed deployments. For true atomicity, you'd need custom orchestration. Option A is closest to the requirement within AWS native tools.
+**Why:** With RegionConcurrencyType set to SEQUENTIAL and a failure tolerance of 0, CloudFormation stops at the first failing Region and does not try later Regions. Failure tolerance applies per Region, so a PARALLEL setting would not stop the others. StackSets does not undo Regions that already succeeded. A tolerance of 100 percent never stops (C). Parallel pipeline actions all run at once (B). Manual updates (D) have no automatic stop.
 
-**Key Concept:** [StackSet Operations](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html)
+**Key Concept:** [StackSet Operation Preferences](https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_StackSetOperationPreferences.html)
 </details>
 
 ---
@@ -593,21 +593,21 @@ D. Call the ECS UpdateService API with the previous task definition revision ARN
 </details>
 
 ### Question 32
-**Scenario:** A company uses Systems Manager to manage their EC2 fleet. They need to automatically patch instances during maintenance windows and roll back if patching causes failures.
+**Scenario:** A company uses Systems Manager to manage their EC2 fleet. They need to patch instances during maintenance windows and automatically roll back if patching causes failures.
 
-A. Use SSM Patch Manager with maintenance windows and patch baselines
-B. Use AWS-RunPatchBaseline with automatic rollback on failure
+A. Use Patch Manager with maintenance windows and baselines and rely on it to roll back failures
+B. Run the AWS-PatchInstanceWithRollback Automation runbook as a maintenance window task, which restores the root volume if patching fails
 C. Create custom SSM documents for patching
 D. Schedule Lambda functions to apply patches
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: B**
 
-**Why:** Patch Manager with maintenance windows automates patching during defined periods. Patch baselines define which patches to apply. Integration with SSM allows compliance reporting. Note: automatic rollback requires custom implementation as Patch Manager doesn't natively rollback - you'd need AMI snapshots or custom automation. Custom documents (C) reinvent Patch Manager. Lambda (D) doesn't leverage SSM capabilities.
+**Why:** The AWS-PatchInstanceWithRollback Automation runbook snapshots the root volume, applies the patch baseline, and restores the snapshot if patching fails. It can run as a maintenance window task. Patch Manager on its own has no automatic rollback (A). Custom documents (C) reinvent the runbook. Lambda (D) does not use SSM patching features.
 
-**Key Concept:** [SSM Patch Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html)
+**Key Concept:** [AWS-PatchInstanceWithRollback](https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-aws-patchinstancewithrollback.html)
 </details>
 
 ### Question 33
@@ -795,7 +795,7 @@ D. Use AWS Config with PCI DSS conformance pack
 | 29 | B | Incident and Event Response |
 | 30 | B | Incident and Event Response |
 | 31 | D | Incident and Event Response |
-| 32 | A | Incident and Event Response |
+| 32 | B | Incident and Event Response |
 | 33 | A | Incident and Event Response |
 | 34 | B | Incident and Event Response |
 | 35 | D | Security and Compliance |

@@ -205,11 +205,11 @@ D. on/active, because `on` forces the channel up and active then lets LACP negot
 ---
 
 ### Question 12
-**Scenario:** Stateless Network Address Translation (NAT) maps:
+**Scenario:** Static NAT (and dynamic NAT without overload) maps:
 
 A. Many-to-one with ports (PAT), with a state table entry per session
 B. 1:1 with port (impossible)
-C. 1:1 inside-local to inside-global, with no port differentiation and no per-session state
+C. 1:1 inside-local to inside-global address, with no port translation and no address sharing
 D. None
 
 <details>
@@ -217,7 +217,7 @@ D. None
 
 **Correct: C**
 
-**Why:** Static NAT and dynamic NAT (without overload) are 1:1. PAT (port address translation, NAT overload) is the many-to-one form using ephemeral ports to differentiate sessions.
+**Why:** Static NAT and dynamic NAT (without overload) are 1:1 address mappings, one inside global address per inside local host. PAT (port address translation, NAT overload) is the many-to-one form using ephemeral ports to differentiate sessions.
 </details>
 
 ---

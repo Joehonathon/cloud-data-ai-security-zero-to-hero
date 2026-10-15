@@ -8,7 +8,7 @@ last-updated: 2026-05-03
 
 **Certification Focus:** Generative AI on Google Cloud
 **Target Audience:** ML Engineers, AI Developers, Data Scientists
-**Core Platform:** Vertex AI with Gen AI capabilities
+**Core Platform:** Agent Platform (formerly Vertex AI) with Gen AI capabilities
 **Key Technologies:** PaLM 2, Gemini, Codey, Imagen, Chirp
 **Prerequisites:** Understanding of ML fundamentals and GCP basics
 
@@ -17,14 +17,14 @@ last-updated: 2026-05-03
 | Domain | Focus |
 |--------|-------|
 | Foundation Models | PaLM, Gemini, understanding model capabilities |
-| Vertex AI GenAI Studio | Prompt design, model tuning, experimentation |
+| Agent Studio | Prompt design, model tuning, experimentation |
 | MLOps for GenAI | Production deployment, monitoring, versioning |
 | Responsible AI | Safety, fairness, bias mitigation, governance |
 | Application Integration | API usage, embeddings, grounding, RAG patterns |
 
 ## Essential Google Cloud GenAI Services
 
-### Vertex AI Gen AI Studio
+### Agent Studio
 
 **Model Garden**
 - Pre-trained foundation models
@@ -33,12 +33,12 @@ last-updated: 2026-05-03
 - Model versioning and comparison
 - **[📖 Model Garden Documentation](https://cloud.google.com/vertex-ai/docs/start/explore-models)** - Browse and deploy models
 
-**Generative AI Studio**
+**Agent Studio**
 - Prompt design and testing interface
 - Few-shot learning examples
 - Parameter tuning (temperature, top-k, top-p)
 - Prompt templates and management
-- **[📖 Generative AI Studio Guide](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/generative-ai-studio)** - Studio overview
+- **[📖 Agent Studio Guide](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/generative-ai-studio)** - Studio overview
 
 **PaLM API (text-bison, chat-bison)**
 - Text generation and completion
@@ -72,7 +72,7 @@ last-updated: 2026-05-03
 - Citation and source attribution
 - Configurable grounding sources
 - **[📖 Grounding Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/grounding/overview)** - Grounding setup
-- **[📖 Vertex AI Search](https://cloud.google.com/generative-ai-app-builder/docs/introduction)** - Enterprise search
+- **[📖 Agent Search](https://cloud.google.com/generative-ai-app-builder/docs/introduction)** - Enterprise search
 
 **Retrieval Augmented Generation (RAG)**
 - Ground responses with your own data
@@ -144,7 +144,7 @@ last-updated: 2026-05-03
 
 ### Deployment and Serving
 
-**Vertex AI Endpoints**
+**Agent Platform Endpoints**
 - Deploy models to prediction endpoints
 - Auto-scaling based on traffic
 - A/B testing with traffic splitting
@@ -152,7 +152,7 @@ last-updated: 2026-05-03
 - **[📖 Deploy Models](https://cloud.google.com/vertex-ai/docs/general/deployment)** - Endpoint configuration
 - **[📖 Online Prediction](https://cloud.google.com/vertex-ai/docs/predictions/get-predictions)** - Inference APIs
 
-**Vertex AI Pipelines for GenAI**
+**Agent Platform Pipelines for GenAI**
 - Automate model training and deployment
 - Data preprocessing workflows
 - Model evaluation and validation
@@ -242,7 +242,7 @@ print(response.text)
 
 **Document Q&A System**
 - Document embedding generation
-- Vertex AI Vector Search for retrieval
+- Vector Search for retrieval
 - PaLM for answer generation
 - Cloud Storage for document storage
 
@@ -323,7 +323,7 @@ gcloud ai models upload \
 ## Common Scenarios
 
 **Scenario 1: Customer Support Chatbot**
-- Solution: Vertex AI chat-bison + Dialogflow CX + Firestore + Cloud Run
+- Solution: Agent Platform chat-bison + Dialogflow CX + Firestore + Cloud Run
 
 **Scenario 2: Document Summarization Pipeline**
 - Solution: Cloud Storage + Cloud Functions + PaLM text-bison + BigQuery
@@ -335,7 +335,7 @@ gcloud ai models upload \
 - Solution: PaLM + Imagen + Cloud Run + Cloud CDN + Firebase
 
 **Scenario 5: Enterprise Search with GenAI**
-- Solution: Vertex AI Search + PaLM + Vector Search + IAM for access control
+- Solution: Agent Search + PaLM + Vector Search + IAM for access control
 
 ## Study Resources
 
@@ -343,7 +343,7 @@ gcloud ai models upload \
 
 **[📖 Generative AI Learning Path](https://www.cloudskillsboost.google/paths/118)** - Free Google Cloud Skills Boost path
 
-**[📖 Vertex AI GenAI Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview)** - Complete documentation
+**[📖 Agent Platform Generative AI documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview)** - Complete documentation
 
 **[📖 GenAI on Google Cloud Blog](https://cloud.google.com/blog/products/ai-machine-learning)** - Latest updates and tutorials
 
@@ -352,7 +352,7 @@ gcloud ai models upload \
 ### Hands-On Practice
 
 1. **Basic Text Generation**
-   - Use Generative AI Studio
+   - Use Agent Studio
    - Test different prompts and parameters
    - Compare model outputs
    - Export code for application integration
@@ -400,7 +400,7 @@ gcloud ai models upload \
 - Multi-model architectures
 
 ### Hands-On Skills Required
-- Use Generative AI Studio effectively
+- Use Agent Studio effectively
 - Write effective prompts
 - Implement embeddings and vector search
 - Deploy models to endpoints
@@ -410,13 +410,13 @@ gcloud ai models upload \
 ---
 
 **Last Updated:** 2025-01-13
-**Technology Focus:** Vertex AI Generative AI
+**Technology Focus:** Agent Platform Generative AI
 **Total Documentation Links:** 50+
 
 ---
 
 ## Notes
 
-This fact sheet covers generative AI capabilities on Google Cloud Platform using Vertex AI. The GenAI landscape evolves rapidly, so always refer to the latest Google Cloud documentation for current model availability and capabilities.
+This fact sheet covers generative AI capabilities on Google Cloud Platform using Agent Platform. The GenAI landscape evolves rapidly, so always refer to the latest Google Cloud documentation for current model availability and capabilities.
 
 **Good luck with your Google Cloud GenAI journey!**

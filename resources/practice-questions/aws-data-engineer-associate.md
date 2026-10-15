@@ -113,21 +113,21 @@ D. Kinesis Data Streams with a Lambda consumer that buffers records and writes P
 ## Domain 2 - Data Store Management (26%)
 
 ### Question 6
-**Scenario:** A 5 PB lake of historical sensor data is queried weekly. Reads must complete in seconds. Cost is critical.
+**Scenario:** A 5 PB lake of historical sensor data is queried weekly, but each week's queries touch a different, unpredictable subset and most objects sit untouched for months. Reads must complete in seconds. Cost is critical.
 
 A. S3 Glacier Deep Archive, the cheapest storage class per GB for data that is read rarely.
-B. S3 Standard-IA, with millisecond access and a per-GB retrieval fee.
+B. S3 Glacier Instant Retrieval, built for data read about once a quarter, with a per-GB retrieval fee.
 C. S3 Standard, which gives millisecond reads and the highest availability and is the simplest choice for any frequently read data.
-D. S3 Glacier Instant Retrieval, which gives millisecond access at a low price for rarely read data
+D. S3 Intelligent-Tiering, which moves untouched objects to cheaper tiers on its own and has no retrieval fees.
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Glacier Instant Retrieval gives ms-level retrieval at ~50% lower cost than Standard. Glacier Deep Archive can't meet the seconds requirement (12+ hours retrieval). Standard-IA fits monthly access, not weekly with cost criticality.
+**Why:** Intelligent-Tiering suits access patterns that are unknown or change. It has no retrieval fees and keeps millisecond access in its Frequent, Infrequent and Archive Instant Access tiers. Deep Archive needs hours to retrieve. Glacier Instant Retrieval is built for data read about once a quarter and charges per GB retrieved, which adds up with weekly reads. Standard works but costs more for objects that sit untouched.
 
-**Key concept:** [03-data-stores.md - S3 storage classes](../../exams/aws/associate/data-engineer-dea-c01/notes/03-data-stores.md)
+**Key concept:** [S3 storage classes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html)
 </details>
 
 ---

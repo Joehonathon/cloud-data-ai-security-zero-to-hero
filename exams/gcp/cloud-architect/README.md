@@ -108,8 +108,8 @@ Weights and topics from the current exam guide (checked 2026-10-14). Earlier ver
 
 **Machine Learning Pipelines:**
 - **Data Preparation:** Dataprep, Dataflow, data labeling
-- **Model Training:** Vertex AI, custom training, hyperparameter tuning
-- **Model Deployment:** Vertex AI endpoints, batch prediction
+- **Model Training:** Agent Platform (formerly Vertex AI), custom training, hyperparameter tuning
+- **Model Deployment:** Agent Platform endpoints, batch prediction
 - **MLOps:** Model versioning, monitoring, retraining automation
 
 ### Enterprise Applications

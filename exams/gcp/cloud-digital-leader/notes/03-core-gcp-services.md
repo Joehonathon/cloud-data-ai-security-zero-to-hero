@@ -257,7 +257,7 @@ Storage is often the largest cloud cost after compute. The key business question
 - **Automatic redundancy:** Data replicated across multiple locations automatically (no extra cost)
 - **Lifecycle management:** Automatic data class transitions based on age or access patterns (optimize costs automatically)
 - **Security:** Encryption at rest and in transit by default, granular access controls
-- **Integration:** Works seamlessly with all GCP services (BigQuery, Dataflow, Vertex AI)
+- **Integration:** Works seamlessly with all GCP services (BigQuery, Dataflow, Agent Platform (formerly Vertex AI))
 - **Versioning:** Keep multiple versions of objects for data protection and compliance
 
 **When to Choose Cloud Storage (Business Perspective):**
@@ -273,7 +273,7 @@ Storage is often the largest cloud cost after compute. The key business question
 - Data lake for analytics (store raw data, query with BigQuery)
 - Content distribution for global applications
 - Disaster recovery storage (off-site backup location)
-- Machine learning training datasets (integrates with Vertex AI)
+- Machine learning training datasets (integrates with Agent Platform)
 - Log storage and compliance archives
 
 **Cost Considerations:**
@@ -777,13 +777,13 @@ AI/ML enables business innovation without requiring deep technical expertise. Th
 
 **Business Decision Framework:**
 - **Standard AI tasks (vision, language, speech)?** Use Pre-trained APIs (fastest, cheapest)
-- **Custom ML models needed?** Use Vertex AI AutoML (no ML expertise required)
-- **Advanced custom models?** Use Vertex AI Custom Training (ML expertise required)
+- **Custom ML models needed?** Use Agent Platform AutoML (no ML expertise required)
+- **Advanced custom models?** Use Agent Platform Managed Training (custom training) (ML expertise required)
 - **SQL-based ML for analysts?** Use BigQuery ML (democratize ML)
 
 ## AI and Machine Learning Services
 
-### Vertex AI
+### Agent Platform
 **What it is:** Unified ML platform for building, deploying, and scaling ML models - Google's comprehensive ML solution
 
 **Business Value:**
@@ -800,7 +800,7 @@ AI/ML enables business innovation without requiring deep technical expertise. Th
 - **MLOps:** End-to-end workflow management (from training to production)
 - **Explainable AI:** Understand model predictions (regulatory compliance, trust)
 
-**When to Choose Vertex AI (Business Perspective):**
+**When to Choose Agent Platform (Business Perspective):**
 - Pre-trained APIs don't fit your specific use case
 - Need custom models trained on your proprietary data
 - Building competitive advantage through unique ML capabilities
@@ -1123,7 +1123,7 @@ AI/ML enables business innovation without requiring deep technical expertise. Th
 - **Data Processing:** Dataflow (real-time processing for alerts)
 - **Database:** Bigtable (time-series data, high throughput)
 - **Analytics:** BigQuery (historical analysis, reporting)
-- **ML:** Vertex AI (predictive maintenance models)
+- **ML:** Agent Platform (predictive maintenance models)
 - **Visualization:** Data Studio (real-time dashboards for operations)
 
 **Why:** Pub/Sub handles millions of messages per second. Bigtable optimized for time-series data. Real-time processing enables immediate alerts for anomalies.
@@ -1166,8 +1166,8 @@ AI/ML enables business innovation without requiring deep technical expertise. Th
 
 **For AI/ML:**
 1. **Standard AI tasks (vision, language)?** Pre-trained APIs
-2. **Custom models, no ML expertise?** Vertex AI AutoML
-3. **Advanced custom models?** Vertex AI Custom Training
+2. **Custom models, no ML expertise?** Agent Platform AutoML
+3. **Advanced custom models?** Agent Platform Managed Training (custom training)
 4. **SQL-based ML for analysts?** BigQuery ML
 
 ## Cloud Digital Leader Exam Tips
@@ -1236,7 +1236,7 @@ AI/ML enables business innovation without requiring deep technical expertise. Th
 
 **AI/ML Services:**
 - Pre-trained APIs: fastest path to AI capabilities (no ML expertise needed)
-- Vertex AI AutoML: custom models without ML expertise
+- Agent Platform AutoML: custom models without ML expertise
 - BigQuery ML: democratize ML for SQL users
 - Focus on business value, not technical details
 

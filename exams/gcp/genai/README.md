@@ -1,6 +1,6 @@
 # Google Cloud Generative AI - Self-Directed Study Track
 
-> ℹ️ **Generative-AI-focused study track, not a discrete certification.** Google announced the **Generative AI Leader** cert in late 2024 and continues to evolve its GenAI offerings. This dir is a focused study guide for GenAI on GCP (Vertex AI, Gemini, Imagen, MLOps for GenAI) that complements:
+> ℹ️ **Generative-AI-focused study track, not a discrete certification.** Google announced the **Generative AI Leader** cert in late 2024 and continues to evolve its GenAI offerings. This dir is a focused study guide for GenAI on GCP (Agent Platform (formerly Vertex AI), Gemini, Imagen, MLOps for GenAI) that complements:
 >
 > - **ML cert coverage:** [exams/gcp/machine-learning-engineer/](../machine-learning-engineer/)
 > - **Architect coverage:** [exams/gcp/cloud-architect/](../cloud-architect/) (PCA touches GenAI patterns)
@@ -14,7 +14,7 @@
 
 ### Core Notes
 - [Generative AI Fundamentals](notes/generative-ai-fundamentals.md) - PaLM, Gemini, foundation model concepts
-- [Vertex AI](notes/vertex-ai.md) - Google Cloud's unified ML platform
+- [Agent Platform](notes/vertex-ai.md) - Google Cloud's unified ML platform
 - [MLOps for Production GenAI](notes/mlops-production-genai.md) - Production ML and GenAI workflows
 
 ### Companion Materials
@@ -46,7 +46,7 @@ The Professional ML Engineer exam covers:
    - Infrastructure scaling
 
 5. **Automating and Orchestrating ML Pipelines** (18%)
-   - Vertex AI Pipelines
+   - Agent Platform Pipelines
    - Kubeflow Pipelines
    - Workflow orchestration
 
@@ -57,12 +57,12 @@ The Professional ML Engineer exam covers:
 
 ## 🌟 Key GCP ML Services
 
-### Vertex AI Platform
-- **Vertex AI Workbench**: Jupyter-based development environment
-- **Vertex AI Training**: Custom model training at scale
-- **Vertex AI Endpoints**: Model serving infrastructure
-- **Vertex AI Pipelines**: ML workflow orchestration
-- **Vertex AI Model Registry**: Model versioning and management
+### Agent Platform
+- **Agent Platform Workbench**: Jupyter-based development environment
+- **Agent Platform Managed Training**: Custom model training at scale
+- **Agent Platform Endpoints**: Model serving infrastructure
+- **Agent Platform Pipelines**: ML workflow orchestration
+- **Agent Platform Model Registry**: Model versioning and management
 
 ### AutoML Services
 - **AutoML Tables**: Structured data ML
@@ -80,7 +80,7 @@ The Professional ML Engineer exam covers:
 - **Video Intelligence API**: Video content analysis
 
 ### Generative AI
-- **Vertex AI Generative AI Studio**: Experiment with foundation models
+- **Agent Studio**: Experiment with foundation models
 - **PaLM API**: Large language model access
 - **Gemini Pro**: Multimodal AI capabilities
 - **Model Garden**: Pre-trained and foundation models
@@ -110,7 +110,7 @@ The Professional ML Engineer exam covers:
 
 ## 🎓 Success Criteria
 
-- Design end-to-end ML solutions using Vertex AI
+- Design end-to-end ML solutions using Agent Platform
 - Implement MLOps practices for production systems
 - Choose appropriate ML algorithms and services for specific use cases
 - Monitor and troubleshoot ML models in production

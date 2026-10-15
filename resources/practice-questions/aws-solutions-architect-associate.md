@@ -195,7 +195,7 @@ D. Use AWS Config to track API changes made to resources, with a rule that check
 ---
 
 ### Question 10
-**Scenario:** An application processes sensitive data and regulatory requirements mandate that encryption keys be stored in hardware security modules (HSMs) with FIPS 140-2 Level 3 validation.
+**Scenario:** An application processes sensitive data and regulatory requirements mandate that encryption keys be stored in single-tenant hardware security modules (HSMs) that are dedicated to the company and under its sole control.
 
 A. Use client-side encryption with OpenSSL
 B. Use AWS KMS with AWS managed keys that AWS creates and controls
@@ -207,7 +207,7 @@ D. Use AWS CloudHSM
 
 **Correct: D**
 
-**Why:** AWS CloudHSM provides dedicated HSMs with FIPS 140-2 Level 3 validation, giving you full control over keys in tamper-resistant hardware. KMS keys live in multi-tenant AWS-managed HSMs, while CloudHSM gives you single-tenant HSMs under your control, so it is the answer when the requirement is keys held in your own HSMs. Imported keys still use KMS infrastructure.
+**Why:** AWS CloudHSM gives you single-tenant, FIPS 140-2 Level 3 HSMs that only you control. AWS KMS HSMs are also FIPS validated, but they are shared AWS-managed HSMs, so KMS keys (including imported key material) do not meet a dedicated-HSM requirement.
 
 **Key Concept:** [AWS CloudHSM](https://aws.amazon.com/cloudhsm/)
 </details>
@@ -235,7 +235,7 @@ D. Use AWS Shield
 ---
 
 ### Question 12
-**Scenario:** A company wants to prevent accidental deletion of an S3 bucket that contains critical compliance data. Even administrators should not be able to delete it without additional approval.
+**Scenario:** A company stores critical compliance data in a versioned S3 bucket. Permanently deleting an object version must require a second authentication factor, even for administrators.
 
 A. Enable S3 versioning
 B. Enable S3 Object Lock in Governance mode, which privileged users can bypass
@@ -247,7 +247,7 @@ D. Create a bucket policy denying delete, which an administrator can edit
 
 **Correct: C**
 
-**Why:** MFA Delete requires multi-factor authentication to permanently delete object versions or change versioning state. This adds an extra approval factor even for administrators. Governance mode can be bypassed by privileged users, and a bucket policy can be edited by an administrator. Versioning preserves data but doesn't prevent deletion.
+**Why:** MFA Delete requires the bucket owner to supply an MFA code to permanently delete an object version or change the versioning state. This adds a second factor on those requests. Governance mode can be bypassed by privileged users, and a bucket policy can be edited by an administrator. Versioning preserves data but doesn't prevent deletion.
 
 **Key Concept:** [MFA Delete](https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiFactorAuthenticationDelete.html)
 </details>
@@ -401,15 +401,15 @@ D. Use ElastiCache to buffer writes in memory and flush them to the database whe
 
 A. EBS gp3 volumes in one AZ with no snapshots
 B. Instance store volumes
-C. EBS volumes with snapshots taken every day and stored in S3
-D. EBS io2 volumes with Multi-Attach
+C. EBS volumes with daily snapshots stored in S3, which can be restored in any AZ in the Region
+D. EBS io2 volumes with Multi-Attach in one AZ and no snapshots
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** EBS volumes persist independently of EC2 instances and provide 99.999% durability. Daily snapshots to S3 provide point-in-time recovery. Instance store data is lost when instances stop. io2 Multi-Attach is for shared access, not additional durability.
+**Why:** EBS volumes persist independently of EC2 instances. Daily snapshots are stored in S3 and survive the loss of the volume or the AZ, which gives point-in-time recovery. Instance store data is lost when instances stop. An io2 volume in one AZ without snapshots has higher volume durability but no copy outside that AZ, and Multi-Attach is for shared access, not durability.
 
 **Key Concept:** [EBS Snapshots](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html)
 </details>
@@ -479,7 +479,7 @@ D. Amazon ElastiCache Redis
 ---
 
 ### Question 24
-**Scenario:** A company runs a read-heavy application with an RDS MySQL database. Read latency is increasing as traffic grows. They need to reduce read latency without changing application code significantly.
+**Scenario:** A company runs a read-heavy application with an RDS MySQL database. Read latency is increasing as traffic grows, and the same hot rows are read again and again. They need the lowest read latency for this repeated data.
 
 A. Migrate to Aurora
 B. Deploy ElastiCache in front of the database
@@ -491,7 +491,7 @@ D. Enable RDS Multi-AZ
 
 **Correct: B**
 
-**Why:** ElastiCache can cache frequently accessed data, dramatically reducing read latency with minimal code changes (cache-aside pattern). Read Replicas accept only reads, so sending writes to one (C) fails. Multi-AZ is for availability, not performance.
+**Why:** ElastiCache keeps frequently accessed data in memory (cache-aside pattern), which gives much lower latency for repeated reads than the database can. Read Replicas accept only reads, so sending writes to one (C) fails. Multi-AZ is for availability, not performance.
 
 **Key Concept:** [ElastiCache](https://aws.amazon.com/elasticache/)
 </details>
@@ -539,21 +539,21 @@ D. Use Global Accelerator
 ---
 
 ### Question 27
-**Scenario:** An application needs to process messages from an SQS queue. Processing time varies from 1 second to 5 minutes. The company wants to scale processing capacity based on queue depth.
+**Scenario:** An application needs to process messages from an SQS queue. Processing time varies from 1 second to 5 minutes. The company wants capacity to scale with queue depth and the least operational overhead.
 
 A. Use Step Functions to run a Lambda state for each message
-B. Use Fargate tasks triggered by SQS through an EventBridge rule that starts a task per message
-C. Use EC2 instances polling SQS with Auto Scaling on ApproximateNumberOfMessagesVisible
-D. Use Lambda with an SQS trigger, setting the function timeout to 30 seconds and a batch size of 1, so each message gets its own invocation
+B. Use Fargate tasks triggered by SQS through an EventBridge rule that starts a separate task for every message that arrives
+C. Use Lambda with an SQS event source mapping and a function timeout of 6 minutes, so Lambda scales with queue depth
+D. Use a fixed-size group of EC2 instances polling SQS, with no scaling policy attached to the group or to the queue depth metric
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** EC2 workers that poll SQS can run each message for as long as it needs, and an Auto Scaling policy on ApproximateNumberOfMessagesVisible scales capacity with queue depth. Lambda with a 30-second timeout (D) cannot finish messages that take up to 5 minutes. Step Functions per message (A) and an EventBridge rule per message (B) do not scale on queue depth.
+**Why:** The Lambda SQS event source mapping scales pollers with queue depth, and the function timeout can be set up to 15 minutes, so a 6-minute timeout covers 5-minute messages (set the queue visibility timeout above the function timeout). A fixed EC2 group (D) does not scale with queue depth. Step Functions per message (A) and an EventBridge rule per message (B) do not scale on queue depth.
 
-**Key Concept:** [SQS-based Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-using-sqs-queue.html)
+**Key Concept:** [Lambda with SQS](https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html)
 </details>
 
 ---
@@ -599,21 +599,21 @@ D. Set up AWS Direct Connect
 ---
 
 ### Question 30
-**Scenario:** A company runs a REST API on EC2 instances. API response times are acceptable, but they want to reduce EC2 costs while maintaining performance for their predictable traffic patterns.
+**Scenario:** A company runs a REST API on EC2 instances. The API has steady, predictable traffic around the clock and must stay on EC2. The company wants the lowest cost with a 1-year commitment, and may change instance families during the term.
 
-A. Use Lambda with API Gateway
+A. Rewrite the API to run on Lambda with API Gateway
 B. Use Spot Instances
-C. Use Savings Plans
-D. Use Reserved Instances
+C. Buy a Compute Savings Plan with a 1-year term, which applies across instance families and Regions
+D. Buy Standard Reserved Instances locked to the current instance family
 
 <details>
 <summary>Answer</summary>
 
-**Correct: A**
+**Correct: C**
 
-**Why:** For REST APIs, Lambda with API Gateway eliminates EC2 management and costs nothing when idle. You pay only for actual invocations. Since traffic is predictable, Lambda can handle it efficiently. Spot isn't suitable for APIs (interruptions). Reserved/Savings Plans still pay for idle capacity.
+**Why:** A Compute Savings Plan lowers the price of steady EC2 usage in exchange for a commitment, and it applies across instance families, sizes and Regions. Spot can be interrupted, so it is a poor fit for an API. A rewrite to Lambda is not required to cut cost. Standard Reserved Instances are locked to one instance family.
 
-**Key Concept:** [API Gateway with Lambda](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-with-lambda-integration.html)
+**Key Concept:** [Compute Savings Plans](https://docs.aws.amazon.com/savingsplans/latest/userguide/sp-ris.html)
 </details>
 
 ---
@@ -701,7 +701,7 @@ D. Move infrequently accessed data to S3 Glacier Deep Archive
 ---
 
 ### Question 35
-**Scenario:** A company runs multiple production workloads on EC2. They can commit to using specific instance types for 3 years. What provides the maximum cost savings?
+**Scenario:** A company runs multiple production workloads on EC2. They can commit to specific instance types for 3 years, can pay for the full term up front, and cannot tolerate interruptions. What provides the maximum cost savings?
 
 A. Spot Instances
 B. Standard Reserved Instances (3-year, All Upfront)
@@ -853,7 +853,7 @@ D. Use smaller instance during off-hours
 | 27 | C | Performance |
 | 28 | A | Performance |
 | 29 | A | Performance |
-| 30 | A | Performance |
+| 30 | C | Performance |
 | 31 | B | Performance |
 | 32 | D | Performance |
 | 33 | D | Cost |

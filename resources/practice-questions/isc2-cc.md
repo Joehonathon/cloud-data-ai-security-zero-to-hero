@@ -241,7 +241,7 @@ D. A fingerprint and a facial scan, because biometric checks are stronger than p
 ---
 
 ### Question 14
-**Scenario:** A physical control permits only one person through a door at a time, preventing an unauthorized person following an authorized one. What is it, and what attack does it address?
+**Scenario:** A small enclosed entry space has two interlocking doors. The second opens only after the first closes and the person is verified, so an unauthorized person cannot follow an authorized one. What is it, and what attack does it address?
 
 A. A mantrap or access control vestibule; tailgating
 B. A badge reader; shoulder surfing
@@ -253,7 +253,7 @@ D. A perimeter fence; eavesdropping
 
 **Correct: A**
 
-**Why:** A mantrap, also called an access control vestibule, allows one person through at a time. Tailgating is following an authorized person through without authenticating; piggybacking is being knowingly let through.
+**Why:** A mantrap, also called an access control vestibule, is an enclosed space between two interlocking doors that admits one verified person at a time. A turnstile is a simpler one-at-a-time barrier. Tailgating is following an authorized person through without authenticating; piggybacking is being knowingly let through.
 </details>
 
 ---

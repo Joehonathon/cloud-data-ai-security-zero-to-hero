@@ -95,7 +95,7 @@ The **Cloud Digital Leader** certification validates your ability to articulate 
 
 **[📖 AI and ML Products Overview](https://cloud.google.com/products/ai)** - Comprehensive portfolio of pre-trained APIs, custom ML tools, and AI infrastructure.
 
-**[📖 Vertex AI Platform](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Unified platform for building, deploying, and scaling machine learning models with MLOps.
+**[📖 Agent Platform (formerly Vertex AI Platform)](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Unified platform for building, deploying, and scaling machine learning models with MLOps.
 
 **[📖 AutoML](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning)** - Train high-quality custom machine learning models with minimal ML expertise required.
 
@@ -357,7 +357,7 @@ The **Cloud Digital Leader** certification validates your ability to articulate 
 ### 6. Artificial Intelligence
 - **Goal:** Leverage AI/ML for automation and insights
 - **Benefits:** Process automation, predictive analytics, enhanced customer experience
-- **Key Services:** Vertex AI, Vision AI, Natural Language AI
+- **Key Services:** Agent Platform, Vision AI, Natural Language AI
 - **Business Impact:** Operational efficiency, new revenue streams
 
 ---
@@ -524,7 +524,7 @@ The **Cloud Digital Leader** certification validates your ability to articulate 
 6. **Cloud Run:** Serverless containers
 7. **IAM:** Identity and access management
 8. **VPC:** Virtual private cloud networking
-9. **Vertex AI:** Unified ML platform
+9. **Agent Platform:** Unified ML platform
 10. **Cloud Monitoring:** Infrastructure and application monitoring
 
 ### Key Differentiators

@@ -2998,7 +2998,7 @@ Hybrid Cloud Architecture
 - **Keywords**: "Analytics," "data warehouse," "batch processing"
 
 **Pattern: Machine Learning**
-- **Components**: Vertex AI + Cloud Storage + BigQuery + Vertex AI Workbench
+- **Components**: Agent Platform (formerly Vertex AI) + Cloud Storage + BigQuery + Agent Platform Workbench
 - **Keywords**: "Machine learning," "model training," "predictions"
 
 ### Quick Decision Tree

@@ -67,7 +67,7 @@ The current exam guide lists four case studies that questions may refer to. This
 | Attributes and descriptions from supplier text and images | Gemini multimodal models on the Agent Platform, structured output (JSON schema) |
 | Image variations and edits | Imagen / image generation and editing models |
 | Review before the catalog updates | HITL: a review app (Cloud Run) with approve, reject, edit. Workflows or Pub/Sub for the pipeline. Only approved items write to the catalog |
-| Natural language product discovery | Vertex AI Search for commerce (the Discovery AI product the case names) behind a conversational agent |
+| Natural language product discovery | Agent Search (formerly Vertex AI Search) for commerce (the Discovery AI product the case names) behind a conversational agent |
 | Virtual agents on web, app, and phone | Conversational Agents / Customer Engagement Suite replacing IVR menus, with handoff to a human agent |
 | Databases to the cloud | Database Migration Service: MySQL and SQL Server to Cloud SQL, Redis to Memorystore, MongoDB to a managed Mongo-compatible option |
 | SFTP and batch ETL | Cloud Storage with SFTP-capable transfer, Storage Transfer Service, Dataflow or Cloud Composer for pipelines, Datastream for change data capture |

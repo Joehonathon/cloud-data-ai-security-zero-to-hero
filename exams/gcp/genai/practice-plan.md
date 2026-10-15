@@ -31,28 +31,28 @@
 - [ ] Lab: Build data preprocessing pipeline
 - [ ] Review Notes: `data-engineering.md`
 
-#### Week 2: Vertex AI Platform Introduction
+#### Week 2: Agent Platform Introduction
 
-**Objective:** Master Vertex AI core capabilities
+**Objective:** Master Agent Platform (formerly Vertex AI) core capabilities
 
-#### Day 1-2: Vertex AI Platform Overview
-- [ ] Study Vertex AI architecture and components
-- [ ] Learn Vertex AI Workbench (Jupyter notebooks)
+#### Day 1-2: Agent Platform Overview
+- [ ] Study Agent Platform architecture and components
+- [ ] Learn Agent Platform Workbench (Jupyter notebooks)
 - [ ] Understand managed datasets
 - [ ] Study training and deployment workflow
-- [ ] Hands-on: Explore Vertex AI console
+- [ ] Hands-on: Explore Agent Platform console
 - [ ] Review Notes: `vertex-ai.md`
 
-#### Day 3-4: Vertex AI Training
+#### Day 3-4: Agent Platform Managed Training
 - [ ] Study custom training jobs and containers
 - [ ] Learn hyperparameter tuning
 - [ ] Understand distributed training strategies
 - [ ] Study training with different frameworks (TensorFlow, PyTorch, scikit-learn)
-- [ ] Lab: Train custom model on Vertex AI
+- [ ] Lab: Train custom model on Agent Platform
 - [ ] Lab: Hyperparameter tuning job
 
 #### Day 5-7: Model Deployment
-- [ ] Study Vertex AI endpoints and prediction
+- [ ] Study Agent Platform endpoints and prediction
 - [ ] Learn online vs batch prediction
 - [ ] Understand model versioning
 - [ ] Study A/B testing and traffic splitting
@@ -94,8 +94,8 @@
 
 **Objective:** Master generative AI capabilities
 
-#### Day 1-2: Vertex AI Generative AI Studio
-- [ ] Study foundation models on Vertex AI
+#### Day 1-2: Agent Studio
+- [ ] Study foundation models on Agent Platform
 - [ ] Learn PaLM 2 and Gemini capabilities
 - [ ] Understand Model Garden
 - [ ] Study prompt design and tuning
@@ -112,7 +112,7 @@
 
 #### Day 5-7: Generative AI Applications
 - [ ] Study RAG (Retrieval Augmented Generation)
-- [ ] Learn vector search with Vertex AI
+- [ ] Learn vector search with Agent Platform
 - [ ] Understand embeddings and semantic search
 - [ ] Study grounding with enterprise data
 - [ ] Lab: Build RAG application
@@ -129,8 +129,8 @@
 - [ ] Study version control for ML artifacts
 - [ ] Review Notes: `mlops.md`
 
-#### Day 3-4: Vertex AI Pipelines
-- [ ] Study Kubeflow Pipelines on Vertex AI
+#### Day 3-4: Agent Platform Pipelines
+- [ ] Study Kubeflow Pipelines on Agent Platform
 - [ ] Learn pipeline component development
 - [ ] Understand pipeline orchestration
 - [ ] Study parameterization and reusability
@@ -138,7 +138,7 @@
 - [ ] Lab: Pipeline with custom components
 
 #### Day 5-7: Model Registry and Versioning
-- [ ] Study Vertex AI Model Registry
+- [ ] Study Agent Platform Model Registry
 - [ ] Learn model lineage tracking
 - [ ] Understand experiment tracking
 - [ ] Study model governance practices
@@ -225,11 +225,11 @@
 
 #### Day 5-7: Integration and Deployment
 - [ ] Study BQML model deployment
-- [ ] Learn integration with Vertex AI
+- [ ] Learn integration with Agent Platform
 - [ ] Understand batch scoring at scale
 - [ ] Practice: End-to-end BQML project
 - [ ] Lab: Deploy BQML model to production
-- [ ] Lab: Integrated BigQuery and Vertex AI solution
+- [ ] Lab: Integrated BigQuery and Agent Platform solution
 
 #### Week 9: Recommendation Systems and NLP
 
@@ -307,7 +307,7 @@
 **Objective:** Final review and exam success
 
 #### Day 1-2: Service Deep Dive Review
-- [ ] Review all Vertex AI capabilities
+- [ ] Review all Agent Platform capabilities
 - [ ] Study AutoML vs custom model decisions
 - [ ] Understand pre-trained API use cases
 - [ ] Review MLOps best practices
@@ -351,7 +351,7 @@
 
 ### Foundational Projects (Weeks 1-3)
 1. End-to-end AutoML project (classification)
-2. Custom model training on Vertex AI
+2. Custom model training on Agent Platform
 3. Model deployment with monitoring
 4. Batch prediction pipeline
 
@@ -390,7 +390,7 @@ gcloud notebooks instances create
 ```
 
 ### Python SDK Practice
-- Vertex AI Python SDK
+- Agent Platform Python SDK
 - BigQuery Python client
 - Pipeline component development
 - Model serving with Flask/FastAPI
@@ -400,7 +400,7 @@ gcloud notebooks instances create
 ### Primary Resources
 1. **Google Cloud Skills Boost**: ML Engineer learning path
 2. **Coursera**: Machine Learning with TensorFlow on GCP specialization
-3. **Official Documentation**: Vertex AI, BigQuery ML, AutoML
+3. **Official Documentation**: Agent Platform, BigQuery ML, AutoML
 4. **GitHub**: Google Cloud ML samples repository
 
 ### Secondary Resources
@@ -426,7 +426,7 @@ gcloud notebooks instances create
 ### Exam Readiness Checklist
 - [ ] Score 85%+ on multiple practice exams
 - [ ] Complete all hands-on projects
-- [ ] Explain Vertex AI architecture clearly
+- [ ] Explain Agent Platform architecture clearly
 - [ ] Justify ML solution design decisions
 - [ ] Troubleshoot common ML issues independently
 
@@ -442,7 +442,7 @@ gcloud notebooks instances create
 - AutoML vs custom model selection
 - Training optimization and distributed strategies
 - Model monitoring and drift detection
-- Pipeline automation with Vertex AI Pipelines
+- Pipeline automation with Agent Platform Pipelines
 - Cost optimization techniques
 - Responsible AI practices
 
@@ -456,7 +456,7 @@ gcloud notebooks instances create
 ## Final Tips
 
 ### Focus Areas for Success
-1. **Vertex AI mastery**: Know all components deeply
+1. **Agent Platform mastery**: Know all components deeply
 2. **MLOps practices**: Understand production ML workflows
 3. **Service selection**: Justify AutoML vs custom vs pre-trained
 4. **Monitoring**: Master drift detection and model performance

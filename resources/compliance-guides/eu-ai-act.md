@@ -134,8 +134,8 @@ No provider makes you compliant. They supply evidence and controls you assemble 
 
 | Need | AWS | Azure | GCP |
 |---|---|---|---|
-| Model and data lineage | SageMaker Model Registry, Model Cards, SageMaker Lineage | Azure ML registry, Microsoft Purview | Vertex AI Model Registry, Dataplex lineage |
-| Bias and quality evaluation | SageMaker Clarify | Responsible AI dashboard, AI Foundry evaluations | Vertex AI Model Evaluation |
+| Model and data lineage | SageMaker Model Registry, Model Cards, SageMaker Lineage | Azure ML registry, Microsoft Purview | Agent Platform Model Registry (formerly Vertex AI Model Registry), Dataplex lineage |
+| Bias and quality evaluation | SageMaker Clarify | Responsible AI dashboard, AI Foundry evaluations | Agent Platform Model Evaluation |
 | Logging and traceability | CloudTrail, CloudWatch, SageMaker experiments | Azure Monitor, Application Insights | Cloud Logging, Cloud Audit Logs |
 | Content and safety controls | Bedrock Guardrails | AI Content Safety, Prompt Shields | Model Armor, Vertex safety filters |
 | Documentation artifacts | AWS AI Service Cards | Transparency Notes | Model Cards |

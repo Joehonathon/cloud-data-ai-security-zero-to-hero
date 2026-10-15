@@ -109,7 +109,7 @@
 - [ ] **Lab:** Build interactive analytics dashboard
 
 #### Day 3-4: Machine Learning Integration
-- [ ] Study Vertex AI platform overview
+- [ ] Study Agent Platform (formerly Vertex AI) platform overview
 - [ ] Learn about AutoML for different data types
 - [ ] Understand custom model training and deployment
 - [ ] Practice with feature engineering and preprocessing
@@ -414,7 +414,7 @@
 
 ### Weeks 5-8: Advanced Resources
 - "Advanced Solutions Architecture" course
-- Vertex AI and AutoML documentation
+- Agent Platform and AutoML documentation
 - Cloud Composer and orchestration guides
 - Performance optimization best practices
 

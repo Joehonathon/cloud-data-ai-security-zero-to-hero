@@ -43,14 +43,14 @@ Learn the portfolio by **what problem each product solves**, not as a list of na
 
 | Need | Product |
 |---|---|
-| Platform to build on | Vertex AI |
+| Platform to build on | Agent Platform (formerly Vertex AI) |
 | The frontier multimodal model family | Gemini |
 | Open models to run yourself | Gemma |
 | Generate images | Imagen |
 | Generate video | Veo |
 | Speech to text | Chirp |
-| Grounded search over enterprise content | Vertex AI Search |
-| Build a conversational agent | Vertex AI Agent Builder / Conversational Agents |
+| Grounded search over enterprise content | Agent Search |
+| Build a conversational agent | Agent Builder on Agent Platform / Conversational Agents |
 | AI in documents, email, and meetings | Gemini for Google Workspace |
 | AI assistance for cloud engineering | Gemini for Google Cloud |
 | Grounded research over your own sources | NotebookLM |

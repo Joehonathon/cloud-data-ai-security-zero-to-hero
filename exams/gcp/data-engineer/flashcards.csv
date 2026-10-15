@@ -51,7 +51,7 @@ HIPAA (data quality and security),CMEK + BAA + audit logs + VPC-SC + PHI tagging
 PCI-DSS (data quality and security),Tokenization + CMEK + network segmentation + quarterly reviews,"notes,data-quality-and-security"
 SOC 2 (data quality and security),Audit logs + access controls + encryption + monitoring,"notes,data-quality-and-security"
 BigQuery ML (machine learning operations),"SQL-based, simple models, data already in BigQuery, quick prototyping","notes,machine-learning-operations"
-Vertex AI (machine learning operations),"Complex models, custom algorithms, need for production deployment infrastructure, PyTorch/TensorFlow models","notes,machine-learning-operations"
+Agent Platform (machine learning operations),"Complex models, custom algorithms, need for production deployment infrastructure, PyTorch/TensorFlow models","notes,machine-learning-operations"
 Recommendation (machine learning operations),MATRIX_FACTORIZATION,"notes,machine-learning-operations"
 Auto selection (machine learning operations),"AUTOML_CLASSIFIER, AUTOML_REGRESSOR","notes,machine-learning-operations"
 Answer (machine learning operations),BigQuery ML with LOGISTIC_REG or BOOSTED_TREE_CLASSIFIER,"notes,machine-learning-operations"

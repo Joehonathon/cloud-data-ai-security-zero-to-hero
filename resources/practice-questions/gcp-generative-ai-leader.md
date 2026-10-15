@@ -29,7 +29,7 @@ D. Ground the model on the catalog data, using retrieval
 
 A. Deploy an open model with Gemma on the organization's own infrastructure, so that staff can draft and summarize with a model it controls
 B. Fine-tune a model on company documents so that it learns the house style and terminology before staff start drafting
-C. Build a custom application on Vertex AI
+C. Build a custom application on Agent Platform (formerly Vertex AI)
 D. Adopt Gemini for Google Workspace, an applied assistant that works inside the Docs, Gmail and Meet tools staff already use
 
 <details>
@@ -84,14 +84,14 @@ D. Fine-tune the model on inventory data
 A. BigQuery ML, which brings generative functions to data already in the warehouse but is not a grounded enterprise search product
 B. NotebookLM
 C. Gemma, the family of open models that an organization can run itself, which provides a model rather than a search product with citations
-D. Vertex AI Search
+D. Agent Search
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Vertex AI Search is the enterprise product for grounded search with summaries and citations. NotebookLM is grounded research over sources an individual supplies. BigQuery ML brings generative functions to data in the warehouse. Gemma is a family of open models.
+**Why:** Agent Search is the enterprise product for grounded search with summaries and citations. NotebookLM is grounded research over sources an individual supplies. BigQuery ML brings generative functions to data in the warehouse. Gemma is a family of open models.
 </details>
 
 ---
@@ -226,9 +226,9 @@ D. Accountability, which concerns a named human being responsible for the outcom
 **Scenario:** An organization needs to run a model on its own infrastructure, including at the edge, with full control over the weights.
 
 A. Gemini for Google Cloud, an applied assistant offered as a managed service, so the weights are not available
-B. Gemini through Vertex AI, a managed API that runs on Google's infrastructure, so the weights stay with Google
+B. Gemini through Agent Platform, a managed API that runs on Google's infrastructure, so the weights stay with Google
 C. Gemma open models, which are released for the user to download and run on its own infrastructure, including at the edge
-D. Vertex AI Search, a managed enterprise search product with summaries and citations that does not provide downloadable model weights
+D. Agent Search, a managed enterprise search product with summaries and citations that does not provide downloadable model weights
 
 <details>
 <summary>Answer</summary>
@@ -261,7 +261,7 @@ D. Model size
 ### Question 15
 **Scenario:** A regulated customer requires that data submitted to a model is not used to train the provider's foundation models, and that inference stays within a specific region.
 
-A. Vertex AI enterprise controls: no training on customer data, regional endpoints, and data residency options
+A. Agent Platform enterprise controls: no training on customer data, regional endpoints, and data residency options
 B. Use the consumer Gemini app with a regional setting, which offers regional controls
 C. Only self-hosting an open model satisfies this, because managed services always retain customer prompts to improve their models
 D. This is not achievable with a managed service, because the provider's infrastructure cannot guarantee regional processing

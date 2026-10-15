@@ -369,7 +369,7 @@ last-updated: 2026-05-03
 
 ## Machine Learning and AI Services
 
-### Vertex AI
+### Agent Platform
 
 **Unified ML Platform:**
 - AutoML for no-code model training
@@ -377,25 +377,25 @@ last-updated: 2026-05-03
 - Model deployment and serving (online/batch)
 - Feature Store for feature management
 - ML Pipelines for workflow automation
-- **[📖 Vertex AI Overview](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Platform overview
+- **[📖 Agent Platform Overview (formerly Vertex AI Overview)](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Platform overview
 - **[📖 AutoML](https://cloud.google.com/vertex-ai/docs/beginner/beginners-guide)** - Automated ML
 - **[📖 Custom Training](https://cloud.google.com/vertex-ai/docs/training/custom-training)** - Custom models
 - **[📖 Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/overview)** - Feature management
 - **[📖 ML Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - Workflow orchestration
 - **[📖 Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)** - Drift detection
 
-**Vertex AI Workbench:**
+**Agent Platform Workbench:**
 - Jupyter notebook environment
 - Pre-configured for ML frameworks
 - Integration with Git and Docker
-- **[📖 Vertex AI Workbench](https://cloud.google.com/vertex-ai/docs/workbench/introduction)** - Notebook environment
+- **[📖 Agent Platform Workbench](https://cloud.google.com/vertex-ai/docs/workbench/introduction)** - Notebook environment
 
 ### BigQuery ML
 
 **SQL-Based Machine Learning:**
 - Train models using SQL (no Python required)
 - Supported models: Linear/logistic regression, K-means, time-series, AutoML
-- Model export to Vertex AI for deployment
+- Model export to Agent Platform for deployment
 - Integration with TensorFlow and XGBoost
 - **[📖 BigQuery ML Overview](https://cloud.google.com/bigquery-ml/docs/introduction)** - BQML fundamentals
 - **[📖 Model Types](https://cloud.google.com/bigquery-ml/docs/introduction#supported_models)** - Available algorithms
@@ -629,13 +629,13 @@ last-updated: 2026-05-03
 
 **Architecture:**
 - **Data Prep** - Dataflow for feature engineering
-- **Training** - Vertex AI for model training
-- **Serving** - Vertex AI Endpoints for online prediction
-- **Orchestration** - Vertex AI Pipelines or Cloud Composer
+- **Training** - Agent Platform for model training
+- **Serving** - Agent Platform Endpoints for online prediction
+- **Orchestration** - Agent Platform Pipelines or Cloud Composer
 
 **Key Services:**
 - BigQuery for feature store
-- Vertex AI for ML lifecycle
+- Agent Platform for ML lifecycle
 - Cloud Storage for model artifacts
 - **[📖 MLOps Architecture](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning)** - ML pipelines
 
@@ -721,11 +721,11 @@ last-updated: 2026-05-03
 
 **Solution:**
 - BigQuery for feature engineering with SQL
-- BigQuery ML for simple models, Vertex AI for complex
+- BigQuery ML for simple models, Agent Platform for complex
 - Feature Store for feature serving
-- Vertex AI Endpoints for online prediction
+- Agent Platform Endpoints for online prediction
 
-**Key Decision:** Use BigQuery ML if SQL-based features work; Vertex AI for custom TensorFlow/PyTorch
+**Key Decision:** Use BigQuery ML if SQL-based features work; Agent Platform for custom TensorFlow/PyTorch
 
 ## Exam Tips and Strategy
 
@@ -741,7 +741,7 @@ last-updated: 2026-05-03
 - **"SQL analytics"** → BigQuery
 - **"Complex transformations"** → Dataflow with Apache Beam
 - **"Simple transformations"** → BigQuery SQL, Dataprep
-- **"Machine learning"** → BigQuery ML (SQL), Vertex AI (custom)
+- **"Machine learning"** → BigQuery ML (SQL), Agent Platform (custom)
 - **"Data discovery"** → Data Catalog
 - **"PII protection"** → Cloud DLP
 - **"Exactly-once processing"** → Pub/Sub + Dataflow

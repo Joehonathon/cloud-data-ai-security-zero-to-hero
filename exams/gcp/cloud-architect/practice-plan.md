@@ -78,7 +78,7 @@
 - [ ] **Practice:** Design data architecture for different workloads
 
 #### Day 5-7: Machine Learning and AI
-- [ ] Study Vertex AI: managed ML platform, AutoML
+- [ ] Study Agent Platform (formerly Vertex AI): managed ML platform, AutoML
 - [ ] Learn pre-trained APIs: Vision, Language, Speech
 - [ ] Understand ML pipelines: training, serving, monitoring
 - [ ] Explore AI Platform: custom models, hyperparameter tuning

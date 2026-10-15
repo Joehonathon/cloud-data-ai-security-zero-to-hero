@@ -60,7 +60,7 @@ last-updated: 2026-05-03
 - Dataform repositories and version control
 - Data Catalog policy tags + taxonomies
 - Sensitive Data Protection (formerly DLP) for PII discovery / de-id
-- Vertex AI Feature Store + Pipelines
+- Agent Platform Feature Store (formerly Vertex AI Feature Store) + Pipelines
 - Cloud Composer (Airflow) operator library
 
 ## Time management
@@ -94,5 +94,5 @@ last-updated: 2026-05-03
 - "Wide-column NoSQL at scale" = Bigtable
 - "Sensitive data column-level access" = Data Catalog policy tags + BQ column ACL
 - "Schema-on-read lake" = Cloud Storage + BigLake
-- "Feature consistency train/serve" = Vertex AI Feature Store
+- "Feature consistency train/serve" = Agent Platform Feature Store
 - "ELT in BigQuery with version control" = Dataform

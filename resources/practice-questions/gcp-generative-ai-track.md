@@ -5,7 +5,7 @@ difficulty: intermediate
 
 # Google Cloud Generative AI (Self-Directed Track) - Practice Questions
 
-15 questions for the Google Cloud Generative AI study track, covering Gemini models on Vertex AI, grounding and RAG, agents, evaluation, and responsible AI.
+15 questions for the Google Cloud Generative AI study track, covering Gemini models on Agent Platform (formerly Vertex AI), grounding and RAG, agents, evaluation, and responsible AI.
 
 This is a self-directed track rather than a Google exam, so these target working knowledge rather than a published objective list.
 
@@ -17,7 +17,7 @@ This is a self-directed track rather than a Google exam, so these target working
 **Scenario:** Which Google Cloud surface provides access to Gemini and other foundation models with enterprise controls?
 
 A. Compute Engine, where you install and run open-weight models on your own GPU virtual machines
-B. Vertex AI, including Model Garden and the Gemini API, with data residency, VPC Service Controls, and CMEK options
+B. Agent Platform, including Model Garden and the Gemini API, with data residency, VPC Service Controls, and CMEK options
 C. BigQuery only, since its SQL interface is the single entry point for every hosted model
 D. Cloud Functions, which ship with Gemini bundled as a built-in library for every runtime
 
@@ -26,7 +26,7 @@ D. Cloud Functions, which ship with Gemini bundled as a built-in library for eve
 
 **Correct: B**
 
-**Why:** Vertex AI is the managed platform with data residency options, VPC Service Controls support, customer-managed encryption keys, and a commitment that customer prompts are not used to train the foundation models. Those enterprise properties are usually why an organization chooses it over a consumer API.
+**Why:** Agent Platform is the managed platform with data residency options, VPC Service Controls support, customer-managed encryption keys, and a commitment that customer prompts are not used to train the foundation models. Those enterprise properties are usually why an organization chooses it over a consumer API.
 </details>
 
 ---
@@ -37,7 +37,7 @@ D. Cloud Functions, which ship with Gemini bundled as a built-in library for eve
 A. Use a larger model, since extra parameters let it memorize the organization's documents and cite them accurately
 B. Fine-tune the model on the documents so it learns their content and can quote the passage it relied on
 C. Increase the temperature so the model explores more of the document text before settling on an answer
-D. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline with Vector Search
+D. Grounding with Agent Search over your corpus, or a custom RAG pipeline with Vector Search
 
 <details>
 <summary>Answer</summary>
@@ -90,7 +90,7 @@ D. `stopSequences`, since ending generation at a marker keeps responses focused 
 
 A. Function calling: declare the function schema, let the model emit a structured call, run it in your code, return the result
 B. Fine-tune the model on recorded API responses so that it can call the API itself during generation
-C. Paste the API docs in the prompt and let the model send the HTTP request directly from the Vertex AI endpoint
+C. Paste the API docs in the prompt and let the model send the HTTP request directly from the Agent Platform endpoint
 D. Ask the model to describe the API in plain language, then have it run those described steps against the production endpoint itself
 
 <details>
@@ -180,7 +180,7 @@ D. Parse with regular expressions that extract the braces, repairing missing fie
 
 A. A single prompt that lists every step, which the model works through in one response without tool calls
 B. A fine-tuned model that has memorized the tool outputs, so no runtime calls or loop are required
-C. Vertex AI Agent Builder or an agent framework, with per-tool authorization in code and hard limits on loop iterations
+C. Agent Builder on Agent Platform or an agent framework, with per-tool authorization in code and hard limits on loop iterations
 D. Chain prompts manually forever, copying each output into the next prompt without any stop condition
 
 <details>
@@ -216,7 +216,7 @@ D. Use a larger model, since extra reasoning capacity lets it fix a retrieval st
 
 A. Vendor benchmarks, since public leaderboard scores predict quality on any application's own data and domain
 B. Manual review of a handful of outputs by the developer, run once after the change and never repeated afterwards
-C. The Vertex AI evaluation service with task-appropriate metrics and a dataset of production traffic
+C. The Agent Platform evaluation service with task-appropriate metrics and a dataset of production traffic
 D. Latency only, since a faster response always indicates that the model's answers are better
 
 <details>
@@ -289,4 +289,4 @@ D. Assess the use case for harms, test performance across affected groups, add s
 - [Generative AI Leader practice questions](./gcp-generative-ai-leader.md) - the business-level certification
 - [Azure GenAI track practice questions](./azure-generative-ai-track.md) - the Azure counterpart
 - [Prompt injection defense](../ai-security/prompt-injection-defense.md) - the security side of question 10
-- **[📖 Vertex AI generative AI documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview)** - primary source
+- **[📖 Agent Platform generative AI documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview)** - primary source

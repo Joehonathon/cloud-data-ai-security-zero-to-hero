@@ -66,7 +66,7 @@ Every arrow crossing from the left box to the right is a trust boundary that nee
 | **Record the license** | Base model license, derivative license, and any use restrictions, checked by legal once per model |
 | **Re-verify on update** | A new version is a new artifact and repeats the whole process |
 
-Managed registries that support this: AWS SageMaker Model Registry and Bedrock custom model import, Azure ML model registry with Purview lineage, Google Vertex AI Model Registry, plus Hugging Face Enterprise Hub for organization-scoped mirroring.
+Managed registries that support this: AWS SageMaker Model Registry and Bedrock custom model import, Azure ML model registry with Purview lineage, Google Agent Platform Model Registry (formerly Vertex AI Model Registry), plus Hugging Face Enterprise Hub for organization-scoped mirroring.
 
 ---
 
@@ -118,7 +118,7 @@ The code around the model is a normal supply chain problem with two AI-specific 
 
 ## Managed model providers
 
-Using Bedrock, Azure OpenAI, or Vertex AI removes most weight-integrity risk, because the provider owns the artifact. It does not remove your obligations.
+Using Bedrock, Azure OpenAI, or Agent Platform removes most weight-integrity risk, because the provider owns the artifact. It does not remove your obligations.
 
 Still yours to control and document:
 

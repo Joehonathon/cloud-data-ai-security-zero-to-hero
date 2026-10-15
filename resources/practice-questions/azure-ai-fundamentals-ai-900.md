@@ -370,7 +370,7 @@ D. Image Classification - assigning a category label to an entire image
 ### Question 20
 **Scenario:** A retail company wants to implement a checkout system that recognizes when known employees approach. The system should identify individuals based on their faces. What Azure service provides this capability?
 
-A. Form Recognizer - extracting fields and tables from invoices and receipts
+A. Azure AI Document Intelligence - extracting fields and tables from invoices and receipts
 B. Azure AI Face - face detection, recognition and identification
 C. Computer Vision image analysis - tagging and describing generic objects in photos without identity matching
 D. Custom Vision - training your own image classifier from labeled images
@@ -389,18 +389,18 @@ D. Custom Vision - training your own image classifier from labeled images
 **Scenario:** A company wants to train a custom model to identify their specific products (not general objects) from images. They have their own labeled training images. What Azure service allows training custom image classification models?
 
 A. Custom Vision - for training custom image classification and object detection models with your own data
-B. Text Analytics
+B. Azure AI Language
 C. Azure AI Vision (general API)
-D. Form Recognizer
+D. Azure AI Document Intelligence
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Custom Vision allows training custom image classification and object detection models using your own labeled images. Upload images, label them, train, and deploy. This is ideal when pre-built models don't recognize your specific objects (custom products, industry-specific items).
+**Why:** Custom Vision allows training custom image classification and object detection models using your own labeled images. Upload images, label them, train, and deploy. This is ideal when pre-built models don't recognize your specific objects (custom products, industry-specific items). Custom Vision remains supported until its planned retirement on September 25, 2028. For new work Microsoft recommends Azure Machine Learning automated ML for custom image models.
 
-**Key Concept:** [Custom Vision](https://docs.microsoft.com/azure/cognitive-services/custom-vision-service/overview)
+**Key Concept:** [What is Custom Vision?](https://learn.microsoft.com/en-us/azure/ai-services/custom-vision-service/overview)
 </details>
 
 ### Question 22
@@ -408,7 +408,7 @@ D. Form Recognizer
 
 A. Computer Vision OCR only - reads the raw text lines but does not return labeled invoice fields such as vendor or total
 B. Translator
-C. Text Analytics
+C. Azure AI Language
 D. Azure AI Document Intelligence (Form Recognizer) - for extracting structured data from documents
 
 <details>
@@ -518,9 +518,9 @@ D. OCR - extracting the printed text from scanned documents and photographs befo
 ### Question 28
 **Scenario:** A customer service center wants to transcribe recorded phone calls to text for analysis. They need to convert spoken audio to written text. What Azure service provides speech-to-text conversion?
 
-A. Form Recognizer
+A. Azure AI Document Intelligence
 B. Translator
-C. Text Analytics
+C. Azure AI Language
 D. Azure AI Speech (Speech-to-Text) - converting spoken audio to text
 
 <details>
@@ -705,16 +705,16 @@ D. Visual Studio without AI - a code editor and debugger that offers no generati
 A. Microsoft Paint - a simple drawing tool for editing pictures and screenshots on Windows
 B. Microsoft Word
 C. Microsoft Excel only - a spreadsheet for calculations that cannot search SharePoint documents or summarize them
-D. Microsoft Copilot for Microsoft 365 - AI assistant built into Microsoft 365 apps
+D. Microsoft 365 Copilot - AI assistant built into Microsoft 365 apps
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Microsoft Copilot for Microsoft 365 integrates generative AI across Microsoft 365 apps (Word, Excel, Teams, Outlook). It can access organizational data (with permissions), search documents, summarize meetings, draft emails, and answer questions - grounded in company content through Microsoft Graph.
+**Why:** Microsoft 365 Copilot integrates generative AI across Microsoft 365 apps (Word, Excel, Teams, Outlook). It can access organizational data the user is permitted to see, search documents, summarize meetings, draft emails, and answer questions grounded in company content through Microsoft Graph.
 
-**Key Concept:** [Microsoft Copilot](https://docs.microsoft.com/microsoft-365-copilot/)
+**Key Concept:** [What is Microsoft 365 Copilot?](https://learn.microsoft.com/en-us/microsoft-365-copilot/microsoft-365-copilot-overview)
 </details>
 
 ### Question 39

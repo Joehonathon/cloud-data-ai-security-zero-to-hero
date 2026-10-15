@@ -108,9 +108,9 @@ D. Cloud Console
 
 **Correct: B**
 
-**Why:** Infrastructure Manager (GCP-native, managed Terraform) or Terraform itself provides infrastructure as code for creating repeatable, version-controlled environments. Console is manual. CLI scripts lack state management and idempotency. Marketplace is for pre-built solutions.
+**Why:** Infrastructure Manager (GCP-native, managed Terraform) or Terraform itself provides infrastructure as code for creating repeatable, version-controlled environments. Console is manual. CLI scripts lack state management and idempotency. Marketplace is for pre-built solutions. Deployment Manager reached end of support on March 31, 2026.
 
-**Key Concept:** [Cloud Deployment Manager](https://cloud.google.com/deployment-manager/docs)
+**Key Concept:** [Infrastructure Manager](https://docs.cloud.google.com/infrastructure-manager/docs/overview)
 </details>
 
 ---
@@ -684,19 +684,19 @@ D. Grant storage.objectViewer role at project level, covering every bucket
 ---
 
 ### Question 34
-**Scenario:** A company needs to ensure all service account keys are rotated every 90 days. How can they enforce this?
+**Scenario:** A company wants newly created user-managed service account keys to stop working after 90 days, enforced across the whole organization. How can they enforce this?
 
-A. IAM Recommender, which suggests removing excess role grants from principals but does not track key age or rotate keys
+A. IAM Recommender, which suggests removing excess role grants from principals but does not set or enforce any key lifetime
 B. IAM Conditions
 C. VPC Service Controls
-D. Cloud Asset Inventory with monitoring
+D. The iam.serviceAccountKeyExpiryHours organization policy constraint, set to 2160 hours
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Cloud Asset Inventory can track service account key age, and monitoring alerts can notify when keys exceed 90 days. There's no organization policy for key rotation. IAM conditions control access timing. VPC Service Controls protect data.
+**Why:** The iam.serviceAccountKeyExpiryHours constraint sets how long newly created keys stay valid, in hours (90 days is 2160). It applies only to new keys, so existing keys need a separate review. IAM conditions control access timing. VPC Service Controls protect data.
 
 **Key Concept:** [Service Account Key Management](https://docs.cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys)
 </details>

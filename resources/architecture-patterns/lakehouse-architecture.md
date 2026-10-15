@@ -254,7 +254,7 @@ The lakehouse typically uses a medallion (multi-hop) architecture:
 | **Streaming** | Pub/Sub, Dataflow | Real-time ingestion |
 | **Governance** | Dataplex | Data quality and governance |
 | **Orchestration** | Cloud Composer (Airflow) | Pipeline orchestration |
-| **ML** | Vertex AI, BigQuery ML | Machine learning |
+| **ML** | Agent Platform (formerly Vertex AI), BigQuery ML | Machine learning |
 
 ### Architecture Pattern
 

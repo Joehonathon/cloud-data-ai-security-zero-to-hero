@@ -122,7 +122,7 @@ D. Backups only, with snapshots copied to another region to restore data after a
 ### Question 7
 **Scenario:** Which describes IBM Cloud's Kubernetes offering?
 
-A. Serverless only, where IBM Cloud Functions runs short-lived code and there is no cluster or container platform to use
+A. Serverless only, where Code Engine runs short-lived code and there is no cluster or container platform to use
 B. Docker only, where containers are started by hand on individual virtual servers without any orchestration layer
 C. Only self-managed Kubernetes, in which the customer installs and patches the control plane on virtual servers
 D. IBM Cloud Kubernetes Service for managed upstream Kubernetes, and Red Hat OpenShift on IBM Cloud for the OpenShift platform
@@ -177,7 +177,7 @@ D. Give everyone administrator access to the account so that nobody is blocked w
 **Scenario:** An application should run without managing servers, billed per execution.
 
 A. Virtual servers sized for peak load and billed for every hour they stay provisioned, busy or idle
-B. IBM Cloud Code Engine or Cloud Functions, scaling to zero when idle
+B. IBM Cloud Code Engine, scaling to zero
 C. A container registry that stores images and bills for the storage space that they use
 D. Bare metal servers dedicated to the application and billed monthly regardless of the load they handle
 
@@ -187,6 +187,8 @@ D. Bare metal servers dedicated to the application and billed monthly regardless
 **Correct: B**
 
 **Why:** Code Engine runs containers, jobs, and functions with scale-to-zero and no cluster to operate, which fits intermittent workloads. The trade-off is cold start latency, which matters for user-facing endpoints and does not for background jobs.
+
+**Key Concept:** [IBM Cloud Code Engine](https://www.ibm.com/products/code-engine)
 </details>
 
 ---

@@ -56,7 +56,7 @@ The Google Cloud Professional Data Engineer certification validates your ability
 - **Cloud Functions:** Event-driven processing
 
 ### Machine Learning
-- **Vertex AI:** Unified ML platform
+- **Agent Platform (formerly Vertex AI):** Unified ML platform
 - **BigQuery ML:** SQL-based machine learning
 - **AutoML:** Automated machine learning
 - **Dataflow ML:** ML in data pipelines
@@ -166,7 +166,7 @@ The Google Cloud Professional Data Engineer certification validates your ability
 4. **Data Pipeline Patterns**
 
 ### Phase 3: Machine Learning (Weeks 9-12)
-1. **Vertex AI Platform**
+1. **Agent Platform**
 2. **BigQuery ML**
 3. **AutoML Services**
 4. **MLOps and Production ML**

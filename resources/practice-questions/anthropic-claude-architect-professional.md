@@ -217,7 +217,7 @@ D. Start a new conversation and paste a short summary of the old one in as the f
 A. All platforms are identical, so any client class and any model ID works the same way on every one of them
 B. Only the first-party API is available, so inference cannot run on the enterprise's own cloud provider's infrastructure at all
 C. Only Bedrock exists as a third-party platform, so the design must be built on Amazon's infrastructure
-D. Claude is on Amazon Bedrock, Google Vertex AI, and Microsoft Foundry, each with its own client class and feature set
+D. Claude is on Amazon Bedrock, Google Agent Platform (formerly Vertex AI), and Microsoft Foundry, each with its own client class and feature set
 
 <details>
 <summary>Answer</summary>

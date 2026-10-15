@@ -143,7 +143,7 @@ Manual testing does not scale to every release. Wire an automated suite into CI.
 | **[Garak](https://github.com/NVIDIA/garak)** | NVIDIA's LLM vulnerability scanner, broad probe library |
 | **[PyRIT](https://github.com/Azure/PyRIT)** | Microsoft's Python Risk Identification Toolkit for generative AI |
 | **[Giskard](https://github.com/Giskard-AI/giskard)** | Scanning for bias, robustness, and injection issues |
-| Provider tooling | Bedrock Guardrails evaluation, Azure AI Foundry safety evaluations, Vertex AI safety filters |
+| Provider tooling | Bedrock Guardrails evaluation, Azure AI Foundry safety evaluations, Agent Platform (formerly Vertex AI) safety filters |
 
 Automated suites are good at breadth and regression. They are weak at the creative, system-specific attack, which is where a human still wins. Use them to guard what you already found.
 

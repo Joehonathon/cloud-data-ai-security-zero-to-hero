@@ -615,13 +615,13 @@ Organization
 
 ## Machine Learning and AI
 
-### AI Platform and Vertex AI
+### AI Platform and Agent Platform
 
 **ML Workflow:**
-- **Vertex AI** - Unified ML platform
+- **Agent Platform (formerly Vertex AI)** - Unified ML platform
 - Training with custom or pre-built containers
 - Model deployment and serving
-- **[📖 Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - ML platform
+- **[📖 Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - ML platform
 - **[📖 AutoML](https://cloud.google.com/vertex-ai/docs/beginner/beginners-guide)** - No-code ML
 
 ### Pre-Trained APIs

@@ -53,19 +53,19 @@ D. Create custom AWS Config rules and deploy them using StackSets
 </details>
 
 ### Question 3
-**Scenario:** A financial services company needs to share specific AMIs and AWS License Manager configurations with partner organizations while maintaining strict access controls. They want to track which partners use which resources and revoke access immediately if needed.
+**Scenario:** A financial services company needs to share specific EC2 Image Builder images and AWS License Manager configurations with partner organizations while maintaining strict access controls. They want to track which partners use which resources and revoke access immediately if needed.
 
 A. Use AWS Resource Access Manager (RAM) with resource shares to specific AWS accounts, which can be revoked at any time
-B. Create an AWS Marketplace private listing for the AMIs, with a private offer for each partner account
-C. Copy AMIs to partner accounts using cross-account AMI copy permissions
-D. Make AMIs public and share license configurations via S3
+B. Create an AWS Marketplace private listing for the images, with a private offer for each partner account
+C. Copy the resulting AMIs to partner accounts using cross-account AMI copy permissions
+D. Make the AMIs public and share license configurations via S3
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** AWS RAM allows sharing resources like AMIs and License Manager configurations with specific accounts or Organizations. It provides centralized management, usage tracking via CloudTrail, and immediate revocation capability. Public AMIs (D) have no access control. Cross-account copy (C) transfers ownership and prevents revocation. Marketplace (B) is for selling, not controlled sharing.
+**Why:** AWS RAM can share EC2 Image Builder images and License Manager configurations with specific accounts or Organizations. (A plain AMI is shared with launch permissions instead, not RAM.) It provides centralized management, usage tracking via CloudTrail, and immediate revocation capability. Public AMIs (D) have no access control. Cross-account copy (C) transfers ownership and prevents revocation. Marketplace (B) is for selling, not controlled sharing.
 
 **Key Concept:** [AWS Resource Access Manager](https://docs.aws.amazon.com/ram/latest/userguide/what-is.html)
 </details>
@@ -219,10 +219,10 @@ D. Implement AWS Elemental MediaConvert triggered by S3 events via Lambda
 </details>
 
 ### Question 12
-**Scenario:** A financial trading application requires sub-millisecond latency for database reads. The workload is read-heavy (95% reads) with occasional writes. Data must be strongly consistent, and the database should scale automatically based on load.
+**Scenario:** A financial trading application requires sub-millisecond latency for database reads. The workload is read-heavy (95% reads) with occasional writes. Reads must be strongly consistent, and the data must be durable across Availability Zones.
 
-A. Amazon DynamoDB with DAX (DynamoDB Accelerator)
-B. Amazon MemoryDB for Redis with a fixed number of shards and replicas
+A. Amazon MemoryDB for Redis, reading from the primary nodes
+B. Amazon DynamoDB with DAX (DynamoDB Accelerator), using strongly consistent reads
 C. Amazon Aurora with read replicas
 D. Amazon ElastiCache for Redis in front of Amazon RDS with a cache-aside pattern
 
@@ -231,13 +231,13 @@ D. Amazon ElastiCache for Redis in front of Amazon RDS with a cache-aside patter
 
 **Correct: A**
 
-**Why:** DynamoDB provides single-digit millisecond latency with automatic scaling. DAX provides microsecond latency for reads (sub-millisecond) with strong consistency support. This combination handles read-heavy workloads efficiently and scales automatically. Aurora (C) has millisecond latency, not sub-millisecond. ElastiCache (D) adds complexity and eventual consistency concerns. MemoryDB (B) is for Redis-compatible workloads, not purpose-built for this pattern.
+**Why:** MemoryDB primary nodes are strongly consistent, store writes durably in a Multi-AZ transaction log, and serve reads in microseconds. DAX passes strongly consistent reads through to DynamoDB without caching them, so they lose the sub-millisecond benefit (B). Aurora (C) has millisecond latency. ElastiCache in front of RDS (D) is a cache, so it can serve stale data.
 
-**Key Concept:** [DynamoDB DAX](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html)
+**Key Concept:** [MemoryDB consistency](https://docs.aws.amazon.com/memorydb/latest/devguide/consistency.html)
 </details>
 
 ### Question 13
-**Scenario:** A company is building a serverless application that processes customer orders. Orders must be processed exactly once, processing order doesn't matter, but failed orders should be retried up to 3 times before being moved to a dead-letter queue for manual review.
+**Scenario:** A company is building a serverless application that processes customer orders. The order handler is idempotent, so occasional duplicate delivery is acceptable, processing order doesn't matter, but failed orders should be retried up to 3 times before being moved to a dead-letter queue for manual review.
 
 A. Use SNS with SQS subscription and Lambda
 B. Use SQS FIFO queue with Lambda trigger, one message group ID for all orders, and a redrive policy with maxReceiveCount of 10
@@ -421,7 +421,7 @@ D. Aurora Serverless v2 PostgreSQL
 ## Domain 3: Continuous Improvement for Existing Solutions (Questions 23-32)
 
 ### Question 23
-**Scenario:** A company's application on EC2 is experiencing intermittent performance issues. They need to identify whether the issue is CPU, memory, disk I/O, or network related. The solution should not require installing additional agents.
+**Scenario:** A company's application on EC2 is experiencing intermittent performance issues. They need to identify whether the issue is CPU, disk I/O, or network related. The solution should not require installing additional agents.
 
 A. Use CloudWatch Application Insights
 B. Enable detailed CloudWatch monitoring and analyze metrics
@@ -433,7 +433,7 @@ D. Use EC2 Instance Connect for real-time debugging, running top and iostat on t
 
 **Correct: B**
 
-**Why:** Detailed CloudWatch monitoring provides 1-minute metric resolution for EC2 (CPU, disk, network) without agents. However, for memory metrics, the CloudWatch agent IS required. Given the constraint of no additional agents, detailed monitoring provides CPU, disk, and network insights. Option A requires agent installation. X-Ray (C) is for distributed tracing, not system metrics. Instance Connect (D) is for SSH access, not monitoring.
+**Why:** Detailed CloudWatch monitoring provides 1-minute metric resolution for EC2 (CPU, disk, network) without agents. Memory metrics would need the CloudWatch agent, which is why memory is not part of this question. Option A requires agent installation. X-Ray (C) is for distributed tracing, not system metrics. Instance Connect (D) is for SSH access, not monitoring.
 
 **Key Concept:** [CloudWatch EC2 Metrics](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html)
 </details>
@@ -547,19 +547,19 @@ D. Switch to AWS Batch with Fargate, which isolates each job and prevents Spot c
 </details>
 
 ### Question 30
-**Scenario:** A company's DynamoDB table has hot partition issues causing throttling. The table uses user_id as the partition key, and some users generate significantly more traffic than others. How can they resolve this without changing the application significantly?
+**Scenario:** A company's DynamoDB table has hot partition issues causing throttling. The table uses user_id as the partition key, and some users generate significantly more traffic than others, and the hot traffic is mostly repeated reads of the same items. How can they resolve this without changing the application significantly?
 
-A. Add a random suffix to the partition key
+A. Add a random suffix to the partition key (write sharding), which needs application changes and code to read all suffixes back
 B. Increase provisioned throughput capacity on the table until the throttled partition has enough headroom
 C. Enable DynamoDB auto scaling with aggressive scale-up settings and a high maximum capacity
-D. Use DynamoDB Accelerator (DAX) to absorb hot partition traffic
+D. Use DynamoDB Accelerator (DAX) in front of the table to absorb the repeated hot-key reads at once
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** DAX caches frequently accessed items, absorbing read traffic from hot partitions without application changes. For write-heavy hot partitions, write sharding (A) is better, but that requires application changes. Simply increasing capacity (B) doesn't fix hot partition issues - the partition limit is 3,000 RCU/1,000 WCU regardless of table capacity. Auto scaling (C) doesn't help with partition-level limits.
+**Why:** DAX caches frequently accessed items, absorbing read traffic from hot partitions without application changes. Write sharding (A) is the answer for write-heavy hot keys, but it requires application changes and does not fit read-heavy traffic. Simply increasing capacity (B) doesn't fix hot partition issues - the partition limit is 3,000 RCU/1,000 WCU regardless of table capacity. Auto scaling (C) doesn't help with partition-level limits.
 
 **Key Concept:** [DynamoDB Hot Partitions](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-uniform-load.html)
 </details>
@@ -625,9 +625,9 @@ D. Use AWS Server Migration Service (SMS)
 ### Question 34
 **Scenario:** A company is migrating a legacy Oracle database (50TB) to AWS. They want to reduce licensing costs and have flexibility to use open-source databases. The database contains complex PL/SQL stored procedures. What migration approach minimizes risk?
 
-A. Migrate to Amazon RDS for Oracle first, then use AWS SCT and DMS to convert to Aurora PostgreSQL
+A. Use AWS SCT to convert the schema and PL/SQL, then AWS DMS full load with ongoing replication directly to Aurora PostgreSQL
 B. Use AWS DMS for direct Oracle to PostgreSQL migration
-C. Use AWS DMS with ongoing replication directly to Aurora PostgreSQL
+C. Migrate to Amazon RDS for Oracle first, then use AWS SCT and DMS to convert to Aurora PostgreSQL
 D. Export data using Oracle Data Pump and import to PostgreSQL
 
 <details>
@@ -635,9 +635,9 @@ D. Export data using Oracle Data Pump and import to PostgreSQL
 
 **Correct: A**
 
-**Why:** Two-phase migration reduces risk: first lift-and-shift to RDS Oracle (same engine, quick migration), then convert to PostgreSQL. AWS Schema Conversion Tool (SCT) handles PL/SQL to PL/pgSQL conversion with manual review of complex procedures. DMS handles data migration. Direct conversion (B, C) risks compatibility issues with complex PL/SQL. Data Pump (D) causes extended downtime and doesn't convert code.
+**Why:** This is the standard heterogeneous path. AWS SCT converts the schema and PL/SQL to PL/pgSQL, with manual review of complex procedures. DMS then loads the data and replicates changes with little downtime. DMS alone (B) moves data but does not convert code. Moving 50 TB to RDS for Oracle first (C) adds a second migration that keeps the licence cost for no benefit. Data Pump (D) causes long downtime and does not convert code.
 
-**Key Concept:** [AWS Schema Conversion Tool](https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html)
+**Key Concept:** [Oracle to Aurora PostgreSQL migration playbook](https://docs.aws.amazon.com/dms/latest/oracle-to-aurora-postgresql-migration-playbook/chap-oracle-aurora-pg.sql.stored.html)
 </details>
 
 ### Question 35

@@ -84,7 +84,7 @@ A regulated US healthcare customer needs HIPAA BAA coverage, no public internet 
 A. Anthropic first-party API with IP allowlisting.
 B. Anthropic first-party API with a self-managed proxy in their VPC.
 C. Claude on Amazon Bedrock with PrivateLink.
-D. Claude on Google Vertex AI.
+D. Claude on Google Agent Platform (formerly Vertex AI).
 
 **Answer: C.** Bedrock provides IAM auth, CloudTrail logs, PrivateLink for no-public-egress, and HIPAA eligibility natively for AWS customers. A and B leak or add complexity. D is off-cloud.
 

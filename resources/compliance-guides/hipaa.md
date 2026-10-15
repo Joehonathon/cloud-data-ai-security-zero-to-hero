@@ -99,7 +99,7 @@ HIPAA (Health Insurance Portability and Accountability Act) establishes national
 | Networking | VPC, Cloud Load Balancing, Cloud CDN, Cloud Interconnect |
 | Security | Cloud KMS, Cloud Audit Logs, SCC |
 | Analytics | Dataflow, Dataproc, Pub/Sub |
-| AI/ML | Vertex AI, Healthcare API |
+| AI/ML | Agent Platform (formerly Vertex AI), Healthcare API |
 
 ---
 

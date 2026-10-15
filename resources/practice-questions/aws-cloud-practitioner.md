@@ -277,7 +277,7 @@ D. AWS CloudTrail
 ---
 
 ### Question 14
-**Scenario:** A company needs to encrypt data stored in Amazon S3. Who is responsible for enabling this encryption?
+**Scenario:** Amazon S3 now encrypts all new objects with SSE-S3 by default. A company must use its own AWS KMS key for its S3 data and control who can use that key. Who is responsible for choosing and configuring this under the shared responsibility model?
 
 A. AWS decides all encryption settings for the customer
 B. Third-party tools are required
@@ -289,9 +289,9 @@ D. The customer, who chooses and configures the encryption settings
 
 **Correct: D**
 
-**Why:** While AWS provides encryption capabilities (SSE-S3, SSE-KMS, SSE-C), the customer is responsible for enabling and configuring encryption under the Shared Responsibility Model. Note: AWS now enables SSE-S3 by default for new buckets, but customers still manage encryption settings.
+**Why:** S3 applies SSE-S3 by default (since January 2023), but choosing another option such as SSE-KMS with the company's own key, and managing access to that key, is the customer's job under the shared responsibility model.
 
-**Key Concept:** [S3 Encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html)
+**Key Concept:** [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/default-encryption-faq.html)
 </details>
 
 ---
@@ -661,7 +661,7 @@ D. Amazon CloudWatch
 ## Domain 4: Billing, Pricing, and Support (12%)
 
 ### Question 33
-**Scenario:** A company runs EC2 instances continuously for 3 years. Which pricing option would provide the MOST cost savings?
+**Scenario:** A company runs EC2 instances continuously for 3 years. The workload is steady and must not be interrupted. Which pricing option would provide the MOST cost savings?
 
 A. Dedicated Hosts
 B. On-Demand Instances
@@ -673,9 +673,9 @@ D. Reserved Instances (3-year term)
 
 **Correct: D**
 
-**Why:** Reserved Instances with a 3-year term provide up to 72% discount compared to On-Demand for steady-state workloads. Spot Instances are cheaper but can be interrupted. On-Demand has no commitment but highest cost. Dedicated Hosts are for compliance needs.
+**Why:** Reserved Instances with a 3-year term give a large discount compared to On-Demand for steady-state workloads that must keep running. Spot Instances can be cheaper but can be interrupted. On-Demand has no commitment but the highest cost. Dedicated Hosts are for compliance and licensing needs.
 
-**Key Concept:** [EC2 Pricing](https://aws.amazon.com/ec2/pricing/)
+**Key Concept:** [EC2 Purchasing Options](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html)
 </details>
 
 ---

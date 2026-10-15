@@ -57,7 +57,7 @@ D. Single subscription for all environments, separating dev, test, and productio
 
 A. Custom PowerShell scripts run on a schedule against each subscription
 B. Manual compliance audits quarterly, with an auditor sampling resources and filing remediation tickets for non-compliant ones
-C. Azure Security Center free tier, with its default recommendations only
+C. Microsoft Defender for Cloud free tier, with its default recommendations only
 D. Azure Policy HIPAA initiative with auto-remediation
 
 <details>
@@ -457,9 +457,9 @@ D. Failover production to the DR region during a quiet weekend window, then fail
 </details>
 
 ### Question 25
-**Scenario:** A company's database requires zero data loss (RPO = 0) during failover. They use Azure SQL Database. What should they configure?
+**Scenario:** A company's database must have zero data loss (RPO = 0) if an availability zone in its region fails. They use Azure SQL Database. What should they configure?
 
-A. Auto-failover groups with synchronous replication in Business Critical tier
+A. Business Critical tier with zone redundancy, hardening each commit across zones
 B. Manual backup and restore
 C. LRS backup
 D. Geo-replication with asynchronous replication to a paired region, with readable secondaries for reporting
@@ -469,9 +469,9 @@ D. Geo-replication with asynchronous replication to a paired region, with readab
 
 **Correct: A**
 
-**Why:** Auto-failover groups with Business Critical tier use synchronous replication within the primary region, providing RPO = 0 for zone failures. For regional failures, async geo-replication has near-zero RPO but not guaranteed zero. Note: True RPO = 0 across regions isn't possible due to physics. Business Critical provides best possible protection. Async (D) has potential data loss. Backups (C, B) have longer RPO.
+**Why:** With zone redundancy, Business Critical places synchronized replicas in different availability zones of the same region, so a zone failure loses no committed data (RPO = 0). Geo-replication and failover groups copy data asynchronously to another region, so a forced failover can lose recent transactions (D). Backups (B, C) have a longer RPO.
 
-**Key Concept:** [Auto-failover Groups](https://learn.microsoft.com/en-us/azure/azure-sql/database/auto-failover-group-overview)
+**Key Concept:** [Availability through local and zone redundancy](https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla-local-zone-redundancy)
 </details>
 
 ---
@@ -533,7 +533,7 @@ D. Azure Functions on a Consumption plan, triggered by a weekly timer
 </details>
 
 ### Question 29
-**Scenario:** A company's API receives 1000 requests per second during peak hours but only 10 requests per second at night. They want to minimize cost while maintaining performance. What compute solution should they design?
+**Scenario:** A company's API receives 1000 requests per second during peak hours but only 10 requests per second at night. They want to minimize cost while maintaining performance, and the API cannot tolerate cold-start delays when traffic ramps up. What compute solution should they design?
 
 A. VM Scale Set with fixed capacity sized for the peak, so the API stays fast
 B. Azure App Service on a fixed number of instances with autoscale turned off
@@ -545,7 +545,7 @@ D. Azure API Management in front of Azure Functions on a Premium plan with pre-w
 
 **Correct: D**
 
-**Why:** API Management provides API gateway capabilities. Functions Premium plan scales quickly (pre-warmed instances) based on demand and shrinks to a small baseline at night, minimizing cost. APIM with consumption tier is even more cost-effective for variable load. Fixed capacity (A) wastes money at night. App Service (B) with autoscale turned off keeps paying for peak capacity.
+**Why:** The Functions Premium plan keeps pre-warmed instances, so there are no cold starts. It scales out quickly under load and shrinks to a small baseline at night. API Management provides the gateway. Fixed capacity (A) wastes money at night. App Service with autoscale turned off (B) pays for peak capacity all day. An always-on AKS cluster (C) pays for idle nodes.
 
 **Key Concept:** [Functions Premium Plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)
 </details>
@@ -571,19 +571,19 @@ D. Azure Relay Hybrid Connections
 ### Question 31
 **Scenario:** A company needs a global content delivery network for their media streaming application. Content should be cached at edge locations worldwide with custom domain and HTTPS support. What should they design?
 
-A. Front Door with caching disabled on every route
+A. A new Azure CDN Standard from Microsoft (classic) profile, which can no longer be created
 B. Public blob storage in one region
 C. Traffic Manager
-D. Azure CDN with a custom domain, managed HTTPS certificates, and edge caching rules
+D. Azure Front Door Standard or Premium with caching enabled, a custom domain, and a managed HTTPS certificate
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Azure CDN caches content at edge locations globally for low-latency delivery. Custom domains with managed SSL certificates provide branding and security. Multiple CDN providers available (Microsoft, Verizon, Akamai). Storage public access (B) doesn't provide edge caching. Front Door (A) can cache at the edge, but only with caching enabled, and this option sends every request to the origin. Traffic Manager (C) is DNS-based routing, not caching.
+**Why:** Azure Front Door caches content at Microsoft's global edge locations and supports custom domains with free managed certificates. It is the migration target for Azure CDN Standard from Microsoft (classic), which cannot be created for new profiles and retires on September 30, 2027. Public blob storage in one region (B) has no edge caching. Traffic Manager (C) is DNS-based routing, not caching.
 
-**Key Concept:** [Azure CDN](https://learn.microsoft.com/en-us/azure/cdn/cdn-overview)
+**Key Concept:** [Azure Front Door overview](https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview)
 </details>
 
 ### Question 32

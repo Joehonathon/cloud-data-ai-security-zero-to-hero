@@ -178,7 +178,7 @@ D. Assume it is current, because Copilot only ever suggests APIs that are still 
 
 A. Fine-tune the underlying model yourself by uploading the organization's repositories to the model vendor
 B. Paste the standards into every prompt by hand, which the model remembers permanently across all later chat sessions
-C. Copilot Enterprise knowledge bases and repository indexing, plus repository custom instructions
+C. Copilot Spaces holding the key repositories and docs, plus repository custom instructions
 D. Not possible
 
 <details>
@@ -186,7 +186,9 @@ D. Not possible
 
 **Correct: C**
 
-**Why:** Custom instructions in the repository apply automatically to Copilot's context, and Enterprise knowledge bases index documentation so chat can answer from internal sources. Both remove the need to restate context on every request.
+**Why:** Custom instructions in the repository apply automatically to Copilot's context, and Copilot Spaces group repositories, files, issues and notes so chat answers from internal sources. Both remove the need to restate context on every request. Spaces replaced knowledge bases, which GitHub retired on 1 November 2025.
+
+**Key Concept:** [Copilot Spaces](https://docs.github.com/en/copilot/concepts/context/spaces)
 </details>
 
 ---

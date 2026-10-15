@@ -11,34 +11,34 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 
 ## ML Platforms (End-to-End ML Workflow)
 
-| Feature | AWS SageMaker | GCP Vertex AI | Azure Machine Learning |
+| Feature | AWS SageMaker | GCP Agent Platform (formerly Vertex AI) | Azure Machine Learning |
 |---------|---------------|---------------|------------------------|
-| **Service Name** | Amazon SageMaker | Vertex AI | Azure Machine Learning |
+| **Service Name** | Amazon SageMaker | Agent Platform | Azure Machine Learning |
 | **Launch Year** | 2017 | 2021 (unified platform) | 2014 (rebranded 2019) |
-| **IDE/Notebooks** | SageMaker Studio, Notebook Instances | Vertex AI Workbench, Colab Enterprise | Azure ML Studio, Compute Instances |
+| **IDE/Notebooks** | SageMaker Studio, Notebook Instances | Agent Platform Workbench, Colab Enterprise | Azure ML Studio, Compute Instances |
 | **Jupyter Integration** | JupyterLab in Studio | JupyterLab, Managed notebooks | JupyterLab, VS Code integration |
-| **Data Labeling** | SageMaker Ground Truth | Vertex AI Data Labeling | Azure ML Data Labeling |
-| **Feature Store** | SageMaker Feature Store | Vertex AI Feature Store | Azure ML Feature Store (preview) |
+| **Data Labeling** | SageMaker Ground Truth | Data Labeling | Azure ML Data Labeling |
+| **Feature Store** | SageMaker Feature Store | Agent Platform Feature Store | Azure ML Feature Store (preview) |
 | **Training** | Built-in algorithms, custom containers | Pre-built containers, custom training | Designer, AutoML, custom scripts |
 | **Distributed Training** | Data parallelism, model parallelism | Multi-node, multi-GPU | Distributed training with Horovod, DeepSpeed |
 | **Hyperparameter Tuning** | Automatic Model Tuning | Vertex AI Vizier | HyperDrive |
-| **Experiment Tracking** | SageMaker Experiments | Vertex AI Experiments | Azure ML Experiments, MLflow integration |
-| **Model Registry** | SageMaker Model Registry | Vertex AI Model Registry | Azure ML Model Registry |
-| **Model Monitoring** | Model Monitor | Vertex AI Model Monitoring | Model monitoring, data drift detection |
+| **Experiment Tracking** | SageMaker Experiments | Experiments on Agent Platform | Azure ML Experiments, MLflow integration |
+| **Model Registry** | SageMaker Model Registry | Agent Platform Model Registry | Azure ML Model Registry |
+| **Model Monitoring** | Model Monitor | Model Monitoring on Agent Platform | Model monitoring, data drift detection |
 | **Deployment** | Real-time endpoints, batch, serverless | Prediction endpoints, batch | Real-time endpoints, batch endpoints |
 | **A/B Testing** | Multi-model endpoints | Traffic splitting | Blue-green deployments |
 | **Edge Deployment** | SageMaker Edge Manager, Neo | Edge TPU, TensorFlow Lite | Azure IoT Edge, ONNX Runtime |
-| **MLOps** | SageMaker Pipelines, Projects | Vertex AI Pipelines | Azure ML Pipelines |
+| **MLOps** | SageMaker Pipelines, Projects | Agent Platform Pipelines | Azure ML Pipelines |
 | **Pipeline Orchestration** | Step Functions, Pipelines | Kubeflow Pipelines, Vertex Pipelines | Azure ML Pipelines, Data Factory |
 | **Supported Frameworks** | TensorFlow, PyTorch, scikit-learn, XGBoost, MXNet, Hugging Face | TensorFlow, PyTorch, scikit-learn, XGBoost | TensorFlow, PyTorch, scikit-learn, ONNX |
 | **Pricing Model** | Pay per instance hour + storage | Pay per compute hour + predictions | Pay per compute hour + deployments |
 
 **Documentation:**
 - **[📖 AWS SageMaker Documentation](https://docs.aws.amazon.com/sagemaker/)** - Complete SageMaker guide
-- **[📖 GCP Vertex AI Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - Complete Vertex AI guide
+- **[📖 GCP Agent Platform documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - Complete Agent Platform guide
 - **[📖 Azure Machine Learning Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/)** - Complete Azure ML guide
 - **[📖 SageMaker Studio Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/studio.html)** - IDE environment
-- **[📖 Vertex AI Workbench Documentation](https://cloud.google.com/vertex-ai/docs/workbench)** - Jupyter notebooks
+- **[📖 Agent Platform Workbench Documentation](https://cloud.google.com/vertex-ai/docs/workbench)** - Jupyter notebooks
 - **[📖 Azure ML Studio Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/overview-what-is-azure-machine-learning)** - ML workspace
 
 ---
@@ -47,7 +47,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 
 | Feature | AWS | GCP | Azure |
 |---------|-----|-----|-------|
-| **Service Name** | SageMaker Autopilot | Vertex AI AutoML | Azure Automated ML |
+| **Service Name** | SageMaker Autopilot | Agent Platform AutoML | Azure Automated ML |
 | **Tabular Data** | Yes | Yes (Tables) | Yes |
 | **Image Classification** | Canvas | Yes (Vision) | Yes |
 | **Object Detection** | Canvas | Yes (Vision) | Yes |
@@ -60,12 +60,12 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | **No-Code Interface** | SageMaker Canvas | Vertex AI UI | Azure ML Studio |
 | **Custom Training Time** | Configurable | Configurable budget | Configurable |
 | **Output Format** | Model artifact, notebook | Model endpoint, container | ONNX, pickle, Docker |
-| **Integration** | SageMaker ecosystem | Vertex AI ecosystem | Azure ML ecosystem |
+| **Integration** | SageMaker ecosystem | Agent Platform ecosystem | Azure ML ecosystem |
 
 **Documentation:**
 - **[📖 SageMaker Autopilot Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html)** - AutoML for tabular data
 - **[📖 SageMaker Canvas Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas.html)** - No-code ML
-- **[📖 Vertex AI AutoML Documentation](https://cloud.google.com/vertex-ai/docs/beginner/beginners-guide)** - Automated training
+- **[📖 Agent Platform AutoML Documentation](https://cloud.google.com/vertex-ai/docs/beginner/beginners-guide)** - Automated training
 - **[📖 Azure Automated ML Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/concept-automated-ml)** - AutoML overview
 
 ---
@@ -81,7 +81,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | **Celebrity Recognition** | RecognizeCelebrities | Celebrity Recognition | N/A |
 | **Text in Images (OCR)** | Textract, Rekognition | Vision OCR | Computer Vision OCR, Form Recognizer |
 | **Content Moderation** | DetectModerationLabels | SafeSearch Detection | Content Moderator |
-| **Custom Models** | Custom Labels | AutoML Vision, Vertex AI | Custom Vision |
+| **Custom Models** | Custom Labels | AutoML Vision, Agent Platform | Custom Vision |
 | **Image Labeling** | Ground Truth | Data Labeling Service | Azure ML Data Labeling |
 | **Video Analysis** | Rekognition Video | Video Intelligence API | Video Indexer |
 | **Video Content Moderation** | Yes | Yes | Yes |
@@ -183,7 +183,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 
 | Feature | AWS | GCP | Azure |
 |---------|-----|-----|-------|
-| **Service Name** | Amazon Bedrock | Vertex AI (Model Garden, Generative AI) | Azure OpenAI Service |
+| **Service Name** | Amazon Bedrock | Agent Platform (Model Garden, Generative AI) | Azure OpenAI Service |
 | **Foundation Models** | Anthropic Claude, Meta Llama, Cohere, AI21, Stability AI | PaLM 2, Gemini, Llama 2, Claude | GPT-4, GPT-3.5, Codex, DALL-E |
 | **OpenAI Models** | No (but Claude alternative) | No (but Gemini/PaLM) | Yes (exclusive partnership) |
 | **Anthropic Claude** | Yes | Yes | No |
@@ -191,14 +191,14 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | **Open Source Models** | Llama 2, Falcon, Mistral | Llama 2, Open models | Llama 2 (limited) |
 | **Image Generation** | Stable Diffusion (Stability AI) | Imagen | DALL-E 2, DALL-E 3 |
 | **Code Generation** | CodeWhisperer (separate) | Codey, Gemini | GitHub Copilot (partner), GPT-4 |
-| **Chat Interface** | Amazon Q | N/A (Vertex AI Studio) | Azure OpenAI Playground |
+| **Chat Interface** | Amazon Q | N/A (Agent Studio) | Azure OpenAI Playground |
 | **Embeddings** | Titan Embeddings, Cohere | text-embedding-gecko | ada-002 embeddings |
 | **Fine-tuning** | Limited | Yes | Yes (GPT-3.5, Ada) |
 | **Prompt Management** | Prompt templates | Prompt design | Prompt engineering tools |
-| **Responsible AI** | Guardrails | Vertex AI safety filters | Content filtering, abuse monitoring |
-| **Vector Database Integration** | OpenSearch, RDS pgvector | Vertex AI Vector Search | Azure Cognitive Search |
-| **RAG Support** | Knowledge Bases for Bedrock | Vertex AI Search, Grounding | Azure AI Search integration |
-| **Agents** | Bedrock Agents | Vertex AI Agent Builder | Azure AI Agent Service (preview) |
+| **Responsible AI** | Guardrails | Agent Platform safety filters | Content filtering, abuse monitoring |
+| **Vector Database Integration** | OpenSearch, RDS pgvector | Vector Search | Azure Cognitive Search |
+| **RAG Support** | Knowledge Bases for Bedrock | Agent Search, Grounding | Azure AI Search integration |
+| **Agents** | Bedrock Agents | Agent Builder on Agent Platform | Azure AI Agent Service (preview) |
 | **Model Deployment** | Managed inference | Managed endpoints | Managed deployments |
 | **Pricing** | Per token (input/output) | Per character/token | Per token (input/output) |
 
@@ -206,7 +206,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 - **[📖 AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)** - Foundation models
 - **[📖 AWS Bedrock Agents Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html)** - AI agents
 - **[📖 AWS CodeWhisperer Documentation](https://docs.aws.amazon.com/codewhisperer/)** - AI code assistant
-- **[📖 GCP Vertex AI Generative AI Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview)** - Generative AI overview
+- **[📖 GCP Agent Platform Generative AI Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview)** - Generative AI overview
 - **[📖 GCP Gemini Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/gemini)** - Google's multimodal AI
 - **[📖 Azure OpenAI Service Documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/)** - OpenAI integration
 - **[📖 Azure OpenAI Models Documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models)** - Available models
@@ -264,10 +264,10 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | Feature | AWS | GCP | Azure |
 |---------|-----|-----|-------|
 | **Personalization** | Amazon Personalize | Recommendations AI | Azure Personalizer |
-| **Search** | OpenSearch, Kendra | Vertex AI Search, Enterprise Search | Cognitive Search |
+| **Search** | OpenSearch, Kendra | Agent Search, Enterprise Search | Cognitive Search |
 | **Recommendation Types** | User personalization, ranking, similar items | Product recommendations, personalized ranking | Contextual bandit, reinforcement learning |
-| **Neural Search** | Kendra | Vertex AI Search | Cognitive Search (vector search) |
-| **Document Search** | Kendra | Vertex AI Search | Cognitive Search |
+| **Neural Search** | Kendra | Agent Search | Cognitive Search (vector search) |
+| **Document Search** | Kendra | Agent Search | Cognitive Search |
 | **E-commerce** | Personalize | Recommendations AI (Retail) | Personalizer |
 | **Real-time** | Yes | Yes | Yes |
 | **Cold Start** | Yes | Yes | Yes |
@@ -284,13 +284,13 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 
 | Feature | AWS | GCP | Azure |
 |---------|-----|-----|-------|
-| **Pipeline Orchestration** | SageMaker Pipelines, Step Functions | Vertex AI Pipelines, Cloud Composer | Azure ML Pipelines |
-| **Experiment Tracking** | SageMaker Experiments | Vertex AI Experiments | Azure ML Experiments, MLflow |
-| **Model Registry** | SageMaker Model Registry | Vertex AI Model Registry | Azure ML Model Registry |
+| **Pipeline Orchestration** | SageMaker Pipelines, Step Functions | Agent Platform Pipelines, Cloud Composer | Azure ML Pipelines |
+| **Experiment Tracking** | SageMaker Experiments | Experiments on Agent Platform | Azure ML Experiments, MLflow |
+| **Model Registry** | SageMaker Model Registry | Agent Platform Model Registry | Azure ML Model Registry |
 | **Model Versioning** | Yes | Yes | Yes |
 | **Model Lineage** | SageMaker Lineage | Vertex AI Metadata | Azure ML lineage tracking |
 | **CI/CD Integration** | CodePipeline, GitLab, GitHub Actions | Cloud Build, GitLab, GitHub Actions | Azure DevOps, GitHub Actions |
-| **Model Monitoring** | Model Monitor | Vertex AI Model Monitoring | Model monitoring, data drift |
+| **Model Monitoring** | Model Monitor | Model Monitoring on Agent Platform | Model monitoring, data drift |
 | **Data Drift Detection** | Yes | Yes | Yes |
 | **Model Performance** | Yes | Yes | Yes |
 | **A/B Testing** | Multi-model endpoints | Traffic splitting | Blue-green deployments |
@@ -302,7 +302,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 **Documentation:**
 - **[📖 SageMaker Pipelines Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines.html)** - ML workflows
 - **[📖 SageMaker Model Monitor Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html)** - Production monitoring
-- **[📖 Vertex AI Pipelines Documentation](https://cloud.google.com/vertex-ai/docs/pipelines)** - Pipeline orchestration
+- **[📖 Agent Platform Pipelines Documentation](https://cloud.google.com/vertex-ai/docs/pipelines)** - Pipeline orchestration
 - **[📖 Azure ML Pipelines Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines)** - Workflow automation
 
 ---
@@ -317,14 +317,14 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | **Spot/Preemptible Training** | Managed Spot Training | Spot VMs | Low-priority VMs |
 | **Training Cost Savings** | Up to 90% with Spot | Up to 91% with Spot | Up to 80% with Low-priority |
 | **Auto-scaling** | Yes | Yes | Yes |
-| **Notebook Instances** | SageMaker Notebooks | Vertex AI Workbench | Compute Instances |
+| **Notebook Instances** | SageMaker Notebooks | Agent Platform Workbench | Compute Instances |
 | **Managed Jupyter** | Yes | Yes | Yes |
 | **Data Parallelism** | Yes | Yes | Yes |
 | **Model Parallelism** | Yes (SMP library) | Yes | Yes (DeepSpeed) |
 
 **Documentation:**
 - **[📖 SageMaker Training Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/train-model.html)** - Model training
-- **[📖 Vertex AI Training Documentation](https://cloud.google.com/vertex-ai/docs/training/overview)** - Custom training
+- **[📖 Agent Platform Managed Training Documentation](https://cloud.google.com/vertex-ai/docs/training/overview)** - Custom training
 - **[📖 Azure ML Training Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/concept-train-machine-learning-model)** - Training overview
 
 ---
@@ -333,10 +333,10 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 
 | Feature | AWS | GCP | Azure |
 |---------|-----|-----|-------|
-| **Data Wrangler** | SageMaker Data Wrangler | Vertex AI Feature Store | Azure ML Data Prep |
-| **Feature Store** | SageMaker Feature Store | Vertex AI Feature Store | Azure ML Feature Store (preview) |
+| **Data Wrangler** | SageMaker Data Wrangler | Agent Platform Feature Store | Azure ML Data Prep |
+| **Feature Store** | SageMaker Feature Store | Agent Platform Feature Store | Azure ML Feature Store (preview) |
 | **Data Labeling** | Ground Truth | Data Labeling Service | Data Labeling |
-| **AutoML Data Prep** | Autopilot | Vertex AI AutoML | Automated ML |
+| **AutoML Data Prep** | Autopilot | Agent Platform AutoML | Automated ML |
 | **ETL Integration** | Glue, EMR | Dataflow, Dataprep | Data Factory, Synapse |
 | **Feature Reuse** | Yes | Yes | Yes |
 | **Online/Offline Store** | Yes | Yes | Yes |
@@ -345,7 +345,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 **Documentation:**
 - **[📖 SageMaker Data Wrangler Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/data-wrangler.html)** - Data preparation
 - **[📖 SageMaker Feature Store Documentation](https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store.html)** - Feature management
-- **[📖 Vertex AI Feature Store Documentation](https://cloud.google.com/vertex-ai/docs/featurestore)** - Feature serving
+- **[📖 Agent Platform Feature Store Documentation](https://cloud.google.com/vertex-ai/docs/featurestore)** - Feature serving
 - **[📖 Azure ML Feature Store Documentation](https://learn.microsoft.com/en-us/azure/machine-learning/concept-what-is-managed-feature-store)** - Feature engineering
 
 ---
@@ -428,7 +428,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 |---------|--------------|------|
 | **SageMaker Real-time** | Per instance hour | $0.065/hour (ml.t3.medium) |
 | **SageMaker Serverless** | Per compute + invocations | $0.20/hour compute + $0.20/1K requests |
-| **Vertex AI Prediction** | Per hour | $0.056/hour (n1-standard-2) |
+| **Agent Platform Inference** | Per hour | $0.056/hour (n1-standard-2) |
 | **Azure ML Online Endpoint** | Per hour | $0.073/hour (Standard_DS2_v2) |
 
 ### AutoML Training
@@ -436,7 +436,7 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | Service | Pricing Model | Approximate Cost |
 |---------|--------------|------------------|
 | **SageMaker Autopilot** | Per instance hour | ~$0.24/hour (ml.m5.xlarge) |
-| **Vertex AI AutoML** | Per node hour | $19.32/hour (tabular) |
+| **Agent Platform AutoML** | Per node hour | $19.32/hour (tabular) |
 | **Azure AutoML** | Per compute hour | ~$0.20/hour (compute) |
 
 ### AI Services (Pay-per-use)
@@ -456,8 +456,8 @@ This guide provides a comprehensive comparison of AI/ML services across AWS, Goo
 | **AWS Bedrock** | Claude 3 Sonnet | $0.003 | $0.015 |
 | **AWS Bedrock** | Claude 3 Opus | $0.015 | $0.075 |
 | **AWS Bedrock** | Llama 2 70B | $0.00195 | $0.00256 |
-| **GCP Vertex AI** | Gemini Pro | $0.000125 | $0.000375 |
-| **GCP Vertex AI** | PaLM 2 | $0.001 | $0.001 |
+| **GCP Agent Platform** | Gemini Pro | $0.000125 | $0.000375 |
+| **GCP Agent Platform** | PaLM 2 | $0.001 | $0.001 |
 | **Azure OpenAI** | GPT-4 | $0.03 | $0.06 |
 | **Azure OpenAI** | GPT-3.5 Turbo | $0.0005 | $0.0015 |
 
@@ -489,7 +489,7 @@ estimator = Estimator(
 estimator.fit({'train': 's3://bucket/train'})
 ```
 
-**GCP Vertex AI (Python SDK):**
+**GCP Agent Platform (Python SDK):**
 ```python
 from google.cloud import aiplatform
 
@@ -537,7 +537,7 @@ predictor = estimator.deploy(
 result = predictor.predict(data)
 ```
 
-**GCP Vertex AI:**
+**GCP Agent Platform:**
 ```python
 endpoint = model.deploy(
     machine_type='n1-standard-4',
@@ -692,7 +692,7 @@ response = bedrock.invoke_model(
 )
 ```
 
-**GCP Vertex AI (Gemini):**
+**GCP Agent Platform (Gemini):**
 ```python
 from vertexai.preview.generative_models import GenerativeModel
 
@@ -731,7 +731,7 @@ response = openai.ChatCompletion.create(
 - ✅ Need specialized services (Forecast, Fraud Detector)
 - ✅ Require extensive built-in algorithms
 
-**Use GCP Vertex AI if:**
+**Use GCP Agent Platform if:**
 - ✅ Want Google's advanced AI research (Gemini, PaLM)
 - ✅ Need TPU support for training
 - ✅ Prefer integrated BigQuery and GCP data services
@@ -754,7 +754,7 @@ response = openai.ChatCompletion.create(
 - ✅ Want managed RAG with Knowledge Bases
 - ✅ Need AI agents and guardrails
 
-**Use GCP Vertex AI if:**
+**Use GCP Agent Platform if:**
 - ✅ Want Google's Gemini models
 - ✅ Need multimodal AI capabilities
 - ✅ Prefer Google's AI research advantages
@@ -816,7 +816,7 @@ response = openai.ChatCompletion.create(
 - ✅ Need distributed training library (SMP)
 - ✅ Require inference optimization (Neo)
 
-**Use Vertex AI if:**
+**Use Agent Platform if:**
 - ✅ Need TPU support
 - ✅ Want best TensorFlow integration
 - ✅ Need hyperparameter tuning (Vizier)
@@ -844,7 +844,7 @@ response = openai.ChatCompletion.create(
 - ✅ Best AI research foundation (Gemini, PaLM)
 - ✅ TPU support for high-performance training
 - ✅ Superior AutoML capabilities
-- ✅ Unified Vertex AI platform
+- ✅ Unified Agent Platform platform
 - ✅ Best BigQuery ML integration
 - ✅ Strong document AI capabilities
 - ✅ Advanced explainable AI

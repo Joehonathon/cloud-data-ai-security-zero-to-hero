@@ -164,7 +164,7 @@ D. Cache all API responses indefinitely so requests never wait on an external ca
 ### Question 9
 **Scenario:** A batch processing system runs nightly jobs that vary dramatically in resource needs - some jobs need 2 CPUs for 10 minutes, others need 64 CPUs for 2 hours. The company wants to minimize costs while ensuring jobs complete on time. What compute solution is BEST?
 
-A. Cloud Run jobs with CPU and memory set per job type, scaling to zero and billing only while a job is running
+A. Batch, with a machine type chosen per job type, creating VMs for each job and deleting them when it finishes
 B. Dataflow with autoscaling, running each nightly job as a pipeline with workers sized per stage
 C. Dedicated Compute Engine VMs sized for the largest job, left running so each job starts at once
 D. GKE Standard with a fixed node pool sized for the largest job, running the nightly jobs as Jobs
@@ -174,9 +174,9 @@ D. GKE Standard with a fixed node pool sized for the largest job, running the ni
 
 **Correct: A**
 
-**Why:** Cloud Run jobs allow specifying CPU and memory per job type, scale to zero when not running, and bill only for actual execution time. Different job configurations can have different resource allocations. This minimizes costs for variable workloads. Dedicated VMs (C) waste resources during light jobs. A fixed GKE node pool (D) pays for idle nodes between jobs. Dataflow (B) is for data processing pipelines, not general batch jobs.
+**Why:** Batch is a managed service that creates the Compute Engine VMs each job needs and deletes them afterward, so you pay only while jobs run. A 64-CPU job gets a large machine type, which fits better than Cloud Run jobs (limited to 8 vCPU). This minimizes costs for variable workloads. Dedicated VMs (C) waste resources during light jobs. A fixed GKE node pool (D) pays for idle nodes between jobs. Dataflow (B) is for data processing pipelines, not general batch jobs.
 
-**Key Concept:** [Cloud Run Jobs](https://cloud.google.com/run/docs/create-jobs)
+**Key Concept:** [Batch](https://docs.cloud.google.com/batch/docs/get-started)
 </details>
 
 ### Question 10
@@ -274,11 +274,11 @@ D. Store all configuration, including the secrets, in the application repository
 </details>
 
 ### Question 15
-**Scenario:** A team is developing a machine learning model training pipeline. They need to track experiments, compare model versions, and reproduce results. The pipeline uses Vertex AI for training. How should they manage this?
+**Scenario:** A team is developing a machine learning model training pipeline. They need to track experiments, compare model versions, and reproduce results. The pipeline uses Agent Platform (formerly Vertex AI) for training. How should they manage this?
 
 A. Use Git branches for each experiment, committing the parameters and metrics to a text file in the branch
 B. Save model files to Cloud Storage with manual versioning, using a folder name with the date for each run
-C. Use Vertex AI Experiments to track runs and compare model versions, with Vertex AI Pipelines to make each run reproducible
+C. Use Experiments on Agent Platform to track runs and compare model versions, with Agent Platform Pipelines to make each run reproducible
 D. Store experiment results in spreadsheets that the team updates by hand after each training run finishes
 
 <details>
@@ -286,9 +286,9 @@ D. Store experiment results in spreadsheets that the team updates by hand after 
 
 **Correct: C**
 
-**Why:** Vertex AI Experiments tracks metrics, parameters, and artifacts for each training run, enabling comparison. Vertex AI Pipelines captures the entire workflow as code, ensuring reproducibility. Metadata is automatically logged. Spreadsheets (D) are error-prone and don't capture artifacts. Manual versioning (B) doesn't track parameters and metrics. Git branches (A) don't track runtime metrics.
+**Why:** Experiments on Agent Platform tracks metrics, parameters, and artifacts for each training run, enabling comparison. Agent Platform Pipelines captures the entire workflow as code, ensuring reproducibility. Metadata is automatically logged. Spreadsheets (D) are error-prone and don't capture artifacts. Manual versioning (B) doesn't track parameters and metrics. Git branches (A) don't track runtime metrics.
 
-**Key Concept:** [Vertex AI Experiments](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments)
+**Key Concept:** [Experiments on Agent Platform](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments)
 </details>
 
 ### Question 16
@@ -629,16 +629,16 @@ D. Store emails in a database for batch sending, with a scheduled job that sends
 A. Pre-compute all recommendations nightly and store the lists by user in a table for the application
 B. Rule-based recommendations with hard-coded logic, such as showing the best sellers in the category
 C. Third-party recommendation SaaS only, with the browsing data exported to the vendor each day
-D. Vertex AI Recommendations AI, or a custom model trained on Vertex AI and served from an online prediction endpoint
+D. A managed retail recommendations service, or a custom model trained on Agent Platform (now part of the Gemini Enterprise Agent Platform) and served from an online endpoint
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Vertex AI Recommendations AI provides a managed service for product recommendations, handling model training and serving. Alternatively, custom models can be trained and deployed to Vertex AI endpoints for low-latency predictions. This leverages ML for personalization. Rule-based (B) doesn't capture complex patterns. Nightly pre-compute (A) misses real-time behavior. Third-party only (C) may not integrate as well with GCP data.
+**Why:** Google's managed retail recommendations service handles model training and serving. Alternatively, custom models can be trained and deployed to Agent Platform endpoints for low-latency predictions. This leverages ML for personalization. Rule-based (B) doesn't capture complex patterns. Nightly pre-compute (A) misses real-time behavior. Third-party only (C) may not integrate as well with GCP data.
 
-**Key Concept:** [Recommendations AI](https://cloud.google.com/recommendations-ai/docs/overview)
+**Key Concept:** [Retail recommendations](https://docs.cloud.google.com/retail/docs/overview)
 </details>
 
 ---

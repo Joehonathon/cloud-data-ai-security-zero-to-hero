@@ -18,7 +18,7 @@ For underlying concepts: **[LLM basics](../learn/concepts/llm-basics.md)**, **[T
 | **OpenAI API** | GPT family, o-series | ❌ | ✅ | ✅ (auto >1024 tok) | Enterprise: yes | Enterprise: yes | Frontier GPT, o-series reasoning |
 | **AWS Bedrock** | Claude, Llama, Mistral, etc. | ✅ | ✅ | ✅ (model-dep.) | ✅ (PrivateLink, VPC) | ✅ | AWS-native, multi-model behind one API |
 | **Azure OpenAI Service** | GPT family in Azure | partial | ✅ | ✅ | ✅ | ✅ | Azure-native GPT, Microsoft 365 integration |
-| **Google Vertex AI** | Gemini, Claude (via partnership), open models | ✅ | ✅ | ✅ (context caching) | ✅ | ✅ | GCP-native, Gemini access, BigQuery proximity |
+| **Google Agent Platform (formerly Vertex AI)** | Gemini, Claude (via partnership), open models | ✅ | ✅ | ✅ (context caching) | ✅ | ✅ | GCP-native, Gemini access, BigQuery proximity |
 | **Together AI** | partial (some hosted frontier) | ✅ (huge catalog) | ✅ | ✅ | ❌ | ❌ | OSS model serving at low cost |
 | **Fireworks AI** | partial | ✅ | ✅ | ✅ | partial | partial | Low-latency OSS serving |
 | **Groq** | ❌ | ✅ (curated) | ✅ | partial | ❌ | ❌ | Lowest-latency inference (LPU hardware) |
@@ -105,7 +105,7 @@ OpenAI's GPT family hosted by Microsoft on Azure infrastructure.
 
 ---
 
-## Google Vertex AI
+## Google Agent Platform
 
 Google's GenAI platform. Access to Gemini (1.5, 2.x), Anthropic Claude (via partnership), open models (Llama, Mistral, Gemma), and your own custom-deployed models.
 
@@ -117,10 +117,10 @@ Google's GenAI platform. Access to Gemini (1.5, 2.x), Anthropic Claude (via part
 - **Regions**: global; model availability varies.
 - **BigQuery / Vertex Vector Search proximity**: easy retrieval against GCP data.
 
-**Pick Vertex AI when:** you're on GCP, want Gemini's very long context windows, or want to deploy/serve custom models alongside frontier APIs through one platform.
+**Pick Agent Platform when:** you're on GCP, want Gemini's very long context windows, or want to deploy/serve custom models alongside frontier APIs through one platform.
 
-**[📖 Vertex AI generative AI docs](https://cloud.google.com/vertex-ai/generative-ai/docs)** - Gemini, Claude on Vertex, Model Garden
-**[📖 Vertex AI pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing)** - per-token, per-modality
+**[📖 Agent Platform generative AI docs](https://cloud.google.com/vertex-ai/generative-ai/docs)** - Gemini, Claude on Vertex, Model Garden
+**[📖 Agent Platform pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing)** - per-token, per-modality
 
 ---
 

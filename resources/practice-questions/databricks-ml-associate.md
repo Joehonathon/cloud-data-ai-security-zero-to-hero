@@ -50,7 +50,7 @@ D. Copy the model file from the development workspace folder into the production
 ### Question 3
 **Scenario:** Hyperparameters must be tuned in parallel across a cluster.
 
-A. Hyperopt with `SparkTrials`, or Optuna, distributing trials across workers
+A. Ray Tune, recommended over Hyperopt
 B. Manual tuning, changing one setting at a time and re-running the notebook until the metric stops improving
 C. A sequential loop over a parameter grid on the driver, which logs each result to MLflow in turn
 D. One configuration chosen from the library defaults, which are tuned for the typical dataset by the maintainers
@@ -60,7 +60,9 @@ D. One configuration chosen from the library defaults, which are tuned for the t
 
 **Correct: A**
 
-**Why:** Distributing trials uses the cluster you are already paying for, and Tree-structured Parzen Estimator search converges faster than grid search by conditioning on previous results. Each trial also logs to MLflow automatically, which keeps the search auditable.
+**Why:** Ray Tune runs trials in parallel across the cluster workers and supports smarter search than a grid. Open-source Hyperopt is no longer maintained and is not included in Databricks Runtime ML after 16.4 LTS, so its SparkTrials is no longer the recommended path. Results can still be logged to MLflow.
+
+**Key Concept:** [Hyperparameter tuning on Databricks](https://docs.databricks.com/aws/en/machine-learning/automl-hyperparam-tuning/hyperopt-concepts)
 </details>
 
 ---

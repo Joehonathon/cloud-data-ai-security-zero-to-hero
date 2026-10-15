@@ -144,10 +144,10 @@ D. Output caching in App Service
 </details>
 
 ### Question 8
-**Scenario:** A developer needs to build an application that processes images uploaded to Blob Storage. Processing takes 2-3 minutes per image. The solution should scale automatically and be cost-effective for sporadic uploads.
+**Scenario:** A developer needs to build an application that processes images uploaded to Blob Storage. Processing takes 2-3 minutes per image. The solution should scale automatically and be cost-effective for sporadic uploads, and each image must start processing within seconds of the upload with no cold-start delay.
 
 A. VM running a custom application that polls the container for new blobs
-B. Azure Function with Blob trigger on Consumption plan, where blob detection can lag by minutes
+B. Azure Function with Blob trigger on the Consumption plan, which can have cold starts and delayed blob detection
 C. Azure Function with Blob trigger on Premium plan
 D. App Service WebJob with always-on enabled on a dedicated App Service plan
 
@@ -156,16 +156,16 @@ D. App Service WebJob with always-on enabled on a dedicated App Service plan
 
 **Correct: C**
 
-**Why:** Blob trigger processes new blobs automatically. Premium plan provides pre-warmed instances (no cold starts), a longer execution timeout (30 minutes by default and configurable beyond that, versus a 10-minute maximum on Consumption), and VNET integration if needed. Consumption plan (B) has cold starts and polling-based blob detection that can lag, and its timeout leaves little headroom for 2-3 minute processing with retries. WebJobs (D) and VMs (A) require more management.
+**Why:** Blob trigger processes new blobs automatically. The Premium plan keeps pre-warmed instances (no cold starts), has a longer execution timeout (30 minutes by default and configurable beyond that, versus a 10-minute maximum on Consumption), and supports VNet integration. Consumption (B) can have cold starts and polling-based blob detection that lags, and its timeout leaves little headroom for 2-3 minute processing with retries. WebJobs (D) and VMs (A) require more management.
 
-**Key Concept:** [Functions Premium Plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)
+**Key Concept:** [Azure Functions Premium plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)
 </details>
 
 ### Question 9
 **Scenario:** A developer is containerizing an application for Azure Container Instances. The container needs to access secrets stored in Azure Key Vault at startup. How should they securely provide the secrets?
 
 A. Embed secrets in the container image
-B. Mount Key Vault secrets as a volume using managed identity
+B. Assign a managed identity with Key Vault access and read the secrets in app code at startup
 C. Use Azure App Configuration
 D. Pass secrets as environment variables in the deployment template, read from a parameter file at deploy time
 
@@ -174,9 +174,9 @@ D. Pass secrets as environment variables in the deployment template, read from a
 
 **Correct: B**
 
-**Why:** ACI can mount Key Vault secrets as files in a volume using managed identity for authentication. Secrets are fetched at container start without exposing them in configuration. Environment variables (D) are visible in container settings. Embedded secrets (A) are in the image layer. App Configuration (C) isn't for secrets.
+**Why:** Azure Container Instances supports managed identities on a container group. Grant the identity access to the vault, and the app requests a token and reads the secret from Key Vault at startup, so no credentials are stored in the image or configuration. Environment variables (D) place the secret values in the deployment definition. Embedded secrets (A) end up in the image layers. App Configuration (C) isn't meant for secrets.
 
-**Key Concept:** [ACI Secret Volumes](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-secret)
+**Key Concept:** [Use a managed identity in Azure Container Instances](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-managed-identity)
 </details>
 
 ### Question 10

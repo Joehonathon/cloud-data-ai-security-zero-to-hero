@@ -12,9 +12,9 @@ last-updated: 2026-05-03
 
 ## Top traps
 
-1. **GCP ML service ladder**: pre-trained APIs (Vision, NL, Speech, Translate, Document AI) → AutoML (your data, no code) → custom training on Vertex AI → on-prem / Anthos. Climb only when needed.
+1. **GCP ML service ladder**: pre-trained APIs (Vision, NL, Speech, Translate, Document AI) → AutoML (your data, no code) → custom training on Agent Platform (formerly Vertex AI) → on-prem / Anthos. Climb only when needed.
 
-2. **Vertex AI vs legacy AI Platform**: Vertex AI is the unified platform (renamed in 2021). AI Platform is legacy. Pick Vertex AI in modern questions.
+2. **Agent Platform vs legacy AI Platform**: Agent Platform is the unified platform (renamed in 2021). AI Platform is legacy. Pick Agent Platform in modern questions.
 
 3. **AutoML vs Custom Training on Vertex**: AutoML for tabular / image / text / video without writing model code. Custom for full control with TensorFlow / PyTorch / XGBoost / scikit-learn.
 
@@ -37,11 +37,11 @@ last-updated: 2026-05-03
 
 ## High-yield topics easy to miss
 
-- Vertex AI Search (RAG-as-a-service)
-- Vertex AI Agent Builder (no-code agents)
-- Generative AI Studio (foundation model playground)
-- Vertex AI Workbench (managed Jupyter)
-- Vertex AI Notebooks Executor (scheduled notebooks)
+- Agent Search (RAG-as-a-service)
+- Agent Builder on Agent Platform (no-code agents)
+- Agent Studio (foundation model playground)
+- Agent Platform Workbench (managed Jupyter)
+- Agent Platform Notebooks Executor (scheduled notebooks)
 - Custom Container Training (BYO Docker image)
 - Reduced-precision training (BF16 on TPU, FP16 on GPU)
 - DataPlex for data governance + lineage
@@ -54,7 +54,7 @@ last-updated: 2026-05-03
 
 1. **Identify the problem type** - tabular / image / text / time series.
 2. **Match to the right service** - AutoML for fast, custom for control, pre-trained for off-the-shelf.
-3. **Default to managed Vertex AI services** over custom infrastructure.
+3. **Default to managed Agent Platform services** over custom infrastructure.
 4. **Eliminate "build it from scratch"** when an MLOps service exists.
 
 ## Day-of logistics
@@ -65,17 +65,17 @@ last-updated: 2026-05-03
 
 **Pass:** Cert valid 2 years.
 
-**Fail:** Most failures are on Modeling (~25%) or MLOps (~25%). Re-review Vertex AI components, Feature Store, Model Monitoring.
+**Fail:** Most failures are on Modeling (~25%) or MLOps (~25%). Re-review Agent Platform components, Feature Store, Model Monitoring.
 
 ## PMLE patterns
 
 - "Off-the-shelf NLP / vision / speech" = pre-trained API
 - "Tabular / image classification, no code" = AutoML
-- "Custom model with full control" = Vertex AI custom training
-- "Training-serving skew" = Vertex AI Feature Store
-- "Drift monitoring" = Vertex AI Model Monitoring
+- "Custom model with full control" = Agent Platform custom training
+- "Training-serving skew" = Agent Platform Feature Store
+- "Drift monitoring" = Model Monitoring on Agent Platform
 - "HPT" = Vertex AI Vizier
-- "Reproducible pipelines" = Vertex AI Pipelines (KFP)
+- "Reproducible pipelines" = Agent Platform Pipelines (KFP)
 - "Cheap large-scale training" = Spot + checkpointing + distributed
 - "Per-prediction explanation" = Vertex AI Explainable AI
-- "Foundation model + RAG" = Vertex AI Search + Generative AI Studio
+- "Foundation model + RAG" = Agent Search + Agent Studio

@@ -55,7 +55,7 @@ For "the answers vary too much between runs", the answer is **lower the temperat
 
 Two forms on Google Cloud:
 - **Grounding with Google Search** - for public, current information, addressing the knowledge cutoff
-- **Grounding with your own data** - through Vertex AI Search or a vector store, for enterprise content
+- **Grounding with your own data** - through Agent Search (formerly Vertex AI Search) or a vector store, for enterprise content
 
 Grounding is the primary mitigation for **hallucination**, and it also enables **citations**, which let a human verify the answer.
 

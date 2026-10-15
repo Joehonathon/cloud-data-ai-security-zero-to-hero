@@ -2,12 +2,12 @@
 
 ## Overview
 
-Comprehensive guide to ML model development, training pipelines, Vertex AI, AutoML, distributed training, TPU optimization, and model optimization for the Professional Machine Learning Engineer certification exam.
+Comprehensive guide to ML model development, training pipelines, Agent Platform (formerly Vertex AI), AutoML, distributed training, TPU optimization, and model optimization for the Professional Machine Learning Engineer certification exam.
 
 This guide covers:
-- Vertex AI Training Service and custom training jobs
+- Agent Platform Managed Training Service and custom training jobs
 - AutoML for Tables, Vision, Natural Language, and Video
-- TensorFlow, Keras, PyTorch, and Scikit-learn on Vertex AI
+- TensorFlow, Keras, PyTorch, and Scikit-learn on Agent Platform
 - Distributed training with GPUs and TPUs
 - Hyperparameter tuning with Vertex AI Vizier
 - Model optimization techniques (pruning, quantization, distillation)
@@ -24,13 +24,13 @@ This guide covers:
 3. **Hyperparameter Tuning**: Vizier configuration, search algorithms, early stopping
 4. **Model Optimization**: Quantization, pruning, knowledge distillation for production
 5. **AutoML Decision Making**: When AutoML is appropriate vs custom training
-6. **Experiment Tracking**: Vertex AI Experiments, metadata management
+6. **Experiment Tracking**: Experiments on Agent Platform, metadata management
 7. **Pre-trained Models**: When to use Vision API, NLP API vs custom training
 8. **Training at Scale**: Multi-worker training, TPU pods, distribution strategies
 
 ## Model Development Frameworks
 
-### TensorFlow on Vertex AI
+### TensorFlow on Agent Platform
 
 **Complete TensorFlow Training Script**:
 ```python
@@ -210,7 +210,7 @@ model = job.run(
 )
 ```
 
-### PyTorch on Vertex AI
+### PyTorch on Agent Platform
 
 **Complete PyTorch Training Script**:
 ```python
@@ -422,7 +422,7 @@ model = job.run(
 )
 ```
 
-### PyTorch Lightning on Vertex AI
+### PyTorch Lightning on Agent Platform
 
 **PyTorch Lightning Training Script**:
 ```python
@@ -550,7 +550,7 @@ if __name__ == '__main__':
     main()
 ```
 
-### Scikit-learn on Vertex AI
+### Scikit-learn on Agent Platform
 
 **Scikit-learn Training Script**:
 ```python
@@ -716,7 +716,7 @@ model = job.run(
 )
 ```
 
-## Vertex AI Platform
+## Agent Platform
 
 ### Workbench (Notebooks)
 
@@ -1989,7 +1989,7 @@ model.export_model(
 
 ## Experiment Tracking and TensorBoard
 
-### Vertex AI Experiments
+### Experiments on Agent Platform
 
 **Complete Experiment Tracking Example**:
 ```python
@@ -2930,7 +2930,7 @@ Need model optimization?
 **When to Use Each Service**:
 - **BigQuery ML**: SQL users, data already in BigQuery, simple models
 - **AutoML**: Quick POC, no ML expertise, standard problems
-- **Vertex AI Training**: Custom code, specific requirements, research
+- **Agent Platform Managed Training**: Custom code, specific requirements, research
 - **Pre-trained APIs**: No training data, standard tasks, immediate results
 
 **Cost Optimization Tips**:
@@ -2946,7 +2946,7 @@ Need model optimization?
    - **Answer**: AutoML Vision (8000 milli node hours budget)
 
 2. **Scenario**: Train BERT-large model on custom dataset
-   - **Answer**: Vertex AI Custom Training with TPU v3-8
+   - **Answer**: Agent Platform Managed Training (custom training) with TPU v3-8
 
 3. **Scenario**: Real-time inference on mobile devices
    - **Answer**: Train with AutoML MOBILE_TF_LOW_LATENCY_1, export to TFLite
@@ -3194,7 +3194,7 @@ model.fit(...)
 ## Study Tips for Professional ML Engineer Exam
 
 ### Hands-On Practice Required
-1. **Vertex AI Custom Training**: TensorFlow, PyTorch, custom containers
+1. **Agent Platform Managed Training (custom training)**: TensorFlow, PyTorch, custom containers
 2. **AutoML**: Tables, Vision, NLP models
 3. **Hyperparameter Tuning**: Configure Vizier, analyze results
 4. **TPU Training**: Set up TPU jobs, use TPUStrategy
@@ -3244,7 +3244,7 @@ model.fit(...)
 
 ## Additional Resources
 
-- [Vertex AI Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)
+- [Agent Platform documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform)
 - [AutoML Documentation](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning)
 - [BigQuery ML](https://cloud.google.com/bigquery-ml/docs)
 - [ML Best Practices](https://cloud.google.com/architecture/ml-on-gcp-best-practices)

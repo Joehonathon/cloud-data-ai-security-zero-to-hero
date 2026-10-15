@@ -1,12 +1,12 @@
 # 07 - Enterprise Deployment: Bedrock, Vertex, and First-Party
 
-Enterprise Claude deployments rarely go through the public first-party API alone. Regulated customers need managed cloud deployments with IAM, private networking, audit logging, data residency guarantees, and compliance attestations. The Professional (CCAR-P) tier expects you to choose among three primary deployment paths: Anthropic first-party, Amazon Bedrock, and Google Cloud Vertex AI.
+Enterprise Claude deployments rarely go through the public first-party API alone. Regulated customers need managed cloud deployments with IAM, private networking, audit logging, data residency guarantees, and compliance attestations. The Professional (CCAR-P) tier expects you to choose among three primary deployment paths: Anthropic first-party, Amazon Bedrock, and Google Cloud Agent Platform (formerly Vertex AI).
 
 ---
 
 ## The Three Paths
 
-| Dimension | First-Party | Amazon Bedrock | Google Vertex AI |
+| Dimension | First-Party | Amazon Bedrock | Google Agent Platform |
 |---|---|---|---|
 | Auth | API key | IAM | Service account |
 | Private networking | IP allowlist, PrivateLink (enterprise) | PrivateLink, VPC | VPC Service Controls, Private Service Connect |
@@ -71,7 +71,7 @@ Bedrock sometimes lags the first-party API on new Claude features. Example: a br
 
 ---
 
-## Claude on Google Vertex AI
+## Claude on Google Agent Platform
 
 ### Model IDs
 
@@ -83,7 +83,7 @@ Google Cloud service accounts with IAM roles on the Vertex endpoint. Application
 
 ### Private Networking
 
-- VPC Service Controls: perimeter around Vertex AI preventing data exfiltration outside approved VPCs
+- VPC Service Controls: perimeter around Agent Platform preventing data exfiltration outside approved VPCs
 - Private Service Connect: private endpoint for Vertex
 
 ### Regions
@@ -92,7 +92,7 @@ Regional endpoints (e.g., `us-east5`, `europe-west1`). Model availability varies
 
 ### Vertex-Specific Features
 
-- Integration with Vertex AI Pipelines for ML workflows
+- Integration with Agent Platform Pipelines for ML workflows
 - Vertex Model Garden unified catalog
 - Native integration with BigQuery for RAG
 - Cloud Logging and Cloud Monitoring for observability
@@ -102,7 +102,7 @@ Regional endpoints (e.g., `us-east5`, `europe-west1`). Model availability varies
 - Customer is GCP-native
 - Needs VPC Service Controls
 - Wants Google-managed audit via Cloud Logging
-- Integrates with BigQuery / Vertex AI pipelines
+- Integrates with BigQuery / Agent Platform pipelines
 
 ### Feature Lag
 

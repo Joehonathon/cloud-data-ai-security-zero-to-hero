@@ -198,7 +198,7 @@ Categories:
 
 <a id="term-vpc-gcp"></a>**VPC (GCP)** - GCP's virtual network. Notably, GCP VPCs are global (not regional like AWS).
 
-<a id="term-vertex-ai"></a>**Vertex AI** - GCP's unified ML platform. Training, deployment, AutoML, foundation models.
+<a id="term-vertex-ai"></a>**Vertex AI** - GCP's unified ML platform (training, deployment, AutoML, foundation models). Renamed the **Gemini Enterprise Agent Platform** ("Agent Platform") on 2026-04-22; Google's exam guides now use the new names. See the [rename table](https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes).
 
 ---
 

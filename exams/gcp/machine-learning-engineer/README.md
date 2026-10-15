@@ -44,7 +44,7 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 ## Key Technologies and Services
 
 ### Core ML Platform
-- **Vertex AI:** Unified ML platform
+- **Agent Platform (formerly Vertex AI):** Unified ML platform
 - **AutoML:** Automated machine learning
 - **BigQuery ML:** SQL-based machine learning
 - **AI Platform Notebooks:** Jupyter-based development environment
@@ -58,11 +58,11 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 - **Document AI:** Document processing and extraction
 
 ### ML Infrastructure
-- **Vertex AI Training:** Custom model training
-- **Vertex AI Prediction:** Model serving and inference
-- **Vertex AI Pipelines:** ML workflow orchestration
-- **Vertex AI Feature Store:** Feature management
-- **Vertex AI Model Registry:** Model versioning and management
+- **Agent Platform Managed Training:** Custom model training
+- **Agent Platform Inference:** Model serving and inference
+- **Agent Platform Pipelines:** ML workflow orchestration
+- **Agent Platform Feature Store:** Feature management
+- **Agent Platform Model Registry:** Model versioning and management
 
 ### Data and Analytics
 - **BigQuery:** Data warehouse and analytics
@@ -95,7 +95,7 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 - **Data Quality:** Validation, monitoring, anomaly detection
 
 ### Cloud-Native ML Development
-- **Vertex AI Workbench:** Notebook-based development
+- **Agent Platform Workbench:** Notebook-based development
 - **Custom Training:** Distributed training, hyperparameter tuning
 - **AutoML:** No-code/low-code model development
 - **Pre-trained Models:** API integration, customization
@@ -108,7 +108,7 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 - Creating models with SQL (LINEAR_REG, LOGISTIC_REG, etc.)
 - Feature preprocessing and engineering in SQL
 - Model evaluation and hyperparameter tuning
-- Integration with Vertex AI and other services
+- Integration with Agent Platform and other services
 
 **AutoML:**
 - AutoML Tables for structured data
@@ -130,7 +130,7 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 - Feature correlation and importance analysis
 
 **Collaboration:**
-- Vertex AI Workbench for team collaboration
+- Agent Platform Workbench for team collaboration
 - Shared notebooks and version control
 - Data access controls and security
 - Resource sharing and cost management
@@ -143,13 +143,13 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 
 ### Production ML Systems
 **Serving Infrastructure:**
-- Online prediction with Vertex AI Endpoints
+- Online prediction with Agent Platform Endpoints
 - Batch prediction for large datasets
 - Autoscaling and load balancing
 - Multi-model serving and routing
 
 **Training Pipelines:**
-- Vertex AI Pipelines for workflow orchestration
+- Agent Platform Pipelines for workflow orchestration
 - Custom training jobs with distributed computing
 - Hyperparameter tuning and optimization
 - Automated pipeline triggers and scheduling
@@ -208,7 +208,7 @@ The Google Cloud Professional Machine Learning Engineer certification demonstrat
 - Study feature engineering best practices
 
 ### Phase 2: GCP ML Services (Weeks 3-6)
-- Deep dive into Vertex AI platform components
+- Deep dive into Agent Platform platform components
 - Practice with AutoML for different data types
 - Explore pre-trained AI APIs and customization
 - Learn BigQuery ML for SQL-based machine learning
@@ -247,7 +247,7 @@ For detailed information on courses, practice tests, hands-on labs, communities,
 ## Exam Preparation Tips
 
 ### Technical Skills Focus
-- **Hands-on experience** with Vertex AI platform
+- **Hands-on experience** with Agent Platform platform
 - **Model development** using multiple approaches (AutoML, custom, BigQuery ML)
 - **Pipeline implementation** with real datasets
 - **Production deployment** and monitoring experience
@@ -290,7 +290,7 @@ For detailed information on courses, practice tests, hands-on labs, communities,
 ## Maintaining Certification
 
 ### Continuous Learning
-- **Stay updated** with new Vertex AI features
+- **Stay updated** with new Agent Platform features
 - **Practice with emerging ML techniques**
 - **Contribute to open source** ML projects
 - **Attend ML conferences** and workshops

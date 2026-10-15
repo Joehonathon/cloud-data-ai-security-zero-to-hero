@@ -38,7 +38,7 @@ D. Longer deployment cycles, because each new environment still needs the same p
 ### Question 2
 **Scenario:** A company's leadership team is concerned about lock-in when adopting cloud services. They want flexibility to use multiple cloud providers and avoid dependency on a single vendor. What Google Cloud capability addresses this concern?
 
-A. Open source technologies such as Kubernetes and TensorFlow, and multi-cloud or hybrid support through Anthos
+A. Open source technologies such as Kubernetes and TensorFlow, and multi-cloud support through GKE on AWS and Azure and attached clusters
 B. Contracts requiring single-cloud usage, with committed spend tied to Google Cloud
 C. Proprietary services only, since closed interfaces let Google guarantee behavior
 D. Data formats that only work on Google Cloud
@@ -48,9 +48,9 @@ D. Data formats that only work on Google Cloud
 
 **Correct: A**
 
-**Why:** Google Cloud embraces open source: Kubernetes (container orchestration), TensorFlow (machine learning), and open data formats. Anthos enables running applications consistently across Google Cloud, other clouds, and on-premises. This reduces lock-in by using portable technologies and supporting multi-cloud strategies.
+**Why:** Google Cloud embraces open source: Kubernetes (container orchestration), TensorFlow (machine learning), and open data formats. GKE multi-cloud lets you create and manage Kubernetes clusters on AWS and Azure, and attached clusters bring any CNCF-conformant cluster under Google Cloud management. This reduces lock-in by using portable technologies and supporting multi-cloud strategies.
 
-**Key Concept:** [Anthos Multi-Cloud](https://cloud.google.com/anthos/docs/concepts/overview)
+**Key Concept:** [GKE Multi-Cloud](https://docs.cloud.google.com/kubernetes-engine/multi-cloud/docs)
 </details>
 
 ### Question 3
@@ -75,7 +75,7 @@ D. Ignore compliance requirements until after migration
 **Scenario:** A manufacturing company has factories in remote locations with limited internet connectivity. They want to use cloud analytics while keeping some processing local for low latency and reliability. What Google Cloud approach supports this hybrid requirement?
 
 A. Cloud-only with no local processing, relying on the factory's internet link
-B. Edge computing with Anthos at the edge and Google Distributed Cloud for remote locations
+B. Edge computing with Google Distributed Cloud connected, running GKE clusters on Google-certified hardware at each factory
 C. Require high-bandwidth connections and dedicated fiber to each factory
 D. On-premises only without cloud, running all the analytics at each factory
 
@@ -84,9 +84,9 @@ D. On-premises only without cloud, running all the analytics at each factory
 
 **Correct: B**
 
-**Why:** Google Distributed Cloud and Anthos for edge extend Google Cloud capabilities to edge locations and on-premises environments. This enables local processing for low-latency needs and reliability during connectivity issues, while still connecting to cloud for analytics and ML. This hybrid approach addresses real-world connectivity constraints.
+**Why:** Google Distributed Cloud connected runs GKE clusters on Google-certified hardware at your site, managed from Google Cloud. It suits low latency, stable local connectivity and large local data volumes. This enables local processing for low-latency needs and reliability during connectivity issues, while still connecting to cloud for analytics and ML. This hybrid approach addresses real-world connectivity constraints.
 
-**Key Concept:** [Google Distributed Cloud](https://cloud.google.com/distributed-cloud)
+**Key Concept:** [Google Distributed Cloud connected](https://docs.cloud.google.com/distributed-cloud/edge/latest/docs/overview)
 </details>
 
 ### Question 5
@@ -207,14 +207,14 @@ D. Weekly data imports from the exchange into Cloud Storage, followed by queries
 A. Use AI without explanation capabilities, relying on the model's accuracy score on its test set to build trust
 B. Replace radiologists with AI, since a model with high accuracy no longer needs a clinician to review its output
 C. Avoid AI in healthcare entirely
-D. Vertex AI with Explainable AI, which gives insight into model predictions
+D. Agent Platform (formerly Vertex AI) with Explainable AI, which gives insight into model predictions
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Vertex AI provides enterprise AI platform with Explainable AI features showing which parts of an image contributed to predictions. This transparency is crucial for healthcare where understanding AI decisions is important for trust and compliance. AI augments radiologists rather than replacing them.
+**Why:** Agent Platform provides enterprise AI platform with Explainable AI features showing which parts of an image contributed to predictions. This transparency is crucial for healthcare where understanding AI decisions is important for trust and compliance. AI augments radiologists rather than replacing them.
 
 **Key Concept:** [Explainable AI](https://cloud.google.com/vertex-ai/docs/explainable-ai/overview)
 </details>
@@ -242,7 +242,7 @@ D. Keep data siloed in separate systems and give each business unit its own repo
 
 A. Show random products to every visitor and keep the best sellers
 B. Recommendations AI, retail-specific personalization needing little ML expertise
-C. Build custom ML models from scratch on Vertex AI, using the purchase history and a newly hired team
+C. Build custom ML models from scratch on Agent Platform, using the purchase history and a newly hired team
 D. Manual curation only, with merchandisers choosing the products
 
 <details>
@@ -443,7 +443,7 @@ D. Manual tracking of API usage in a spreadsheet, with developers contacting abu
 **Scenario:** A company has virtual machines on another cloud provider. They want to migrate these VMs to Google Cloud. What tool helps assess and execute this migration?
 
 A. Start from scratch in Google Cloud, rebuilding each server from its documented configuration
-B. Migrate for Compute Engine (formerly Migrate for VMs), to discover, plan and migrate VMs from other clouds
+B. Migrate to Virtual Machines, to migrate VMs and disks from AWS, Azure, and VMware to Google Cloud
 C. No migration tools are available for VMs that run on another cloud provider, only for on-premises servers and physical machines
 D. Manual VM recreation, exporting each disk image and importing it to Compute Engine one machine at a time by hand
 
@@ -452,9 +452,9 @@ D. Manual VM recreation, exporting each disk image and importing it to Compute E
 
 **Correct: B**
 
-**Why:** Migrate for Compute Engine supports migrating VMs from AWS, Azure, and on-premises to Google Cloud. It includes assessment tools to plan migration, continuous replication during migration, and testing capabilities. This reduces migration risk and effort compared to manual recreation.
+**Why:** Migrate to Virtual Machines moves VM instances and disks from VMware, AWS and Azure to Google Cloud, so the team does not rebuild each server. This reduces migration risk and effort compared to manual recreation.
 
-**Key Concept:** [Migrate for Compute Engine](https://cloud.google.com/migrate/compute-engine/docs/overview)
+**Key Concept:** [Migrate to Virtual Machines](https://docs.cloud.google.com/migrate/virtual-machines/docs/5.0/concepts/overview)
 </details>
 
 ### Question 25
@@ -702,7 +702,7 @@ D. Manual cost analysis only, comparing each VM's usage in the console with the 
 ### Question 38
 **Scenario:** A company wants to define their infrastructure (networks, VMs, databases) as code so it can be version-controlled, reviewed, and consistently deployed. What approach and tools support this?
 
-A. Infrastructure as Code (IaC) using Terraform or Deployment Manager for declarative infrastructure definition
+A. Infrastructure as Code (IaC) using Terraform or Infrastructure Manager for declarative infrastructure definition
 B. Scripts without version control, stored on an engineer's laptop and run when a new environment is needed, then fixed by hand
 C. Undocumented manual changes, made in the console by whoever is on call when something has to be fixed in a hurry overnight
 D. Manual configuration through the console, followed by a screenshot of each setting for the records
@@ -712,7 +712,7 @@ D. Manual configuration through the console, followed by a screenshot of each se
 
 **Correct: A**
 
-**Why:** Infrastructure as Code treats infrastructure configuration like software code - stored in version control, reviewed through pull requests, and deployed consistently. Terraform (multi-cloud) and Deployment Manager (Google Cloud native) are IaC tools. This reduces configuration drift, enables disaster recovery, and supports DevOps practices.
+**Why:** Infrastructure as Code treats infrastructure configuration like software code - stored in version control, reviewed through pull requests, and deployed consistently. Terraform (multi-cloud) and Infrastructure Manager (Google Cloud managed Terraform) are IaC tools. This reduces configuration drift, enables disaster recovery, and supports DevOps practices.
 
 **Key Concept:** [Infrastructure as Code](https://cloud.google.com/docs/terraform)
 </details>

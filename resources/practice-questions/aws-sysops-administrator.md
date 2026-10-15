@@ -100,7 +100,7 @@ D. VPC Flow Logs filtered on the S3 endpoint addresses, which show each DeleteBu
 **Scenario:** An RDS database is experiencing slow query performance. The SysOps team needs to identify the problematic queries without impacting production. What should they enable?
 
 A. Enhanced Monitoring
-B. Performance Insights dashboard
+B. CloudWatch Database Insights dashboard
 C. Slow query log with manual analysis by an engineer
 D. CloudWatch Logs export of the slow query log
 
@@ -109,9 +109,9 @@ D. CloudWatch Logs export of the slow query log
 
 **Correct: B**
 
-**Why:** Performance Insights provides a dashboard to identify top SQL queries, wait events, and database load without impacting performance. Enhanced Monitoring shows OS-level metrics. CloudWatch Logs export requires configuration. Manual slow query analysis is time-consuming.
+**Why:** CloudWatch Database Insights (which builds on Performance Insights) shows database load by SQL statement, wait event, host and user, without affecting production. Enhanced Monitoring shows OS-level metrics. Exporting the slow query log needs setup and still needs someone to analyze it. Manual slow query analysis is time-consuming.
 
-**Key Concept:** [RDS Performance Insights](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html)
+**Key Concept:** [CloudWatch Database Insights on RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html)
 </details>
 
 ---
@@ -239,10 +239,10 @@ D. Cross-region replication
 ---
 
 ### Question 12
-**Scenario:** A SysOps administrator needs to create a disaster recovery strategy with RTO of 1 hour and RPO of 15 minutes for an application running on EC2 with RDS. What approach meets these requirements?
+**Scenario:** A SysOps administrator needs a disaster recovery strategy that survives the loss of a whole Region, with an RTO of 1 hour and an RPO of 15 minutes, for an application running on EC2 with RDS. What approach meets these requirements?
 
-A. Warm standby with a scaled-down but running application tier, Auto Scaling and RDS Multi-AZ
-B. Active-active multi-region, with the application at full size in two regions and the database copied between them every six hours
+A. Warm standby in a second Region with a scaled-down running application tier, Auto Scaling and an RDS cross-Region read replica
+B. Active-active multi-region, with the application at full size in two regions and the database copied between them only every six hours
 C. Pilot light with AMIs and hourly RDS snapshots
 D. Backup and restore from S3 with nightly backups
 
@@ -251,7 +251,7 @@ D. Backup and restore from S3 with nightly backups
 
 **Correct: A**
 
-**Why:** Warm standby with scaled-down infrastructure running continuously meets 1-hour RTO. RDS Multi-AZ with synchronous replication achieves 15-minute RPO (near-zero). Backup/restore takes hours. Pilot light requires provisioning time. Active-active with a six-hourly database copy misses the 15-minute RPO.
+**Why:** Warm standby keeps a scaled-down copy running in the recovery Region, so it can scale up within the 1-hour RTO. An RDS cross-Region read replica replicates continuously, so data loss is normally far below 15 minutes. Multi-AZ alone protects against an Availability Zone failure, not a Region failure. Backup/restore takes hours. Pilot light needs provisioning time and hourly snapshots miss the RPO. Active-active with a six-hourly database copy misses the 15-minute RPO.
 
 **Key Concept:** [Disaster Recovery Strategies](https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html)
 </details>
@@ -381,21 +381,21 @@ D. Create a new Auto Scaling group and switch traffic over to it
 ---
 
 ### Question 19
-**Scenario:** A company needs to patch Windows EC2 instances during a maintenance window with automatic rollback if patching fails. What should be used?
+**Scenario:** A company needs to patch Windows EC2 instances during a maintenance window and automatically restore the instance if patching fails. What should be used?
 
 A. Custom Lambda function
 B. Windows Update scheduled task on each instance
-C. User data script at instance launch time
-D. AWS Systems Manager Patch Manager
+C. A user data script that runs at instance launch time
+D. AWS-PatchInstanceWithRollback runbook
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Systems Manager Patch Manager provides automated patching with maintenance windows, compliance reporting, and can integrate with rollback procedures. Windows Update lacks centralized management. Lambda requires custom implementation. User data runs at launch, not for ongoing patching.
+**Why:** The AWS-PatchInstanceWithRollback Systems Manager Automation runbook (Windows, Linux and macOS) snapshots the root volume, applies the patch baseline, and restores the snapshot if patching fails. Patch Manager on its own has no automatic rollback. Windows Update tasks lack central control and rollback. Lambda needs custom code. User data runs at launch, not for ongoing patching.
 
-**Key Concept:** [Patch Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html)
+**Key Concept:** [AWS-PatchInstanceWithRollback](https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-aws-patchinstancewithrollback.html)
 </details>
 
 ---

@@ -730,7 +730,7 @@ Understanding and articulating business benefits is critical for Cloud Digital L
 
 **Data Example - Retail Chain:**
 - **Data Sources:** POS systems, e-commerce, mobile app, loyalty program, social media
-- **Cloud Processing:** BigQuery for analytics, Looker for visualization, Vertex AI for predictions
+- **Cloud Processing:** BigQuery for analytics, Looker for visualization, Agent Platform (formerly Vertex AI) for predictions
 - **Outcome:** Optimized inventory (20% reduction), personalized marketing (15% conversion lift)
 
 #### 4. Customer Experience Transformation
@@ -1475,7 +1475,7 @@ You don't need exact prices, but understand general economics:
 - Looker = Business intelligence and visualization
 
 **AI/ML:**
-- Vertex AI = Machine learning platform
+- Agent Platform = Machine learning platform
 - Vision AI, Natural Language AI, Translation AI = Pre-built AI models
 
 **Management:**

@@ -26,7 +26,7 @@ The Google Cloud Digital Leader certification is designed for individuals who wa
 - Storage services (Cloud Storage, Cloud SQL, Firestore, BigQuery)
 - Networking services (VPC, Cloud CDN, Cloud Load Balancing)
 - Security and identity services (IAM, Cloud Security Command Center)
-- AI/ML services (Vertex AI, AutoML, pre-trained APIs)
+- AI/ML services (Agent Platform (formerly Vertex AI), AutoML, pre-trained APIs)
 - Operations tools (Cloud Monitoring, Cloud Logging)
 
 ### Domain 3: Implementing Solutions in Google Cloud (20%)

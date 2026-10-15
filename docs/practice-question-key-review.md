@@ -2,65 +2,50 @@
 last-updated: 2026-10-14
 ---
 
-# Practice-question keys that need a human check
+# Practice-question key review (2026-10-14)
 
-On 2026-10-14 every practice-question bank in `resources/practice-questions/` was reviewed by an AI agent for one thing: is exactly one option correct, and is it the keyed one? The agents were told **not to change a key letter**, so every item below is a question where the key looks wrong, stale or debatable. None of this was checked against vendor documentation. Check the vendor page, then either fix the key (and move the option so the answer positions stay balanced) or reword the question.
+Every practice-question bank was reviewed by AI agents for "exactly one correct option, and it is the keyed one". About 70 questions were flagged because the key looked stale, wrong or debatable. A second set of agents then checked each flagged question against the **vendor's own documentation** (they could search and fetch pages) and either confirmed it, tightened the wording, or rewrote it. This page records the outcome and what is still open.
 
-How to fix one: edit the options and the `**Correct:**` letter together, then run `python3 .github/scripts/balance-answer-positions.py --check <file>` and `--check-length <file>`.
+These results are AI-verified against cited pages, not human-reviewed. A claim listed as "judgment call" rests on convention, not a documentation statement.
 
-## Product names or facts that went stale
+## What changed
 
-| Bank | Question | Issue |
+**Keys that were wrong and are now fixed**
+
+| Bank | Q | What the docs say |
 |---|---|---|
-| azure-administrator-az-104 | Q8 | Azure Blueprints is retired (July 2026); successors are Template Specs and Deployment Stacks |
-| azure-administrator-az-104 | Q37 | Update Management retired (Aug 2024); Azure Update Manager replaced it |
-| azure-administrator-az-104 | Q21 | Managed disks can often be expanded online; "stop and deallocate" may be outdated |
-| azure-fundamentals-az-900 | Q36, Q13, Q27 | Blueprints deprecated; Q39 management-group limit figure unverified |
-| gcp-cloud-engineer | Q5 | Deployment Manager end of support (2025); option now says Infrastructure Manager or Terraform |
-| gcp-cloud-engineer | Q34 | An org policy for service-account key expiry exists; the Why says it does not |
-| gcp-data-engineer | Q26, Q33 | Data Catalog is being replaced by Dataplex Universal Catalog |
-| gcp-cloud-digital-leader | Q2, Q4, Q19, Q24 | Anthos is now GKE Enterprise; Migrate for Compute Engine is now Migrate to Virtual Machines |
-| azure-ai-fundamentals-ai-900 | Q21, Q38 | Custom Vision retirement path; old "Copilot for Microsoft 365" name |
-| github-copilot | Q10 | "Copilot Enterprise knowledge bases" may be replaced by Copilot Spaces |
-| ibm-cloud-advocate | Q10, Q7 | IBM Cloud Functions is discontinued |
-| aws-sysops-administrator | Q5 | Performance Insights being replaced by CloudWatch Database Insights; whole bank is SOA-C02 (superseded by SOA-C03) |
-| aws-cloud-practitioner | Q14 | S3 now encrypts new objects by default; the premise may be dated |
-| azure-information-security-sc-401 | Q12 | MailItemsAccessed is now in Audit Standard |
-| kubernetes-cka | Q9, Q25 | Pod eviction now via tolerationSeconds (Q9 reworded, confirm); PodSecurityPolicy was removed in 1.25, Why says deprecated |
-| aws-security-specialty | Q24, Q27 | DynamoDB now supports resource-based policies (Why fixed; confirm the key still holds) |
+| aws-developer-associate | 4 | Lambda's 3 s default timeout is the failure (max 900 s); memory does not help network-bound calls ([timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)) |
+| aws-developer-associate | 38 | Lambda Insights is not error grouping; now keyed on CloudWatch Logs anomaly detection ([docs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/LogsAnomalyDetection.html)) |
+| aws-devops-engineer-professional | 32 | Patch Manager alone has no rollback; the `AWS-PatchInstanceWithRollback` runbook does ([docs](https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-aws-patchinstancewithrollback.html)) |
+| aws-sysops-administrator | 19 | Same runbook as above |
+| aws-security-specialty | 38 | A break-glass role with MFA and a short session fits "bypass approval"; the old key required approval ([guidance](https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/ag.sad.5-implement-break-glass-procedures.html)) |
+| aws-solutions-architect-associate | 30 | Steady 24x7 traffic on EC2 is a Compute Savings Plan case ([docs](https://docs.aws.amazon.com/savingsplans/latest/userguide/sp-ris.html)) |
+| aws-solutions-architect-associate | 27 | Lambda timeout goes to 15 min, so 5-minute SQS jobs fit Lambda ([docs](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)) |
+| aws-solutions-architect-professional | 12 | DAX passes strongly consistent reads through; MemoryDB is the strongly consistent option ([DAX](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.consistency.html), [MemoryDB](https://docs.aws.amazon.com/memorydb/latest/devguide/consistency.html)) |
+| aws-solutions-architect-professional | 34 | SCT plus DMS go directly to Aurora PostgreSQL, no RDS Oracle hop ([playbook](https://docs.aws.amazon.com/dms/latest/oracle-to-aurora-postgresql-migration-playbook/chap-oracle-aurora-pg.sql.stored.html)) |
+| azure-fundamentals-az-900 | 36 | Blueprints is retired; rewritten around ARM templates / Bicep ([Blueprints](https://learn.microsoft.com/en-us/azure/governance/blueprints/overview)) |
+| azure-solutions-architect-az-305 | 31 | Classic Azure CDN is retired; Front Door is the target ([CDN overview](https://learn.microsoft.com/en-us/azure/cdn/cdn-overview)) |
+| gcp-cloud-developer | 9 | Cloud Run jobs cap at 8 vCPU; rewritten around Batch ([Cloud Run jobs CPU](https://docs.cloud.google.com/run/docs/configuring/jobs/cpu)) |
+| gcp-cloud-engineer | 34 | An org policy for service-account key expiry exists (`iam.serviceAccountKeyExpiryHours`); question rewritten around it ([docs](https://docs.cloud.google.com/iam/docs/service-account-creds)) |
+| gcp-data-engineer | 8, 18, 26, 33, 37 | Federated queries do not cover Salesforce; Beam side inputs must fit in memory; Data Catalog is replaced by Dataplex Universal Catalog (renamed Knowledge Catalog 2026-04-10); BigQuery long-term storage pricing is per partition after 90 days |
+| gcp-cloud-devops-engineer | 31 | Cloud Monitoring has no built-in ML anomaly condition; PromQL-based anomaly detection is documented ([docs](https://docs.cloud.google.com/monitoring/promql/promql-in-alerting)) |
+| databricks-ml-associate | 3 | Hyperopt is no longer maintained; Ray Tune / Optuna recommended ([docs](https://docs.databricks.com/aws/en/machine-learning/automl-hyperparam-tuning/hyperopt-concepts)) |
+| github-copilot | 10 | Knowledge bases were retired 2025-11-01; rebuilt around Copilot Spaces ([changelog](https://github.blog/changelog/2025-08-20-sunset-notice-copilot-knowledge-bases/)) |
+| azure-data-engineer-dp-203 | 2, 6, 13 | "Time series optimized container" does not exist; DMS is not a documented path into Synapse dedicated pools; Delta ACID is per table, not cross-target |
+| azure-administrator-az-104 | 8, 37 | Blueprints retired (rewritten around Template Specs); Update Management replaced by Azure Update Manager |
 
-## Key looks wrong or a better answer exists
+**Confirmed correct** (the doc supports the key): aws-solutions-architect-associate Q25 and Q32, aws-sysops-administrator Q25, aws-security-specialty Q12, Q24 and Q27, kubernetes-cka Q9, azure-administrator-az-104 Q21, azure-information-security-sc-401 Q12, azure-data-engineer-dp-203 Q40, oracle-oci-architect-associate Q2, databricks-data-engineer-associate Q8, gcp-cloud-engineer Q24 and Q5, gcp-cloud-digital-leader Q19.
 
-| Bank | Question | Issue |
-|---|---|---|
-| aws-solutions-architect-professional | Q13 | "Exactly once" fits SQS FIFO better than the keyed Standard queue |
-| aws-solutions-architect-professional | Q12, Q30, Q34, Q3, Q23 | DAX consistency claim; write sharding is the canonical answer for Q30; SCT+DMS direct to Aurora for Q34; Q3 RAM and AMIs (low confidence); Q23 detailed monitoring gives no memory metric |
-| aws-solutions-architect-associate | Q10, Q12, Q20, Q24, Q25, Q27, Q30, Q32, Q35 | MFA Delete does not protect bucket deletion; io2 durability vs the keyed EBS option; read replicas vs ElastiCache; Athena vs Redshift; Lambda 5-minute jobs vs EC2; Savings Plans vs rewrite; CloudFront vs Global Accelerator; Savings Plans vs RIs |
-| aws-developer-associate | Q4, Q17, Q23, Q31, Q38, Q40 | Raising memory is not the fix for slow parallel calls; CMK description; encryption-helper approach; Lambda has built-in versions; Lambda Insights does not group errors by type; reserved concurrency does not raise throughput |
-| aws-devops-engineer-professional | Q2, Q16, Q32 | Key does not enforce GPG signing; no atomic cross-region rollback; Patch Manager has no automatic rollback |
-| aws-sysops-administrator | Q12, Q19, Q25 | Multi-AZ is not cross-region DR; Patch Manager has no automatic rollback; MFA via IAM vs SCP are both viable |
-| aws-security-specialty | Q38, Q11, Q12 | Scenario says bypass approval but key requires manager approval; Config detection is slower than the 1-minute requirement |
-| aws-data-engineer-associate | Q6 | Glacier Instant Retrieval is built for quarterly access, not weekly |
-| aws-cloud-practitioner | Q33 | Spot can beat 3-year RIs; defensible only because the workload is steady |
-| azure-data-engineer-dp-203 | Q2, Q6, Q13, Q40 | "Time series optimized container" is not a Cosmos container type; DMS is not an online path to a dedicated SQL pool; Delta ACID does not give cross-target atomicity; Key Concept link points to column-level security |
-| azure-solutions-architect-az-305 | Q25, Q29, Q31 | Synchronous replication is within-region only; autoscaled App Service is a valid answer; Front Door is the recommended edge cache now |
-| azure-network-engineer-az-700 | Q7 | With private endpoints, ExpressRoute private peering reaches PaaS; Microsoft peering is the legacy answer |
-| gcp-data-engineer | Q18, Q37, Q8 | A 50 GB Dataflow side input is questionable; BigQuery already tiers storage after 90 days; federated queries do not natively cover Salesforce |
-| gcp-cloud-developer | Q9 | Cloud Run jobs cap at 8 vCPU, so "64 CPUs for 2 hours" does not fit the key |
-| gcp-cloud-devops-engineer | Q31 | No clearly documented ML anomaly-detection alert policy in Cloud Monitoring |
-| gcp-cloud-engineer | Q24 | Apigee is arguably the better answer |
-| gcp-workspace-administrator | Q5 | Deleting a user may also satisfy "keep data under Vault"; Archived User is only the best answer if deleted users' Vault data is not retained |
-| azure-developer-az-204 | Q8, Q9 | Consumption plan also fits Q8; ACI cannot natively mount Key Vault secrets as a volume (Q9) |
-| cisco-ccna | Q12 | "Stateless NAT" is not standard CCNA wording |
-| confluent-certified-developer | Q6 | "Must not break existing consumers" implies forward compatibility; key says backward |
-| isc2-cissp | Q2, Q19 | Odd "order of priorities in a BIA" framing; Q19 has a deliberately hedged key ("B or C") |
-| isc2-cc | Q14 | Mantrap vs turnstile/piggybacking and tailgating terminology is ambiguous |
-| kubernetes-cka | Q12 | `ingress: []` denies all but `ingress: [{}]` allows all; the question text is ambiguous |
-| snowflake-snowpro-advanced-administrator | Q3 | Scenario says the query ran "yesterday"; RESULT_SCAN works only within 24 hours |
-| databricks-ml-associate | Q3 | Hyperopt and SparkTrials are being deprecated on newer runtimes |
-| databricks-data-engineer-associate | Q8 | Unsure Snowflake is a Delta Sharing recipient as the Why says |
-| oracle-oci-architect-associate | Q2 | LPG is keyed; DRG-based peering is now the recommended approach |
+**Ambiguity fixed, key unchanged** (the premise or a rival option was tightened): aws-solutions-architect-associate Q10, Q12, Q20, Q24, Q35; aws-solutions-architect-professional Q3, Q13, Q23, Q30; aws-developer-associate Q17, Q23, Q31, Q40; aws-devops-engineer-professional Q2, Q16; aws-sysops-administrator Q5, Q12; aws-cloud-practitioner Q14, Q33; aws-security-specialty Q11; aws-data-engineer-associate Q6; azure-solutions-architect-az-305 Q25, Q29; azure-network-engineer-az-700 Q7; azure-developer-az-204 Q8, Q9; azure-fundamentals-az-900 Q13, Q27, Q39; azure-ai-fundamentals-ai-900 Q21, Q38; gcp-workspace-administrator Q5 and Q27; gcp-cloud-digital-leader Q2, Q4, Q24; cisco-ccna Q12; confluent-certified-developer Q6; isc2-cissp Q2; isc2-cc Q14; kubernetes-cka Q12, Q25; snowflake-snowpro-advanced-administrator Q3; ibm-cloud-advocate Q7, Q10.
 
-## Weaker distractors
+## Still open
 
-Each reviewing agent also listed distractors it could not confirm were clearly wrong (about 100 across all banks, mostly "workable but worse" alternatives). They are in the 2026-10-14 agent reports, not itemised here. If a learner argues with a question, look at its distractors first.
+| Item | Why |
+|---|---|
+| "Azure AD" naming | Azure AD Connect / PIM / B2C / B2B wording remains in az-104, az-305, az-204; Azure AD B2C closed to new customers (not verified) |
+| "Anthos is now GKE Enterprise" | Not confirmed in official docs, so the banks avoid both names where the agents edited. 26 files still say Anthos |
+| ibm-cloud-advocate Q7, Q10 | IBM Cloud Functions' discontinuation date and the IKS/OpenShift claim in Q7 could not be verified from IBM docs; the questions no longer rely on Cloud Functions |
+| aws-sysops-administrator Q12 | The cross-Region replica lag figure was not checked against documentation |
+| azure-administrator-az-104 Q37 | The Aug 2024 Update Management retirement date was not checked |
+| Judgment calls | aws-solutions-architect-associate Q24, Q25, Q32 (cache vs replica, Redshift vs Athena, Global Accelerator vs CloudFront); isc2-cissp Q2 and Q19; isc2-cc Q14 terminology. No documentation settles these |
+| Weaker distractors | About 100 distractors were judged "workable but worse" by reviewers (only in agent reports, not itemised). If a learner disputes a question, start with its distractors |

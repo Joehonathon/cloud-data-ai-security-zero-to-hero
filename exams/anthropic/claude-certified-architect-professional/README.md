@@ -39,7 +39,7 @@ Anthropic recommends, but does not require, passing CCAR-F before sitting CCAR-P
 
 ### Domain Summaries
 
-**1 - Integration (19%).** Connecting Claude to the systems around it: tool design, MCP servers and transports, first-party tools (code execution, computer use, web search, memory), the Agent SDK, streaming clients, and deployment through Amazon Bedrock and Google Cloud Vertex AI as well as the first-party API.
+**1 - Integration (19%).** Connecting Claude to the systems around it: tool design, MCP servers and transports, first-party tools (code execution, computer use, web search, memory), the Agent SDK, streaming clients, and deployment through Amazon Bedrock and Google Cloud Agent Platform (formerly Vertex AI) as well as the first-party API.
 
 **2 - Solution Design and Architecture (17%).** Choosing the right architecture under cost, latency, and compliance constraints: single-agent tool loops vs orchestrator-worker vs planner-executor, RAG at scale, multi-tenant design, reliability patterns, and enterprise deployment topology (private networking, data residency).
 
@@ -105,7 +105,7 @@ You should already be comfortable with:
 - Designing multi-agent and single-agent architectures under cost and latency SLOs
 - Integrating Claude with retrieval systems at scale (vector, hybrid, reranked RAG)
 - Building and operating MCP servers, tool pipelines, and streaming clients
-- Running Claude behind Amazon Bedrock, Google Cloud Vertex AI, or the first-party Anthropic API
+- Running Claude behind Amazon Bedrock, Google Cloud Agent Platform, or the first-party Anthropic API
 - Writing evaluations, tracking regressions, and managing model upgrades
 - Reasoning about extended thinking budgets, prompt caching layers, batch economics, and context engineering
 - Explaining all of the above to non-technical stakeholders and running a deployment lifecycle

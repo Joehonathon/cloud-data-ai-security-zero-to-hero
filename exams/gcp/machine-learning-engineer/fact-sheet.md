@@ -44,8 +44,8 @@ last-updated: 2026-05-03
 **Supervised Learning:**
 - **Classification** - Binary, multi-class, multi-label
 - **Regression** - Continuous value prediction
-- **[📖 Classification Models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/tabular-data/classification-regression/train-model)** - Classification on Vertex AI
-- **[📖 Regression Models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/tabular-data/classification-regression/train-model)** - Regression on Vertex AI
+- **[📖 Classification Models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/tabular-data/classification-regression/train-model)** - Classification on Agent Platform (formerly Vertex AI)
+- **[📖 Regression Models](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/tabular-data/classification-regression/train-model)** - Regression on Agent Platform
 
 **Unsupervised Learning:**
 - **Clustering** - Grouping similar data points
@@ -84,20 +84,20 @@ last-updated: 2026-05-03
 - **MAP (Mean Average Precision)** - Precision across multiple queries
 - **MRR (Mean Reciprocal Rank)** - Average of reciprocal ranks
 
-## Vertex AI Platform
+## Agent Platform
 
-### Vertex AI Overview
+### Agent Platform Overview
 
 **Unified ML Platform:**
 - End-to-end ML workflow management
 - Integrates training, deployment, and monitoring
 - Supports custom and AutoML models
-- **[📖 Vertex AI Overview](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Platform introduction
-- **[📖 Vertex AI Workbench](https://cloud.google.com/vertex-ai/docs/workbench/introduction)** - Managed Jupyter notebooks
-- **[📖 Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - ML workflow orchestration
-- **[📖 Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction)** - Model versioning and management
+- **[📖 Agent Platform Overview](https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform)** - Platform introduction
+- **[📖 Agent Platform Workbench](https://cloud.google.com/vertex-ai/docs/workbench/introduction)** - Managed Jupyter notebooks
+- **[📖 Agent Platform Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - ML workflow orchestration
+- **[📖 Agent Platform Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction)** - Model versioning and management
 
-### Vertex AI Workbench
+### Agent Platform Workbench
 
 **Development Environment:**
 - **Managed Notebooks** - Fully managed JupyterLab instances
@@ -108,7 +108,7 @@ last-updated: 2026-05-03
 - **[📖 Workbench Executor](https://cloud.google.com/vertex-ai/docs/workbench/managed/executor)** - Schedule notebook execution
 - **[📖 Workbench Instances](https://cloud.google.com/vertex-ai/docs/workbench/managed/create-instance)** - Instance creation and configuration
 
-### Vertex AI Training
+### Agent Platform Managed Training
 
 **Training Options:**
 - **AutoML** - No-code model training
@@ -122,7 +122,7 @@ last-updated: 2026-05-03
 - **[📖 Training with GPUs](https://cloud.google.com/vertex-ai/docs/training/configure-compute#gpu-types)** - GPU acceleration
 - **[📖 Training with TPUs](https://cloud.google.com/vertex-ai/docs/training/configure-compute#tpus)** - TPU acceleration
 
-### Vertex AI Prediction
+### Agent Platform Inference
 
 **Model Deployment:**
 - **Online Prediction** - Real-time, low-latency predictions
@@ -134,7 +134,7 @@ last-updated: 2026-05-03
 - **[📖 Private Endpoints](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/predictions/using-private-endpoints)** - VPC-based serving
 - **[📖 Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)** - Production model monitoring
 
-### Vertex AI Model Monitoring
+### Model Monitoring on Agent Platform
 
 **Production Monitoring:**
 - **Training-Serving Skew Detection** - Distribution drift from training
@@ -240,7 +240,7 @@ last-updated: 2026-05-03
 - Embedded methods (L1/L2 regularization, tree-based importance)
 - **[📖 Feature Selection Techniques](https://cloud.google.com/architecture/ml-on-gcp-best-practices#feature-selection)** - Selection strategies
 
-### Vertex AI Feature Store
+### Agent Platform Feature Store
 
 **Centralized Feature Management:**
 - Store, serve, and share ML features
@@ -313,7 +313,7 @@ last-updated: 2026-05-03
 - **Pusher** - Model deployment
 - **[📖 TFX Overview](https://www.tensorflow.org/tfx)** - TFX architecture
 - **[📖 TFX Components](https://www.tensorflow.org/tfx/guide#tfx_standard_components)** - Component documentation
-- **[📖 TFX on Cloud](https://www.tensorflow.org/tfx/tutorials/tfx/cloud-ai-platform-pipelines)** - TFX with Vertex AI
+- **[📖 TFX on Cloud](https://www.tensorflow.org/tfx/tutorials/tfx/cloud-ai-platform-pipelines)** - TFX with Agent Platform
 - **[📖 TFX Pipeline Tutorial](https://www.tensorflow.org/tfx/tutorials/tfx/penguin_simple)** - End-to-end example
 
 ### Neural Network Architectures
@@ -374,7 +374,7 @@ last-updated: 2026-05-03
 - Gradient Boosting (XGBoost, LightGBM)
 - Support Vector Machines
 - K-Nearest Neighbors
-- **[📖 Scikit-learn on Vertex AI](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers)** - Pre-built containers
+- **[📖 Scikit-learn on Agent Platform](https://cloud.google.com/vertex-ai/docs/training/pre-built-containers)** - Pre-built containers
 - **[📖 Custom Prediction Routines](https://cloud.google.com/vertex-ai/docs/predictions/custom-prediction-routines)** - Deploy scikit-learn models
 
 ### Hyperparameter Tuning
@@ -430,9 +430,9 @@ last-updated: 2026-05-03
 **ML Workflow Orchestration:**
 - Define, orchestrate, and schedule ML workflows
 - Component-based pipeline architecture
-- Integration with Vertex AI Pipelines
+- Integration with Agent Platform Pipelines
 - **[📖 Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/)** - KFP documentation
-- **[📖 Vertex AI Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - Managed Kubeflow
+- **[📖 Agent Platform Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - Managed Kubeflow
 - **[📖 Pipeline Components](https://cloud.google.com/vertex-ai/docs/pipelines/components-introduction)** - Building components
 - **[📖 Pre-built Components](https://cloud.google.com/vertex-ai/docs/pipelines/gcpc-list)** - Google Cloud components
 - **[📖 Pipeline Scheduling](https://cloud.google.com/vertex-ai/docs/pipelines/schedule-pipeline-run)** - Scheduled execution
@@ -462,7 +462,7 @@ last-updated: 2026-05-03
 ### Workflow Orchestration
 
 **Orchestration Options:**
-- **Vertex AI Pipelines** - Managed Kubeflow Pipelines
+- **Agent Platform Pipelines** - Managed Kubeflow Pipelines
 - **Cloud Composer** - Managed Apache Airflow
 - **Cloud Scheduler** - Cron-based scheduling
 - **[📖 Cloud Composer](https://cloud.google.com/composer/docs)** - Airflow for ML workflows
@@ -510,7 +510,7 @@ last-updated: 2026-05-03
 - Input feature distribution monitoring
 - Prediction output distribution monitoring
 - Model performance metrics
-- **[📖 Vertex AI Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)** - Monitoring overview
+- **[📖 Model Monitoring on Agent Platform](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)** - Monitoring overview
 - **[📖 Monitoring Configuration](https://cloud.google.com/vertex-ai/docs/model-monitoring/using-model-monitoring)** - Setup guide
 - **[📖 Monitoring Alerts](https://cloud.google.com/vertex-ai/docs/model-monitoring/using-model-monitoring#alerts)** - Alert configuration
 - **[📖 Cloud Logging Integration](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/predictions/online-prediction-logging)** - Prediction logging
@@ -685,7 +685,7 @@ last-updated: 2026-05-03
 - Export training data from BigQuery
 - Store predictions in BigQuery
 - **[📖 BigQuery ML](https://cloud.google.com/bigquery-ml/docs)** - BQML overview
-- **[📖 Vertex AI and BigQuery](https://cloud.google.com/vertex-ai/docs/beginner/bqml)** - Integration guide
+- **[📖 Agent Platform and BigQuery](https://cloud.google.com/vertex-ai/docs/beginner/bqml)** - Integration guide
 - **[📖 Export to BigQuery](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/capabilities/batch-inference/new-job-from-bigquery)** - Batch predictions to BQ
 
 ### Cloud Storage Integration
@@ -729,7 +729,7 @@ last-updated: 2026-05-03
 ### IAM for ML
 
 **Access Control:**
-- Vertex AI-specific IAM roles
+- Agent Platform-specific IAM roles
 - Service accounts for training/serving
 - Workload Identity for GKE
 - **[📖 Vertex AI IAM](https://cloud.google.com/vertex-ai/docs/general/access-control)** - Access control
@@ -751,7 +751,7 @@ last-updated: 2026-05-03
 **Data Protection:**
 - Encryption at rest and in transit
 - Customer-managed encryption keys (CMEK)
-- **[📖 Encryption](https://cloud.google.com/vertex-ai/docs/general/cmek)** - CMEK for Vertex AI
+- **[📖 Encryption](https://cloud.google.com/vertex-ai/docs/general/cmek)** - CMEK for Agent Platform
 - **[📖 Key Management](https://cloud.google.com/kms/docs)** - Cloud KMS
 
 ### Audit Logging
@@ -760,7 +760,7 @@ last-updated: 2026-05-03
 - Cloud Audit Logs for ML operations
 - Model lineage tracking
 - Data lineage tracking
-- **[📖 Audit Logs](https://cloud.google.com/vertex-ai/docs/general/audit-logging)** - Vertex AI audit logs
+- **[📖 Audit Logs](https://cloud.google.com/vertex-ai/docs/general/audit-logging)** - Agent Platform audit logs
 - **[📖 Model Lineage](https://cloud.google.com/vertex-ai/docs/ml-metadata/introduction)** - ML Metadata
 
 ## Exam Scenarios and Solutions
@@ -771,9 +771,9 @@ last-updated: 2026-05-03
 
 **Solution:**
 - Train model using AutoML Tables or custom TensorFlow
-- Deploy to Vertex AI Prediction with GPU-enabled machine
+- Deploy to Agent Platform Inference with GPU-enabled machine
 - Use Feature Store for real-time feature serving
-- Monitor for data drift with Vertex AI Model Monitoring
+- Monitor for data drift with Model Monitoring on Agent Platform
 - A/B test new models before full rollout
 
 **Key Decision:** Online prediction for low latency, Feature Store for fast feature retrieval
@@ -785,8 +785,8 @@ last-updated: 2026-05-03
 **Solution:**
 - Start with AutoML Vision for quick baseline
 - If more control needed, use TensorFlow with transfer learning
-- Train on Vertex AI with GPU/TPU acceleration
-- Deploy to Vertex AI for batch prediction
+- Train on Agent Platform with GPU/TPU acceleration
+- Deploy to Agent Platform for batch prediction
 - Store results in BigQuery for analysis
 
 **Key Decision:** Batch prediction for cost efficiency, AutoML for faster development
@@ -809,7 +809,7 @@ last-updated: 2026-05-03
 **Requirements:** Forecast demand for inventory planning, weekly forecasts, seasonal patterns
 
 **Solution:**
-- Use AutoML Forecasting on Vertex AI
+- Use AutoML Forecasting on Agent Platform
 - Prepare data with seasonal and holiday features
 - Train with multiple time series (one per product)
 - Evaluate using MAPE and RMSE
@@ -826,16 +826,16 @@ last-updated: 2026-05-03
 - Include data validation (TFDV), training, evaluation, deployment
 - Schedule pipeline with Cloud Scheduler
 - Implement automatic deployment if metrics exceed threshold
-- Monitor with Vertex AI Model Monitoring
+- Monitor with Model Monitoring on Agent Platform
 
-**Key Decision:** Vertex AI Pipelines for orchestration, automated deployment gates
+**Key Decision:** Agent Platform Pipelines for orchestration, automated deployment gates
 
 ### Scenario 6: Model Serving with Traffic Split
 
 **Requirements:** Deploy new model version safely, gradual rollout, rollback capability
 
 **Solution:**
-- Deploy new model version to Vertex AI
+- Deploy new model version to Agent Platform
 - Configure traffic split (90% old, 10% new)
 - Monitor both versions for performance
 - Gradually increase traffic to new version
@@ -876,7 +876,7 @@ last-updated: 2026-05-03
 **Solution:**
 - Train models on-premises with TensorFlow
 - Export trained models
-- Deploy to Vertex AI Prediction
+- Deploy to Agent Platform Inference
 - Use VPN/Interconnect for secure connectivity
 - Serve predictions via private endpoint
 
@@ -887,7 +887,7 @@ last-updated: 2026-05-03
 **Requirements:** Score millions of records daily, cost-effective, results to BigQuery
 
 **Solution:**
-- Use Vertex AI Batch Prediction
+- Use Agent Platform Batch Inference
 - Source data from BigQuery or Cloud Storage
 - Configure large batch size for efficiency
 - Output predictions directly to BigQuery
@@ -907,9 +907,9 @@ last-updated: 2026-05-03
 - **"Custom model"** → TensorFlow, PyTorch, custom training
 - **"Explainability"** → Vertex Explainable AI, What-If Tool
 - **"Fairness/bias"** → Fairness Indicators, What-If Tool
-- **"Automated pipeline"** → Vertex AI Pipelines, TFX, Kubeflow
+- **"Automated pipeline"** → Agent Platform Pipelines, TFX, Kubeflow
 - **"Data drift"** → Model Monitoring, TFDV
-- **"Scalable"** → Distributed training, Vertex AI, managed services
+- **"Scalable"** → Distributed training, Agent Platform, managed services
 
 ### Service Selection Decision Trees
 
@@ -969,14 +969,14 @@ Need orchestration?
 - [ ] Know feature engineering best practices
 - [ ] Understand cross-validation and data splitting
 
-**Vertex AI Platform:**
-- [ ] Can create and manage Vertex AI Workbench instances
-- [ ] Know how to train custom models on Vertex AI
+**Agent Platform:**
+- [ ] Can create and manage Agent Platform Workbench instances
+- [ ] Know how to train custom models on Agent Platform
 - [ ] Understand AutoML capabilities and limitations
 - [ ] Can deploy models to online and batch prediction
 - [ ] Know how to configure Model Monitoring
 - [ ] Understand Feature Store architecture and use cases
-- [ ] Can build and run Vertex AI Pipelines
+- [ ] Can build and run Agent Platform Pipelines
 
 **TensorFlow and Deep Learning:**
 - [ ] Understand TensorFlow 2.x and Keras APIs
@@ -1009,7 +1009,7 @@ Need orchestration?
 - [ ] Know how to create Model Cards
 
 **Preparation:**
-- [ ] Hands-on experience with Vertex AI (build at least 3 projects)
+- [ ] Hands-on experience with Agent Platform (build at least 3 projects)
 - [ ] Complete official Google Cloud Skills Boost labs
 - [ ] Practice with sample case studies
 - [ ] Review TensorFlow and Keras documentation

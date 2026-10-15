@@ -169,11 +169,11 @@
 | Codey | Code | Programming, debugging | Developer tools, automation | 6K tokens |
 | Imagen | Image | Photorealistic, artistic | Design, marketing, content | N/A |
 
-### Open Source Models on Vertex AI
+### Open Source Models on Agent Platform
 
 **Llama 2**
 - Meta's open-source LLM
-- Available on Vertex AI Model Garden
+- Available on Model Garden (formerly Vertex AI Model Garden)
 - 7B, 13B, 70B parameter variants
 - Commercial usage allowed
 
@@ -185,7 +185,7 @@
 
 **Stable Diffusion**
 - Open-source image generation
-- Available on Vertex AI
+- Available on Agent Platform
 - Customizable and fine-tunable
 - Community-driven improvements
 
@@ -298,7 +298,7 @@ text = "Generative AI is transforming technology"
 
 **Exam Tip**: 1 token ≈ 4 characters or ≈ 0.75 words in English
 
-## Vertex AI Generative AI Studio
+## Agent Studio
 
 ### Overview
 
@@ -1348,7 +1348,7 @@ response = model.generate_content([video_part, prompt])
 - Dangerous content
 - Violence and gore
 
-**Harm Categories in Vertex AI**
+**Harm Categories in Agent Platform**
 ```python
 from vertexai.preview.generative_models import HarmCategory, HarmBlockThreshold
 
@@ -1631,7 +1631,7 @@ response = model.predict("Explain quantum computing")
 
 ### Deployment Options
 
-**Serverless (Vertex AI)**
+**Serverless (Agent Platform)**
 - Managed infrastructure
 - Auto-scaling
 - Pay-per-use
@@ -3011,7 +3011,7 @@ response = model.predict(f"Context: {context}\nQuestion: {query}")
 
 **Exam Tip**: RAG updates knowledge without retraining. Use for dynamic information.
 
-### Vertex AI Generative AI Studio Features
+### Agent Studio Features
 
 **Know These Capabilities**
 1. **Model Garden**: Access to foundation models (Google + open source)
@@ -3220,7 +3220,7 @@ safety_settings = {
 - [ ] Transparency and accountability
 
 **Implementation**
-- [ ] Vertex AI Generative AI Studio
+- [ ] Agent Studio
 - [ ] Python SDK usage
 - [ ] REST API endpoints
 - [ ] Model Garden access
@@ -3245,7 +3245,7 @@ safety_settings = {
 
 ### Study Strategy
 
-1. **Hands-on Practice**: Use Vertex AI Generative AI Studio
+1. **Hands-on Practice**: Use Agent Studio
 2. **Prompt Engineering**: Practice zero-shot, few-shot, chain-of-thought
 3. **Model Comparison**: Test different models on same tasks
 4. **Responsible AI**: Implement safety filters and bias testing

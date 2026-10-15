@@ -15,21 +15,21 @@ The main memorization load. Learn each product by the problem it solves.
 | Rung | What you use | Effort | Fits |
 |---|---|---|---|
 | **Applied assistants** | Gemini for Google Workspace, Gemini for Google Cloud | Lowest, no build | Productivity gains across an organization |
-| **Pre-built products** | Vertex AI Search, Conversational Agents, NotebookLM | Low, configure not code | A common capability delivered quickly |
-| **Build on the platform** | Vertex AI with Gemini, grounding, function calling | Medium | A differentiated product experience |
-| **Customize a model** | Fine-tuning on Vertex AI | High | Consistent specialized behavior at scale |
+| **Pre-built products** | Agent Search (formerly Vertex AI Search), Conversational Agents, NotebookLM | Low, configure not code | A common capability delivered quickly |
+| **Build on the platform** | Agent Platform with Gemini, grounding, function calling | Medium | A differentiated product experience |
+| **Customize a model** | Fine-tuning on Agent Platform | High | Consistent specialized behavior at scale |
 | **Train from scratch** | Custom foundation model | Very high | Effectively never |
 
 Start at the top. The exam consistently rewards the lowest rung that solves the stated problem.
 
 ---
 
-## Vertex AI
+## Agent Platform
 
 The unified platform for AI on Google Cloud.
 
 - **Model Garden** - the catalog of available models: Google's own, open models, and third-party
-- **Vertex AI Studio** - a console for prompt design, testing, and comparison without writing code
+- **Agent Studio** - a console for prompt design, testing, and comparison without writing code
 - **Training and tuning** - fine-tuning and custom training
 - **Prediction and endpoints** - serving models
 - **Evaluation** - measuring model and application quality
@@ -57,9 +57,9 @@ Model families come in size tiers, trading capability against cost and latency. 
 
 ## Pre-built products
 
-**Vertex AI Search** - grounded enterprise search over your own content, with generative summaries and citations. The answer when the requirement is "let employees or customers ask questions about our documents".
+**Agent Search** - grounded enterprise search over your own content, with generative summaries and citations. The answer when the requirement is "let employees or customers ask questions about our documents".
 
-**Vertex AI Agent Builder / Conversational Agents** - building conversational agents that can answer questions, take actions through tools, and hand off to humans. The answer for a customer-facing assistant or an internal helpdesk bot.
+**Agent Builder on Agent Platform / Conversational Agents** - building conversational agents that can answer questions, take actions through tools, and hand off to humans. The answer for a customer-facing assistant or an internal helpdesk bot.
 
 **NotebookLM** - grounded research over sources you supply, producing summaries, briefings, and question answering restricted to those sources. The answer for individual or small-team research over a document set.
 
@@ -92,7 +92,7 @@ Most business-level scenarios do not reach infrastructure. What matters is recog
 
 Frequently the deciding factor in a business scenario:
 
-- **Data governance**: customer data submitted to Vertex AI is not used to train Google's foundation models
+- **Data governance**: customer data submitted to Agent Platform is not used to train Google's foundation models
 - **Data residency** and regional endpoints for regulatory requirements
 - **VPC Service Controls and Private Service Connect** for private access
 - **CMEK** for customer-managed encryption keys
@@ -105,16 +105,16 @@ When a scenario names a regulated industry or a data residency requirement, thes
 
 ## Key terms
 
-- **Vertex AI** - Google Cloud's unified platform for building, tuning, deploying, and evaluating AI
-- **Model Garden** - the Vertex AI catalog of Google, open, and third-party models
-- **Vertex AI Studio** - the console surface for designing and testing prompts without code
+- **Agent Platform** - Google Cloud's unified platform for building, tuning, deploying, and evaluating AI
+- **Model Garden** - the Agent Platform catalog of Google, open, and third-party models
+- **Agent Studio** - the console surface for designing and testing prompts without code
 - **Gemini** - Google's multimodal foundation model family
 - **Gemma** - Google's family of open models intended to be run by the user
 - **Imagen** - Google's image generation and editing model
 - **Veo** - Google's video generation model
 - **Chirp** - Google's speech recognition model
-- **Vertex AI Search** - grounded enterprise search with generative summaries and citations
-- **Vertex AI Agent Builder** - the product for building conversational agents and search experiences
+- **Agent Search** - grounded enterprise search with generative summaries and citations
+- **Agent Builder on Agent Platform** - the product for building conversational agents and search experiences
 - **NotebookLM** - grounded research and question answering over sources the user supplies
 - **BigQuery generative AI functions** - calling models directly from SQL inside the data warehouse
 - **Gemini for Google Workspace** - generative AI applied inside Docs, Gmail, Sheets, Slides, and Meet

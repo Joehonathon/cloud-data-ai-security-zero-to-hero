@@ -102,7 +102,7 @@ D. Disable offsets with `enable.auto.commit=false` and never commit, since the b
 ---
 
 ### Question 6
-**Scenario:** Schema changes must not break existing consumers.
+**Scenario:** Schemas will evolve over time. Consumers are upgraded first, and the upgraded consumers must still read the data already in the topic.
 
 A. Recreate the topic with the new schema each time and restart every client together
 B. Schema Registry with a compatibility mode, such as backward so new consumers can read old data
@@ -114,7 +114,9 @@ D. Send JSON without a schema, so each consumer ignores fields it does not recog
 
 **Correct: B**
 
-**Why:** Backward compatibility permits deleting fields and adding optional ones with defaults. Forward compatibility is the mirror image for producer-first upgrades, and full compatibility requires both. Getting the direction wrong is the classic Schema Registry mistake.
+**Why:** BACKWARD is the Schema Registry default: consumers using the new schema can read data written with the last schema, so upgrade consumers first. It permits deleting fields and adding optional ones with defaults. Forward compatibility is the mirror image for producer-first upgrades, and full compatibility requires both. Getting the direction wrong is the classic Schema Registry mistake.
+
+**Key Concept:** [Schema Registry compatibility types](https://docs.confluent.io/platform/current/schema-registry/fundamentals/schema-evolution.html)
 </details>
 
 ---

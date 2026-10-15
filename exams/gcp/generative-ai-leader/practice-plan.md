@@ -25,11 +25,11 @@ Three weeks at 4-5 hours per week. Shorter than most plans here, because there i
 
 ## Week 2: Google Cloud offerings and techniques
 
-- [ ] Vertex AI: Model Garden, Vertex AI Studio, training, deployment, evaluation
+- [ ] Agent Platform (formerly Vertex AI): Model Garden, Agent Studio, training, deployment, evaluation
 - [ ] Gemini model family and multimodality
 - [ ] Gemma open models; Imagen, Veo, Chirp
-- [ ] Vertex AI Agent Builder and Conversational Agents
-- [ ] Vertex AI Search for grounded enterprise search
+- [ ] Agent Builder on Agent Platform and Conversational Agents
+- [ ] Agent Search for grounded enterprise search
 - [ ] Gemini for Google Workspace and Gemini for Google Cloud
 - [ ] NotebookLM
 - [ ] BigQuery generative AI functions

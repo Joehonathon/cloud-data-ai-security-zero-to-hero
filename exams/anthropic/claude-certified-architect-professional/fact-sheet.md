@@ -92,7 +92,7 @@ Bedrock and Vertex have their own region-scoped IDs. Always check current docume
 ### Enterprise Deployment and Trust
 
 - [Claude on Amazon Bedrock](https://docs.anthropic.com/en/api/claude-on-amazon-bedrock)
-- [Claude on Vertex AI](https://docs.anthropic.com/en/api/claude-on-vertex-ai)
+- [Claude on Agent Platform (formerly Vertex AI)](https://docs.anthropic.com/en/api/claude-on-vertex-ai)
 - [Anthropic Trust Center](https://trust.anthropic.com)
 
 ### Exam Logistics
@@ -182,7 +182,7 @@ One Claude instance with a rich tool set, looped until a stop condition. Still t
 - CloudTrail for audit logging
 - Cross-region inference profiles for capacity
 
-#### Google Cloud Vertex AI
+#### Google Cloud Agent Platform
 
 - Publisher model IDs (e.g., `claude-sonnet-4-6@20260101`)
 - IAM and service account auth

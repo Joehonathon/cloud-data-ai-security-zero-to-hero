@@ -68,7 +68,7 @@
 - [ ] Review security best practices
 
 #### Day 5-7: AI/ML and Operations
-- [ ] Study Vertex AI platform
+- [ ] Study Agent Platform (formerly Vertex AI) platform
 - [ ] Learn about pre-trained AI APIs
 - [ ] Understand AutoML capabilities
 - [ ] Explore Cloud Monitoring and Logging

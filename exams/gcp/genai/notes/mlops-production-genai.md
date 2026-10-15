@@ -21,7 +21,7 @@
 - Reproducibility
 - Collaboration
 
-## Vertex AI Pipelines for GenAI
+## Agent Platform Pipelines for GenAI
 
 ### Pipeline Components
 
@@ -729,7 +729,7 @@ else:
 
 ### Model Serving Architecture
 
-**Vertex AI Prediction Options**
+**Agent Platform Inference (formerly Vertex AI Prediction) Options**
 - Online prediction (real-time)
 - Batch prediction (asynchronous)
 - Private endpoints (VPC)
@@ -3542,7 +3542,7 @@ print(f"Verified: {result['verification']['is_supported']}")
 ### Gen AI MLOps Key Concepts
 
 **1. Production Deployment:**
-- Use Vertex AI Endpoints for serving
+- Use Agent Platform Endpoints for serving
 - Implement auto-scaling (1-10+ replicas typical)
 - Enable caching for repeated queries (can reduce costs 50%+)
 - Deploy across multiple regions for low latency
@@ -3611,7 +3611,7 @@ Answer: Deploy to multiple regions (us-central1, europe-west4, asia-southeast1),
 Answer: Implement token tracking to BigQuery, set up cost alerts in Cloud Monitoring, use budget notifications, cache frequently asked questions, implement rate limiting
 
 **Scenario: Implement RAG system**
-Answer: Use Vertex AI Vector Search for retrieval, implement embedding pipeline, cite sources in responses, verify factual consistency, handle missing context gracefully
+Answer: Use Vector Search for retrieval, implement embedding pipeline, cite sources in responses, verify factual consistency, handle missing context gracefully
 
 **Scenario: Handle PII in prompts**
 Answer: Use Cloud DLP to detect PII, redact before sending to model, audit PII detection, comply with data privacy regulations, implement data retention policies
@@ -3644,7 +3644,7 @@ Answer: Use Cloud DLP to detect PII, redact before sending to model, audit PII d
 
 ### Key Services for Gen AI MLOps
 
-**Vertex AI:**
+**Agent Platform:**
 - Model Garden (foundation models)
 - Model Tuning (supervised fine-tuning)
 - Endpoints (model serving)
@@ -3694,5 +3694,5 @@ Answer: Use Cloud DLP to detect PII, redact before sending to model, audit PII d
 - **Never** skip PII detection for user-facing applications
 - **Never** deploy without canary testing
 - **Never** forget to set up monitoring before production
-- **Prefer** managed services (Vertex AI) over custom solutions
+- **Prefer** managed services (Agent Platform) over custom solutions
 - **Prefer** smaller models when accuracy allows

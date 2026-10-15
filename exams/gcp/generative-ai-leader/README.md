@@ -26,7 +26,7 @@ Full detail in the [fact sheet](./fact-sheet.md).
 | Notes | Covers |
 |---|---|
 | [01 Generative AI fundamentals](./notes/01-genai-fundamentals.md) | Foundation models, tokens, context, multimodality, hallucination, agents |
-| [02 Google Cloud's offerings](./notes/02-google-cloud-offerings.md) | Vertex AI, Gemini, Gemma, Imagen, Agent Builder, Vertex AI Search, applied assistants |
+| [02 Google Cloud's offerings](./notes/02-google-cloud-offerings.md) | Agent Platform (formerly Vertex AI), Gemini, Gemma, Imagen, Agent Builder, Agent Search, applied assistants |
 | [03 Improving output](./notes/03-improving-output.md) | Prompting, parameters, grounding, RAG, fine-tuning, function calling, evaluation |
 | [04 Business strategy](./notes/04-business-strategy.md) | Use case selection, business case, TCO, change management, responsible AI |
 

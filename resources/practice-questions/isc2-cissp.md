@@ -25,7 +25,7 @@ D. Transfer the risk by buying cyber insurance for the interim period, which cov
 ---
 
 ### Question 2 - Domain 1
-**Scenario:** What's the order of priorities in a Business Impact Analysis (BIA)?
+**Scenario:** In ISC2 CISSP guidance on business continuity and impact decisions, what is the usual order of priorities?
 
 A. They're equal, because a BIA assigns the same weight to every impact category
 B. Safety of life > Critical business assets > Reputation > Cost, with human safety always ranked above any financial or operational impact
@@ -37,7 +37,7 @@ D. Cost > Safety > Reputation > Compliance, because the BIA exists mainly to jus
 
 **Correct: B**
 
-**Why:** **Safety of human life is always the top priority** in any security or BCP question. Critical business assets next, then reputation, then cost. CISSP repeatedly tests this - never pick "save money" over "save lives."
+**Why:** This is the standard CISSP convention, a judgment call rather than a formal BIA rule. **Safety of human life is always the top priority** in any security or BCP question. Critical business assets next, then reputation, then cost. CISSP repeatedly tests this - never pick "save money" over "save lives."
 </details>
 
 ---

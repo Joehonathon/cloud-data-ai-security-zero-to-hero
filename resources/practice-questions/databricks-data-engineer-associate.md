@@ -145,7 +145,9 @@ D. SSO federation between the two organizations' identity providers, which expos
 
 **Correct: B**
 
-**Why:** Delta Sharing is an open protocol for sharing live data without copies. Receivers don't need Databricks - they can use any client implementing the protocol (including Snowflake's `CREATE EXTERNAL TABLE` for Delta).
+**Why:** Delta Sharing is an open protocol for sharing live data without copies. Receivers don't need Databricks - they can use any client implementing the protocol (including Iceberg clients such as Snowflake, which can read shared data with the provider's credential file).
+
+**Key Concept:** [Read data shared using Delta Sharing open sharing](https://docs.databricks.com/aws/en/delta-sharing/read-data-open)
 </details>
 
 ---

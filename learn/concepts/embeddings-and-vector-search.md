@@ -85,7 +85,7 @@ That's what a **vector database** does. It indexes vectors so you can ask "find 
 | **Dedicated vector DBs** | Pinecone, Weaviate, Qdrant, Milvus |
 | **General DBs with vector support** | PostgreSQL (pgvector), Elasticsearch, MongoDB Atlas, Redis |
 | **In-process libraries** | FAISS, Annoy, hnswlib |
-| **Cloud services** | AWS OpenSearch, Azure AI Search, Vertex AI Vector Search |
+| **Cloud services** | AWS OpenSearch, Azure AI Search, Vector Search (formerly Vertex AI Vector Search) |
 
 For small corpora (<1M vectors), pgvector on a Postgres you already have is usually the right answer. Don't reach for a dedicated vector DB until you have a real reason.
 

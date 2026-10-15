@@ -942,7 +942,7 @@ Data Sources                  Ingestion               Storage & Processing
 - **Ingestion**: Pub/Sub, Transfer Service, Dataflow, Datastream
 - **Storage**: Cloud Storage (multi-regional for HA, regional for cost)
 - **Processing**: Dataflow (Apache Beam), Dataproc (Hadoop/Spark)
-- **Analytics**: BigQuery, Vertex AI for ML
+- **Analytics**: BigQuery, Agent Platform (formerly Vertex AI) for ML
 - **Governance**: Data Catalog, DLP API, Cloud Data Loss Prevention
 
 **Storage Class Strategy**:
@@ -1130,7 +1130,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 | **CDN** | Cloud CDN | Integrated with LB, cache invalidation | External CDN (integration complexity) |
 | **Load Balancer** | Global HTTP(S) LB | Multi-region, auto-failover, Cloud Armor integration | Regional LB (no global routing) |
 | **Analytics** | BigQuery | Serverless, petabyte scale, ML integration | Dataproc (operational overhead) |
-| **ML** | Vertex AI | Managed ML, AutoML, feature store | Self-hosted (complexity, cost) |
+| **ML** | Agent Platform | Managed ML, AutoML, feature store | Self-hosted (complexity, cost) |
 | **Message Queue** | Pub/Sub | Global availability, at-least-once delivery | Cloud Tasks (not pub-sub model) |
 
 **Security Implementation**:
@@ -1167,7 +1167,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Memorystore Redis (2 instances, 100GB each): $20K
 - Cloud Load Balancing + CDN: $40K
 - Cloud Storage + Firestore: $30K
-- BigQuery + Vertex AI: $60K
+- BigQuery + Agent Platform: $60K
 - Networking (Interconnect, egress): $50K
 - **Total: $480K/month** (within $500K budget)
 
@@ -1186,7 +1186,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Read replicas for read-heavy queries (product catalog)
 - Database query optimization (indexes, denormalization)
 - API response caching (Cloud CDN, API Gateway cache)
-- Vertex AI recommendations precomputed and cached
+- Agent Platform recommendations precomputed and cached
 
 **Monitoring and Observability**:
 - Cloud Monitoring dashboards for key metrics (latency, errors, traffic)
@@ -1294,7 +1294,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 | **Order Book Cache** | Memorystore Redis | Sub-millisecond reads, in-memory performance |
 | **Market Data** | Cloud Bigtable | High-throughput writes (1M/s), time-series data |
 | **Event Stream** | Pub/Sub | Reliable event delivery, integrates with Dataflow |
-| **Fraud Detection** | Vertex AI + Dataflow | Real-time ML inference, streaming processing |
+| **Fraud Detection** | Agent Platform + Dataflow | Real-time ML inference, streaming processing |
 
 **Performance Optimization**:
 1. **Network Latency**:
@@ -1547,7 +1547,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 | **Historical Analytics** | BigQuery | Serverless, partitioned tables, ML integration |
 | **Archival** | Cloud Storage Coldline | Cost-effective long-term storage |
 | **Mobile App** | Firebase | Real-time sync, offline capability, authentication |
-| **Predictive ML** | Vertex AI | AutoML, model training and deployment |
+| **Predictive ML** | Agent Platform | AutoML, model training and deployment |
 
 **Data Flow**:
 1. Devices send telemetry → IoT Core (MQTT)
@@ -1578,7 +1578,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Bigtable (3 nodes with autoscaling): $10K
 - BigQuery (10TB/month data, 50TB scanned): $10K
 - Cloud Storage (100TB Coldline): $3K
-- Vertex AI (model training/inference): $2K
+- Agent Platform (model training/inference): $2K
 
 **Exam Tips**:
 - IoT at scale → IoT Core + Pub/Sub + Dataflow
@@ -1670,7 +1670,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 | **User Database** | Cloud Spanner | Global consistency, horizontal scale, multi-region |
 | **Caching** | Memorystore Redis | Sub-ms latency, session management, API caching |
 | **DRM** | Widevine/PlayReady | Content protection, license management |
-| **Recommendations** | Vertex AI | ML-based personalization, real-time inference |
+| **Recommendations** | Agent Platform | ML-based personalization, real-time inference |
 | **Analytics** | BigQuery | View tracking, user behavior analysis, real-time dashboards |
 
 **Content Delivery Optimization**:
@@ -1717,7 +1717,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Cloud Spanner (100 processing units): $10K
 - Cloud Run (API backends): $20K
 - Memorystore Redis (100GB): $10K
-- BigQuery + Vertex AI: $20K
+- BigQuery + Agent Platform: $20K
 - DRM licensing and other: $30K
 
 **Scalability**:
@@ -1818,7 +1818,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 | **Matchmaking** | Cloud Run | Serverless, autoscaling, REST APIs |
 | **Load Balancing** | Global HTTP(S) LB | Proximity routing, WebSocket support |
 | **Real-time Events** | Pub/Sub | Event streaming, fanout to multiple consumers |
-| **Anti-cheat** | Vertex AI | ML-based anomaly detection, real-time inference |
+| **Anti-cheat** | Agent Platform | ML-based anomaly detection, real-time inference |
 | **Leaderboards** | Bigtable | High read/write throughput, time-series data |
 
 **Game Server Design**:
@@ -1850,7 +1850,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Caching top 100 players in Memorystore
 
 **Anti-Cheat**:
-- Vertex AI model trained on player behavior patterns
+- Agent Platform model trained on player behavior patterns
 - Real-time inference on match events
 - Anomaly detection (impossible movements, aim bot detection)
 - Automatic flagging for review
@@ -1861,7 +1861,7 @@ Real-time Sources          Stream Processing        Storage & Analytics
 - Cloud Spanner (500 processing units): $50K
 - Bigtable (leaderboards): $5K
 - Cloud Load Balancing: $10K
-- Other services (Pub/Sub, BigQuery, Vertex AI): $15K
+- Other services (Pub/Sub, BigQuery, Agent Platform): $15K
 
 **Exam Tips**:
 - Real-time gaming → GKE with Agones, Memorystore for state
@@ -2117,7 +2117,7 @@ BigQuery (job complete) → Eventarc → Cloud Function (send notification)
 | **Load balancing** | Cloud Load Balancing | Global, regional, internal options |
 | **Hybrid/Multi-cloud** | Anthos | Kubernetes everywhere, consistent management |
 | **IoT** | IoT Core | Device management, MQTT, auto Pub/Sub integration |
-| **ML/AI** | Vertex AI | Managed ML, AutoML, model deployment |
+| **ML/AI** | Agent Platform | Managed ML, AutoML, model deployment |
 | **DLP** | DLP API | PII detection, de-identification, redaction |
 
 ### Practice Resources

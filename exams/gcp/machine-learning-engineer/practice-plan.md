@@ -2,7 +2,7 @@
 
 ## 12-Week Intensive Study Schedule
 
-### Phase 1: ML Fundamentals and Vertex AI (Weeks 1-4)
+### Phase 1: ML Fundamentals and Agent Platform (Weeks 1-4)
 
 #### Week 1: Machine Learning Foundations
 **Focus:** Core ML concepts and GCP ML ecosystem overview
@@ -15,11 +15,11 @@
 - [ ] **Reading:** ML fundamentals and algorithms
 
 #### Day 3-4: GCP ML Platform Overview
-- [ ] Set up GCP account and Vertex AI environment
+- [ ] Set up GCP account and Agent Platform (formerly Vertex AI) environment
 - [ ] Install gcloud CLI and ML tools
-- [ ] Study Vertex AI platform components
+- [ ] Study Agent Platform platform components
 - [ ] Explore AI Platform Notebooks
-- [ ] **Lab:** Navigate Vertex AI console
+- [ ] **Lab:** Navigate Agent Platform console
 
 #### Day 5-7: Model Development Basics
 - [ ] Study ML development lifecycle
@@ -61,10 +61,10 @@
 - [ ] Compare AutoML vs custom models
 - [ ] Create model selection guide
 
-### Week 3: Vertex AI Custom Training
+### Week 3: Agent Platform Managed Training (custom training)
 
 #### Day 1-2: Custom Training Basics
-- [ ] Study Vertex AI Training architecture
+- [ ] Study Agent Platform Managed Training architecture
 - [ ] Learn container-based training
 - [ ] Understand prebuilt containers
 - [ ] Practice with training jobs
@@ -105,7 +105,7 @@
 - [ ] Practice with audio/translation tasks
 - [ ] **Practice:** Integrate speech and translation
 
-#### Day 5-7: Vertex AI Prediction Service
+#### Day 5-7: Agent Platform Inference Service
 - [ ] Study model deployment options
 - [ ] Learn online and batch prediction
 - [ ] Understand endpoint management
@@ -119,11 +119,11 @@
 
 ### Phase 2: MLOps and Production ML (Weeks 5-8)
 
-#### Week 5: Vertex AI Pipelines
+#### Week 5: Agent Platform Pipelines
 
 #### Day 1-2: Pipeline Fundamentals
 - [ ] Study Kubeflow Pipelines basics
-- [ ] Learn Vertex AI Pipelines architecture
+- [ ] Learn Agent Platform Pipelines architecture
 - [ ] Understand pipeline components
 - [ ] Practice with pipeline creation
 - [ ] **Lab:** Build first ML pipeline
@@ -149,7 +149,7 @@
 
 ### Week 6: Feature Store and Data Management
 
-#### Day 1-2: Vertex AI Feature Store
+#### Day 1-2: Agent Platform Feature Store
 - [ ] Study Feature Store architecture
 - [ ] Learn feature engineering workflows
 - [ ] Understand feature serving
@@ -185,7 +185,7 @@
 - [ ] **Lab:** Configure model monitoring
 
 #### Day 3-4: Model Registry and Versioning
-- [ ] Study Vertex AI Model Registry
+- [ ] Study Agent Platform Model Registry
 - [ ] Learn model versioning strategies
 - [ ] Understand A/B testing approaches
 - [ ] Practice with model management
@@ -245,7 +245,7 @@
 #### Day 3-5: Implementation
 - [ ] Prepare and augment image dataset
 - [ ] Train custom vision model
-- [ ] Deploy model with Vertex AI
+- [ ] Deploy model with Agent Platform
 - [ ] Implement monitoring
 - [ ] **Build:** Complete CV pipeline
 
@@ -305,7 +305,7 @@
 ### Phase 4: Exam Preparation (Week 12)
 
 #### Day 1-2: Comprehensive Review
-- [ ] Review all Vertex AI services
+- [ ] Review all Agent Platform services
 - [ ] Study ML best practices
 - [ ] Review MLOps patterns
 - [ ] Practice scenarios

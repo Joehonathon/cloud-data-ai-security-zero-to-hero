@@ -164,6 +164,8 @@ D. Kubelet stops responding immediately
 **Correct: A**
 
 **Why:** A node that becomes unreachable gets a taint, and pods carry a default toleration of 300 seconds for it, so eviction starts after 5 minutes. Older clusters used the `--pod-eviction-timeout` flag of kube-controller-manager (default 5m) for the same delay. This avoids unnecessary churn from transient network blips. Tune it with `tolerationSeconds` on the pod.
+
+**Key Concept:** [Taint based evictions](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)
 </details>
 
 ---
@@ -205,9 +207,9 @@ D. `kubectl top pods -n default --sort-by=cpu`
 ---
 
 ### Question 12
-**Scenario:** A NetworkPolicy is created with `policyTypes: [Ingress]` and an empty ingress rule. What's the effect on selected pods?
+**Scenario:** A NetworkPolicy is created with `policyTypes: [Ingress]` and no ingress rules at all (the `ingress` list is empty or omitted). What's the effect on selected pods?
 
-A. No change, because a policy with an empty ingress rule is ignored unless at least one allow rule is also present
+A. No change, because a policy with no ingress rules is ignored unless at least one allow rule is also present
 B. Egress also blocked
 C. All ingress allowed to the selected pods, from every source
 D. All ingress blocked to the selected pods
@@ -217,7 +219,9 @@ D. All ingress blocked to the selected pods
 
 **Correct: D**
 
-**Why:** A NetworkPolicy that selects pods and has an empty `ingress: []` (or no ingress block but `policyTypes: [Ingress]`) means **all ingress is denied**. To allow some, add specific `ingress` rules.
+**Why:** A NetworkPolicy that selects pods and has an empty `ingress: []` (or no ingress block but `policyTypes: [Ingress]`) means **all ingress is denied** (except from the pod's own node). A single empty rule, `ingress: [{}]`, is the opposite and allows all. To allow some, add specific `ingress` rules.
+
+**Key Concept:** [Network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 </details>
 
 ---
@@ -451,7 +455,7 @@ D. A LimitRange for default requests and limits, plus a ResourceQuota that caps 
 
 **Correct: D**
 
-**Why:** LimitRange enforces per-pod / per-container defaults and constraints (default requests / limits, max / min). ResourceQuota enforces aggregate namespace limits. Together they ensure every pod has resource specs. NetworkPolicy is networking. PSP is deprecated (replaced by Pod Security Admission). ClusterRole is RBAC.
+**Why:** LimitRange enforces per-pod / per-container defaults and constraints (default requests / limits, max / min). ResourceQuota enforces aggregate namespace limits. Together they ensure every pod has resource specs. NetworkPolicy is networking. PSP was removed in v1.25 (replaced by Pod Security Admission). ClusterRole is RBAC.
 </details>
 
 ---

@@ -86,7 +86,7 @@ Goal: deploy on Bedrock and Vertex, then wrap the deployment in governance contr
 - [ ] Read `notes/07-enterprise-deployment-bedrock-vertex.md`
 - [ ] Read `notes/08-governance-safety-and-risk-management.md`
 - [ ] Deploy the same agent via Amazon Bedrock. Handle IAM auth, regional model IDs.
-- [ ] Deploy the same agent via Google Vertex AI. Handle service account auth, publisher model IDs.
+- [ ] Deploy the same agent via Google Agent Platform (formerly Vertex AI). Handle service account auth, publisher model IDs.
 - [ ] Enable PrivateLink (Bedrock) or VPC Service Controls (Vertex) and confirm no public egress.
 - [ ] Document a zero-data-retention (ZDR) request flow if your workload requires it.
 - [ ] Run a small red-team suite (jailbreaks, prompt injections, PII leaks). Document failures and mitigations.

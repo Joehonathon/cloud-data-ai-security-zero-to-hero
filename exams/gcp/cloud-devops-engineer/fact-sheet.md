@@ -411,7 +411,7 @@ last-updated: 2026-05-03
 - **[📖 BigQuery](https://cloud.google.com/bigquery/docs)** - Serverless data warehouse for analytics
 
 ### Machine Learning Operations (MLOps)
-- **[📖 Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - Unified ML platform for training and deployment
+- **[📖 Agent Platform (formerly Vertex AI)](https://docs.cloud.google.com/gemini-enterprise-agent-platform)** - Unified ML platform for training and deployment
 - **[📖 ML Pipelines](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)** - Orchestrate ML workflows
 - **[📖 Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)** - Detect skew and drift in ML models
 - **[📖 Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/overview)** - Centralized repository for ML features

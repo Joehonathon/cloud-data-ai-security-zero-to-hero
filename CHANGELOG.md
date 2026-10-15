@@ -6,6 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-14] (5) - Flagged keys checked against vendor docs; Vertex AI renamed
+
+### Fixed
+
+- About 70 practice-question keys flagged as stale or wrong were checked against official vendor documentation. 18 keys or questions were corrected (for example AWS Lambda timeout, AWS Patch Manager rollback, Cloud Run's 8 vCPU job limit, Azure Blueprints and classic CDN retirement, Hyperopt, Copilot Knowledge Bases), others were confirmed or reworded to remove ambiguity. Outcome and sources: [docs/practice-question-key-review.md](./docs/practice-question-key-review.md).
+- Google renamed Vertex AI to the Gemini Enterprise Agent Platform (2026-04-22) and its current exam guides use the new names. About 480 mentions across the GCP exam folders, resources, topics and practice banks now use Google's names from its 56-row rename table, with "(formerly Vertex AI)" on the first mention in each file. Names the table does not list were left unchanged. Glossary entry updated.
+
 ## [2026-10-14] (4) - Practice questions: length tell removed, distractors reviewed
 
 After the answer letters were balanced, the correct option was still the longest of the four in 88% of questions (2,651 of 3,015). A first rewrite pass removed that but overshot: the correct option became the shortest in 38% of questions overall, and in 80% or more in about 20 banks. A second pass assigned each question a target length rank (shortest / second / third / longest, balanced to 25% each) and checked it with a script.

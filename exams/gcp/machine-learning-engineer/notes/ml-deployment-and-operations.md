@@ -6,7 +6,7 @@ Model deployment, serving, monitoring, MLOps practices, and production ML system
 
 ## Model Deployment
 
-### Vertex AI Endpoints
+### Agent Platform Endpoints
 
 **Online Prediction Deployment**:
 ```python
@@ -506,7 +506,7 @@ deployed_model_config = {
 
 ## Model Monitoring
 
-### Vertex AI Model Monitoring
+### Model Monitoring on Agent Platform
 
 **Training-Serving Skew Detection**:
 ```python
@@ -898,7 +898,7 @@ def create_monitoring_dashboard():
 
 ## MLOps Pipelines
 
-### Vertex AI Pipelines with Kubeflow
+### Agent Platform Pipelines with Kubeflow
 
 **Complete End-to-End Pipeline**:
 ```python
@@ -1553,7 +1553,7 @@ def retrain_on_event(event, context):
 
 ## Model Registry and Versioning
 
-### Vertex AI Model Registry
+### Agent Platform Model Registry
 
 **Model Versioning and Metadata**:
 ```python
@@ -3083,7 +3083,7 @@ replicas = ceil(current_metric / target_metric × current_replicas)
 - [ ] Implement explanation monitoring
 
 ### MLOps
-- [ ] Automate training pipelines (Vertex AI Pipelines)
+- [ ] Automate training pipelines (Agent Platform Pipelines (formerly Vertex AI Pipelines))
 - [ ] Version datasets and features
 - [ ] Implement CI/CD with Cloud Build
 - [ ] Use Feature Store for consistency
@@ -3105,7 +3105,7 @@ replicas = ceil(current_metric / target_metric × current_replicas)
 ## Study Tips for Professional ML Engineer
 
 1. **Hands-On Practice**:
-   - Deploy at least 3 models to Vertex AI endpoints
+   - Deploy at least 3 models to Agent Platform endpoints
    - Configure monitoring and drift detection
    - Build end-to-end Kubeflow pipeline
    - Implement A/B testing with traffic splitting
@@ -3131,9 +3131,9 @@ replicas = ceil(current_metric / target_metric × current_replicas)
 
 ## Additional Resources
 
-- [Vertex AI Prediction Documentation](https://cloud.google.com/vertex-ai/docs/predictions/overview)
+- [Agent Platform Inference Documentation](https://cloud.google.com/vertex-ai/docs/predictions/overview)
 - [Model Monitoring Guide](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)
-- [Vertex AI Pipelines Documentation](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)
+- [Agent Platform Pipelines Documentation](https://cloud.google.com/vertex-ai/docs/pipelines/introduction)
 - [MLOps: Continuous delivery and automation pipelines](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning)
 - [Kubeflow Pipelines SDK](https://www.kubeflow.org/docs/components/pipelines/)
 - [Vertex AI Explainable AI](https://cloud.google.com/vertex-ai/docs/explainable-ai/overview)

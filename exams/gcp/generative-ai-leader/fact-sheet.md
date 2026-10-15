@@ -65,12 +65,12 @@ The exam guide organizes content into four areas.
 ### 2. Google Cloud's generative AI offerings
 
 **Key Concepts:**
-- **Vertex AI** as the platform: Model Garden, Vertex AI Studio, training, deployment, evaluation
+- **Agent Platform (formerly Vertex AI)** as the platform: Model Garden, Agent Studio, training, deployment, evaluation
 - **Gemini** model family and its multimodal capability
 - **Gemma** open models
 - **Imagen** for image generation, **Veo** for video, **Chirp** for speech
-- **Vertex AI Agent Builder** and conversational agents
-- **Vertex AI Search** for grounded enterprise search
+- **Agent Builder on Agent Platform** and conversational agents
+- **Agent Search** for grounded enterprise search
 - **Gemini for Google Workspace** and **Gemini for Google Cloud** as applied assistants
 - **NotebookLM** for grounded research over your own sources
 - **BigQuery ML** and generative AI functions in the data warehouse
@@ -114,9 +114,9 @@ The framing the exam applies repeatedly.
 | Option | Example | Effort | Fits |
 |---|---|---|---|
 | **Use an applied assistant** | Gemini for Workspace, Gemini for Google Cloud | Lowest | Productivity gains with no build |
-| **Use a pre-built API or app** | Vertex AI Search, Conversational Agents, NotebookLM | Low | A common capability, configured not coded |
-| **Build on the platform** | Vertex AI with Gemini, grounding, function calling | Medium | A differentiated experience |
-| **Customize a model** | Fine-tuning on Vertex AI | High | Consistent specialized behavior at scale |
+| **Use a pre-built API or app** | Agent Search, Conversational Agents, NotebookLM | Low | A common capability, configured not coded |
+| **Build on the platform** | Agent Platform with Gemini, grounding, function calling | Medium | A differentiated experience |
+| **Customize a model** | Fine-tuning on Agent Platform | High | Consistent specialized behavior at scale |
 | **Train from scratch** | Custom foundation model | Very high | Effectively never |
 
 Answers that jump straight to fine-tuning or a custom model, when a lower rung would do, are usually wrong.

@@ -82,13 +82,13 @@ A retailer needs to track historical changes to customer addresses. Queries shou
 
 A team trains models that need consistent features computed in both batch (training) and streaming (inference). Feature drift between training and serving caused recent quality issues.
 
-**Options:** A. Vertex AI Feature Store with online + offline stores. B. Two separate pipelines for batch and streaming. C. Compute features on the fly during inference. D. Cache features in Memorystore manually.
+**Options:** A. Agent Platform Feature Store (formerly Vertex AI Feature Store) with online + offline stores. B. Two separate pipelines for batch and streaming. C. Compute features on the fly during inference. D. Cache features in Memorystore manually.
 
-**Analysis:** A is right - Vertex AI Feature Store solves training-serving skew with shared feature definitions, offline store for training, online store for low-latency inference. B is the problem (drift). C is unscalable. D reinvents Feature Store.
+**Analysis:** A is right - Agent Platform Feature Store solves training-serving skew with shared feature definitions, offline store for training, online store for low-latency inference. B is the problem (drift). C is unscalable. D reinvents Feature Store.
 
 **Answer:** A
 
-**Key takeaway:** Feature consistency across train/serve = Vertex AI Feature Store (or BigQuery + Bigtable as a homemade variant). Avoid two pipelines for the same feature.
+**Key takeaway:** Feature consistency across train/serve = Agent Platform Feature Store (or BigQuery + Bigtable as a homemade variant). Avoid two pipelines for the same feature.
 
 ---
 

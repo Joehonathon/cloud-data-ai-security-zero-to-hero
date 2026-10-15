@@ -203,7 +203,7 @@ D. DynamoDB doesn't support item-level access logging; use a different database 
 </details>
 
 ### Question 11
-**Scenario:** You need to monitor for changes to security-critical resources (security groups, NACLs, IAM policies) across all accounts and receive alerts within 1 minute of changes occurring. Changes should be automatically reverted if they violate security policies. Which solution provides this?
+**Scenario:** You need to monitor for changes to security-critical resources (security groups, NACLs, IAM policies) across all accounts and receive alerts promptly when changes occur. Changes should be automatically reverted if they violate security policies. Which solution provides this?
 
 A. CloudTrail log files in S3 scanned by a Lambda that reverts violating changes
 B. AWS Config rules with automatic remediation using SSM Automation documents across accounts
@@ -215,7 +215,7 @@ D. Security Hub with automated response playbooks
 
 **Correct: B**
 
-**Why:** AWS Config provides near real-time configuration change detection (typically within minutes), managed and custom rules for evaluation, and automatic remediation via SSM Automation documents. This covers security groups, NACLs, and IAM policies natively. CloudTrail/Lambda (A) requires custom development, and waiting on CloudTrail log delivery to S3 would miss the 1-minute target. GuardDuty (C) detects threats, not general config changes. Security Hub (D) aggregates but doesn't provide config-level remediation.
+**Why:** AWS Config records configuration changes and evaluates rules when a resource changes. Managed and custom rules flag violations, and automatic remediation runs SSM Automation documents. This covers security groups, NACLs, and IAM policies natively, and an aggregator or conformance packs extend it across accounts. CloudTrail/Lambda (A) requires custom development, and log files in S3 arrive with a delay. GuardDuty (C) detects threats, not general config changes. Security Hub (D) aggregates findings but does not provide config-level remediation.
 
 **Key Concept:** [AWS Config Auto Remediation](https://docs.aws.amazon.com/config/latest/developerguide/remediation.html)
 </details>
@@ -709,17 +709,17 @@ D. Create custom AWS Config rules for each control
 
 A. Store root account credentials in a sealed envelope
 B. Create a break glass IAM role with a 4-hour session duration, require MFA to assume it, and enable CloudTrail logging of all its activity
-C. Use AWS IAM Identity Center with an emergency access permission set, time-bound, requiring MFA and manager approval
+C. Use IAM Identity Center with a permission set that opens only after a manager approves each request, and remove the assignment by hand afterwards
 D. Provide production credentials to on-call engineers
 
 <details>
 <summary>Answer</summary>
 
-**Correct: C**
+**Correct: B**
 
-**Why:** IAM Identity Center supports emergency access patterns with permission sets that can be assigned on-demand. Configure with short session duration (4 hours), require MFA, and integrate with an approval workflow (even if expedited). All access is logged via CloudTrail. The permission set can be revoked manually or automatically. Option B doesn't include approval workflow. Root credentials (A) are too powerful. Sharing credentials (D) violates security best practices.
+**Why:** A dedicated break glass IAM role can be assumed without an approval step, MFA protects it, the session ends at the 4-hour maximum session duration, and CloudTrail records every call (add an alarm on its use). Root credentials in an envelope are too powerful and do not expire. A manager approval step conflicts with bypassing approval, and manual removal is not automatic revocation (C). Sharing production credentials (D) is unsafe.
 
-**Key Concept:** [IAM Identity Center Emergency Access](https://docs.aws.amazon.com/singlesignon/latest/userguide/emergency-access.html)
+**Key Concept:** [Implement break-glass procedures](https://docs.aws.amazon.com/wellarchitected/latest/devops-guidance/ag.sad.5-implement-break-glass-procedures.html)
 </details>
 
 ### Question 39

@@ -92,7 +92,7 @@ D. Impossible; deleted users cannot be recovered after a few days
 **Scenario:** A departing employee's data must stay under Vault retention and no one will sign in again. The company wants to stop paying a full license.
 
 A. Suspend the user, which blocks sign-in and releases the license while data stays in Vault
-B. Delete the user and later restore it from the Admin console whenever Vault data is needed
+B. Delete the user, since Vault keeps deleted users' data for the length of the retention rule
 C. Move the user to an Archived User license
 D. Remove the license and keep the account, so Vault can no longer retain the data
 
@@ -101,7 +101,7 @@ D. Remove the license and keep the account, so Vault can no longer retain the da
 
 **Correct: C**
 
-**Why:** A suspended user still consumes a license. Archived User keeps data for Vault at a lower cost.
+**Why:** A suspended user is billed like an active one. Deleting a user removes data held or retained by Vault, and recovery lasts only 20 days. Archived User keeps data under Vault retention at a lower cost.
 </details>
 
 ---

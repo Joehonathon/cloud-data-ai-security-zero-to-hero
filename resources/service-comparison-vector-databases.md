@@ -165,13 +165,13 @@ Google's managed ANN service, formerly Matching Engine, built on the ScaNN algor
 - **Hosting**: managed GCP only.
 - **Indexing**: ScaNN, with tree-based partitioning - excellent recall/latency curve at scale.
 - **Filtering**: numeric filters, namespaces.
-- **Integrations**: Vertex AI for embeddings, BigQuery, Document AI.
+- **Integrations**: Agent Platform (formerly Vertex AI) for embeddings, BigQuery, Document AI.
 
 **Pick Vertex Vector Search when:** you're on GCP, especially with BigQuery-resident data, and you want ScaNN's scale.
 
 **Skip Vertex Vector Search when:** you want hybrid search with rich BM25 (use AI Search or OpenSearch instead) or are not on GCP.
 
-**[📖 Vertex AI Vector Search documentation](https://cloud.google.com/vertex-ai/docs/vector-search/overview)** - ScaNN, deployment
+**[📖 Vector Search documentation](https://cloud.google.com/vertex-ai/docs/vector-search/overview)** - ScaNN, deployment
 
 ---
 

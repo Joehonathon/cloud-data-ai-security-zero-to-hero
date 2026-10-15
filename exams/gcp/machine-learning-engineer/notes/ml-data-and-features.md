@@ -2,7 +2,7 @@
 
 ## Overview
 
-Comprehensive guide to data preparation, feature engineering, TensorFlow Transform, Vertex AI Feature Store, data validation, and ML data pipelines for the Professional Machine Learning Engineer exam.
+Comprehensive guide to data preparation, feature engineering, TensorFlow Transform, Agent Platform Feature Store (formerly Vertex AI Feature Store), data validation, and ML data pipelines for the Professional Machine Learning Engineer exam.
 
 **Exam Weight**: Data preparation and feature engineering account for approximately 25-30% of the exam questions.
 
@@ -10,7 +10,7 @@ Comprehensive guide to data preparation, feature engineering, TensorFlow Transfo
 - Data profiling, cleaning, and preparation
 - Feature engineering and transformation techniques
 - TensorFlow Transform (TFT) for preprocessing
-- Vertex AI Feature Store architecture and usage
+- Agent Platform Feature Store architecture and usage
 - TensorFlow Data Validation (TFDV)
 - BigQuery ML feature engineering
 - Data pipeline design patterns
@@ -1405,7 +1405,7 @@ selected_features = selector.get_selected_features()
 X_train_selected = selector.transform(X_train)
 ```
 
-### Vertex AI Feature Store
+### Agent Platform Feature Store
 
 **Architecture and Concepts**:
 - **Featurestore**: Container for all features
@@ -1644,7 +1644,7 @@ git checkout v1.0
 dvc pull
 ```
 
-### Dataset Versioning in Vertex AI
+### Dataset Versioning in Agent Platform
 ```python
 # Create versioned dataset
 dataset_v1 = aiplatform.TabularDataset.create(

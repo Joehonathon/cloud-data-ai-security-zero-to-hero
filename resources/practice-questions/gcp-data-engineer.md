@@ -38,7 +38,7 @@ D. Direct writes from the sensors to BigQuery using the streaming API, with anom
 ### Question 2
 **Scenario:** A retail company has historical sales data in BigQuery and needs to forecast future sales. They have data scientists who prefer SQL and don't want to manage ML infrastructure. What should they use?
 
-A. Vertex AI AutoML forecasting, which is managed but is driven from the console or Python SDK rather than SQL
+A. Agent Platform AutoML (formerly Vertex AI AutoML) forecasting, which is managed but is driven from the console or Python SDK rather than SQL
 B. Custom ML model on Compute Engine using scikit-learn, which gives full control but requires managing VMs, environments, and serving
 C. An external ML platform fed by an export job
 D. BigQuery ML with time series forecasting (ARIMA_PLUS), all in SQL
@@ -131,7 +131,7 @@ D. Cloud Bigtable with a symbol#timestamp row key design, which gives single-dig
 A. Cloud SQL with a read replica and an in-memory cache in front, which improves read latency but cannot absorb the update rate or scale out
 B. A batch ML model retrained daily and loaded into the serving layer overnight, which cannot reflect interactions within seconds
 C. BigQuery for real-time queries over the interaction table, which scales for analytics but has latency well over 100 ms per query
-D. Recommendations API backed by Vertex AI Feature Store, Bigtable for feature serving, and streaming updates via Dataflow
+D. Recommendations API backed by Agent Platform Feature Store, Bigtable for feature serving, and streaming updates via Dataflow
 
 <details>
 <summary>Answer</summary>
@@ -144,19 +144,19 @@ D. Recommendations API backed by Vertex AI Feature Store, Bigtable for feature s
 </details>
 
 ### Question 8
-**Scenario:** A company has data in multiple sources: MySQL databases, Salesforce, and CSV files in Cloud Storage. They need a unified view for analytics without maintaining complex ETL pipelines. What should they implement?
+**Scenario:** A company has data in multiple sources: Cloud SQL for MySQL databases, Spanner, and CSV files in Cloud Storage. They need a unified view for analytics without maintaining complex ETL pipelines. What should they implement?
 
 A. Use views in each source system, which expose data separately
 B. Build custom ETL scripts for each source on a schedule
 C. Copy all data to BigQuery with scheduled export jobs for each source, which duplicates data and needs ongoing pipeline maintenance
-D. BigQuery federated queries with external data sources and Cloud Data Fusion for complex transformations
+D. BigQuery federated queries for the databases, external tables for the CSV files, and Data Fusion for transformations
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** BigQuery federated queries access external sources (Cloud SQL, Cloud Storage) without data movement. BigLake extends this to more sources. Cloud Data Fusion provides visual ETL for complex transformations when needed. Unified analytics without full data replication. Copying everything (C) duplicates data. Custom scripts (B) require maintenance. Source views (A) don't unify.
+**Why:** BigQuery federated queries (EXTERNAL_QUERY) read Cloud SQL, Spanner and AlloyDB without data movement, and external tables query files in Cloud Storage. Cloud Data Fusion provides visual ETL for complex transformations when needed. Unified analytics without full data replication. Copying everything (C) duplicates data. Custom scripts (B) require maintenance. Source views (A) don't unify.
 
 **Key Concept:** [BigQuery Federated Queries](https://cloud.google.com/bigquery/docs/federated-queries-intro)
 </details>
@@ -166,7 +166,7 @@ D. BigQuery federated queries with external data sources and Cloud Data Fusion f
 
 A. No special requirements, since Google Cloud services are already certified for HIPAA and nothing extra needs to be configured by the customer
 B. Default settings, which encrypt data with Google-managed keys but give no perimeter controls, customer key control, or lineage
-C. CMEK for encryption, VPC Service Controls for perimeter security, Cloud Audit Logs, and Data Catalog for lineage
+C. CMEK for encryption, VPC Service Controls for perimeter security, Cloud Audit Logs, and Dataplex data lineage
 D. Self-managed encryption keys held in an on-premises HSM and added to each pipeline in code, which is complex and does not give lineage or perimeter security
 
 <details>
@@ -174,7 +174,7 @@ D. Self-managed encryption keys held in an on-premises HSM and added to each pip
 
 **Correct: C**
 
-**Why:** CMEK provides customer-controlled encryption keys. VPC Service Controls create security perimeters preventing data exfiltration. Cloud Audit Logs track all data access for compliance auditing. Data Catalog provides data lineage and governance. Default settings (B) may not meet HIPAA requirements. Self-managed (D) is complex.
+**Why:** CMEK provides customer-controlled encryption keys. VPC Service Controls create security perimeters preventing data exfiltration. Cloud Audit Logs track all data access for compliance auditing. Dataplex Universal Catalog (now called Knowledge Catalog) provides data lineage. Default settings (B) may not meet HIPAA requirements. Self-managed (D) is complex.
 
 **Key Concept:** [Data Governance](https://cloud.google.com/learn/what-is-data-governance)
 </details>
@@ -328,7 +328,7 @@ D. Ignore late data and let the next day's batch job correct the totals, which l
 </details>
 
 ### Question 18
-**Scenario:** A company wants to enrich streaming data with reference data. The reference data is 50GB and updates daily. Enrichment should not slow down the streaming pipeline. What approach should they use?
+**Scenario:** A company wants to enrich streaming data with reference data. The reference data is 500 MB and updates daily. Enrichment should not slow down the streaming pipeline. What approach should they use?
 
 A. Side inputs in Dataflow with periodically refreshed reference data, loaded once per worker instead of queried per event
 B. Join streams in memory by buffering the two inputs in worker state
@@ -340,9 +340,9 @@ D. Query BigQuery for each record as it arrives, which adds latency and cost per
 
 **Correct: A**
 
-**Why:** Side inputs load reference data into memory for fast lookup during stream processing. Periodically refreshed side inputs update the data (e.g., daily) without pipeline restart. No per-record queries needed. BigQuery per-record (D) is slow and expensive. Memory join (B) may not fit 50GB. Batch enrichment (C) isn't real-time.
+**Why:** Side inputs load reference data into memory for fast lookup during stream processing. Periodically refreshed side inputs update the data (e.g., daily) without pipeline restart. No per-record queries needed. BigQuery per-record (D) is slow and expensive. Buffering both streams in worker state (B) grows without bound. Beam advises that a side input should fit into memory. Batch enrichment (C) isn't real-time.
 
-**Key Concept:** [Side Inputs](https://beam.apache.org/documentation/programming-guide/#side-inputs)
+**Key Concept:** [Side input patterns](https://beam.apache.org/documentation/patterns/side-inputs/)
 </details>
 
 ### Question 19
@@ -480,7 +480,7 @@ D. BigQuery with recursive queries for simple graphs, or JanusGraph on Bigtable 
 
 A. Spreadsheet tracking of datasets by owner and sensitivity, which cannot scale or discover new data
 B. README files kept in each repository and bucket, which give no central search or tags
-C. Data Catalog (now part of Dataplex Universal Catalog) with tags and Data Classification, using DLP to discover and label sensitive data across sources
+C. Dataplex Universal Catalog (now called Knowledge Catalog), cataloging BigQuery, Cloud Storage and Pub/Sub, with aspects that mark data as PII or confidential
 D. Custom database for metadata with a web form for entries, which the team must build and host
 
 <details>
@@ -488,9 +488,9 @@ D. Custom database for metadata with a web form for entries, which the team must
 
 **Correct: C**
 
-**Why:** Data Catalog provides a centralized metadata management service. It automatically catalogs BigQuery datasets and supports custom entries for other sources. Tags enable classification (PII, sensitivity levels). Search enables data discovery. Integration with DLP for automatic classification. Spreadsheets (A) don't scale or integrate.
+**Why:** Dataplex Universal Catalog (now called Knowledge Catalog) is the central metadata service. It catalogs BigQuery, Cloud Storage and Pub/Sub resources, and aspects attach classifications such as PII to entries. Search enables discovery. It replaces Data Catalog, which is deprecated. Spreadsheets (A) don't scale or integrate.
 
-**Key Concept:** [Data Catalog](https://docs.cloud.google.com/data-catalog/docs)
+**Key Concept:** [Dataplex Universal Catalog](https://docs.cloud.google.com/dataplex/docs/catalog-overview)
 </details>
 
 ### Question 27
@@ -573,7 +573,7 @@ D. Delete PII columns from the tables, which removes the risk but also removes n
 **Scenario:** A machine learning team needs to share features between multiple ML models. Features should be computed once and served consistently for both training and inference. What should they use?
 
 A. Compute features in each model with its own preprocessing code, which duplicates work and causes training-serving skew
-B. Vertex AI Feature Store for centralized feature storage and serving
+B. Agent Platform Feature Store for centralized feature storage and serving
 C. A shared spreadsheet of feature definitions
 D. Database tables in Cloud SQL for each feature set, which store values but add no versioning or online and offline consistency
 
@@ -610,7 +610,7 @@ D. Pre-built reports only, which limits users to questions someone already antic
 
 A. Code comments in the pipeline source, which give no map of data flow
 B. Ignore lineage and rely on the data owners to answer questions, which does not meet a regulator's request for traceability
-C. Data Catalog and Dataplex lineage tracking with Dataflow integration, showing data flow from source to destination
+C. Dataplex data lineage, with Dataflow publishing lineage to the Data Lineage API, from source to destination
 D. Manual documentation in a wiki with diagrams, which is out of date once a pipeline changes
 
 <details>
@@ -618,9 +618,9 @@ D. Manual documentation in a wiki with diagrams, which is out of date once a pip
 
 **Correct: C**
 
-**Why:** Data Catalog provides lineage visualization showing data flow from source to destination. Dataflow automatically reports lineage to Data Catalog. Dataplex provides additional governance. Visual lineage graphs help with impact analysis and compliance. Manual documentation (D) is error-prone and outdated quickly.
+**Why:** Dataplex data lineage (part of Dataplex Universal Catalog, now called Knowledge Catalog) is a visual map of where data comes from and how it changes. Dataflow, BigQuery and Data Fusion can report lineage once the Data Lineage API is enabled. Visual lineage graphs help with impact analysis and compliance. Manual documentation (D) is error-prone and outdated quickly.
 
-**Key Concept:** [Data Lineage](https://cloud.google.com/data-catalog/docs/concepts/about-data-lineage)
+**Key Concept:** [Data lineage](https://docs.cloud.google.com/dataplex/docs/about-data-lineage)
 </details>
 
 ---
@@ -682,11 +682,11 @@ D. Cloud Build with unit tests, integration tests, and Dataflow Flex Template de
 </details>
 
 ### Question 37
-**Scenario:** A BigQuery dataset contains tables that grow continuously. Old data (> 90 days) is rarely queried and should be moved to lower-cost storage automatically. What should they configure?
+**Scenario:** A BigQuery dataset contains tables that grow continuously. Old data (> 90 days) is rarely queried but must stay queryable in BigQuery, and its storage cost should fall automatically. What should they do?
 
-A. BigQuery table partitioning with partition expiration, or scheduled queries that export partitions older than 90 days to Cloud Storage and then delete them
+A. Partition the table by date and leave old partitions unmodified, so BigQuery bills each at the lower long-term storage rate after 90 days
 B. Manual archival by an engineer who exports old tables each quarter and deletes them
-C. Keep all data in BigQuery at active storage rates, which costs more than needed
+C. Rewrite every old partition into a new table each month, which resets the 90-day clock and keeps the active storage rate
 D. Delete old data after 90 days, which cuts cost but loses data that may be needed later
 
 <details>
@@ -694,9 +694,9 @@ D. Delete old data after 90 days, which cuts cost but loses data that may be nee
 
 **Correct: A**
 
-**Why:** Partitioned tables can have partition expiration - automatically delete partitions older than threshold. Alternatively, scheduled queries export old data to Cloud Storage (cheaper) and delete from BigQuery. Automates lifecycle management. Manual archival (B) is labor-intensive. Deleting (D) may lose needed data. Keeping all (C) is expensive.
+**Why:** If a table or partition is not modified for 90 consecutive days, its storage price drops by 50 percent automatically, with nothing to configure. Each partition is judged on its own. Manual archival (B) is labor-intensive and moves data out of BigQuery. Deleting (D) may lose needed data. Rewriting partitions (C) resets the clock.
 
-**Key Concept:** [Partition Expiration](https://cloud.google.com/bigquery/docs/managing-partitioned-tables#partition-expiration)
+**Key Concept:** [BigQuery cost best practices](https://docs.cloud.google.com/bigquery/docs/best-practices-costs)
 </details>
 
 ### Question 38

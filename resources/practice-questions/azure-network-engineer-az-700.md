@@ -120,7 +120,7 @@ D. ExpressRoute, a private connection between on-premises networks and Azure
 ---
 
 ### Question 7
-**Scenario:** ExpressRoute must carry traffic to Azure PaaS services over the private connection, not the internet.
+**Scenario:** ExpressRoute must carry traffic to Azure PaaS services, such as Azure Storage, through their public endpoints over the private connection, not the internet.
 
 A. A site-to-site VPN gateway running over the public internet to reach those services
 B. Private peering only, with the PaaS services reached through their public endpoints
@@ -132,7 +132,9 @@ D. Microsoft peering, with route filters selecting the service communities
 
 **Correct: D**
 
-**Why:** Private peering reaches VNets. Microsoft peering reaches public Microsoft services such as Azure Storage and Microsoft 365, and a route filter is required to select which BGP communities are advertised. Public peering is the deprecated predecessor to Microsoft peering.
+**Why:** Private peering reaches VNets by private IP address. Microsoft peering reaches Azure PaaS services and Microsoft 365 on public IP addresses, and no routes are advertised until a route filter selects the BGP service communities. Public peering is no longer offered on new circuits. If the PaaS services are reached through private endpoints in a VNet instead, private peering carries that traffic.
+
+**Key Concept:** [ExpressRoute circuits and peering](https://learn.microsoft.com/en-us/azure/expressroute/expressroute-circuit-peerings)
 </details>
 
 ---

@@ -1,8 +1,8 @@
-# Vertex AI Platform Fundamentals
+# Agent Platform Fundamentals
 
-## What is Vertex AI?
+## What is Agent Platform?
 
-Vertex AI is Google Cloud's unified machine learning platform that combines AutoML and AI Platform into a unified API, client library, and user interface, providing tools for every step of the ML workflow.
+Agent Platform (formerly Vertex AI) is Google Cloud's unified machine learning platform that combines AutoML and AI Platform into a unified API, client library, and user interface, providing tools for every step of the ML workflow.
 
 ### Key Benefits
 - **Unified platform**: One place for all ML workflows
@@ -13,7 +13,7 @@ Vertex AI is Google Cloud's unified machine learning platform that combines Auto
 
 ## Vertex AI Components
 
-### Vertex AI Workbench
+### Agent Platform Workbench
 **Jupyter-based development environment**
 
 #### Features
@@ -29,7 +29,7 @@ Vertex AI is Google Cloud's unified machine learning platform that combines Auto
 | **Managed** | Google-managed infrastructure | Quick start, experimentation |
 | **User-managed** | Custom VM configuration | Production workloads, specific requirements |
 
-### Vertex AI Training
+### Agent Platform Managed Training
 **Scalable model training service**
 
 #### Training Options
@@ -64,7 +64,7 @@ model = job.run(
 )
 ```
 
-### Vertex AI Endpoints
+### Agent Platform Endpoints
 **Model serving infrastructure**
 
 #### Deployment Options
@@ -87,7 +87,7 @@ endpoint = model.deploy(
 predictions = endpoint.predict(instances=test_data)
 ```
 
-### Vertex AI Pipelines
+### Agent Platform Pipelines
 **ML workflow orchestration**
 
 #### Pipeline Components
@@ -139,7 +139,7 @@ def ml_pipeline():
     train_task = train_model(training_data=preprocess_task.outputs['output_data'])
 ```
 
-### Vertex AI Model Registry
+### Agent Platform Model Registry
 **Model versioning and management**
 
 #### Features
@@ -164,9 +164,9 @@ model_version = model.upload(
 )
 ```
 
-## Generative AI on Vertex AI
+## Generative AI on Agent Platform
 
-### Generative AI Studio
+### Agent Studio
 **Experiment with generative AI models through unified interface**
 
 #### Capabilities
@@ -248,7 +248,7 @@ model_version = model.upload(
 | Creative writing | PaLM 2 text-bison | Gemini Pro | More creative outputs |
 | Factual accuracy | Gemini Pro + Grounding | PaLM with Search | Reduced hallucination |
 | Cost optimization | text-bison@001 | Llama 2 70B | Lower per-token cost |
-| Enterprise compliance | Vertex AI models | - | Data residency guarantees |
+| Enterprise compliance | Agent Platform models | - | Data residency guarantees |
 
 ### Foundation Models
 
@@ -999,7 +999,7 @@ if response.candidates[0].grounding_metadata:
     print(f"\nGrounding support: {grounding_metadata.grounding_support}")
 ```
 
-#### Grounding with Vertex AI Search
+#### Grounding with Agent Search
 
 ```python
 from vertexai.preview.generative_models import grounding
@@ -2736,7 +2736,7 @@ model = job.run(
 )
 ```
 
-## MLOps with Vertex AI
+## MLOps with Agent Platform
 
 ### Experiment Tracking
 ```python
@@ -3504,7 +3504,7 @@ def track_api_costs():
 
 **4. Grounding and RAG**
 - Google Search grounding
-- Vertex AI Search integration
+- Agent Search integration
 - Custom vector search with Matching Engine
 - Document chunking strategies
 
@@ -3536,7 +3536,7 @@ def track_api_costs():
 
 **Scenario 2: Reduce Hallucinations**
 - **Question**: "How to reduce hallucinations in generated responses?"
-- **Answer**: Use grounding with Google Search or Vertex AI Search
+- **Answer**: Use grounding with Google Search or Agent Search
 - **Additional**: Lower temperature (0.1-0.3), provide context, use RAG
 
 **Scenario 3: Fine-Tuning Decision**
@@ -3723,7 +3723,7 @@ Cost = (5,000 / 1,000) * $0.00025 + (2,000 / 1,000) * $0.0005
 
 ### Development Workflow
 1. **Start with AutoML**: Begin with automated solutions
-2. **Experiment tracking**: Use Vertex AI experiments
+2. **Experiment tracking**: Use Agent Platform experiments
 3. **Version control**: Track model and data versions
 4. **Gradual complexity**: Start simple, add complexity as needed
 
@@ -3731,7 +3731,7 @@ Cost = (5,000 / 1,000) * $0.00025 + (2,000 / 1,000) * $0.0005
 
 **1. Prompt Engineering First**
 - Test with few-shot examples before tuning
-- Iterate on prompts using Generative AI Studio
+- Iterate on prompts using Agent Studio
 - Document successful prompt patterns
 - Version control your prompts
 
@@ -3779,7 +3779,7 @@ Cost = (5,000 / 1,000) * $0.00025 + (2,000 / 1,000) * $0.0005
 
 ## Summary
 
-Vertex AI provides a comprehensive Gen AI platform with:
+Agent Platform provides a comprehensive Gen AI platform with:
 - **Foundation Models**: PaLM 2, Gemini, embeddings
 - **Tuning**: Supervised, adapter-based, RLHF
 - **Grounding**: Search, RAG, custom sources

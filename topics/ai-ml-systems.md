@@ -32,7 +32,7 @@ flowchart LR
 
 ## Compare
 
-- [AI/ML services (cloud-native)](../resources/service-comparison-ai-ml.md) - SageMaker vs Vertex AI vs Azure ML across training, deployment, monitoring
+- [AI/ML services (cloud-native)](../resources/service-comparison-ai-ml.md) - SageMaker vs Agent Platform (formerly Vertex AI) vs Azure ML across training, deployment, monitoring
 - [GenAI platforms](../resources/service-comparison-genai-platforms.md) - hosted LLM APIs (Anthropic, OpenAI, Bedrock, Azure OpenAI, Vertex)
 - [Vector databases](../resources/service-comparison-vector-databases.md) - retrieval substrate
 - [LLM observability](../resources/service-comparison-llm-observability.md) - LangSmith, Langfuse, Helicone, Phoenix, Braintrust

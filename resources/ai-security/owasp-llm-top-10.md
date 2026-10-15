@@ -80,7 +80,7 @@ The four surfaces are a useful way to divide review work: who owns the prompt, w
 |---|---|
 | AWS | Bedrock Guardrails (denied topics, prompt attack filter), separate IAM execution roles per agent action group |
 | Azure | Azure AI Content Safety Prompt Shields (direct and indirect attack detection), Entra ID managed identities per tool |
-| GCP | Vertex AI safety filters, Model Armor for prompt and response inspection, per-tool service accounts |
+| GCP | Agent Platform (formerly Vertex AI) safety filters, Model Armor for prompt and response inspection, per-tool service accounts |
 
 Full detail in **[Prompt injection defense](./prompt-injection-defense.md)**.
 

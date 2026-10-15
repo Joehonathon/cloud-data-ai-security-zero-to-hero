@@ -53,11 +53,11 @@ Plain-English concept pages, 5-10 minute reads:
 
 Cross-vendor comparisons:
 
-- [GenAI platforms](../resources/service-comparison-genai-platforms.md) - Anthropic API, OpenAI, AWS Bedrock, Azure OpenAI, Vertex AI, Together, Fireworks, Groq
+- [GenAI platforms](../resources/service-comparison-genai-platforms.md) - Anthropic API, OpenAI, AWS Bedrock, Azure OpenAI, Agent Platform (formerly Vertex AI), Together, Fireworks, Groq
 - [Vector databases](../resources/service-comparison-vector-databases.md) - Pinecone, Weaviate, Qdrant, Milvus, pgvector, OpenSearch, Azure AI Search, Vertex Vector Search, Bedrock Knowledge Bases
 - [Agent frameworks](../resources/service-comparison-agent-frameworks.md) - Claude Agent SDK, LangGraph, CrewAI, Autogen, OpenAI Agents SDK
 - [LLM observability](../resources/service-comparison-llm-observability.md) - LangSmith, Langfuse, Helicone, Phoenix, Braintrust
-- [AI/ML services (cloud-native)](../resources/service-comparison-ai-ml.md) - SageMaker vs Vertex AI vs Azure ML
+- [AI/ML services (cloud-native)](../resources/service-comparison-ai-ml.md) - SageMaker vs Agent Platform vs Azure ML
 
 ---
 
