@@ -10,8 +10,8 @@
 **Scenario:** A platform team spent a year building a deployment system. Six months post-launch, 4 of 40 teams use it. Leadership proposes mandating it.
 
 A. Mandate it to drive adoption
-B. Build a portal on top to improve discoverability
-C. Run user research with the 36 non-adopting teams and make the golden path genuinely easier than their current approach
+B. Build a portal on top to improve discoverability, since teams that cannot find the platform will never adopt it, and discovery is the main barrier
+C. Run user research with the 36 non-adopting teams and make the golden path easier than their current approach
 D. Add more features
 
 <details>
@@ -27,17 +27,17 @@ D. Add more features
 ### Question 2
 **Scenario:** A platform hosts 40 trusted internal teams, a regulated payments division, and an external partner running code the company does not control.
 
-A. Namespaces for internal teams, dedicated nodes or a cluster for payments aligned to the compliance boundary, and a dedicated cluster with a sandboxed runtime for the partner
-B. A dedicated cluster for all three
-C. Namespace isolation for all three
-D. Virtual control planes for all three
+A. Namespaces for internal teams, dedicated nodes or a cluster for payments, and a sandboxed dedicated cluster for the partner
+B. One shared cluster for all three groups, separated only by node labels and taints
+C. Namespace isolation for all three groups on the same shared nodes, with network policies, resource quotas, and Pod Security Standards enforced between them
+D. Virtual control planes for all three, on one shared node pool
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Match isolation to trust level and compliance boundary. Namespace isolation shares a kernel and control plane, so it is not a boundary against untrusted code. A dedicated cluster for all 40 internal teams is cost and operational load with no corresponding benefit.
+**Why:** Match isolation to trust level and compliance boundary. Namespace isolation shares a kernel and control plane, so it is not a boundary against untrusted code. Virtual control planes on shared nodes (D) still share the kernel. One shared cluster separated only by labels and taints (B) gives no real isolation boundary at all.
 </details>
 
 ---
@@ -45,10 +45,10 @@ D. Virtual control planes for all three
 ### Question 3
 **Scenario:** A team needs a GPU workload with a custom scheduler that the golden path does not support.
 
-A. Refuse the exception to keep the platform consistent
-B. Grant it while keeping the thin conformance layer (policy, telemetry, supply chain), and record it as product input
+A. Refuse the exception to keep the platform consistent, since supporting one-off schedulers would fragment the golden path
+B. Grant it while keeping the thin conformance layer (policy, telemetry, supply chain), and record it as input
 C. Immediately build GPU support into the golden path
-D. Grant the exception with no guardrails
+D. Grant the exception with no guardrails or conformance checks, and let the team run its own scheduler however it likes
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. Grant the exception with no guardrails
 ### Question 4
 **Scenario:** Developers wait five days for a database because they file a ticket and the platform team runs Terraform manually. Self-service is required without giving developers cloud credentials.
 
-A. Expose the full cloud resource as a custom resource
-B. Give developers Terraform and scoped cloud credentials
-C. A control plane pattern: a composite resource definition and composition, with developers submitting a small claim constrained by policy
-D. A web form that files the ticket faster
+A. Expose the full cloud resource as a custom resource, with every provider field and option editable by developers
+B. Give developers Terraform and tightly scoped cloud credentials, with remote state, locking, and a pull request approval step
+C. A control plane pattern: a composite resource definition, a composition, and a policy-constrained claim
+D. A web form that files the ticket automatically, with the platform team still running Terraform by hand afterwards
 
 <details>
 <summary>Answer</summary>
@@ -81,9 +81,9 @@ D. A web form that files the ticket faster
 ### Question 5
 **Scenario:** A platform team is asked to justify its budget and proposes reporting features shipped, lines of platform code, and tickets closed.
 
-A. Add uptime as a fourth measure and keep the rest
+A. Add uptime as a fourth measure and keep the rest, since availability shows the platform is reliable for users
 B. Report only cost savings
-C. These are reasonable measures of team output
+C. These are reasonable measures of team output, and finance teams generally accept them as evidence of value
 D. Replace them with DORA metrics, adoption, time to first deployment, satisfaction, and platform SLOs
 
 <details>
@@ -100,8 +100,8 @@ D. Replace them with DORA metrics, adoption, time to first deployment, satisfact
 **Scenario:** Leadership asks the team to "build an IDP" and points at Backstage. Three months after installing it and importing a catalog, developers report no improvement.
 
 A. The capability layer was never built; a portal without a platform behind it is a catalog of links
-B. Install more Backstage plugins
-C. The catalog metadata is incomplete
+B. Install more Backstage plugins for CI status, Kubernetes views, and cost, so the portal shows more of each service
+C. The catalog metadata is incomplete, so owners, lifecycle and dependencies are missing for many components
 D. Abandon the portal
 
 <details>
@@ -118,9 +118,9 @@ D. Abandon the portal
 **Scenario:** Security requires signed images, no critical CVEs, declared resource limits, and non-root execution in production, without the platform team becoming a review bottleneck.
 
 A. Manual security review per release
-B. A check in the CI pipeline
+B. A check in the CI pipeline that fails the build when an image is unsigned, vulnerable, or missing limits
 C. Documentation and training
-D. Policy as code enforced at admission, rolled out in audit mode first, with a golden path that satisfies the policy by default
+D. Policy as code enforced at admission, rolled out in audit mode first, with a compliant golden path
 
 <details>
 <summary>Answer</summary>
@@ -137,8 +137,8 @@ D. Policy as code enforced at admission, rolled out in audit mode first, with a 
 
 A. A set of approved tools teams may choose from
 B. A document describing best practices
-C. An opinionated, supported, documented route that is the easiest option, with escape hatches for legitimate exceptions
-D. The only permitted way to deploy
+C. An opinionated, supported, documented route that is the easiest option, with escape hatches
+D. The only permitted way to deploy, enforced by blocking any workload that does not use the standard template
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Reducing infrastructure cost
 ### Question 10
 **Scenario:** An organization has a recognized platform team that responds to requests through a ticket queue, with some standardization but little self-service. Which maturity level does this describe?
 
-A. Scalable
-B. Provisional
-C. Optimizing
-D. Operational
+A. Scalable, where the platform is self-service and managed as a product
+B. Provisional, where work is ad hoc and depends on individual effort
+C. Optimizing, where decisions are driven by continuous measurement
+D. Operational, where a team works reactively
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. Number of policies enforced
 ### Question 12
 **Scenario:** What is the "thinnest viable platform" idea?
 
-A. Building the least that delivers value, preferring managed services over building your own
-B. Keeping the platform team small
-C. Running the platform on minimal infrastructure
-D. Supporting only one language and framework
+A. Building the least that delivers value, and buying managed services over building
+B. Keeping the platform team small, ideally one team of under ten people who own every capability
+C. Running the platform on minimal infrastructure, with the smallest cluster and node sizes that work
+D. Supporting only one programming language and framework, so that every team builds the same way
 
 <details>
 <summary>Answer</summary>
@@ -244,9 +244,9 @@ D. Namespace per tenant
 **Scenario:** Why is the Kubernetes API a common foundation for platform APIs, even for capabilities unrelated to containers?
 
 A. It requires no schema
-B. It is the fastest API server available
-C. Custom resources inherit RBAC, admission control, audit logging, kubectl, GitOps agents, and the reconciliation model for free
-D. It is the only API that supports YAML
+B. It is the fastest API server available, since it serves reads from memory and handles higher request rates than any database-backed API
+C. Custom resources inherit RBAC, admission control, audit logging, kubectl, GitOps, and reconciliation
+D. It is the only API that supports YAML, so every tool that reads YAML configuration can only talk to Kubernetes
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. It is the only API that supports YAML
 ### Question 15
 **Scenario:** Which best describes how a platform should produce compliance evidence?
 
-A. Teams submit screenshots during an audit
-B. The platform generates it as a by-product: policy decisions logged, admission denials recorded, provenance stored, access audited
-C. Auditors are given cluster access
-D. The platform team compiles a report quarterly
+A. Teams submit screenshots of their dashboards and settings during an audit, collected by the platform team
+B. The platform generates it as a by-product: policy decisions, admission denials, and provenance
+C. Auditors are given read access to the clusters so that they can look at the configuration themselves
+D. The platform team compiles a report each quarter manually from tickets, pipeline logs, and interviews with each team
 
 <details>
 <summary>Answer</summary>

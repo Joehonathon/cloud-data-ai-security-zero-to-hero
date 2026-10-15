@@ -20,10 +20,10 @@
 ### Question 1
 **Scenario:** A company needs to ensure that users can only create virtual machines in the West US and East US regions. This policy must apply to all subscriptions under a management group. What should you configure?
 
-A. Azure Policy with allowed locations at the management group scope
-B. Azure RBAC role assignment at the management group level
-C. Resource locks on all resource groups
-D. Subscription-level budget alerts
+A. Azure Policy with the Allowed locations built-in definition, assigned at the management group scope so that every subscription inherits it
+B. Azure RBAC role assignment at the management group level that gives the VM Contributor role only to the users in the two regions
+C. Resource locks on all resource groups in every subscription, with a CanNotDelete lock on groups outside the two regions
+D. Subscription-level budget alerts that email the owners whenever spending rises in a region outside the approved list
 
 <details>
 <summary>Answer</summary>
@@ -38,10 +38,10 @@ D. Subscription-level budget alerts
 ### Question 2
 **Scenario:** A company has Microsoft 365 users who need access to Azure resources. They want to use existing identities without creating separate Azure AD accounts. The company already has Azure AD Connect synchronizing on-premises AD. What additional configuration is needed?
 
-A. Configure Azure AD B2B collaboration
-B. Set up Azure AD B2C
+A. Configure Azure AD B2B collaboration, inviting each Microsoft 365 user as a guest so that the identity exists in the Azure tenant
+B. Azure AD B2C with a customer tenant for the users
 C. No additional configuration - Azure AD Connect already handles this
-D. Install a second Azure AD Connect server
+D. Install a second Azure AD Connect server in staging mode so that Azure resources can use the synchronized identities
 
 <details>
 <summary>Answer</summary>
@@ -56,9 +56,9 @@ D. Install a second Azure AD Connect server
 ### Question 3
 **Scenario:** A security administrator needs to require MFA for all users accessing the Azure portal, but not for other applications. How should this be configured?
 
-A. Enable Security Defaults
-B. Configure per-user MFA settings
-C. Use Azure AD Identity Protection
+A. Enable Security Defaults, which require MFA registration and prompt administrators and users on every cloud app in the tenant
+B. Configure per-user MFA settings, setting each user to Enforced so they must complete MFA when they sign in to the portal
+C. Use Azure AD Identity Protection with a sign-in risk policy that asks for MFA whenever a sign-in to the portal looks risky
 D. Create a Conditional Access policy targeting the Azure portal cloud app requiring MFA
 
 <details>
@@ -93,8 +93,8 @@ D. Virtual Machine Contributor
 **Scenario:** An organization wants to prevent accidental deletion of a production resource group containing critical databases. Users should still be able to modify resources within the group. What should you implement?
 
 A. Read-only lock on the resource group
-B. Delete lock on the resource group
-C. Azure Policy to deny delete operations
+B. Delete lock on the resource group, which blocks deletion but still allows edits
+C. Azure Policy with the Audit effect on delete operations
 D. Remove Contributor role from users
 
 <details>
@@ -102,7 +102,7 @@ D. Remove Contributor role from users
 
 **Correct: B**
 
-**Why:** A Delete lock prevents deletion of the resource group and its resources while allowing modifications. Read-only lock (A) would prevent modifications. Azure Policy (C) could work but locks are simpler for this scenario. Removing Contributor (D) would prevent modifications.
+**Why:** A Delete lock prevents deletion of the resource group and its resources while allowing modifications. Read-only lock (A) would prevent modifications. Azure Policy with Audit (C) only reports and does not block deletion. Removing Contributor (D) would prevent modifications.
 
 **Key Concept:** [Azure Resource Locks](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources)
 </details>
@@ -112,8 +112,8 @@ D. Remove Contributor role from users
 
 A. Resource health alerts
 B. Azure Activity Log with export to Log Analytics
-C. Azure Advisor recommendations
-D. Azure Monitor Metrics
+C. Azure Advisor recommendations, which list reliability, security, and cost improvements for the deployed resources
+D. Azure Monitor Metrics, which store numeric performance data for each resource and can be charted over time
 
 <details>
 <summary>Answer</summary>
@@ -128,10 +128,10 @@ D. Azure Monitor Metrics
 ### Question 7
 **Scenario:** A company with multiple subscriptions wants to organize them into a hierarchy for policy and access management. Development subscriptions should inherit different policies than production. What should they create?
 
-A. Multiple Azure AD tenants
+A. Multiple Azure AD tenants, one for development and one for production, with each subscription linked to its own tenant
 B. Management groups with production and development groups
-C. Resource groups in each subscription
-D. Azure Blueprints
+C. Resource groups in each subscription, named for development and production, with policies assigned to each group
+D. Azure Blueprints assigned to each subscription, with a different blueprint definition for development and production
 
 <details>
 <summary>Answer</summary>
@@ -147,7 +147,7 @@ D. Azure Blueprints
 **Scenario:** A company needs to provision consistent environments for new projects including virtual networks, VMs, policies, and role assignments. They want a template that can be versioned and assigned to subscriptions. What should they use?
 
 A. ARM templates
-B. Azure Blueprints
+B. Azure Blueprints, which package templates, policies and role assignments into versioned definitions
 C. Azure Resource Graph
 D. Azure Policy initiatives
 
@@ -164,10 +164,10 @@ D. Azure Policy initiatives
 ### Question 9
 **Scenario:** An administrator needs to grant a consultant temporary elevated access to troubleshoot production issues. The access should automatically expire after 8 hours and require approval.
 
-A. Add the consultant to a privileged group permanently
+A. Add the consultant to a privileged group permanently and remove the membership by hand after the troubleshooting is over
 B. Use Azure AD Privileged Identity Management (PIM) with time-bound eligible assignment
-C. Share administrator credentials
-D. Create a temporary user account that will be deleted later
+C. Share the administrator credentials with the consultant and change the password after the troubleshooting is over
+D. Create a temporary user account with the Owner role that is deleted later, once the troubleshooting is complete
 
 <details>
 <summary>Answer</summary>
@@ -186,17 +186,17 @@ D. Create a temporary user account that will be deleted later
 ### Question 10
 **Scenario:** A company needs to store files that will be accessed by multiple Azure VMs across different regions. The files are accessed frequently and must support SMB protocol. What storage solution should they use?
 
-A. Azure Blob Storage with hot tier
-B. Azure Queue Storage
-C. Azure Files with Premium tier and geo-replication
-D. Azure Disk Storage
+A. Azure Blob Storage with the hot tier, mounted on each VM through the NFS 3.0 endpoint of the storage account
+B. Azure Queue Storage, with a queue per VM that holds the file contents for the other machines to read
+C. Azure Files with an SMB share on the Premium tier
+D. Azure Disk Storage with shared disks, attached to each of the VMs across the regions through a cluster
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Azure Files provides fully managed SMB file shares accessible by multiple VMs. Premium tier offers high performance for frequent access. Geo-redundant storage (GRS) provides cross-region availability. Blob Storage (A) doesn't support SMB natively. Disk Storage (D) attaches to single VMs. Queue Storage (B) is for messaging.
+**Why:** Azure Files provides fully managed SMB file shares accessible by multiple VMs. Premium tier offers high performance for frequent access, and VMs in other regions can mount the share over the network. Blob Storage (A) doesn't support SMB natively. Disk Storage (D) attaches to single VMs. Queue Storage (B) is for messaging.
 
 **Key Concept:** [Azure Files](https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction)
 </details>
@@ -205,9 +205,9 @@ D. Azure Disk Storage
 **Scenario:** An application stores images in Azure Blob Storage. Images are frequently accessed for the first 30 days, rarely accessed for the next 90 days, and then must be retained for 7 years for compliance. How should you configure storage to minimize cost?
 
 A. Configure lifecycle management rules: hot → cool after 30 days → archive after 120 days
-B. Use hot tier for all blobs with manual archiving
-C. Use premium block blob storage
-D. Store all blobs in archive tier from the start
+B. Use the hot tier for all blobs and archive them by hand after 120 days
+C. Use premium block blob storage for all blobs, which offers the lowest latency for the images in the first 30 days
+D. Store all blobs in the archive tier from the start, for the lowest price
 
 <details>
 <summary>Answer</summary>
@@ -223,7 +223,7 @@ D. Store all blobs in archive tier from the start
 **Scenario:** A company needs to migrate 50TB of file share data from an on-premises Windows Server to Azure Files. They want to minimize downtime and maintain SMB compatibility. What migration approach should they use?
 
 A. Azure File Sync to synchronize and migrate
-B. AzCopy to copy files directly to Azure Files
+B. AzCopy to copy files directly to Azure Files in one pass
 C. Azure Data Box for offline transfer
 D. Azure Migrate for server migration
 
@@ -240,10 +240,10 @@ D. Azure Migrate for server migration
 ### Question 13
 **Scenario:** A storage account contains sensitive data. The security team requires that data is encrypted with a key managed in Azure Key Vault, and the key must be rotated annually. What should you configure?
 
-A. Microsoft-managed keys (default encryption)
-B. Client-side encryption
-C. Customer-managed keys (CMK) with Key Vault and automatic key rotation
-D. Infrastructure encryption
+A. Microsoft-managed keys (default encryption), which Microsoft rotates on its own schedule with no key in your Key Vault
+B. Client-side encryption, where the app encrypts each blob before upload
+C. Customer-managed keys (CMK) in Key Vault, with an automatic annual key rotation policy
+D. Infrastructure encryption, which adds a second layer of platform encryption
 
 <details>
 <summary>Answer</summary>
@@ -258,9 +258,9 @@ D. Infrastructure encryption
 ### Question 14
 **Scenario:** A company needs to provide time-limited access to a specific blob for a partner organization. The partner should only be able to download the file for the next 24 hours without requiring Azure AD credentials.
 
-A. Make the blob container public
-B. Configure anonymous read access
-C. Create an Azure AD guest user for the partner
+A. Make the blob container public for 24 hours, then set it back to private
+B. Allow anonymous read access on the storage account, then disable it later
+C. Create an Azure AD guest user for the partner, assign the Storage Blob Data Reader role, and delete the guest later
 D. Generate a shared access signature (SAS) with 24-hour expiry and read permissions
 
 <details>
@@ -276,9 +276,9 @@ D. Generate a shared access signature (SAS) with 24-hour expiry and read permiss
 ### Question 15
 **Scenario:** A storage account is configured with network rules to allow access only from a specific virtual network. An Azure Function in a different virtual network needs to access the storage account. What should you configure?
 
-A. Add the Function's virtual network to the storage account firewall
-B. Disable the firewall
-C. Use managed identity authentication
+A. Add the Function's private IP address range to the storage account firewall as an allowed IP rule
+B. Disable the firewall on the storage account so the Function can reach it from any network, then enable it again later
+C. Use managed identity authentication for the Function, with a role assignment on the storage account
 D. Configure a private endpoint for the storage account and VNet peering between the networks
 
 <details>
@@ -286,7 +286,7 @@ D. Configure a private endpoint for the storage account and VNet peering between
 
 **Correct: D**
 
-**Why:** Private endpoints provide private IP access to storage accounts over VNet peering or VPN. The Function's VNet can peer with the endpoint's VNet, enabling private access while maintaining firewall restrictions. Adding VNet (A) works for simple cases but private endpoints are preferred for cross-VNet access. Disabling firewall (B) removes security. Managed identity (C) is for authentication, not network access.
+**Why:** Private endpoints provide private IP access to storage accounts over VNet peering or VPN. The Function's VNet can peer with the endpoint's VNet, enabling private access while maintaining firewall restrictions. A private IP range (A) cannot be used in a storage firewall IP rule. Disabling firewall (B) removes security. Managed identity (C) is for authentication, not network access.
 
 **Key Concept:** [Private Endpoints](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview)
 </details>
@@ -294,17 +294,17 @@ D. Configure a private endpoint for the storage account and VNet peering between
 ### Question 16
 **Scenario:** A company must ensure that deleted blobs can be recovered for 30 days. They also need to recover from accidental overwrites. What should they enable?
 
-A. Soft delete for blobs with 30-day retention
-B. Blob versioning
-C. Point-in-time restore
-D. All of the above
+A. Soft delete for containers only, with 30-day retention
+B. A CanNotDelete lock on the storage account, which blocks anyone from deleting or overwriting blobs
+C. Geo-redundant storage, which keeps a copy of every blob in the paired region for recovery
+D. Soft delete, blob versioning, and point-in-time restore together
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Soft delete protects against deletion (30-day retention for deleted blobs). Versioning maintains previous versions when blobs are overwritten. Point-in-time restore enables restoring the entire container to a previous state. Together they provide comprehensive protection. Each feature addresses different recovery scenarios.
+**Why:** Soft delete keeps deleted blobs for the 30-day retention period. Versioning keeps previous versions when blobs are overwritten. Point-in-time restore rolls block blobs back to an earlier state and requires soft delete and versioning to be on. Container-only soft delete (A) does not cover blobs. A lock (B) does not stop data-plane deletes or overwrites. Geo-redundancy (C) replicates deletions and overwrites to the second region.
 
 **Key Concept:** [Data Protection Overview](https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview)
 </details>
@@ -317,9 +317,9 @@ D. All of the above
 **Scenario:** A company needs to deploy a web application that must survive a data center failure within a region. The application uses IaaS virtual machines. What should you configure?
 
 A. Deploy VMs across multiple availability zones with a load balancer
-B. Deploy to multiple resource groups
-C. Use a Virtual Machine Scale Set with single-instance
-D. Deploy VMs in a single availability zone
+B. Copy the VMs into multiple resource groups in the region
+C. Use a Virtual Machine Scale Set with a single instance
+D. Deploy VMs in a single availability zone, with a Standard load balancer and managed disks that use ZRS
 
 <details>
 <summary>Answer</summary>
@@ -336,8 +336,8 @@ D. Deploy VMs in a single availability zone
 
 A. Virtual Machine Scale Set with autoscale rules
 B. Azure Batch
-C. Virtual machines with Azure Automation runbooks
-D. Load balancer with health probes
+C. Virtual machines with Azure Automation runbooks that add or remove machines by hand
+D. Load balancer with health probes that take unhealthy VMs out of rotation
 
 <details>
 <summary>Answer</summary>
@@ -352,10 +352,10 @@ D. Load balancer with health probes
 ### Question 19
 **Scenario:** A development team needs to run containers without managing infrastructure. The containers run batch jobs that complete in a few minutes and don't need to be always running. What service should they use?
 
-A. Azure App Service
+A. Azure App Service, with a WebJob that runs each batch task and scales out when the job queue grows
 B. Azure Container Instances (ACI)
-C. Virtual Machines with Docker
-D. Azure Kubernetes Service (AKS)
+C. Virtual Machines with Docker installed, started by a schedule before each job and shut down when it ends
+D. Azure Kubernetes Service (AKS), with a Kubernetes Job for each batch run on a node pool that scales to zero
 
 <details>
 <summary>Answer</summary>
@@ -388,17 +388,17 @@ D. Request a discount from Microsoft
 ### Question 21
 **Scenario:** A VM is running low on disk space. The OS disk is 128GB and needs to be increased to 256GB. What steps are required?
 
-A. Add a data disk instead
-B. Create a new disk and migrate data
+A. Add a data disk instead, then move the application files to it and leave the 128GB OS disk as it is today
+B. Create a new 256GB disk, copy the data to it, and swap it in as the OS disk
 C. Stop (deallocate) the VM, resize the OS disk, start the VM, then extend the partition in the OS
-D. Resize the disk while the VM is running
+D. Resize the disk while the VM is running, and the OS then uses the new space automatically with no extra steps
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** OS disk resizing requires the VM to be stopped (deallocated). After Azure resizes the disk, the VM is started and the partition must be extended within the OS to use the new space. Online resize (D) isn't supported for OS disks. Creating a new disk (B) is more complex. Data disk (A) doesn't solve OS disk space issues.
+**Why:** OS disk resizing requires the VM to be stopped (deallocated). After Azure resizes the disk, the VM is started and the partition must be extended within the OS to use the new space. Even when a disk can be expanded online (D), the partition must still be extended inside the OS. Creating a new disk (B) is more complex. Data disk (A) doesn't solve OS disk space issues.
 
 **Key Concept:** [Resize Managed Disks](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk)
 </details>
@@ -408,7 +408,7 @@ D. Resize the disk while the VM is running
 
 A. Azure Container Instances
 B. Virtual Machine Scale Set
-C. Azure Functions
+C. Azure Batch
 D. Azure App Service
 
 <details>
@@ -416,7 +416,7 @@ D. Azure App Service
 
 **Correct: D**
 
-**Why:** App Service is a PaaS offering for web apps with built-in autoscaling, deployment slots for staging/swapping, and no VM management. It supports .NET Core natively. VMSS (B) requires managing VMs. ACI (A) is for containers without deployment slots. Functions (C) are for event-driven workloads, not traditional web apps.
+**Why:** App Service is a PaaS offering for web apps with built-in autoscaling, deployment slots for staging/swapping, and no VM management. It supports .NET Core natively. VMSS (B) requires managing VMs. ACI (A) is for containers without deployment slots. Batch (C) runs large parallel compute jobs, not web apps.
 
 **Key Concept:** [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/overview)
 </details>
@@ -425,9 +425,9 @@ D. Azure App Service
 **Scenario:** A Windows VM in Azure cannot be accessed via RDP. The VM shows as running in the portal. What should you check first?
 
 A. Boot diagnostics and Network Security Group rules
-B. Check Azure status page for outages
-C. Increase VM size
-D. Recreate the VM
+B. Check the Azure status page for outages in the region, and wait for the incident to be resolved before any change
+C. Increase the VM size to give the machine more CPU and memory, in case the RDP service is starved of resources
+D. Recreate the VM from the last backup
 
 <details>
 <summary>Answer</summary>
@@ -460,10 +460,10 @@ D. B-series burstable VMs
 ### Question 25
 **Scenario:** A company wants to ensure their VMs are backed up with daily backups retained for 30 days and weekly backups retained for 1 year. What should they configure?
 
-A. Azure Site Recovery
-B. Manual snapshots using Azure Automation
-C. Azure Backup with a backup policy specifying daily and weekly retention
-D. Storage account replication
+A. Azure Site Recovery, which replicates the VMs to a second region and holds recovery points for 30 days
+B. Manual snapshots taken by Azure Automation runbooks each day and deleted after 30 days
+C. Azure Backup, using a Recovery Services vault policy that keeps daily points for 30 days and weekly points for 1 year
+D. Storage account replication to a second region, which keeps a copy of the VM disks that can be restored
 
 <details>
 <summary>Answer</summary>
@@ -485,7 +485,7 @@ D. Storage account replication
 A. Application Gateway
 B. ExpressRoute
 C. VPN Gateway connections
-D. VNet peering
+D. VNet peering between the two virtual networks
 
 <details>
 <summary>Answer</summary>
@@ -500,17 +500,17 @@ D. VNet peering
 ### Question 27
 **Scenario:** A web application needs to be accessible from the internet with high availability across zones. The application runs on VMs in a backend pool. HTTPS traffic should be terminated at the load balancer. What should you deploy?
 
-A. Azure Load Balancer (Standard)
+A. Azure Load Balancer (Standard), a zone-redundant public load balancer that spreads HTTPS connections over the backend pool
 B. Azure Application Gateway with WAF
-C. Azure Front Door
-D. Azure Traffic Manager
+C. Azure Firewall Standard with DNAT rules that publish the backend VMs to the internet on port 443
+D. Azure Traffic Manager, which uses DNS to send clients to a healthy endpoint and so gives high availability
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Application Gateway is a Layer 7 load balancer that supports HTTPS termination (SSL offload), zone redundancy, and includes Web Application Firewall (WAF) for security. Standard Load Balancer (A) is Layer 4 and doesn't terminate HTTPS. Traffic Manager (D) is DNS-based, not a real load balancer. Front Door (C) is global, which may be overkill for single-region.
+**Why:** Application Gateway is a Layer 7 load balancer that supports HTTPS termination (SSL offload), zone redundancy, and includes Web Application Firewall (WAF) for security. Standard Load Balancer (A) is Layer 4 and doesn't terminate HTTPS. Traffic Manager (D) is DNS-based, not a real load balancer. Azure Firewall (C) filters and forwards traffic but does not terminate HTTPS for a backend pool.
 
 **Key Concept:** [Application Gateway](https://learn.microsoft.com/en-us/azure/application-gateway/overview)
 </details>
@@ -521,7 +521,7 @@ D. Azure Traffic Manager
 A. Azure Firewall with application rules
 B. User Defined Routes to null route internet
 C. Service endpoints
-D. Network Security Group with FQDN rules
+D. Network Security Group with FQDN rules for *.microsoft.com
 
 <details>
 <summary>Answer</summary>
@@ -538,7 +538,7 @@ D. Network Security Group with FQDN rules
 
 A. Disable storage firewall
 B. VPN Gateway
-C. Private Endpoints for the storage account
+C. A NAT gateway on the subnet
 D. Service Endpoints for storage on the VNet subnet
 
 <details>
@@ -546,7 +546,7 @@ D. Service Endpoints for storage on the VNet subnet
 
 **Correct: D**
 
-**Why:** Service Endpoints extend VNet identity to Azure services, allowing traffic to route privately over the Azure backbone while storage firewall allows the VNet. This is simpler than Private Endpoints for same-region access. Private Endpoints (C) also work but are more complex for this scenario. VPN (B) is for different networks. Disabling firewall (A) removes security.
+**Why:** Service Endpoints extend VNet identity to Azure services, allowing traffic to route privately over the Azure backbone while storage firewall allows the VNet. This is simpler than Private Endpoints for same-region access. A NAT gateway (C) still reaches storage over its public endpoint. VPN (B) is for different networks. Disabling firewall (A) removes security.
 
 **Key Concept:** [Service Endpoints](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview)
 </details>
@@ -554,9 +554,9 @@ D. Service Endpoints for storage on the VNet subnet
 ### Question 30
 **Scenario:** A company has a subnet with VMs that should not be accessible from other subnets in the same VNet. Only specific management ports should be allowed from a management subnet. What should you configure?
 
-A. Separate VNet for isolation
-B. Application Security Groups
-C. Azure Firewall between subnets
+A. A separate VNet for the VMs, peered with the management VNet, with all ports allowed across the peering
+B. Application Security Groups, which group the VMs for use in rules
+C. Azure Firewall deployed in the same subnet as the VMs
 D. Network Security Group on the subnet with deny rules and specific allow rules
 
 <details>
@@ -564,7 +564,7 @@ D. Network Security Group on the subnet with deny rules and specific allow rules
 
 **Correct: D**
 
-**Why:** NSGs can be applied to subnets to control traffic between subnets in the same VNet. Default rules allow VNet-to-VNet traffic, but explicit deny rules can block it with specific allows for management ports. Azure Firewall (C) is overkill for intra-VNet isolation. Separate VNet (A) adds complexity. ASGs (B) are for grouping VMs but work with NSGs, not instead of them.
+**Why:** NSGs can be applied to subnets to control traffic between subnets in the same VNet. Default rules allow VNet-to-VNet traffic, but explicit deny rules can block it with specific allows for management ports. Azure Firewall (C) needs its own dedicated subnet and cannot sit in the VMs' subnet. A separate VNet (A) with open peering still allows all ports. ASGs (B) are for grouping VMs but work with NSGs, not instead of them.
 
 **Key Concept:** [Network Security Groups](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview)
 </details>
@@ -572,9 +572,9 @@ D. Network Security Group on the subnet with deny rules and specific allow rules
 ### Question 31
 **Scenario:** A company wants to route all traffic from their VNet through a network virtual appliance (NVA) for inspection before going to the internet. What should they configure?
 
-A. BGP routing
-B. VNet peering
-C. Service Endpoints
+A. An Azure DNS private zone that resolves internet names to the NVA's address
+B. VNet peering with the NVA's VNet, so the traffic from the VMs is sent to the NVA before it reaches the internet
+C. Service Endpoints on each subnet, so that internet-bound traffic leaves through the Azure backbone and the NVA
 D. User Defined Routes (UDR) with next hop to the NVA
 
 <details>
@@ -582,7 +582,7 @@ D. User Defined Routes (UDR) with next hop to the NVA
 
 **Correct: D**
 
-**Why:** User Defined Routes override Azure's default routing. A UDR with 0.0.0.0/0 destination and NVA as next hop forces all internet-bound traffic through the NVA. Service Endpoints (C) are for Azure services. VNet peering (B) doesn't affect routing to internet. BGP (A) is for dynamic routing with gateways.
+**Why:** User Defined Routes override Azure's default routing. A UDR with 0.0.0.0/0 destination and NVA as next hop forces all internet-bound traffic through the NVA. Service Endpoints (C) are for Azure services. VNet peering (B) doesn't affect routing to internet. A private DNS zone (A) changes name resolution, not the path packets take.
 
 **Key Concept:** [User Defined Routes](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
 </details>
@@ -590,10 +590,10 @@ D. User Defined Routes (UDR) with next hop to the NVA
 ### Question 32
 **Scenario:** A company needs to connect their on-premises data center to Azure with dedicated, private connectivity (not over the internet). They need consistent low latency and high bandwidth. What should they implement?
 
-A. Azure Virtual WAN with VPN
+A. Azure Virtual WAN with site-to-site VPN tunnels
 B. Point-to-Site VPN
-C. ExpressRoute
-D. Site-to-Site VPN
+C. ExpressRoute with a connectivity provider
+D. Site-to-Site VPN with a VPN gateway and IPsec tunnel
 
 <details>
 <summary>Answer</summary>
@@ -630,10 +630,10 @@ D. Azure Service Health
 ### Question 34
 **Scenario:** A company needs to analyze logs from multiple Azure resources including VMs, App Services, and Azure SQL. They want to write queries across all logs and create dashboards. What should they configure?
 
-A. Use Azure Monitor Metrics
-B. Use Activity Log only
+A. Use Azure Monitor Metrics, which store numeric time series for each resource and can be charted on a dashboard
+B. Use the Activity Log only, which records control plane operations for each of the subscriptions
 C. Send all logs to a Log Analytics workspace and use KQL queries
-D. Enable diagnostic settings without a destination
+D. Enable diagnostic settings without a destination, so that the logs are generated and held by each resource
 
 <details>
 <summary>Answer</summary>
@@ -648,10 +648,10 @@ D. Enable diagnostic settings without a destination
 ### Question 35
 **Scenario:** A company needs to visualize the performance of their entire Azure environment in a single view including VM health, network topology, and application dependencies. What should they use?
 
-A. Cost Management dashboard
-B. Azure Portal resource list
-C. Azure Monitor Workbooks with VM Insights
-D. Resource Graph Explorer
+A. Cost Management dashboard, which charts spending by tag
+B. The Azure Portal resource list, filtered by subscription
+C. Azure Monitor Workbooks with VM Insights and its dependency map view
+D. Resource Graph Explorer, which runs Kusto queries over resource properties across the subscriptions
 
 <details>
 <summary>Answer</summary>
@@ -684,17 +684,17 @@ D. Azure Service Health alerts for their subscriptions and regions
 ### Question 37
 **Scenario:** A VM in Azure needs regular maintenance including Windows Updates. The company wants to control when updates are applied to avoid impacting business hours. What should they configure?
 
-A. Manual patching
+A. Manual patching by an administrator, who signs in to each VM during a weekend window and runs the updates
 B. Azure Update Management with maintenance windows
-C. Disable updates
-D. Windows Update automatic updates
+C. Disable updates on the VMs and rebuild them from a new image once a quarter, with the patches already in it
+D. Windows Update automatic updates with default settings, with no maintenance window or schedule
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Update Management (part of Azure Automation) allows scheduling update deployments during maintenance windows. You can define schedules (e.g., weekends at 2 AM) and control which updates to apply. Automatic updates (D) don't respect business hours. Manual patching (A) is labor-intensive. Disabling updates (C) is a security risk.
+**Why:** Update management (Azure Update Manager, the successor to Automation Update Management) allows scheduling update deployments during maintenance windows. You can define schedules (e.g., weekends at 2 AM) and control which updates to apply. Default automatic updates (D) set no maintenance window. Manual patching (A) is labor-intensive. Disabling updates (C) is a security risk.
 
 **Key Concept:** [Update Management](https://learn.microsoft.com/en-us/azure/automation/update-management/overview)
 </details>
@@ -703,8 +703,8 @@ D. Windows Update automatic updates
 **Scenario:** A company has deployed resources but wants to ensure they follow Azure best practices for high availability, security, performance, and cost. What tool should they use?
 
 A. Azure Blueprints
-B. Azure Advisor
-C. Azure Security Center
+B. Azure Advisor recommendations
+C. Azure Security Center with its secure score
 D. Azure Policy
 
 <details>
@@ -720,8 +720,8 @@ D. Azure Policy
 ### Question 39
 **Scenario:** A company needs to diagnose intermittent VM connectivity issues. They need to capture network traffic for analysis. What tool should they use?
 
-A. Connection Monitor
-B. IP flow verify
+A. Connection Monitor, which tests connectivity between endpoints over time and reports latency and reachability
+B. IP flow verify, which checks whether a packet to or from the VM is allowed or denied by the NSG rules
 C. Network Watcher packet capture
 D. NSG flow logs
 

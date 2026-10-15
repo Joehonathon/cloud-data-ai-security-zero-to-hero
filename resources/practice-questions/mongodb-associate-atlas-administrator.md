@@ -15,9 +15,9 @@ difficulty: intermediate
 **Scenario:** An Atlas cluster must survive the loss of a cloud availability zone.
 
 A. Manual failover
-B. A replica set spread across at least three availability zones in a region, which Atlas does by default for dedicated tiers
-C. A single-region M0 cluster
-D. A standalone instance
+B. A replica set spread across at least three availability zones, which Atlas does by default on dedicated tiers
+C. A single-region M0 cluster, since the free tier's members are already placed in separate zones by shared infrastructure
+D. A standalone instance placed in a single availability zone, protected with nightly snapshots that can be restored after a failure
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. A standalone instance
 ### Question 2
 **Scenario:** Application traffic must reach Atlas without traversing the public internet.
 
-A. VPC peering or a private endpoint (AWS PrivateLink, Azure Private Link, or GCP Private Service Connect)
-B. A VPN client on each developer machine
-C. IP access list only
-D. Public endpoint with TLS
+A. VPC peering or a private endpoint (PrivateLink or Private Service Connect)
+B. A VPN client installed on each developer machine, connecting laptops to the Atlas project from home
+C. IP access list only, with the application servers' public addresses allowlisted for the cluster
+D. Public endpoint with TLS, since TLS encrypts every packet and so keeps the traffic off the public internet entirely
 
 <details>
 <summary>Answer</summary>
@@ -51,9 +51,9 @@ D. Public endpoint with TLS
 **Scenario:** Which Atlas tier supports auto-scaling of compute?
 
 A. M0 free tier
-B. Dedicated tiers (M10 and above), which can scale cluster tier up and down within configured bounds
-C. All tiers
-D. Shared tiers only
+B. Dedicated clusters from M10 upward, which scale the tier within configured bounds
+C. Every tier, including the free M0, because auto-scaling is a project-wide setting that all clusters inherit automatically
+D. Shared tiers only, because dedicated clusters keep the fixed size that was chosen when they were created
 
 <details>
 <summary>Answer</summary>
@@ -68,9 +68,9 @@ D. Shared tiers only
 ### Question 4
 **Scenario:** A cold dataset must move to cheaper storage while remaining queryable.
 
-A. Online Archive, which moves data matching an archiving rule to cloud object storage and keeps it queryable through a federated connection string
+A. Online Archive, which moves data matching a rule to object storage yet keeps it queryable
 B. A separate cluster
-C. `mongodump` to S3
+C. `mongodump` to S3, which stores compressed copies cheaply and lets applications query them in place
 D. Delete it
 
 <details>
@@ -86,10 +86,10 @@ D. Delete it
 ### Question 5
 **Scenario:** Which Atlas feature recommends indexes based on observed queries?
 
-A. Performance Advisor, which analyzes slow queries and suggests indexes and schema improvements
-B. The profiler only
+A. Performance Advisor, which analyzes slow queries and suggests indexes
+B. The profiler only, which logs slow operations and then creates the matching indexes on its own
 C. Atlas Search
-D. Real-Time Performance Panel
+D. Real-Time Performance Panel, which shows live operations and their current latency
 
 <details>
 <summary>Answer</summary>
@@ -124,8 +124,8 @@ D. SCRAM passwords only
 
 A. Replica set members
 B. Online Archive
-C. Continuous cloud backup with point-in-time restore, restoring to the moment before the deletion
-D. A snapshot restore only
+C. Continuous cloud backup with point-in-time restore
+D. A snapshot restore only, using the most recent scheduled snapshot taken before the accidental deletion
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. A snapshot restore only
 ### Question 8
 **Scenario:** Encryption keys for Atlas must be controlled by the customer.
 
-A. Filesystem encryption
-B. Client-side only
-C. Not possible
-D. Encryption at rest using customer key management with AWS KMS, Azure Key Vault, or GCP KMS
+A. Filesystem encryption on the underlying disks in each cloud account, which already gives the customer full control of the keys
+B. Enable TLS on every connection, which lets the customer manage the keys used for storage encryption
+C. Not possible, because Atlas always generates and manages every encryption key itself on behalf of customers
+D. Encryption at rest with customer-managed keys in AWS KMS, Azure Key Vault, or GCP KMS
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Manual checks
 ### Question 11
 **Scenario:** Users in different countries must read from a nearby region while writes stay authoritative.
 
-A. Sharding by country
+A. Sharding by country on a single-region cluster, which splits the data across shards but keeps every shard in one region
 B. A CDN
-C. A multi-region cluster with read-only or electable nodes in the additional regions, and a read preference of `nearest`
-D. Separate clusters per region
+C. A multi-region cluster with read-only or electable nodes in extra regions, read preference `nearest`
+D. Separate clusters per region, each holding a full copy that is kept in sync with a nightly mongodump restore
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Separate clusters per region
 ### Question 12
 **Scenario:** Atlas infrastructure must be managed as code.
 
-A. Not possible
-B. Shell scripts against the database
-C. The Atlas Administration API, the Terraform MongoDB Atlas provider, the Atlas CLI, or the Kubernetes Operator
-D. Console only
+A. Not possible, because Atlas clusters, users and network settings can only be configured through the web console by hand
+B. Shell scripts that connect to the database with mongosh and run commands to create clusters, users and network rules
+C. The Atlas Administration API, the Terraform Atlas provider, the Atlas CLI, or the Kubernetes Operator
+D. Console only, with every setting changed through the web interface and recorded in a change log by the admin
 
 <details>
 <summary>Answer</summary>
@@ -230,8 +230,8 @@ D. Console only
 ### Question 13
 **Scenario:** Which Atlas feature enables vector similarity search for a retrieval-augmented generation application?
 
-A. A text index
-B. Atlas Search
+A. A text index, which ranks documents by term frequency and can compare embeddings by cosine similarity
+B. Atlas Search with a full-text index, queried with `$search`
 C. Atlas Vector Search, indexing embedding fields and queried with `$vectorSearch`
 D. Data Federation
 
@@ -248,10 +248,10 @@ D. Data Federation
 ### Question 14
 **Scenario:** Data in Atlas and in an S3 bucket must be queried together.
 
-A. Copy S3 data into Atlas
-B. Atlas Data Federation, which queries across cluster and object storage with a single MQL endpoint
-C. Not possible
-D. Export both to a warehouse
+A. Copy the S3 data into Atlas with a scheduled job, then query only the Atlas collections
+B. Atlas Data Federation, one MQL endpoint over the cluster and object storage
+C. Not possible, because Atlas can only query data that is stored inside its own clusters
+D. Export the Atlas collections and the S3 files into a data warehouse and query them there on a schedule
 
 <details>
 <summary>Answer</summary>
@@ -267,9 +267,9 @@ D. Export both to a warehouse
 **Scenario:** A project's costs must be attributed to teams.
 
 A. Manual estimation
-B. One project for everything
+B. One project for everything, then split the monthly invoice by hand using each cluster's share of storage
 C. Separate accounts
-D. Organize by organization, project, and cluster with tags, since Atlas billing reports break down by project and cluster
+D. Use organizations, projects, and cluster tags, since billing reports break down by project
 
 <details>
 <summary>Answer</summary>

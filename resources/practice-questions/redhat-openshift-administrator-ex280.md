@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** How does an OpenShift project relate to a Kubernetes namespace?
 
-A. A project is a Kubernetes namespace with additional annotations and access controls layered on top
-B. A project is a cluster
-C. A project is a pod
-D. They are unrelated
+A. A project is a Kubernetes namespace with extra annotations and access controls
+B. A project is a separate cluster with its own control plane and etcd, which is why each team is given one
+C. A project is a pod-level grouping that schedules several containers together onto one node
+D. They are unrelated; one project can span namespaces
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. They are unrelated
 ### Question 2
 **Scenario:** A new identity provider must be configured for user authentication.
 
-A. Edit each user manually
+A. Edit each user manually in a ConfigMap in the openshift-config namespace, then restart the API servers to load them
 B. Configure an identity provider in the cluster OAuth resource, such as HTPasswd, LDAP, or OIDC
-C. Use the kubeadmin account permanently
-D. Disable authentication
+C. Use the kubeadmin account permanently, since it is the supported long-term administrator for every cluster
+D. Disable authentication on the API server so the console accepts requests without a login
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Disable authentication
 ### Question 3
 **Scenario:** A user must be able to view resources in a project but not modify them.
 
-A. Cluster admin
-B. No binding needed
+A. Bind the cluster-admin role to the user in that project, since reading resources needs elevated rights
+B. No binding needed, because every authenticated user can already read all projects through the system:authenticated group
 C. Bind the `view` cluster role to the user in that project with a role binding
-D. Give them edit
+D. Give them the edit role in that project, since it includes view and they can simply choose not to change anything
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Give them edit
 ### Question 4
 **Scenario:** A container image needs to run as a specific user ID but is blocked.
 
-A. Give the pod privileged access
-B. Disable SCCs
-C. Adjust the security context constraints: understand why the restricted SCC blocks it and grant an appropriate SCC to the workload's service account only if justified
-D. Run everything as root
+A. Give the pod privileged access by granting the privileged SCC to the default service account in the namespace
+B. Disable SCC admission cluster-wide so images can pick any UID they need
+C. Understand why the restricted SCC blocks it, then grant a suitable SCC to that workload's service account only if justified
+D. Run everything as root by setting runAsUser 0 and granting anyuid to every service account in the cluster
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Run everything as root
 ### Question 5
 **Scenario:** Which SCC is the most restrictive and applied by default?
 
-A. restricted (restricted-v2), which drops privileges, denies host access, and runs with an arbitrary non-root UID
-B. hostnetwork
-C. privileged
-D. anyuid
+A. restricted-v2, which drops capabilities and runs pods with an arbitrary non-root UID
+B. hostnetwork, which is applied by default because pods generally need to reach the node's network interfaces directly
+C. privileged, which is applied by default to any pod that sets no securityContext, because it avoids permission errors
+D. anyuid, which is applied by default so images that expect a fixed UID such as root work out of the box
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. anyuid
 ### Question 6
 **Scenario:** An application must be reachable from outside the cluster over HTTP.
 
-A. A NodePort always
-B. A Route, which exposes a service through the OpenShift router at a hostname, optionally with TLS termination
-C. A ClusterIP service only
-D. A host port
+A. A NodePort service on every node, which is the only built-in way to reach pods over HTTP from outside the cluster
+B. A Route, which exposes a service through the OpenShift router at a hostname, optionally with TLS
+C. A ClusterIP service only, since its virtual IP is routable from external networks
+D. A host port on the pod, binding to port 80 on the node so clients use the node address
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A host port
 ### Question 7
 **Scenario:** What is the difference between edge and passthrough TLS termination on a route?
 
-A. Passthrough terminates at the router
-B. They are the same
-C. Edge does not use TLS
-D. Edge terminates TLS at the router and sends plaintext to the pod; passthrough sends encrypted traffic straight to the pod, which terminates it
+A. Passthrough terminates TLS at the router, which then forwards plaintext to the pod, while edge sends the encrypted stream on to the pod untouched
+B. They are the same mode under two names; the router decrypts the traffic and re-encrypts it again before it is forwarded on to the application pod
+C. Edge does not use TLS at all; it forwards plain HTTP end to end, and only passthrough involves certificates
+D. Edge terminates TLS at the router and sends plaintext to the pod; passthrough sends encrypted traffic to the pod, which terminates it
 
 <details>
 <summary>Answer</summary>
@@ -140,9 +140,9 @@ D. Edge terminates TLS at the router and sends plaintext to the pod; passthrough
 ### Question 8
 **Scenario:** Persistent storage must be provided to a stateful application.
 
-A. A ConfigMap
-B. Store data in the container
-C. Use emptyDir
+A. A ConfigMap mounted at the data path, since it persists across pod restarts and can hold application state of any size
+B. Store data in the container's writable layer, which is kept when the pod is rescheduled
+C. Use an emptyDir volume, which survives pod deletion and rescheduling on the node's disk
 D. A PersistentVolumeClaim bound to a PersistentVolume, ideally through a StorageClass for dynamic provisioning
 
 <details>
@@ -158,10 +158,10 @@ D. A PersistentVolumeClaim bound to a PersistentVolume, ideally through a Storag
 ### Question 9
 **Scenario:** Resource consumption in a project must be capped.
 
-A. Delete pods manually
-B. Nothing can limit it
-C. A ResourceQuota to bound total consumption per project, and LimitRange to set per-pod and per-container defaults and maximums
-D. A NetworkPolicy
+A. Delete pods manually whenever usage grows, since the scheduler enforces no ceiling on a project's CPU or memory
+B. Nothing can limit it, because requests and limits on pods only influence scheduling and never cap a project total
+C. A ResourceQuota to cap total consumption per project, plus a LimitRange for per-container defaults and maximums, applied in each project
+D. A NetworkPolicy that caps bandwidth per project, which also limits the CPU and memory its pods can use
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. A NetworkPolicy
 ### Question 10
 **Scenario:** Traffic between projects must be restricted.
 
-A. SCCs
-B. It cannot be restricted
-C. NetworkPolicy resources controlling ingress and egress by pod selector and namespace, with the cluster network plugin enforcing them
-D. Routes
+A. SCCs, which restrict which projects a pod's service account may open network connections to
+B. It cannot be restricted, since the cluster network gives every pod a flat address space and all pods stay reachable
+C. NetworkPolicy resources controlling ingress and egress by pod and namespace selector
+D. Routes, since a route with an IP allowlist annotation blocks other projects from reaching the pods
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Routes
 ### Question 11
 **Scenario:** An application must be deployed from source code in a Git repository.
 
-A. Build the image manually every time
-B. Copy files into a running pod
-C. Use a ConfigMap
-D. A BuildConfig, for example source-to-image, that builds an image from source and can trigger on pushes, feeding a deployment
+A. Build the image manually on a workstation each time, push it to the registry, and update the Deployment by hand
+B. Copy the files into a running pod with oc rsync, which keeps the code after the pod restarts
+C. Use a ConfigMap to hold the repository files, which OpenShift compiles into an image when the ConfigMap changes
+D. A BuildConfig using source-to-image, which builds an image from the repository and can trigger on pushes
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. A BuildConfig, for example source-to-image, that builds an image from source 
 ### Question 12
 **Scenario:** A deployment must be updated without downtime.
 
-A. Delete and recreate all pods
-B. A rolling update, the default deployment strategy, replacing pods gradually while maintaining availability
-C. A recreate strategy always
-D. Scale to zero first
+A. Delete all pods at once with oc delete pod --all, relying on the ReplicaSet to restore them
+B. A rolling update, the default strategy, replacing pods gradually while keeping the application available
+C. A Recreate strategy always, which stops old pods first and so keeps the service available during the change from start to finish
+D. Scale the deployment to zero first, then back to the original count after the push
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Scale to zero first
 ### Question 13
 **Scenario:** Sensitive configuration such as a database password must be provided to a pod.
 
-A. A ConfigMap
-B. A Secret mounted as a volume or injected as environment variables, referenced by the pod
-C. A plain file in Git
-D. Hardcode it in the image
+A. A ConfigMap, which is encrypted at rest by default and so is the standard object for passwords
+B. A Secret mounted as a volume or injected as environment variables into the pod
+C. A plain file committed to Git, referenced by the build so the pod can read it from the source tree
+D. Hardcode it in the image at build time, so every pod started from that image has it without extra objects
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Hardcode it in the image
 ### Question 14
 **Scenario:** A node must be taken out of service for maintenance.
 
-A. Cordon the node to stop new scheduling, then drain it to evict pods gracefully so they reschedule elsewhere
-B. Stop the kubelet
-C. Power it off directly
-D. Delete the node object
+A. Cordon the node, then drain it so pods are evicted gracefully and reschedule elsewhere
+B. Stop the kubelet service on the node, so the control plane moves the pods away
+C. Power it off directly, since the scheduler moves workloads first
+D. Delete the node object with oc delete node, which gracefully evicts every pod before removing it
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Delete the node object
 ### Question 15
 **Scenario:** A pod is stuck in `CrashLoopBackOff`. What is the diagnostic path?
 
-A. Inspect events and logs: `oc describe pod`, `oc logs` including previous container logs, and check probes, resources, and configuration
-B. Delete the project
-C. Increase the node size
-D. Restart the cluster
+A. Inspect events and logs with `oc describe pod` and `oc logs --previous`, then check probes, resource limits, and mounted config or secrets
+B. Delete the project and redeploy, since a CrashLoopBackOff state is stored in the project and cannot be cleared otherwise
+C. Increase the node size, because CrashLoopBackOff always means the node has run out of CPU and memory
+D. Restart the cluster so the scheduler resets its backoff timers, which clears the pod's crash loop status
 
 <details>
 <summary>Answer</summary>

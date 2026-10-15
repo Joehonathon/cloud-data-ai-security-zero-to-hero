@@ -14,9 +14,9 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Two virtual networks are peered. A VM in VNet A cannot reach a VM in VNet B, and peering status shows Connected on both sides.
 
-A. Peering is not transitive; check that both peerings exist and that NSGs or a route table are not blocking
+A. Peering is not transitive; check that the reverse peering exists and that no NSG rule or route table blocks
 B. Peering requires a VPN gateway
-C. VNets in the same region cannot peer
+C. VNets in the same region cannot peer, so a Connected status only means the two VNets see each other's metadata but not data traffic
 D. Peering only supports IPv6
 
 <details>
@@ -32,10 +32,10 @@ D. Peering only supports IPv6
 ### Question 2
 **Scenario:** A subnet must send all internet-bound traffic through a network virtual appliance.
 
-A. A user-defined route with address prefix `0.0.0.0/0` and next hop type Virtual appliance, associated with the subnet
-B. Azure Firewall Manager policy alone
+A. A user-defined route for `0.0.0.0/0` with next hop type Virtual appliance, on the subnet
+B. Azure Firewall Manager policy alone, applied to the subnet without making any route table changes
 C. Service endpoints
-D. A Network Security Group with a deny rule
+D. A Network Security Group with a deny rule for internet destinations, which forces traffic to use the appliance
 
 <details>
 <summary>Answer</summary>
@@ -71,7 +71,7 @@ D. NAT gateway
 A. An internal load balancer
 B. A public IP on each VM
 C. A NAT gateway associated with the subnet
-D. Default outbound access
+D. Default outbound access, which gives each VM a fixed address from a pool dedicated to your subscription
 
 <details>
 <summary>Answer</summary>
@@ -105,9 +105,9 @@ D. NAT gateway
 **Scenario:** Global HTTP traffic must be routed to the closest healthy regional backend with edge caching.
 
 A. Azure Front Door
-B. Azure Load Balancer Standard
-C. Application Gateway
-D. ExpressRoute
+B. Azure Load Balancer Standard, a layer 4 service with no HTTP awareness
+C. Application Gateway, a regional layer 7 service deployed into one VNet
+D. ExpressRoute, a private connection between on-premises networks and Azure
 
 <details>
 <summary>Answer</summary>
@@ -122,9 +122,9 @@ D. ExpressRoute
 ### Question 7
 **Scenario:** ExpressRoute must carry traffic to Azure PaaS services over the private connection, not the internet.
 
-A. A site-to-site VPN
-B. Private peering only
-C. Public peering
+A. A site-to-site VPN gateway running over the public internet to reach those services
+B. Private peering only, with the PaaS services reached through their public endpoints
+C. Public peering, which is the current option for reaching Azure PaaS public IPs and needs no route filters
 D. Microsoft peering, with route filters selecting the service communities
 
 <details>
@@ -140,10 +140,10 @@ D. Microsoft peering, with route filters selecting the service communities
 ### Question 8
 **Scenario:** A hub-and-spoke topology needs spokes to reach on-premises through the hub's VPN gateway.
 
-A. Deploy a VPN gateway in each spoke
+A. Deploy a VPN gateway in each spoke VNet, with a separate site-to-site connection to the on-premises device, instead of using the hub's gateway
 B. Use service endpoints
 C. Enable "Use remote gateways" on the spoke peering and "Allow gateway transit" on the hub peering
-D. Enable IP forwarding on the spoke VMs
+D. Enable IP forwarding on the NICs of all spoke VMs, so that each one can relay traffic on to the hub gateway
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Enable IP forwarding on the spoke VMs
 ### Question 9
 **Scenario:** BGP is configured on a site-to-site VPN and on-premises advertises `0.0.0.0/0`. What is the effect on Azure VMs?
 
-A. Only DNS is affected
+A. Only DNS resolution is affected, because BGP routes apply to name lookups alone
 B. Forced tunneling: internet-bound VM traffic is sent to on-premises
 C. The tunnel drops
-D. No effect
+D. No effect, because Azure system routes always take precedence over any route learned from BGP
 
 <details>
 <summary>Answer</summary>
@@ -176,9 +176,9 @@ D. No effect
 ### Question 10
 **Scenario:** You need to see, for a specific VM NIC, which route Azure will actually use for a destination.
 
-A. Azure Advisor
-B. The activity log
-C. Service Health
+A. Azure Advisor, which lists the effective route table of each NIC along with recommendations
+B. The activity log, which records the control plane operations performed on each resource
+C. Service Health, which reports Azure platform incidents that affect your subscription
 D. Network Watcher Effective routes and IP flow verify
 
 <details>
@@ -194,10 +194,10 @@ D. Network Watcher Effective routes and IP flow verify
 ### Question 11
 **Scenario:** An NSG on a subnet and another on the NIC both apply. How is inbound traffic evaluated?
 
-A. Only the NIC NSG applies
-B. The subnet NSG is evaluated first for inbound, then the NIC NSG; traffic must be allowed by both
+A. Only the NIC NSG applies, because the NSG closest to the VM replaces the subnet NSG entirely for that VM
+B. The subnet NSG is evaluated first for inbound, then the NIC NSG; each one must allow the traffic
 C. The rules are merged
-D. The most permissive wins
+D. The most permissive rule wins, so an allow in either NSG is enough to let the traffic through to the VM
 
 <details>
 <summary>Answer</summary>
@@ -214,7 +214,7 @@ D. The most permissive wins
 
 A. Public Azure DNS zones
 B. Azure DNS Private Resolver with an inbound endpoint, plus private DNS zones linked to the VNets
-C. Custom DNS on every VNet pointing to 8.8.8.8
+C. Custom DNS on every VNet pointing to 8.8.8.8, with conditional forwarders for the privatelink zones added on each VNet
 D. A hosts file on each VM
 
 <details>
@@ -230,7 +230,7 @@ D. A hosts file on each VM
 ### Question 13
 **Scenario:** Virtual WAN is chosen over a manually built hub. What is the main benefit?
 
-A. It provides layer 7 WAF
+A. It provides layer 7 WAF and path-based routing for every branch, replacing Application Gateway entirely
 B. Lower per-GB cost always
 C. It removes the need for NSGs
 D. Managed hubs with automated any-to-any branch, VNet, and user connectivity and built-in routing
@@ -248,10 +248,10 @@ D. Managed hubs with automated any-to-any branch, VNet, and user connectivity an
 ### Question 14
 **Scenario:** Traffic between two spokes must be inspected by Azure Firewall in the hub.
 
-A. Peer the spokes directly
-B. UDRs in each spoke sending the other spoke's prefix to the firewall private IP as next hop
-C. Rely on NSGs
-D. Enable service endpoints
+A. Peer the spokes directly, since peering forces all spoke traffic through the hub firewall for inspection
+B. UDRs in each spoke pointing the other spoke's prefix at the firewall's private IP
+C. Rely on NSGs on each spoke subnet to inspect the traffic and block unwanted flows between the spokes
+D. Enable service endpoints on both spoke subnets so that the traffic between them is routed through the firewall
 
 <details>
 <summary>Answer</summary>

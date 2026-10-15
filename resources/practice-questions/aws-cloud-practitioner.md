@@ -18,9 +18,9 @@
 **Scenario:** A startup wants to launch a new application but doesn't want to invest in physical servers or predict capacity needs upfront. They want to pay only for the resources they actually use.
 
 A. Dedicated hosting
-B. Traditional on-premises data center
+B. Traditional on-premises data center that you build and staff yourself
 C. Colocation hosting
-D. Cloud computing
+D. Cloud computing with pay-as-you-go pricing
 
 <details>
 <summary>Answer</summary>
@@ -37,10 +37,10 @@ D. Cloud computing
 ### Question 2
 **Scenario:** A company wants to run their applications in AWS but maintain complete control over the operating system, including patches and security updates.
 
-A. Function as a Service (FaaS)
+A. Function as a Service (FaaS), which runs code on demand but leaves the customer no control of the underlying operating system
 B. Infrastructure as a Service (IaaS)
-C. Software as a Service (SaaS)
-D. Platform as a Service (PaaS)
+C. Software as a Service (SaaS), where the provider delivers a finished application and manages everything beneath it
+D. Platform as a Service (PaaS), which provides a managed runtime where the provider patches the operating system for the customer
 
 <details>
 <summary>Answer</summary>
@@ -57,10 +57,10 @@ D. Platform as a Service (PaaS)
 ### Question 3
 **Scenario:** A company is evaluating whether to migrate to AWS. They currently spend $500,000 annually on data center operations including staff, power, cooling, and hardware maintenance. Which cloud benefit addresses this?
 
-A. Elasticity
+A. Elasticity, the ability to add and remove capacity automatically as demand changes, which does not address who pays for hardware
 B. Trade capital expense for variable expense
-C. High availability
-D. Global reach
+C. High availability, which keeps applications running through failures but does not change how infrastructure is paid for
+D. Global reach, which lets the company deploy in many Regions near its users but does not replace data center spending
 
 <details>
 <summary>Answer</summary>
@@ -77,10 +77,10 @@ D. Global reach
 ### Question 4
 **Scenario:** An e-commerce website experiences 10x normal traffic during holiday sales but returns to baseline afterward. What cloud computing benefit helps handle this situation cost-effectively?
 
-A. Elasticity
+A. Elasticity, scaling resources up and down
 B. Security
 C. Disaster recovery
-D. Fault tolerance
+D. Fault tolerance, keeping the system running through component failures
 
 <details>
 <summary>Answer</summary>
@@ -97,10 +97,10 @@ D. Fault tolerance
 ### Question 5
 **Scenario:** A company needs to deploy their application closer to users in Asia-Pacific to reduce latency. Which AWS concept enables this?
 
-A. Edge Locations
-B. Availability Zones
+A. Edge Locations, which cache content close to users
+B. Availability Zones, which sit inside a single Region
 C. Local Zones
-D. AWS Regions
+D. AWS Regions chosen near the users
 
 <details>
 <summary>Answer</summary>
@@ -118,9 +118,9 @@ D. AWS Regions
 **Scenario:** A company requires their application to remain available even if a single data center experiences a failure. What should they use?
 
 A. Multiple Availability Zones in one Region
-B. Single Availability Zone deployment
-C. AWS Outposts
-D. Edge Locations
+B. A single Availability Zone deployment with frequent backups, which restores data but fails together if that data center is lost
+C. AWS Outposts racks in the customer's own data center, which still depend on that single site
+D. Edge Locations, which cache content close to users for CloudFront but do not host the application's compute or data
 
 <details>
 <summary>Answer</summary>
@@ -139,8 +139,8 @@ D. Edge Locations
 
 A. Operational Excellence
 B. Reliability
-C. Performance Efficiency
-D. Security
+C. Performance Efficiency, using compute resources efficiently
+D. Security, protecting data and systems
 
 <details>
 <summary>Answer</summary>
@@ -157,10 +157,10 @@ D. Security
 ### Question 8
 **Scenario:** A company wants to avoid guessing infrastructure capacity needs and instead scale resources based on actual demand. Which cloud benefit does this describe?
 
-A. Elasticity
-B. Global deployment
+A. Elasticity, scaling with demand
+B. Global deployment, in many Regions in minutes
 C. Agility
-D. Economy of scale
+D. Economy of scale, lower prices from AWS volume
 
 <details>
 <summary>Answer</summary>
@@ -179,8 +179,8 @@ D. Economy of scale
 
 A. Private cloud
 B. Multi-cloud
-C. Hybrid cloud
-D. Public cloud
+C. Hybrid cloud, combining on-premises and cloud
+D. Public cloud, where the provider runs shared infrastructure for many customers
 
 <details>
 <summary>Answer</summary>
@@ -197,9 +197,9 @@ D. Public cloud
 ### Question 10
 **Scenario:** A company can deploy updates to their application in minutes instead of weeks. Which cloud benefit enables this?
 
-A. Cost optimization
-B. Agility
-C. Global reach
+A. Cost optimization, paying less for the same workload
+B. Agility, speed of change
+C. Global reach, deploying near users worldwide
 D. Elasticity
 
 <details>
@@ -239,10 +239,10 @@ D. Third-party security provider
 ### Question 12
 **Scenario:** A company needs to grant temporary access to an external auditor to review their AWS resources. What is the MOST secure approach?
 
-A. Create an IAM user with no MFA
-B. Create a permanent IAM user with full access
-C. Create an IAM role with specific permissions
-D. Share the root account credentials
+A. Create an IAM user for the auditor without requiring MFA, with read access to the account, and delete it after the audit ends
+B. Create a permanent IAM user with full access so the auditor can open any resource during the review whenever needed
+C. Create an IAM role with specific permissions that the auditor assumes for the review, which issues temporary credentials that expire on their own
+D. Share the root account credentials with the auditor and change the password once the review is finished
 
 <details>
 <summary>Answer</summary>
@@ -259,9 +259,9 @@ D. Share the root account credentials
 ### Question 13
 **Scenario:** Which AWS service provides a centralized view of security alerts and compliance status across multiple AWS accounts?
 
-A. AWS Security Hub
-B. Amazon GuardDuty
-C. Amazon Inspector
+A. AWS Security Hub, a central view of findings and compliance checks
+B. Amazon GuardDuty, which detects threats from logs in an account and can be aggregated, but is not the compliance dashboard
+C. Amazon Inspector, which scans EC2 instances and container images for software vulnerabilities rather than showing compliance
 D. AWS CloudTrail
 
 <details>
@@ -279,10 +279,10 @@ D. AWS CloudTrail
 ### Question 14
 **Scenario:** A company needs to encrypt data stored in Amazon S3. Who is responsible for enabling this encryption?
 
-A. AWS enables it automatically
+A. AWS decides all encryption settings for the customer
 B. Third-party tools are required
-C. S3 data cannot be encrypted
-D. The customer must enable it
+C. S3 data cannot be encrypted, because objects are always stored in plaintext
+D. The customer, who chooses and configures the encryption settings
 
 <details>
 <summary>Answer</summary>
@@ -319,10 +319,10 @@ D. AWS Secrets Manager
 ### Question 16
 **Scenario:** Which service provides intelligent threat detection by analyzing AWS CloudTrail logs, VPC Flow Logs, and DNS logs?
 
-A. AWS Shield
-B. AWS WAF
+A. AWS Shield, which protects applications from DDoS attacks at the network and transport layers and does not analyze account logs
+B. AWS WAF, a web application firewall that filters HTTP requests with rules and does not analyze account activity logs
 C. Amazon GuardDuty
-D. Amazon Macie
+D. Amazon Macie, which uses machine learning to discover and classify sensitive data stored in Amazon S3 buckets
 
 <details>
 <summary>Answer</summary>
@@ -359,10 +359,10 @@ D. Amazon S3 with encryption
 ### Question 18
 **Scenario:** Which practice should be followed for the AWS root account?
 
-A. Delete it after creating IAM users
-B. Share it among the IT team
+A. Delete it after creating IAM users, so no account holds unrestricted access and the credentials cannot be stolen later
+B. Share it among the IT team in a password manager, so that any administrator can act on the account in an emergency
 C. Enable MFA and avoid using it for routine tasks
-D. Use it for daily administrative tasks
+D. Use it for daily administrative tasks, since it has the permissions needed for every action in the account
 
 <details>
 <summary>Answer</summary>
@@ -379,10 +379,10 @@ D. Use it for daily administrative tasks
 ### Question 19
 **Scenario:** What type of attack does AWS Shield protect against?
 
-A. Man-in-the-middle
+A. Man-in-the-middle attacks, where an attacker intercepts traffic between a client and a server to read or alter it
 B. Distributed Denial of Service (DDoS)
-C. SQL injection
-D. Cross-site scripting (XSS)
+C. SQL injection, where an attacker inserts database commands through application input to read or change stored data
+D. Cross-site scripting (XSS), where an attacker injects scripts into pages that other users then load in their browsers
 
 <details>
 <summary>Answer</summary>
@@ -400,9 +400,9 @@ D. Cross-site scripting (XSS)
 **Scenario:** Which AWS service records API calls made in your AWS account for auditing purposes?
 
 A. AWS Config
-B. Amazon CloudWatch
+B. Amazon CloudWatch, which monitors metrics and logs
 C. AWS X-Ray
-D. AWS CloudTrail
+D. AWS CloudTrail, which logs API calls
 
 <details>
 <summary>Answer</summary>
@@ -421,10 +421,10 @@ D. AWS CloudTrail
 ### Question 21
 **Scenario:** A company needs to run a web server that requires a specific operating system and custom software. Which AWS service should they use?
 
-A. Amazon S3
-B. AWS Lambda
+A. Amazon S3, which stores objects and can host static websites but cannot run a server with a custom operating system
+B. AWS Lambda, which runs code in response to events but gives no access to the operating system or its installed software
 C. Amazon EC2
-D. Amazon RDS
+D. Amazon RDS, a managed relational database service that does not host a web server or custom operating system software
 
 <details>
 <summary>Answer</summary>
@@ -442,9 +442,9 @@ D. Amazon RDS
 **Scenario:** A developer needs to run code in response to events without managing servers. Which service should they use?
 
 A. Amazon ECS
-B. Amazon Lightsail
+B. Amazon Lightsail, a simplified virtual server and database service
 C. Amazon EC2
-D. AWS Lambda
+D. AWS Lambda, which runs code on events
 
 <details>
 <summary>Answer</summary>
@@ -462,7 +462,7 @@ D. AWS Lambda
 **Scenario:** A company needs to store and retrieve any amount of data from anywhere on the web. Which service provides this capability?
 
 A. Amazon EFS
-B. Amazon S3
+B. Amazon S3, object storage for any amount of data
 C. AWS Storage Gateway
 D. Amazon EBS
 
@@ -481,10 +481,10 @@ D. Amazon EBS
 ### Question 24
 **Scenario:** A company needs block storage for an EC2 instance that persists independently of the instance lifecycle. Which service should they use?
 
-A. Amazon EBS
-B. Instance Store
+A. Amazon EBS, persistent block storage
+B. Instance Store, ephemeral storage on the host
 C. Amazon S3
-D. Amazon Glacier
+D. Amazon Glacier, archival storage for rarely used data
 
 <details>
 <summary>Answer</summary>
@@ -501,10 +501,10 @@ D. Amazon Glacier
 ### Question 25
 **Scenario:** Which database service is fully managed and compatible with MySQL and PostgreSQL?
 
-A. Amazon ElastiCache
+A. Amazon ElastiCache, an in-memory cache for fast reads
 B. Amazon Redshift
 C. Amazon DynamoDB
-D. Amazon Aurora
+D. Amazon Aurora, a managed relational database
 
 <details>
 <summary>Answer</summary>
@@ -521,10 +521,10 @@ D. Amazon Aurora
 ### Question 26
 **Scenario:** A company needs a NoSQL database that provides single-digit millisecond performance at any scale. Which service should they use?
 
-A. Amazon Aurora
-B. Amazon RDS
-C. Amazon DynamoDB
-D. Amazon Redshift
+A. Amazon Aurora, a relational database that is compatible with MySQL and PostgreSQL and uses fixed table schemas
+B. Amazon RDS, a managed service for relational engines such as MySQL and SQL Server, which uses SQL rather than a NoSQL model
+C. Amazon DynamoDB, a fully managed key-value and document database that scales without capacity planning and answers in single-digit milliseconds
+D. Amazon Redshift, a data warehouse built for analytic queries over large datasets rather than low-latency key-value access
 
 <details>
 <summary>Answer</summary>
@@ -541,9 +541,9 @@ D. Amazon Redshift
 ### Question 27
 **Scenario:** Which service provides a virtual private network within AWS where you can launch resources in a logically isolated section?
 
-A. Amazon VPC
-B. AWS Direct Connect
-C. Amazon Route 53
+A. Amazon VPC, a logically isolated network
+B. AWS Direct Connect, a dedicated private network link
+C. Amazon Route 53, a managed DNS and domain registration service
 D. AWS VPN
 
 <details>
@@ -561,10 +561,10 @@ D. AWS VPN
 ### Question 28
 **Scenario:** Which service distributes incoming application traffic across multiple targets like EC2 instances?
 
-A. AWS Auto Scaling
-B. Amazon CloudFront
-C. Elastic Load Balancing
-D. Amazon Route 53
+A. AWS Auto Scaling, which adds or removes instances as demand changes but does not spread requests between targets
+B. Amazon CloudFront, a content delivery network that caches content at edge locations and does not balance load across instances
+C. Elastic Load Balancing, which spreads incoming requests across healthy targets in several Availability Zones and stops sending traffic to failed ones
+D. Amazon Route 53, a DNS service that can route by policy but does not distribute connections as a load balancer does
 
 <details>
 <summary>Answer</summary>
@@ -581,8 +581,8 @@ D. Amazon Route 53
 ### Question 29
 **Scenario:** A company wants to deliver content with low latency to users worldwide. Which service should they use?
 
-A. Amazon CloudFront
-B. AWS Global Accelerator
+A. Amazon CloudFront, a global content delivery network
+B. AWS Global Accelerator, which routes traffic over the AWS network to healthy endpoints
 C. Amazon S3
 D. Amazon Route 53
 
@@ -603,7 +603,7 @@ D. Amazon Route 53
 
 A. Elastic Load Balancing
 B. AWS Direct Connect
-C. Amazon Route 53
+C. Amazon Route 53, a DNS and domain registration service
 D. Amazon CloudFront
 
 <details>
@@ -622,9 +622,9 @@ D. Amazon CloudFront
 **Scenario:** A company needs to send notification messages to multiple subscribers including email, SMS, and HTTP endpoints. Which service should they use?
 
 A. Amazon SES
-B. AWS Step Functions
-C. Amazon SQS
-D. Amazon SNS
+B. AWS Step Functions, which orchestrates workflows
+C. Amazon SQS, a message queue for decoupling components
+D. Amazon SNS, a pub/sub messaging service
 
 <details>
 <summary>Answer</summary>
@@ -641,8 +641,8 @@ D. Amazon SNS
 ### Question 32
 **Scenario:** Which service helps automatically adjust compute capacity to maintain steady, predictable performance at the lowest possible cost?
 
-A. Elastic Load Balancing
-B. AWS Auto Scaling
+A. Elastic Load Balancing, which distributes traffic across targets
+B. AWS Auto Scaling, which adjusts capacity to demand
 C. AWS Lambda
 D. Amazon CloudWatch
 
@@ -683,10 +683,10 @@ D. Reserved Instances (3-year term)
 ### Question 34
 **Scenario:** Which AWS support plan provides access to a Technical Account Manager (TAM)?
 
-A. Business
-B. Enterprise
-C. Developer
-D. Basic
+A. The Business plan, which has 24/7 technical support but no named TAM
+B. The Enterprise Support plan, which includes a designated Technical Account Manager for proactive guidance
+C. The Developer plan, which has business-hours email support and no TAM
+D. The Basic plan, included for all accounts, with documentation and account support only
 
 <details>
 <summary>Answer</summary>
@@ -703,9 +703,9 @@ D. Basic
 ### Question 35
 **Scenario:** Which tool helps estimate the cost of your AWS architecture before deployment?
 
-A. Cost and Usage Report
-B. AWS Budgets
-C. AWS Cost Explorer
+A. Cost and Usage Report, which delivers the most detailed billing data for charges already incurred in an account
+B. AWS Budgets, which tracks spend against a threshold you set and sends alerts rather than estimating a planned architecture
+C. AWS Cost Explorer, which visualizes and analyzes costs and usage that have already been recorded in the account
 D. AWS Pricing Calculator
 
 <details>
@@ -745,7 +745,7 @@ D. AWS Trusted Advisor
 
 A. AWS Config
 B. AWS CloudWatch
-C. AWS Trusted Advisor
+C. AWS Trusted Advisor, which checks cost, security, and performance
 D. AWS Cost Explorer
 
 <details>
@@ -763,10 +763,10 @@ D. AWS Cost Explorer
 ### Question 38
 **Scenario:** How does AWS charge for data transfer?
 
-A. Data transfer into AWS is charged; data transfer out is free
+A. Data transfer into AWS is charged per gigabyte, while data transfer out to the internet is free
 B. Data transfer out of AWS is charged; data transfer in is generally free
-C. Both data transfer in and out are charged equally
-D. All data transfer is free
+C. Data transfer in and out are charged at the same per-gigabyte rate in every Region and for every service
+D. All data transfer is free, because AWS charges only for compute and storage and never for network traffic
 
 <details>
 <summary>Answer</summary>
@@ -783,10 +783,10 @@ D. All data transfer is free
 ### Question 39
 **Scenario:** A company uses multiple AWS services and wants to combine billing across all accounts. Which feature enables this?
 
-A. AWS Cost and Usage Report
-B. AWS Organizations with Consolidated Billing
-C. AWS Budgets
-D. AWS Cost Explorer
+A. The AWS Cost and Usage Report, which gives detailed line-item billing data but does not merge accounts into one bill
+B. AWS Organizations with Consolidated Billing, which combines usage and charges for all member accounts on one bill and can unlock volume discounts
+C. AWS Budgets, which tracks spend and sends alerts for accounts but does not combine invoices from several accounts
+D. AWS Cost Explorer, which analyzes spend across accounts in an organization but does not produce a single combined bill
 
 <details>
 <summary>Answer</summary>
@@ -805,8 +805,8 @@ D. AWS Cost Explorer
 
 A. AWS Cost Explorer (basic)
 B. AWS Trusted Advisor (full checks)
-C. AWS Professional Services
-D. Technical Account Manager
+C. AWS Professional Services consulting
+D. Enterprise TAM
 
 <details>
 <summary>Answer</summary>

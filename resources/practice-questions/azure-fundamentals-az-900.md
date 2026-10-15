@@ -16,10 +16,10 @@
 ### Question 1
 **Scenario:** A company wants to avoid large upfront investments in hardware and instead pay only for the computing resources they use. Which cloud benefit describes this?
 
-A. Geo-distribution
-B. Scalability
+A. Geo-distribution, which places resources in datacenters near users around the world
+B. Scalability, the ability to add resources as the load grows
 C. Consumption-based pricing
-D. High availability
+D. High availability, which keeps services running through failures
 
 <details>
 <summary>Answer</summary>
@@ -36,8 +36,8 @@ D. High availability
 ### Question 2
 **Scenario:** A retail company's website experiences 5x normal traffic during holiday sales but returns to normal afterward. What cloud characteristic allows them to handle this efficiently?
 
-A. Elasticity
-B. Disaster recovery
+A. Elasticity, scaling up and down with demand
+B. Disaster recovery, recovering the service after a major outage
 C. High availability
 D. Agility
 
@@ -59,7 +59,7 @@ D. Agility
 A. Function as a Service (FaaS)
 B. Infrastructure as a Service (IaaS)
 C. Software as a Service (SaaS)
-D. Platform as a Service (PaaS)
+D. Platform as a Service (PaaS), where the provider runs the runtime and OS
 
 <details>
 <summary>Answer</summary>
@@ -77,8 +77,8 @@ D. Platform as a Service (PaaS)
 **Scenario:** A financial services company must comply with strict data residency requirements and wants to keep some data on their own servers while using cloud services for other workloads. Which cloud model should they use?
 
 A. Public cloud
-B. Community cloud
-C. Hybrid cloud
+B. Community cloud, shared by organizations with common concerns
+C. Hybrid cloud, combining on-premises and public
 D. Private cloud
 
 <details>
@@ -97,9 +97,9 @@ D. Private cloud
 **Scenario:** A company is comparing the total cost of running their IT infrastructure on-premises versus in the cloud. What is this type of analysis called?
 
 A. Total Cost of Ownership (TCO)
-B. Cost allocation
-C. Break-even analysis
-D. Return on Investment (ROI)
+B. Cost allocation, which distributes shared costs among departments or projects
+C. Break-even analysis, which finds when an investment has earned back its cost
+D. Return on Investment (ROI), which measures the gain from an investment against its cost
 
 <details>
 <summary>Answer</summary>
@@ -116,9 +116,9 @@ D. Return on Investment (ROI)
 ### Question 6
 **Scenario:** Which of the following is a characteristic of a public cloud deployment?
 
-A. Resources cannot be accessed over the internet
+A. Resources have no internet access
 B. Resources are owned and operated by a single organization
-C. Resources require dedicated hardware per customer
+C. Resources require dedicated hardware for each customer organization
 D. Resources are shared among multiple organizations
 
 <details>
@@ -136,10 +136,10 @@ D. Resources are shared among multiple organizations
 ### Question 7
 **Scenario:** A company needs to ensure their application is available 99.99% of the time. Which cloud characteristic addresses this requirement?
 
-A. Scalability
+A. Scalability, adding resources as the workload grows
 B. High availability
-C. Agility
-D. Elasticity
+C. Agility, releasing changes to the application quickly
+D. Elasticity, scaling resources up and down with demand
 
 <details>
 <summary>Answer</summary>
@@ -156,10 +156,10 @@ D. Elasticity
 ### Question 8
 **Scenario:** A startup wants to focus on developing their application without managing servers, operating systems, or infrastructure. Which cloud model best suits their needs?
 
-A. SaaS
+A. SaaS, a complete hosted application
 B. PaaS
-C. On-premises
-D. IaaS
+C. On-premises servers run by the startup
+D. IaaS, virtual machines the startup patches
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. IaaS
 ### Question 9
 **Scenario:** Under the shared responsibility model for IaaS, who is responsible for patching and maintaining the operating system?
 
-A. Microsoft only
-B. The customer only
-C. Both Microsoft and the customer
-D. Neither (automated by Azure)
+A. Microsoft only, because Azure manages the host and everything that runs on it
+B. The customer, since the guest operating system on an IaaS virtual machine is theirs to patch
+C. Microsoft and the customer share it equally, with Microsoft applying operating system patches on a schedule
+D. No one, because Azure patches guest operating systems automatically on all virtual machines in the subscription
 
 <details>
 <summary>Answer</summary>
@@ -216,9 +216,9 @@ D. Fault tolerance
 ### Question 11
 **Scenario:** Which expense model represents cloud computing where you pay based on actual usage?
 
-A. Capital Expenditure (CapEx)
-B. Sunk cost
-C. Fixed cost
+A. Capital Expenditure (CapEx), meaning large upfront purchases of hardware that are depreciated over time
+B. Sunk cost, meaning money already spent that cannot be recovered
+C. Fixed cost, meaning a charge that stays the same whatever the usage
 D. Operational Expenditure (OpEx)
 
 <details>
@@ -238,9 +238,9 @@ D. Operational Expenditure (OpEx)
 ### Question 12
 **Scenario:** A company needs to organize their Azure resources for different departments (HR, Finance, IT) with separate billing for each. What Azure feature should they use?
 
-A. Management Groups
+A. Management Groups, which organize multiple subscriptions into a hierarchy
 B. Resource Groups
-C. Subscriptions
+C. Subscriptions, each with its own billing
 D. Azure Regions
 
 <details>
@@ -258,8 +258,8 @@ D. Azure Regions
 ### Question 13
 **Scenario:** An organization has multiple Azure subscriptions across different business units. They want to apply consistent policies across all subscriptions. What should they use?
 
-A. Azure Blueprints
-B. Management Groups
+A. Azure Blueprints, which define repeatable environments for one deployment
+B. Management Groups, applied above subscriptions
 C. Resource Groups
 D. Resource Tags
 
@@ -279,7 +279,7 @@ D. Resource Tags
 **Scenario:** A company needs to host virtual machines that require the highest level of isolation for security compliance. Which Azure compute option should they use?
 
 A. Azure Virtual Machine Scale Sets
-B. Azure Dedicated Host
+B. Azure Dedicated Host, physical servers reserved for one customer
 C. Azure Container Instances
 D. Azure Virtual Machines
 
@@ -298,8 +298,8 @@ D. Azure Virtual Machines
 ### Question 15
 **Scenario:** A developer needs to run code in response to HTTP requests without managing servers. The code runs only when triggered and billing is based on execution time. What service should they use?
 
-A. Azure Functions
-B. Azure Kubernetes Service
+A. Azure Functions, serverless code that runs on triggers
+B. Azure Kubernetes Service, managed container orchestration for clusters
 C. Azure App Service
 D. Azure Virtual Machines
 
@@ -319,9 +319,9 @@ D. Azure Virtual Machines
 **Scenario:** A company needs to store large amounts of unstructured data like documents, images, and videos. Which Azure storage service should they use?
 
 A. Azure SQL Database
-B. Azure Blob Storage
-C. Azure Queue Storage
-D. Azure Table Storage
+B. Azure Blob Storage, object storage
+C. Azure Queue Storage, a message queue for application components
+D. Azure Table Storage, a NoSQL key-attribute store
 
 <details>
 <summary>Answer</summary>
@@ -340,7 +340,7 @@ D. Azure Table Storage
 
 A. Network Security Group
 B. Load Balancer
-C. Service Endpoint
+C. Service Endpoint, extending the VNet identity to the Azure service
 D. Public IP address
 
 <details>
@@ -358,9 +358,9 @@ D. Public IP address
 ### Question 18
 **Scenario:** A company wants to deploy a fully managed relational database with automatic backups, patching, and high availability without managing the underlying infrastructure. What service should they use?
 
-A. Azure Database for PostgreSQL (single server)
-B. SQL Server on Azure VM
-C. Azure Cosmos DB
+A. Azure Table Storage, a NoSQL key-attribute store
+B. SQL Server installed on an Azure VM
+C. Azure Cosmos DB, a NoSQL database
 D. Azure SQL Database
 
 <details>
@@ -368,7 +368,7 @@ D. Azure SQL Database
 
 **Correct: D**
 
-**Why:** Azure SQL Database is a fully managed PaaS offering with automatic backups, patching, high availability, and scaling. SQL Server on VM requires managing the OS. Cosmos DB is NoSQL. PostgreSQL single server has similar management but the question specifies relational (SQL).
+**Why:** Azure SQL Database is a fully managed PaaS offering with automatic backups, patching, high availability, and scaling. SQL Server on VM requires managing the OS. Cosmos DB and Table Storage are NoSQL.
 
 **Key Concept:** [Azure SQL Database](https://docs.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview)
 </details>
@@ -381,7 +381,7 @@ D. Azure SQL Database
 A. Azure Traffic Manager
 B. Azure Application Gateway
 C. Azure Front Door
-D. Azure Load Balancer
+D. Azure Load Balancer, a layer 4 balancer for VMs
 
 <details>
 <summary>Answer</summary>
@@ -398,10 +398,10 @@ D. Azure Load Balancer
 ### Question 20
 **Scenario:** A company has resources in multiple Azure regions and wants to route users to the nearest region for better performance. What service should they use?
 
-A. Azure ExpressRoute
+A. Azure ExpressRoute, which provides private connectivity to Azure from on-premises
 B. Azure Traffic Manager
-C. Azure Load Balancer
-D. Azure VPN Gateway
+C. Azure Load Balancer, which distributes traffic among VMs within a single region
+D. Azure VPN Gateway, which connects virtual networks to other networks over encrypted tunnels
 
 <details>
 <summary>Answer</summary>
@@ -418,10 +418,10 @@ D. Azure VPN Gateway
 ### Question 21
 **Scenario:** A company needs private, dedicated network connectivity between their on-premises data center and Azure that doesn't traverse the public internet. What should they use?
 
-A. Azure ExpressRoute
+A. Azure ExpressRoute, a private link via a provider
 B. VNet Peering
 C. Point-to-Site VPN
-D. Site-to-Site VPN
+D. Site-to-Site VPN, an encrypted tunnel over the internet
 
 <details>
 <summary>Answer</summary>
@@ -438,10 +438,10 @@ D. Site-to-Site VPN
 ### Question 22
 **Scenario:** A web application needs to cache frequently accessed data in memory to reduce database load and improve performance. What Azure service should be used?
 
-A. Azure Blob Storage
-B. Azure CDN
+A. Azure Blob Storage, which stores unstructured files such as images and documents
+B. Azure CDN, which caches static content at edge locations close to users
 C. Azure Cache for Redis
-D. Azure Queue Storage
+D. Azure Queue Storage, which holds messages for asynchronous processing
 
 <details>
 <summary>Answer</summary>
@@ -458,9 +458,9 @@ D. Azure Queue Storage
 ### Question 23
 **Scenario:** A company needs to run containerized applications at scale with automatic orchestration, scaling, and management. What Azure service should they use?
 
-A. Azure Container Instances
+A. Azure Container Instances, for single containers without orchestration
 B. Azure Kubernetes Service
-C. Azure Virtual Machines
+C. Azure Virtual Machines, with containers installed manually
 D. Azure Functions
 
 <details>
@@ -479,8 +479,8 @@ D. Azure Functions
 **Scenario:** What is the purpose of Azure Availability Zones?
 
 A. Provide isolation from datacenter failures within a region
-B. Distribute traffic across regions
-C. Connect multiple Azure regions
+B. Distribute traffic across regions so users reach the nearest healthy deployment
+C. Connect Azure regions over a private backbone
 D. Provide content caching at edge locations
 
 <details>
@@ -519,9 +519,9 @@ D. Azure App Service
 **Scenario:** A company needs to store data that must be replicated across multiple regions for disaster recovery. Which storage redundancy option should they choose?
 
 A. Geo-Redundant Storage (GRS)
-B. Zone-Redundant Storage (ZRS)
+B. Zone-Redundant Storage (ZRS), across zones in one region
 C. Premium Storage
-D. Locally Redundant Storage (LRS)
+D. Locally Redundant Storage (LRS), within one datacenter
 
 <details>
 <summary>Answer</summary>
@@ -543,7 +543,7 @@ D. Locally Redundant Storage (LRS)
 A. Azure Management Groups
 B. Azure Blueprints
 C. Azure Resource Groups
-D. Azure Policy
+D. Azure Policy, which enforces rules on resources
 
 <details>
 <summary>Answer</summary>
@@ -562,8 +562,8 @@ D. Azure Policy
 
 A. Azure Advisor
 B. Azure Activity Log
-C. Azure Monitor
-D. Azure Service Health
+C. Azure Monitor, which collects metrics and logs
+D. Azure Service Health, which reports Azure outages
 
 <details>
 <summary>Answer</summary>
@@ -581,9 +581,9 @@ D. Azure Service Health
 **Scenario:** An administrator needs to get personalized recommendations for improving security, reliability, performance, and reducing costs across their Azure resources. What tool should they use?
 
 A. Azure Monitor
-B. Cost Management
-C. Azure Advisor
-D. Azure Service Health
+B. Cost Management, which analyzes and budgets spend
+C. Azure Advisor, a recommendation engine
+D. Azure Service Health, which reports Azure incidents
 
 <details>
 <summary>Answer</summary>
@@ -601,8 +601,8 @@ D. Azure Service Health
 **Scenario:** A company wants to estimate their monthly Azure costs before deploying resources. What tool should they use?
 
 A. Cost Management
-B. Azure TCO Calculator
-C. Azure Advisor
+B. Azure TCO Calculator, comparing on-premises costs
+C. Azure Advisor, which recommends optimizations
 D. Azure Pricing Calculator
 
 <details>
@@ -681,9 +681,9 @@ D. Azure Key Vault
 **Scenario:** A company needs to securely store and manage secrets, keys, and certificates used by applications. What Azure service should they use?
 
 A. Azure Storage
-B. Azure Active Directory
+B. Microsoft Entra ID
 C. Azure Policy
-D. Azure Key Vault
+D. Azure Key Vault, a store for secrets, keys, and certificates
 
 <details>
 <summary>Answer</summary>
@@ -721,9 +721,9 @@ D. Microsoft Entra ID (Azure AD)
 **Scenario:** A company wants to standardize deployments by creating a repeatable set of Azure resources including VMs, networking, and policies. What should they use?
 
 A. Azure Policy
-B. ARM Templates
-C. Azure Blueprints
-D. Azure Resource Groups
+B. ARM Templates, declarative JSON resource definitions
+C. Azure Blueprints, packaged definitions
+D. Azure Resource Groups, containers for resources
 
 <details>
 <summary>Answer</summary>
@@ -741,7 +741,7 @@ D. Azure Resource Groups
 **Scenario:** What is the primary purpose of Azure Resource Manager (ARM)?
 
 A. Deploy and manage Azure resources
-B. Provide security recommendations
+B. Provide security recommendations for subscriptions
 C. Calculate Azure costs
 D. Monitor resource performance
 
@@ -760,8 +760,8 @@ D. Monitor resource performance
 ### Question 38
 **Scenario:** A company needs to restrict which Azure regions can be used for resource deployment. How can they enforce this?
 
-A. Azure Firewall
-B. Resource Tags
+A. Azure Firewall, a network filter
+B. Resource Tags, which hold metadata
 C. Azure Policy
 D. Network Security Groups
 
@@ -781,8 +781,8 @@ D. Network Security Groups
 **Scenario:** What is the maximum number of subscriptions that can be managed under a single management group?
 
 A. 100
-B. 10,000
-C. Unlimited
+B. 10,000 subscriptions
+C. Unlimited, with no stated cap on subscriptions
 D. 1,000
 
 <details>
@@ -800,8 +800,8 @@ D. 1,000
 ### Question 40
 **Scenario:** Which tool allows administrators to manage Azure resources using command-line scripts that can be automated?
 
-A. Azure CLI
-B. Azure Mobile App
+A. Azure CLI, a scriptable command-line tool
+B. Azure Mobile App, for monitoring resources on the go
 C. Azure Portal
 D. Azure Advisor
 

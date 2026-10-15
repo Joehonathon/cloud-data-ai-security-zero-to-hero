@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** An insurer wants an assistant answering questions about policy documents. Documents change monthly, answers must cite the source clause, and there are no ML engineers.
 
-A. Fine-tune a model on the policy corpus
-B. Pre-train a domain model
-C. RAG over the policy documents with citations
-D. Put all documents in the prompt
+A. Fine-tune a base model on the policy corpus each month so the clause wording is learned into its weights
+B. Pre-train a domain model on the insurer's own documents from scratch
+C. RAG over the policy documents, citing the retrieved clause
+D. Put all documents in the prompt on every request and rely on the model to find the clause
 
 <details>
 <summary>Answer</summary>
@@ -28,8 +28,8 @@ D. Put all documents in the prompt
 **Scenario:** A team has fine-tuned a model and wants to serve it to production with a latency commitment.
 
 A. Either, depending on volume
-B. A dedicated AI cluster, which is required to host a custom model
-C. OCI Data Science model deployment
+B. A dedicated AI cluster, which is required to host a custom model and gives reserved capacity for latency
+C. OCI Data Science model deployment, the managed service for serving fine-tuned models
 D. On-demand inference
 
 <details>
@@ -45,9 +45,9 @@ D. On-demand inference
 ### Question 3
 **Scenario:** A RAG chatbot gives confidently wrong answers although the information is in the corpus. The team increased retrieved chunks from 3 to 20 and it got worse.
 
-A. Raise the temperature
-B. Log the retrieved chunks to see whether the right one is present, then reduce the count and consider reranking
-C. Increase the chunk count further
+A. Raise the temperature so the model explores other phrasings and is less anchored to the wrong passages it retrieved
+B. Log the retrieved chunks to check the right one is present, then cut the count and consider reranking
+C. Increase the chunk count further, to 40, so that more of the corpus reaches the model and the right passage is certain to be included
 D. Fine-tune the model on the corpus
 
 <details>
@@ -64,9 +64,9 @@ D. Fine-tune the model on the corpus
 **Scenario:** A pipeline extracts structured fields from contracts and produces slightly different values on repeated runs, breaking downstream reconciliation.
 
 A. Set temperature to 0 and validate the output against a schema
-B. Fine-tune for consistency
-C. Increase max tokens
-D. Retry until two runs agree
+B. Fine-tune the model on labelled contracts so that it always returns identical values for the same contract text
+C. Increase max tokens so that the model has room to finish every extraction
+D. Retry each extraction until two runs agree, then keep the shared value
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. Retry until two runs agree
 ### Question 5
 **Scenario:** Inference costs tripled. Every request sends the full conversation history, 15 retrieved chunks, and a 2,000-token system prompt.
 
-A. Reduce retrieved chunks, summarize or window the conversation memory, shorten the system prompt, and cap max tokens
+A. Reduce retrieved chunks, window or summarize memory, shorten the system prompt, cap max tokens
 B. Reduce traffic
 C. Cache whole responses
-D. Move to a dedicated cluster
+D. Move to a dedicated cluster, because a fixed hourly price always works out cheaper than per-token billing at any volume
 
 <details>
 <summary>Answer</summary>
@@ -99,8 +99,8 @@ D. Move to a dedicated cluster
 ### Question 6
 **Scenario:** A multi-tenant assistant returns one organization's content to a user from another. What is the correct fix?
 
-A. Filter by tenant in the vector query, or use separate namespaces per tenant, authorizing on the end user's identity
-B. Deploy a separate fine-tuned model per tenant
+A. Filter by tenant in the vector query or use per-tenant namespaces, authorizing on user identity
+B. Deploy a separate fine-tuned model per tenant, with documents baked into the weights
 C. Post-filter results after generation
 D. Instruct the model in the system prompt not to reveal other tenants' data
 
@@ -117,10 +117,10 @@ D. Instruct the model in the system prompt not to reveal other tenants' data
 ### Question 7
 **Scenario:** Which statement about fine-tuning versus RAG is correct?
 
-A. They are alternatives that cannot be combined
+A. They are alternatives that cannot be combined, since a tuned model cannot take retrieved context
 B. RAG requires retraining when documents change
 C. Fine-tuning is always more accurate
-D. Fine-tuning changes behavior; RAG changes what the model knows for a request
+D. Fine-tuning changes how the model behaves; RAG changes what it knows on each request, so they can be combined
 
 <details>
 <summary>Answer</summary>
@@ -135,9 +135,9 @@ D. Fine-tuning changes behavior; RAG changes what the model knows for a request
 ### Question 8
 **Scenario:** Chunks are set to 50 tokens each. Answers cite the right documents but lack coherent explanation.
 
-A. Change the similarity metric
+A. Change the similarity metric from cosine to dot product, since the right documents are found but ranked by the wrong measure
 B. Lower the temperature
-C. Increase chunk size and add overlap, splitting on structural boundaries
+C. Increase chunk size, add overlap, and split on structural boundaries
 D. Retrieve fewer chunks
 
 <details>
@@ -153,9 +153,9 @@ D. Retrieve fewer chunks
 ### Question 9
 **Scenario:** Which LangChain component holds prior conversation turns and is a major cost driver?
 
-A. Output parser
-B. Text splitter
-C. Memory
+A. Output parser that formats the model's reply into a structured object
+B. Text splitter that cuts the source documents into chunks
+C. Memory, the component that buffers earlier turns
 D. Retriever
 
 <details>
@@ -171,10 +171,10 @@ D. Retriever
 ### Question 10
 **Scenario:** What must be true for a query embedding to retrieve the right chunks?
 
-A. The query must use the same words as the document
-B. The query must be embedded with the same model used to index the chunks
-C. The chunks must be sorted alphabetically
-D. The vector store must use Euclidean distance
+A. The query must use exactly the same words as the document, since matching is done on shared vocabulary rather than meaning
+B. The query must be embedded with the same model that indexed the chunks
+C. The chunks must be sorted alphabetically by their source document title before upload
+D. The vector store must use Euclidean distance rather than cosine similarity or dot product
 
 <details>
 <summary>Answer</summary>
@@ -189,9 +189,9 @@ D. The vector store must use Euclidean distance
 ### Question 11
 **Scenario:** Which parameter should be adjusted to make output less repetitive over a long generation?
 
-A. Top-k set to 1
+A. Top-k set to 1, so the model always picks its single most likely token and cannot loop over the same phrases
 B. Max tokens
-C. Temperature only
+C. Temperature set to zero
 D. Frequency penalty
 
 <details>
@@ -207,8 +207,8 @@ D. Frequency penalty
 ### Question 12
 **Scenario:** A RAG system must be evaluated. What should be measured?
 
-A. Answer quality only
-B. Retrieval quality and answer quality separately
+A. Answer quality only, scored end to end by reviewers, because retrieval problems always show up in the final answer
+B. Retrieval quality and answer quality, measured separately
 C. Token throughput
 D. Model perplexity
 
@@ -243,10 +243,10 @@ D. Full fine-tuning only
 ### Question 14
 **Scenario:** What is the primary risk of retrieving from a corpus that outside parties can write to?
 
-A. Slower retrieval
+A. Slower retrieval, because every outside write forces a complete re-index that locks the vector store until it finishes
 B. Higher embedding costs
 C. Duplicate chunks
-D. Indirect prompt injection: planted instructions reach the model through retrieved text
+D. Indirect prompt injection: planted instructions reach the model via retrieved text
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. Indirect prompt injection: planted instructions reach the model through retri
 ### Question 15
 **Scenario:** Which is the correct order of the RAG indexing phase?
 
-A. Chunk the documents, embed the chunks, store the vectors with metadata
+A. Chunk the documents, embed the chunks, store vectors with metadata
 B. Store the documents, generate, then embed
-C. Embed the query, search, retrieve, generate
-D. Fine-tune, deploy, evaluate
+C. Embed the query, search the vector store, retrieve the top chunks, and generate an answer from them
+D. Fine-tune the model, deploy it to a dedicated cluster, and then evaluate it
 
 <details>
 <summary>Answer</summary>

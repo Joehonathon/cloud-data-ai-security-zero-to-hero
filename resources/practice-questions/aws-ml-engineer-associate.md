@@ -10,9 +10,9 @@
 **Scenario:** A team has 1 TB of training data in S3 and runs SageMaker training jobs. The job is read-bound. What feature optimizes I/O?
 
 A. Use SageMaker FastFile mode or Pipe mode (stream data, no full download)
-B. Use SageMaker File mode (download all data first)
-C. Move data to EBS
-D. Use smaller instances
+B. Use SageMaker File mode, which downloads the whole dataset to the instance volume before training starts
+C. Move the data to an EBS volume attached to the training instance, so reads no longer cross the network
+D. Use smaller instances so each one needs to read less of the dataset from S3 during the job
 
 <details>
 <summary>Answer</summary>
@@ -28,9 +28,9 @@ D. Use smaller instances
 **Scenario:** Hyperparameter tuning across 100 candidate configs - what SageMaker feature?
 
 A. SageMaker Automatic Model Tuning (AMT) with Bayesian search
-B. EC2 Spot Fleet
-C. SageMaker Pipelines
-D. Manual grid search via shell scripts
+B. EC2 Spot Fleet, which launches many cheap instances to run the candidate configs in parallel
+C. SageMaker Pipelines, which picks the next hyperparameter values from the results of earlier steps
+D. Manual grid search via shell scripts that launch one training job per combination
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. Manual grid search via shell scripts
 ### Question 3
 **Scenario:** A batch inference job needs to score 10M records overnight. What endpoint type?
 
-A. Lambda
-B. SageMaker Batch Transform
-C. Real-time endpoint
-D. SageMaker Serverless inference
+A. Lambda, invoking one function per record and relying on its concurrency to finish overnight
+B. SageMaker Batch Transform, which runs distributed offline scoring
+C. A real-time endpoint sized for the peak, sending the 10M requests one at a time over HTTPS
+D. SageMaker Serverless inference, sending the records as concurrent requests with no endpoint to manage
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. SageMaker Serverless inference
 ### Question 4
 **Scenario:** A team needs A/B testing between model v1 and v2. Which SageMaker feature?
 
-A. Two separate endpoints + manual routing
-B. SageMaker endpoints with multiple production variants and traffic split (e.g., 90/10)
-C. Inference recommender
-D. Lambda function with random routing
+A. Two separate endpoints with manual routing in the client, switching a share of users over by hand during the test
+B. SageMaker endpoints with multiple production variants and a traffic split (e.g., 90/10)
+C. Inference Recommender, which splits live traffic across variants
+D. A Lambda function with random routing that invokes either model's endpoint at the chosen ratio
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. Lambda function with random routing
 ### Question 5
 **Scenario:** Data drift detection on a deployed model - which SageMaker feature?
 
-A. AWS Config
-B. CloudWatch only
-C. SageMaker Model Monitor
-D. Amazon Macie
+A. AWS Config, which records configuration changes and flags drift in the model's input data
+B. CloudWatch only, using the built-in CPU and memory metrics to detect shifts in the input data
+C. SageMaker Model Monitor, comparing live data against a training baseline
+D. Amazon Macie, which scans the captured inference data and reports changes in feature distributions
 
 <details>
 <summary>Answer</summary>
@@ -99,9 +99,9 @@ D. Amazon Macie
 ### Question 6
 **Scenario:** A team trains a custom image classifier. They want to use a pre-trained backbone (ResNet) and fine-tune the final layers. Which approach?
 
-A. Train from scratch
-B. Use only Amazon Rekognition
-C. Custom hardware
+A. Train from scratch on your own images, which converges faster than starting from a pre-trained backbone
+B. Use only Amazon Rekognition, since its stock labels can be fine-tuned layer by layer through the API
+C. Custom hardware, such as Trainium instances, which replaces the need for pre-trained weights
 D. Transfer learning with a pre-trained model from SageMaker JumpStart
 
 <details>
@@ -117,10 +117,10 @@ D. Transfer learning with a pre-trained model from SageMaker JumpStart
 ### Question 7
 **Scenario:** Data labeling at scale - which AWS service?
 
-A. AWS Lambda
+A. AWS Lambda, running a function that applies labels as objects land in S3
 B. SageMaker Ground Truth (managed labeling with human workforce + ML-assisted labeling)
-C. SageMaker Studio
-D. Amazon Mechanical Turk only
+C. SageMaker Studio, whose notebooks include a built-in labeling workforce
+D. Amazon Mechanical Turk only, where you build the task UI, quality checks, and routing yourself
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Amazon Mechanical Turk only
 ### Question 8
 **Scenario:** A SageMaker Pipelines pipeline orchestrates: preprocess → train → evaluate → register → deploy. What's the value vs raw scripts?
 
-A. Versioned, reproducible, lineage-tracked, integrated with SageMaker Model Registry, conditional steps
-B. Faster execution
-C. They're identical
-D. Lower cost
+A. Versioned, reproducible, lineage-tracked, integrated with Model Registry, and supports conditional steps
+B. Faster execution, because pipeline steps always run on larger instances
+C. They're identical, since a pipeline just runs the same script commands in the same order
+D. Lower cost, because the service runs the steps for free and only bills for the storage used, and the compute savings are guaranteed
 
 <details>
 <summary>Answer</summary>
@@ -153,9 +153,9 @@ D. Lower cost
 ### Question 9
 **Scenario:** A model needs to serve predictions in <100ms. What endpoint configuration?
 
-A. Batch Transform
-B. Lambda only
-C. Serverless inference
+A. Batch Transform, which starts a job per request and writes results to S3
+B. Lambda only, hosting the model in the function package with provisioned concurrency for every request
+C. Serverless inference, which has no cold starts and so always answers in under a hundred milliseconds
 D. Real-time endpoint with provisioned instances; enable auto-scaling on InvocationsPerInstance
 
 <details>
@@ -171,10 +171,10 @@ D. Real-time endpoint with provisioned instances; enable auto-scaling on Invocat
 ### Question 10
 **Scenario:** Which is the AWS-managed feature store?
 
-A. Amazon RDS
-B. SageMaker Feature Store
-C. DynamoDB
-D. ElasticSearch
+A. Amazon RDS, a managed relational database that stores features for training and serving
+B. SageMaker Feature Store, with online and offline stores
+C. DynamoDB, which is the managed feature store with offline S3 storage built in
+D. ElasticSearch, which indexes the features for low-latency serving and training exports
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. ElasticSearch
 ### Question 11
 **Scenario:** A model is in production. Its accuracy slowly degrades over weeks. What's the most likely cause?
 
-A. The model was always broken
-B. Hardware failure
-C. Network latency
-D. Concept drift (the underlying relationship between features and target shifts over time, e.g., user preferences change)
+A. The model was always broken, and the degradation only became visible once enough traffic had arrived
+B. Hardware failure on the instance, which slowly lowers prediction accuracy as the GPU memory degrades
+C. Network latency between the client and the endpoint, which makes responses arrive after the timeout
+D. Concept drift (the relationship between features and target shifts over time, e.g., user preferences change)
 
 <details>
 <summary>Answer</summary>
@@ -207,9 +207,9 @@ D. Concept drift (the underlying relationship between features and target shifts
 ### Question 12
 **Scenario:** A model trained on US data underperforms in EU markets. What's the issue?
 
-A. Model size
-B. The model is broken
-C. Network latency
+A. Model size, since a model trained on US data is too large to generalize to a smaller EU population
+B. The model is broken, because the training job failed to converge when it was run in the US region
+C. Network latency from EU users to a US-hosted endpoint, which causes timeouts and bad predictions
 D. Distribution shift / data drift between training and deployment populations
 
 <details>
@@ -226,9 +226,9 @@ D. Distribution shift / data drift between training and deployment populations
 **Scenario:** SageMaker Clarify is for:
 
 A. Bias detection in data and models, plus model explainability (SHAP values)
-B. Encryption
-C. Cost optimization
-D. Networking
+B. Encryption of training data and model artifacts with KMS keys
+C. Cost optimization, recommending cheaper instance types for training and hosting based on past usage
+D. Networking, configuring VPC endpoints and security groups for training containers
 
 <details>
 <summary>Answer</summary>
@@ -243,10 +243,10 @@ D. Networking
 ### Question 14
 **Scenario:** Multi-model endpoint vs multiple single-model endpoints?
 
-A. Multi-model only works for one framework
-B. They're identical
-C. Multi-model endpoint hosts many models on shared compute (low traffic per model = cost savings)
-D. Multi-model is always slower
+A. Multi-model endpoints hold only a handful of models, so they suit high-traffic models
+B. They're identical, since each model type bills per instance hour and loads every model at endpoint start
+C. A multi-model endpoint hosts many models on shared compute (low traffic per model = cost savings)
+D. Multi-model is always slower, because each request must reload the model from S3 before it can run, however often it is called
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. Multi-model is always slower
 ### Question 15
 **Scenario:** Bedrock vs SageMaker - high-level distinction?
 
-A. Bedrock is for non-ML
-B. Bedrock = managed access to foundation models via API (no model hosting); SageMaker = full ML platform including custom training, hosting, MLOps
-C. Identical
-D. SageMaker only does training; Bedrock only does inference
+A. Bedrock is for non-ML workloads such as data pipelines, while SageMaker is where all machine learning runs
+B. Bedrock = managed API access to foundation models with no hosting; SageMaker = full ML platform for custom training, hosting, MLOps
+C. Identical, since the two services host the same models and differ only in console layout and pricing
+D. SageMaker only does training and cannot host a model; Bedrock only does inference on its own models
 
 <details>
 <summary>Answer</summary>
@@ -279,10 +279,10 @@ D. SageMaker only does training; Bedrock only does inference
 ### Question 16
 **Scenario:** A team trains a model that exceeds memory on a single GPU. The dataset is 800 GB. Best SageMaker training pattern?
 
-A. SageMaker Distributed Training - data parallel (sharded data, replicated model) for moderate model sizes; model parallel (sharded model across GPUs) when the model itself is the bottleneck
-B. Local mode only
-C. Train on a smaller sample
-D. Inference-only
+A. SageMaker distributed training: data parallel (sharded data, replicated model) for moderate models, model parallel (sharded model) when the model itself is the bottleneck
+B. Local mode only, since it runs the training container on the notebook instance's GPU and streams the 800 GB dataset from S3 without needing more memory
+C. Train on a smaller sample of the data so that the model fits in a single GPU's memory, accepting the accuracy loss and avoiding any distributed setup
+D. An inference-only instance type with a large amount of RAM, which can train models larger than a single GPU can hold in memory
 
 <details>
 <summary>Answer</summary>
@@ -297,10 +297,10 @@ D. Inference-only
 ### Question 17
 **Scenario:** A model in production drifts after 6 months - predictions degrade as inputs shift. Which feature catches this?
 
-A. CloudTrail
-B. Manual review
-C. SageMaker Model Monitor with data quality + model quality baselines, scheduled to compare live traffic against a baseline and emit CloudWatch metrics + alerts
-D. AWS Config
+A. CloudTrail, which records every API call to the endpoint and flags inputs whose values drift from training, then sends the findings to an SNS topic for the on-call team
+B. Manual quarterly review of a sample of predictions by a data scientist, who files a ticket
+C. SageMaker Model Monitor with data quality and model quality baselines, scheduled to compare live traffic with the baseline and emit CloudWatch alerts
+D. AWS Config rules that report a violation when the input data distribution changes
 
 <details>
 <summary>Answer</summary>
@@ -315,17 +315,17 @@ D. AWS Config
 ### Question 18
 **Scenario:** A real-time endpoint must scale from 1-200 instances based on traffic with a sub-100 ms p99 SLA. Best configuration?
 
-A. SageMaker async or real-time endpoint with auto-scaling on TargetTrackingScalingPolicy (e.g., InvocationsPerInstance), provisioned warm pool, and instance type matched to model latency profile
-B. Batch transform
-C. Static fleet of 200
-D. Lambda with the model in a layer
+A. A real-time endpoint with auto-scaling on a target-tracking policy (e.g., InvocationsPerInstance), a minimum instance count above zero, and an instance type matched to the model's latency profile
+B. Batch transform, which scales to hundreds of instances automatically and is the cheapest way to hold a sub-100 ms p99 for interactive users, returning results when the whole job finishes, with no endpoint left running between jobs
+C. A static fleet of 200 instances held permanently, which guarantees capacity for the peak and removes any need for scaling policies or scale-out delay, at a fixed hourly cost
+D. Lambda with the model in a layer, which scales to thousands of concurrent executions and keeps the p99 low because functions never start cold with a large model
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Real-time endpoints support target-tracking auto-scaling. Warm pools cut scale-out latency. For very bursty workloads, async endpoints buffer to SQS-style queue. Lambda has cold-start and 250 MB layer limits incompatible with most ML models.
+**Why:** Real-time endpoints support target-tracking auto-scaling. A sensible minimum instance count and scale-out target keep latency stable while capacity grows. For very bursty workloads, async endpoints buffer to SQS-style queue. Lambda has cold-start and 250 MB layer limits incompatible with most ML models.
 </details>
 
 ---
@@ -333,17 +333,17 @@ D. Lambda with the model in a layer
 ### Question 19
 **Scenario:** Cost optimization: workload runs predictable, mixed batch + real-time. Which combination saves most?
 
-A. On-demand only
-B. Reserved EC2
-C. SageMaker Savings Plans for predictable usage + Spot instances for batch transform / non-critical training jobs (with checkpointing) + Multi-Model Endpoints for low-traffic models
-D. Disable everything
+A. On-demand only, which keeps full flexibility and avoids any commitment or interruption risk, at the cost of paying list price for a baseline that never changes
+B. Reserved EC2 instances bought for the whole fleet, applied automatically to every SageMaker instance and endpoint
+C. SageMaker Savings Plans for steady usage, managed Spot training with checkpoints, and Multi-Model Endpoints for low-traffic models
+D. Disable everything outside business hours and run batch jobs by hand, stopping real-time traffic
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Savings Plans cut steady-state cost ~30-60%. Spot saves 70-90% on interruptible jobs (training with checkpointing, batch). Multi-Model Endpoints amortize host cost across many small models. Layer the levers.
+**Why:** Savings Plans cut steady-state cost ~30-60%. Managed Spot Training saves up to 90% on interruptible jobs (training with checkpointing). Multi-Model Endpoints amortize host cost across many small models. Layer the levers.
 </details>
 
 ---
@@ -351,10 +351,10 @@ D. Disable everything
 ### Question 20
 **Scenario:** Bedrock - which feature lets you ground responses on private documents without managing a vector store?
 
-A. Bedrock Knowledge Bases - managed RAG: ingests S3 docs, chunks, embeds (Titan Embeddings or other), stores in OpenSearch Serverless / RDS / Pinecone, retrieves at inference
-B. Bedrock Studio
-C. Bedrock Agents
-D. Bedrock Guardrails
+A. Bedrock Knowledge Bases - managed RAG that ingests S3 documents, chunks and embeds them, and retrieves from a vector store at inference
+B. Bedrock Studio, a collaborative workspace for building and sharing prompt-based apps; you would still need to create and populate a vector store yourself
+C. Bedrock Agents, which orchestrate multistep tasks by calling APIs you describe, and which do not by themselves ingest and index your documents
+D. Bedrock Guardrails, which filter harmful content and sensitive information in prompts and responses but do not retrieve documents
 
 <details>
 <summary>Answer</summary>
@@ -369,10 +369,10 @@ D. Bedrock Guardrails
 ### Question 21
 **Scenario:** Bias detection during training - which SageMaker feature?
 
-A. Model Monitor only
-B. Ground Truth
-C. SageMaker Clarify - measures pre-training bias (class imbalance, label imbalance), post-training bias (predictions vary by sensitive feature), and explainability (SHAP)
-D. Pipelines
+A. Model Monitor only, which compares the live endpoint's input data against a baseline once the model is deployed in production
+B. Ground Truth, which manages human labeling jobs for training data and reports annotator agreement for each batch
+C. SageMaker Clarify: measures pre-training bias (class and label imbalance), post-training bias (predictions varying by sensitive feature), and explainability (SHAP)
+D. Pipelines, which orchestrates preprocessing, training, and evaluation steps as a versioned DAG and registers the resulting model
 
 <details>
 <summary>Answer</summary>
@@ -387,10 +387,10 @@ D. Pipelines
 ### Question 22
 **Scenario:** A team versions training code, hyperparameters, and model artifacts for reproducibility. Which native combo?
 
-A. S3 only
-B. CodeCommit only
-C. Manual notebook saves
-D. SageMaker Pipelines (DAG of steps) + Model Registry (versioned models with approval workflow) + git for code + Experiments for tracking metrics across runs
+A. S3 only, with versioning enabled on the bucket so every object keeps its earlier versions, but nothing ties code, parameters, and artifacts together
+B. CodeCommit only, committing the training scripts and parameter files so each run can be rebuilt, but model artifacts and metrics stay untracked
+C. Manual notebook saves with dated file names, kept in the team's shared Studio space and copied to S3 whenever someone remembers
+D. SageMaker Pipelines for the workflow, Model Registry for versioned models with approval, git for code, and Experiments for run metrics
 
 <details>
 <summary>Answer</summary>
@@ -405,10 +405,10 @@ D. SageMaker Pipelines (DAG of steps) + Model Registry (versioned models with ap
 ### Question 23
 **Scenario:** Data labeling at scale (50,000 images for object detection) with quality control?
 
-A. Hire freelancers offline
-B. Manual emails
-C. SageMaker Ground Truth with built-in workflows, automated labeling (active learning) for cost reduction, plus consensus / multi-annotator review for quality
-D. Bedrock
+A. Hire freelancers offline to draw boxes in a drawing tool and send the files back by email, with a manager spot-checking a few batches
+B. Manual emails to staff with image batches attached and a spreadsheet to collect their answers, reviewed by one person at the end
+C. SageMaker Ground Truth with built-in workflows, automated labeling (active learning) to cut cost, and consensus review across annotators, plus a private workforce option for sensitive images
+D. Bedrock, whose foundation models label images through the API; you would still design the consensus and review workflow yourself
 
 <details>
 <summary>Answer</summary>
@@ -423,10 +423,10 @@ D. Bedrock
 ### Question 24
 **Scenario:** A team wants reproducible feature engineering across training and serving. Best AWS service?
 
-A. S3 only
-B. RDS
-C. DynamoDB
-D. SageMaker Feature Store - dual storage (offline for training, online for low-latency inference) with consistency guarantees and feature versioning
+A. S3 only, storing the engineered features as Parquet files that each side transforms itself
+B. RDS, a relational database holding the features as table columns that training and serving code each query, with no feature versioning or lineage between the two
+C. DynamoDB, a key-value store serving features at low latency, with the training data exported separately and the logic duplicated
+D. SageMaker Feature Store: offline storage for training and online storage for low-latency inference, with consistent and versioned features
 
 <details>
 <summary>Answer</summary>
@@ -441,10 +441,10 @@ D. SageMaker Feature Store - dual storage (offline for training, online for low-
 ### Question 25
 **Scenario:** Securing a SageMaker training job that processes PII?
 
-A. Public S3
-B. VPC-only training with no internet access (use VPC endpoints), KMS-encrypted training data and artifacts, IAM roles with least-privilege, network isolation flag enabled, plus inter-container traffic encryption
-C. Open security groups
-D. Disable encryption
+A. Public S3 buckets with open read access, so the training job can pull the PII without any credentials
+B. VPC-only training with no internet access (use VPC endpoints), KMS-encrypted data and artifacts, least-privilege IAM roles, network isolation, and inter-container traffic encryption
+C. Open security groups on the training instances, so that data scientists can reach the containers while debugging
+D. Disable encryption on the training volumes and artifacts to avoid the performance overhead of encrypting large datasets, since the job runs in a private subnet
 
 <details>
 <summary>Answer</summary>

@@ -15,9 +15,9 @@ difficulty: intermediate
 **Scenario:** What does Packer produce?
 
 A. Machine images (AMIs, VM images, container images) built from a template
-B. Kubernetes manifests
-C. Terraform state
-D. Running infrastructure
+B. Kubernetes manifests that describe how the built images should be deployed and scaled in a cluster
+C. Terraform state files that record which cloud resources exist and which module created each of them
+D. Running infrastructure such as VPCs, load balancers, and instances provisioned directly from the template
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Running infrastructure
 ### Question 2
 **Scenario:** A single template must produce an AWS AMI and an Azure image from the same configuration.
 
-A. Two separate templates
-B. One build block with multiple sources, so both are produced in parallel from the same provisioners
-C. It is not supported
-D. Run Packer twice manually
+A. Two separate templates, one per cloud, kept in sync by copying changes between them
+B. One build block with multiple sources, so each image is produced in parallel from the same provisioners
+C. It is not supported, because each template can define only one source and one builder per file
+D. Run Packer twice manually with different template files, then compare the results by hand
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Run Packer twice manually
 ### Question 3
 **Scenario:** Software must be installed into the image during the build.
 
-A. A variable
-B. A post-processor
+A. A variable block, which stores the package name and version so the installer can look it up later
+B. A post-processor, which runs after the build to install the software into the finished image
 C. A provisioner block, such as shell, file, Ansible, or PowerShell
-D. A source block
+D. A source block, which defines the base image and the builder that starts the temporary instance
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. A source block
 ### Question 4
 **Scenario:** Which HCL block defines the plugins a template requires?
 
-A. `source`
-B. `build`
-C. `locals`
-D. `packer { required_plugins { ... } }`
+A. `source`, which names the builder plugin and its settings for one image target, such as an AMI
+B. `build`, which lists the sources and the provisioners that run on them
+C. `locals`, which holds computed values that are reused elsewhere in the template, like names and tags
+D. `packer { required_plugins { ... } }`, with a version constraint per plugin
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. `packer { required_plugins { ... } }`
 ### Question 5
 **Scenario:** A secret must be passed into a build without appearing in the template.
 
-A. A comment
-B. Hard-code it
-C. A sensitive variable supplied by environment variable, a var file outside version control, or fetched from Vault
-D. A local value
+A. A comment next to the variable that says the value is secret, so reviewers know not to commit it
+B. Hard-code it in the template and restrict who has read access to the repository
+C. A sensitive variable supplied from the environment, a var file kept out of git, or Vault
+D. A local value in a `locals` block, since locals are never printed in build output
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. A local value
 ### Question 6
 **Scenario:** Build credentials should not be baked into the image.
 
-A. Clean up build-time credentials, SSH keys, and history in a final provisioner step, and verify the resulting image
-B. Encrypt the image only
-C. Ignore it
-D. They will be removed automatically
+A. Remove build-time credentials, SSH keys, and shell history in a final provisioner, and verify the image
+B. Encrypt the image only, since an encrypted snapshot hides any credentials stored on its disk from launchers and from the account owner
+C. Ignore it, because the cloud provider scrubs credentials from every image as part of registering the AMI in a region
+D. They are removed automatically when Packer terminates the temporary instance
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. They will be removed automatically
 ### Question 7
 **Scenario:** The same image must be validated before it is published.
 
-A. Nothing is available
-B. Manual login
-C. Only `packer build`
-D. `packer validate` for syntax, plus a test provisioner or an external tool such as InSpec or Goss to verify the built image
+A. Nothing is available in Packer, so validation has to wait until instances are launched from the image in production
+B. Log in manually to a production instance launched from the published image and check the installed software by eye
+C. Only `packer build`, since a successful build already proves the image contents are correct
+D. `packer validate` for syntax, plus a test provisioner or a tool such as InSpec or Goss to verify the image
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. `packer validate` for syntax, plus a test provisioner or an external tool suc
 ### Question 8
 **Scenario:** Build output should be tagged and registered so downstream Terraform can find it.
 
-A. Use `latest` tags
-B. Copy the ID by hand
+A. Use `latest` tags on every image so that downstream Terraform always picks up the newest build automatically
+B. Copy the ID by hand from the build output into the Terraform variables file after each build
 C. A manifest post-processor writing artifact IDs, or HCP Packer registry with channels
-D. Hard-code the AMI ID in Terraform
+D. Hard-code the AMI ID in Terraform and update it by hand
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Hard-code the AMI ID in Terraform
 ### Question 9
 **Scenario:** A build fails halfway and leaves a running instance.
 
-A. It always cleans up
-B. Nothing can be done
-C. Packer normally cleans up on failure; use `-on-error=abort` or `ask` to keep the instance for debugging, and check for orphans after crashes
-D. Terminate the whole account
+A. It always cleans up, so a failed build never leaves instances, keys, or security groups behind in the account
+B. Nothing can be done; the instance is locked by Packer and can only be removed by cloud provider support
+C. Packer normally cleans up on failure; use `-on-error=abort` or `ask` to keep the instance
+D. Terminate the whole account and recreate it, which is the only way to remove resources Packer left behind
 
 <details>
 <summary>Answer</summary>
@@ -177,9 +177,9 @@ D. Terminate the whole account
 **Scenario:** Multiple similar images differ only in a version number.
 
 A. Use input variables and locals, with `-var` or a `.pkrvars.hcl` file per variant
-B. Use separate repositories
-C. Duplicate the template
-D. Edit the template each time
+B. Use separate repositories, one per version
+C. Duplicate the template for each variant and change the version
+D. Edit the template each time and commit the change, keeping history in git to recover older versions
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Edit the template each time
 ### Question 11
 **Scenario:** What is the benefit of immutable infrastructure built with Packer?
 
-A. Servers are replaced rather than modified, so configuration drift is eliminated and rollback means redeploying a previous image
-B. No monitoring needed
-C. Faster networking
-D. Cheaper storage
+A. Servers are replaced rather than modified, so drift is eliminated and rollback means redeploying an earlier image
+B. No monitoring is needed, because a validated image cannot fail in production
+C. Faster networking, because baked images use a dedicated network path
+D. Cheaper storage, since immutable images are deduplicated and cost nothing to keep for any length of time or number of versions
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Cheaper storage
 ### Question 12
 **Scenario:** Build times are long because every build installs the full base software stack.
 
-A. Accept it
-B. Use a layered approach: build a base image, then build application images from it, so common steps run once
-C. Remove provisioners
-D. Use a larger instance only
+A. Accept it, because installing the full stack on each build is the only way to keep the image consistent
+B. Layer it: build a base image, then build application images from it so common steps run once
+C. Remove provisioners and install the software by hand after launch
+D. Use a larger instance type only, since build time falls with vCPU count
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Use a larger instance only
 ### Question 13
 **Scenario:** A shell provisioner needs to run as root.
 
-A. Change the source image
+A. Change the source image to one that boots as root, since Packer cannot raise privileges after the build starts
 B. `execute_command` with sudo, or the `elevated_user` settings on Windows
-C. It cannot be done
-D. Run Packer as root locally
+C. It cannot be done, because provisioners always run as the unprivileged SSH user that Packer logs in with
+D. Run Packer as root locally, so the provisioner inherits the privileges of the workstation shell
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Run Packer as root locally
 ### Question 14
 **Scenario:** Golden images must be patched on a regular cadence.
 
-A. Rebuild only when something breaks
-B. Ignore patching
-C. Patch running servers instead
-D. Rebuild images on a schedule in CI, run the validation suite, publish to a channel, and roll instances onto the new version
+A. Rebuild only when something breaks, so the image changes stay small and every rebuild has a clear cause
+B. Ignore patching, because the cloud provider updates the guest operating system on running instances
+C. Patch running servers instead, logging in to each one and applying updates in place on a schedule
+D. Rebuild images on a schedule in CI, run validation, publish to a channel, and roll instances onto the new version
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Rebuild images on a schedule in CI, run the validation suite, publish to a ch
 ### Question 15
 **Scenario:** Packer and Terraform in the same workflow.
 
-A. They are alternatives
-B. Packer builds the image, Terraform provisions infrastructure that uses it, with the image ID passed by data source or variable
-C. Packer deploys infrastructure
-D. Terraform builds images
+A. They are alternatives, so a team picks one tool for the whole workflow and never runs them together
+B. Packer builds the image, Terraform provisions infrastructure that uses it, passing the ID by data source or variable
+C. Packer deploys infrastructure by launching the built images into subnets, load balancers, and scaling groups
+D. Terraform builds images by running its own provisioners inside a temporary instance and saving a snapshot
 
 <details>
 <summary>Answer</summary>

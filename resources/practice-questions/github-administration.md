@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An enterprise must control accounts fully, including creating and deleting them.
 
-A. Personal access tokens
-B. Enterprise Managed Users with an identity provider
-C. SAML SSO over personal accounts
-D. Organization invitations
+A. Personal access tokens issued to each member
+B. Enterprise Managed Users, with accounts created and owned by the enterprise through an identity provider
+C. SAML SSO over members' existing personal accounts
+D. Organization invitations sent to each person's work email
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Organization invitations
 ### Question 2
 **Scenario:** Repository access must follow team structure and be reviewed easily.
 
-A. Grant to teams, ideally synchronized from IdP groups, with nested teams for inheritance
-B. Use outside collaborators
-C. Grant access to individuals per repository
-D. Give everyone write access
+A. Grant to teams, ideally synced from IdP groups, with nested teams for inheritance
+B. Use outside collaborators for each project, adding the people involved to every repository they touch with a defined role
+C. Grant access to individuals per repository, so every permission is explicit and can be read straight off the settings page
+D. Give everyone write access, then use branch protection to stop changes from reaching the default branch without review
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Give everyone write access
 ### Question 3
 **Scenario:** A policy must apply to every repository in the enterprise.
 
-A. A README
-B. Ask each team
-C. Enterprise-level policies and organization rulesets, which cascade down
-D. Configure each repository
+A. A README or contributing file in each repository describing the policy, which every contributor is expected to follow
+B. Ask each team to apply the policy to its own repositories and report back when the setting has been changed
+C. Enterprise policies and organization rulesets, which cascade down
+D. Configure each repository by hand, using a checklist that is repeated whenever a new repository is created
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Configure each repository
 ### Question 4
 **Scenario:** Only vetted actions should be usable in workflows.
 
-A. Restrict to actions created by GitHub and verified creators, plus an explicit allowlist, set at enterprise or organization level
-B. Disable Actions entirely
-C. Review workflows manually
-D. Allow all actions
+A. Restrict to actions by GitHub and verified creators, plus an allowlist, set at enterprise or organization level
+B. Disable Actions entirely and let teams use an external CI system
+C. Review workflows manually, with security approving every new `uses:` line
+D. Allow all actions, since pinning to a full commit SHA makes any action safe
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Allow all actions
 ### Question 5
 **Scenario:** Self-hosted runners must be available to some repositories only.
 
-A. One shared runner for everything
+A. One shared runner for everything, placed on the production network so that any workflow can reach the systems it needs
 B. Runner groups scoped to selected organizations or repositories
-C. Register them on every repository
-D. Public runners only
+C. Register the runners on every repository
+D. Public runners only, hosted by GitHub
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Public runners only
 ### Question 6
 **Scenario:** Audit data must be exported to a SIEM.
 
-A. Screenshots
-B. Audit log streaming to a supported destination, plus the audit log API for queries
-C. Repository logs
-D. Manual export monthly
+A. Screenshots of the audit log page taken weekly by an organization owner and attached to the SIEM ticket
+B. Audit log streaming to a supported destination, plus the audit log API
+C. Repository logs, meaning the commit history of each repository, which records every administrative action for the organization
+D. A manual export of the audit log each month, saved as JSON and loaded into the SIEM by an administrator
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Manual export monthly
 ### Question 7
 **Scenario:** A departing employee's access must be removed completely.
 
-A. Change the repository visibility
-B. Remove them from one organization
-C. Deprovision through the IdP (with EMU or SCIM), which removes organization memberships, and revoke tokens, SSH keys, and any authorized applications
-D. Delete their commits
+A. Change the repository visibility to private, which removes the former employee's access to the code they used to work on
+B. Remove them from one organization, since the membership there is what grants access to every repository they could use
+C. Deprovision through the IdP (EMU or SCIM), then revoke tokens, SSH keys and authorized apps
+D. Delete their commits from the repositories they contributed to
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Delete their commits
 ### Question 8
 **Scenario:** An organization must migrate repositories from another instance.
 
-A. Recreate them
-B. Clone and push manually
-C. Copy files
-D. GitHub Enterprise Importer or the migration APIs, which bring history plus metadata such as issues and pull requests
+A. Recreate the repositories by hand in the new organization
+B. Clone and push each repository manually with `git push --mirror`, which brings the issues, pull requests and reviews with it
+C. Copy the files from a working tree into a new repository, which preserves the commit authors and every commit date
+D. GitHub Enterprise Importer or the migration APIs, which bring issues and pull requests too
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. GitHub Enterprise Importer or the migration APIs, which bring history plus me
 ### Question 9
 **Scenario:** A repository must not be deleted accidentally.
 
-A. Make it private
-B. Hope
-C. Archive everything
-D. Restrict deletion through organization member privileges and rulesets, and keep backups
+A. Make it private, since the visibility setting controls who is allowed to delete a repository
+B. Hope that nobody removes it, and rely on the confirmation prompt that asks for the repository name to be typed
+C. Archive everything in the organization, since an archived repository cannot be deleted by any member or owner
+D. Limit repository deletion to owners through member privileges, and keep backups
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Restrict deletion through organization member privileges and rulesets, and ke
 ### Question 10
 **Scenario:** GitHub Apps versus OAuth apps for automation.
 
-A. OAuth apps are more secure
-B. GitHub Apps act with their own identity, take fine-grained permissions, are installed per repository, and use short-lived tokens; OAuth apps act as a user with broader scopes
-C. Only OAuth apps support webhooks
-D. They are identical
+A. OAuth apps are more secure because they act as a user and so inherit that user's multi-factor protection on every call they make, whereas apps hold only a key
+B. GitHub Apps have their own identity, fine-grained permissions, per-repository installs and short-lived tokens; OAuth apps act as a user
+C. Only OAuth apps support webhooks, so an integration that must react to repository events needs to be registered that way
+D. They are identical, because they use the same token format and the same permission scopes and differ only in where they are listed in the settings
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. They are identical
 ### Question 11
 **Scenario:** License usage must be understood before renewal.
 
-A. Enterprise license usage reporting, including consumed seats and, for Advanced Security, active committers
-B. Count repositories
-C. Count users manually
-D. Estimate
+A. Enterprise license usage reporting, including consumed seats and Advanced Security active committers
+B. Count repositories, since the number of repositories in each organization is what drives the seat total at renewal
+C. Count users manually from each People page
+D. Estimate from last year's invoice plus expected growth, which is close enough for the renewal conversation
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Estimate
 ### Question 12
 **Scenario:** An enterprise wants innersource: code visible internally but not publicly.
 
-A. Public repositories
+A. Public repositories, since anyone inside the company can find them
 B. Private repositories with manual invitations
-C. Internal repository visibility, which exposes the repository to all enterprise members
-D. Forks only
+C. Internal repository visibility, which exposes it to all enterprise members
+D. Forks only, where each team keeps a private fork of the code that others cannot find unless they are told about it
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Forks only
 ### Question 13
 **Scenario:** A support case must be raised with sufficient detail.
 
-A. Include the enterprise or organization, affected repository, timestamps, and a support bundle or diagnostic information where applicable, at the appropriate ticket priority
-B. A screenshot
-C. Post publicly
-D. A one-line description
+A. Include the organization, repository, timestamps, and a support bundle where applicable, at the right priority
+B. A screenshot of the error message
+C. Post publicly in the community forum and tag a GitHub staff member
+D. A one-line description of the symptom, since support will ask for any further detail
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. A one-line description
 ### Question 14
 **Scenario:** Two-factor authentication must be mandatory for an organization.
 
-A. Ask users
-B. Rely on strong passwords
-C. Enforce the 2FA requirement at the organization or enterprise level, noting that non-compliant members are removed and need reinstatement
-D. Enable it per user
+A. Ask users to turn on two-factor authentication through an email, then check the member list each month for who has not
+B. Rely on strong passwords with a minimum length and a ban on reuse, which gives the same protection as a second factor
+C. Enforce the 2FA requirement at the organization or enterprise level; non-compliant members are removed and need reinstatement
+D. Enable it per user from the organization's People page, which then forces each user to set up a second factor at their next sign-in
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Enable it per user
 ### Question 15
 **Scenario:** GitHub Enterprise Cloud versus Enterprise Server.
 
-A. Cloud cannot use SAML
-B. Server is always newer
-C. They are identical
-D. Cloud is GitHub-hosted with managed availability and the newest features; Server is self-hosted, giving network isolation and data residency at the cost of running and upgrading it yourself
+A. Cloud cannot use SAML, so organizations that need single sign-on with their own identity provider must choose Server instead, and run it themselves
+B. Server is always newer, because self-hosted releases ship first and Cloud receives the same features some months afterwards
+C. They are identical products apart from the licence terms, the billing relationship, and the logo shown on the sign-in page of each
+D. Cloud is GitHub-hosted and has the newest features; Server is self-hosted, giving isolation and residency at the cost of running it yourself
 
 <details>
 <summary>Answer</summary>

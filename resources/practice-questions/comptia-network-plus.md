@@ -14,10 +14,10 @@ difficulty: beginner
 ### Question 1
 **Scenario:** Which OSI layer does a router operate at?
 
-A. Layer 4, transport
-B. Layer 3, network
-C. Layer 7, application
-D. Layer 2, data link
+A. Layer 4, transport, forwarding by port number
+B. Layer 3, network, where packets are forwarded by destination IP address
+C. Layer 7, application, where devices inspect HTTP and DNS requests before forwarding them
+D. Layer 2, data link, forwarding by MAC address
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Layer 2, data link
 ### Question 2
 **Scenario:** A host has IP 192.168.10.50 with mask 255.255.255.0.
 
-A. The mask is invalid
-B. The network is 192.168.10.0/24 with 254 usable host addresses
-C. The network is 192.168.0.0/16
-D. There are 256 usable hosts
+A. The mask is invalid for a 192.168 address
+B. The network is 192.168.10.0/24, with 254 usable host addresses
+C. The network is 192.168.0.0/16, because the first two octets of a private address define the network
+D. There are 256 usable hosts, because every address in the 192.168.10.0 block can be assigned to a device
 
 <details>
 <summary>Answer</summary>
@@ -50,9 +50,9 @@ D. There are 256 usable hosts
 ### Question 3
 **Scenario:** TCP versus UDP.
 
-A. They are interchangeable
-B. UDP is more reliable
-C. TCP has no ordering
+A. They are interchangeable, since each of them guarantees delivery and ordering and they differ only in port numbers
+B. UDP is more reliable, because it sends each datagram without a handshake and so cannot be delayed by retransmission
+C. TCP has no ordering, because segments are delivered in whatever order the network happens to carry them
 D. TCP is connection-oriented with acknowledgment, ordering, and retransmission; UDP is connectionless with lower overhead and no delivery guarantee
 
 <details>
@@ -68,10 +68,10 @@ D. TCP is connection-oriented with acknowledgment, ordering, and retransmission;
 ### Question 4
 **Scenario:** A workstation gets a 169.254.x.x address.
 
-A. It has a public IP
-B. It has a valid static address
+A. It has a public IP, assigned by the ISP because the workstation is directly connected to the internet
+B. It has a valid static address, which an administrator configured in the 169.254 range for management
 C. APIPA: it failed to reach a DHCP server, so check DHCP availability, the relay agent, and layer 2 connectivity
-D. It is on the internet
+D. It is on the internet, with a working DHCP lease and gateway, and the problem is DNS resolution
 
 <details>
 <summary>Answer</summary>
@@ -86,17 +86,17 @@ D. It is on the internet
 ### Question 5
 **Scenario:** Which DNS record maps a hostname to an IPv4 address?
 
-A. MX
-B. CNAME
-C. A record
-D. AAAA record
+A. MX, which lists mail servers
+B. CNAME, which makes one name an alias for another name rather than an address
+C. A record, mapping a hostname to an IPv4 address
+D. AAAA record, for IPv6 addresses
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** C is IPv4, AAAA is IPv6, CNAME is an alias to another name, MX routes mail, PTR does reverse lookup, and TXT holds arbitrary text used for SPF and domain verification. Record-type identification is reliably on the exam.
+**Why:** An A record is IPv4, AAAA is IPv6, CNAME is an alias to another name, MX routes mail, PTR does reverse lookup, and TXT holds arbitrary text used for SPF and domain verification. Record-type identification is reliably on the exam.
 </details>
 
 ---
@@ -104,10 +104,10 @@ D. AAAA record
 ### Question 6
 **Scenario:** VLANs are configured and two hosts in different VLANs cannot communicate.
 
-A. Change the cable
+A. Change the cable between the switches
 B. That is expected; inter-VLAN routing requires a layer 3 device
-C. VLANs are broken
-D. Add more switches
+C. The VLANs are broken, so erase the switch configuration
+D. Add more switches, so that the hosts in each VLAN have another path to reach the other VLAN
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Add more switches
 ### Question 7
 **Scenario:** Which topology change prevents switching loops?
 
-A. Increasing bandwidth
-B. Removing all redundancy
-C. Adding more links
-D. Spanning Tree Protocol, which blocks redundant paths while keeping them available for failover
+A. Increasing bandwidth on the uplinks, which lets the switches absorb a broadcast storm without dropping frames
+B. Raising the TTL on Ethernet frames so looping frames expire later
+C. Adding more links between the same switches, so that traffic is shared across more parallel paths
+D. Spanning Tree Protocol, which blocks redundant paths yet keeps them available for failover
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Spanning Tree Protocol, which blocks redundant paths while keeping them avail
 ### Question 8
 **Scenario:** A user reports slow performance. What is the first troubleshooting step?
 
-A. Identify the problem: gather information, question the user, and determine what changed
-B. Replace hardware
-C. Reboot the server
-D. Escalate immediately
+A. Identify the problem: gather information, question the user, and find out what changed
+B. Replace hardware on the user's workstation and switch port, since slow performance is usually a failing component
+C. Reboot the server that hosts the application, and check whether the user still sees slow performance
+D. Escalate immediately to the vendor or a tier 3 team, before collecting any detail about the symptoms
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Escalate immediately
 ### Question 9
 **Scenario:** Which command traces the path a packet takes to a destination?
 
-A. `traceroute` / `tracert`
-B. `ipconfig`
-C. `ping`
-D. `netstat`
+A. `traceroute` / `tracert`, which lists each hop on the way to the destination by incrementing the TTL
+B. `ipconfig`, which shows the IP address, mask, and gateway configured on the local interfaces
+C. `ping`, which tests whether a destination answers ICMP echo requests but does not list hops
+D. `netstat`, which lists active connections and listening ports on the local host
 
 <details>
 <summary>Answer</summary>
@@ -177,9 +177,9 @@ D. `netstat`
 **Scenario:** Cable choice for a 100-metre run in an environment with heavy electrical interference.
 
 A. Fiber optic, which is immune to electromagnetic interference
-B. Any cable
-C. Coaxial
-D. Unshielded twisted pair
+B. Any cable, because the interference limit applies only to runs longer than the 100-metre maximum
+C. Coaxial, which is thicker and so reaches farther than twisted pair at the same interference level
+D. Unshielded twisted pair, which cancels interference through the twists in each pair at 100 metres
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Unshielded twisted pair
 ### Question 11
 **Scenario:** Which addresses are reserved for private use?
 
-A. 169.254.0.0/16
+A. 169.254.0.0/16, the range a host falls back to when no DHCP server answers
 B. 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16
-C. 1.1.1.1
-D. 8.8.8.8
+C. 1.1.1.1, a public DNS resolver
+D. 8.8.8.8, a public DNS resolver address that is routable on the internet
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. 8.8.8.8
 ### Question 12
 **Scenario:** A wireless network must authenticate users against a central directory rather than a shared passphrase.
 
-A. WPA2 or WPA3-Enterprise with 802.1X and a RADIUS server
-B. WPA3-Personal
+A. WPA2 or WPA3-Enterprise with 802.1X and a RADIUS server backed by the directory
+B. WPA3-Personal, with a shared passphrase
 C. An open network with a captive portal
-D. WEP
+D. WEP with a long key, which is easy to rotate but is the only option on very old access points
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. WEP
 ### Question 13
 **Scenario:** Which device operates at layer 7 and can inspect application content?
 
-A. A media converter
-B. A layer 2 switch
+A. A media converter, which changes the signal between copper and fiber cabling at layer 1
+B. A layer 2 switch, which forwards frames by destination MAC address and sees no application data
 C. A next-generation firewall or application-layer proxy
-D. A hub
+D. A hub, which repeats every signal to all ports at layer 1 and cannot inspect any content
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. A hub
 ### Question 14
 **Scenario:** Network documentation must support future troubleshooting.
 
-A. Nothing is needed
-B. A single spreadsheet of IPs
-C. Physical and logical diagrams, an IP address plan, rack and cable labeling, configuration backups, and a change log
-D. Diagrams alone
+A. Nothing is needed, because the devices store their own configuration and administrators can read it when needed
+B. A single spreadsheet of IP addresses
+C. Physical and logical diagrams, an IP address plan, cable labels, configuration backups, and a change log
+D. Diagrams alone, drawn once at installation, since the topology does not change after that point in the life of the site
 
 <details>
 <summary>Answer</summary>
@@ -266,9 +266,9 @@ D. Diagrams alone
 ### Question 15
 **Scenario:** High availability is required for the default gateway.
 
-A. Two gateways with manual failover
-B. A second internet link
-C. More bandwidth
+A. Two gateways with manual failover, where an administrator changes each client's gateway address after an outage
+B. A second internet link, which adds a path out but leaves clients pointing at a single gateway address
+C. More bandwidth on the gateway uplink, which reduces congestion but does not remove the single gateway
 D. A first-hop redundancy protocol such as HSRP or VRRP presenting a virtual IP
 
 <details>

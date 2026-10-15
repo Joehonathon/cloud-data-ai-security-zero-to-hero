@@ -15,9 +15,9 @@ difficulty: beginner
 **Scenario:** What is an OCI availability domain?
 
 A. A compartment
-B. One or more data centers within a region, isolated from other availability domains in that region
-C. A geographic region
-D. A subnet
+B. One or more data centers within a region, isolated from other availability domains
+C. A geographic region, such as us-ashburn-1, that contains several data centers connected by a low-latency network
+D. A subnet inside a VCN, defined by a CIDR block and tied to a single availability domain or region
 
 <details>
 <summary>Answer</summary>
@@ -32,9 +32,9 @@ D. A subnet
 ### Question 2
 **Scenario:** What is a fault domain?
 
-A. A grouping of hardware and infrastructure within an availability domain, so instances in different fault domains do not share a single point of failure
-B. A network gateway
-C. A separate region
+A. A hardware grouping in an availability domain that isolates failures
+B. A network gateway that links an availability domain to the on-premises network and fails over automatically to a standby path in another region
+C. A separate region that serves as the disaster recovery partner of the primary region
 D. A billing unit
 
 <details>
@@ -51,9 +51,9 @@ D. A billing unit
 **Scenario:** Resources must be organized for access control and cost tracking.
 
 A. Tags only
-B. Regions
+B. Regions, because each region can hold its own resources and show a separate line on the cost report
 C. Compartments, which are logical containers with their own IAM policies and cost reporting
-D. Separate tenancies
+D. Separate VCNs for each team, each with its own subnets, security lists, route tables and gateways
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. `allow <subject> to <verb> <resource-type> in <location> [where <conditions>]
 ### Question 5
 **Scenario:** Which storage type suits large volumes of unstructured data such as backups and media?
 
-A. Block Volume
+A. Block Volume, attached to one instance at a time as a disk
 B. Object Storage, with standard and archive tiers
-C. Local NVMe
-D. File Storage
+C. Local NVMe storage on the instance's host, lost when it stops
+D. File Storage, mounted over NFS by each instance, which suits shared home directories and application files
 
 <details>
 <summary>Answer</summary>
@@ -106,8 +106,8 @@ D. File Storage
 
 A. A NAT gateway
 B. An internet gateway
-C. A service gateway
-D. A dynamic routing gateway
+C. A service gateway to OCI services
+D. A dynamic routing gateway attached to the VCN, with a route rule sending 0.0.0.0/0 to it
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A dynamic routing gateway
 ### Question 7
 **Scenario:** A VCN must reach Object Storage without traversing the internet.
 
-A. A local peering gateway
-B. A service gateway with the appropriate service CIDR label
-C. An internet gateway
-D. A NAT gateway
+A. A local peering gateway to the Object Storage service network, with a route rule for its CIDR
+B. A service gateway with the service CIDR label
+C. An internet gateway with a public IP on each instance
+D. A NAT gateway with a route rule to the Object Storage endpoint
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. A NAT gateway
 ### Question 8
 **Scenario:** A database should require no manual patching, tuning, or backup configuration.
 
-A. A database on a compute instance
-B. A VM DB System
-C. NoSQL Database
-D. Autonomous Database, which self-patches, self-tunes, and self-repairs
+A. A database on a compute instance, where an automation script handles the patching, tuning, and backups
+B. A VM DB System with automatic backups enabled and a maintenance window set
+C. NoSQL Database with on-demand tables and provisioned throughput
+D. Autonomous Database, which patches and tunes itself
 
 <details>
 <summary>Answer</summary>
@@ -178,7 +178,7 @@ D. Manual review
 
 A. No encryption
 B. OCI Vault, holding customer-managed keys and secrets, optionally in a dedicated HSM partition
-C. Oracle-managed keys only
+C. Oracle-managed keys only, which Oracle rotates automatically and which are the default for all storage
 D. Local key files
 
 <details>
@@ -194,10 +194,10 @@ D. Local key files
 ### Question 11
 **Scenario:** OCI pricing is described as consistent across regions.
 
-A. Oracle prices the same across commercial regions, which simplifies multi-region cost planning
-B. Pricing is negotiated only
+A. Oracle prices the same across commercial regions
+B. Pricing is negotiated only, per customer, and never published
 C. All services are free
-D. Prices vary widely by region
+D. Prices vary widely by region, with higher rates in regions that have only a single availability domain
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. Prices vary widely by region
 **Scenario:** Compute shapes must match a workload's needs precisely.
 
 A. One size
-B. Bare metal only
+B. Bare metal only, since dedicated hosts give every workload predictable, exact core counts
 C. Fixed shapes only
-D. Flexible shapes, where OCPU count and memory are chosen independently within a range
+D. Flexible shapes, where OCPU count and memory are chosen independently
 
 <details>
 <summary>Answer</summary>
@@ -231,9 +231,9 @@ D. Flexible shapes, where OCPU count and memory are chosen independently within 
 **Scenario:** Support is needed to understand the shared responsibility model on OCI.
 
 A. Oracle secures everything
-B. Oracle secures the infrastructure and physical layer; the customer secures their data, identities, access configuration, and workloads, with the split shifting by service type
-C. The customer secures everything
-D. Neither party
+B. Oracle secures the infrastructure and physical layer; the customer secures data, identities, and workloads, shifting by service
+C. The customer secures everything, including the physical data centers and the hypervisor, since the tenancy belongs to the customer alone
+D. Responsibility is split equally by percentage, with Oracle and the customer each handling half of every security control
 
 <details>
 <summary>Answer</summary>
@@ -266,9 +266,9 @@ D. Check the invoice
 ### Question 15
 **Scenario:** High availability within a region for a web tier.
 
-A. A larger instance
+A. A larger instance shape with more OCPUs and memory, so a single host can absorb any traffic spike without needing a second instance or a load balancer
 B. Backups
-C. Instances across multiple fault domains (and availability domains where the region has several), behind a load balancer with health checks
+C. Instances across multiple fault domains (and ADs where available), behind a load balancer with health checks
 D. One instance
 
 <details>

@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An analyst must find all sign-ins from a specific IP across the last 7 days in Microsoft Sentinel.
 
-A. `SigninLogs | where IPAddress == "1.2.3.4" | where TimeGenerated > ago(7d)`
-B. `SigninLogs | search "1.2.3.4"`
-C. Export to Excel and filter
-D. `search *`
+A. `SigninLogs | where IPAddress == "1.2.3.4" and TimeGenerated > ago(7d)`
+B. `SigninLogs | search "1.2.3.4"`, relying on the portal time picker set to the last 7 days
+C. Export the SigninLogs table to Excel through the portal and filter the IPAddress column there for 1.2.3.4
+D. `search *` with the time picker set to 7 days, then filtering the results by IP in the grid
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. `search *`
 ### Question 2
 **Scenario:** Which KQL operator joins alert data to enrichment data on a shared column?
 
-A. `join`
+A. `join` on the shared key column
 B. `project`
-C. `union`
-D. `summarize`
+C. `union`, which stacks the two result sets
+D. `summarize`, which aggregates rows by group
 
 <details>
 <summary>Answer</summary>
@@ -50,9 +50,9 @@ D. `summarize`
 ### Question 3
 **Scenario:** A Defender for Endpoint alert shows a device with suspicious activity that must be cut off from the network but remain investigable.
 
-A. Power it off remotely
+A. Power it off remotely through the Defender portal so the attacker loses access immediately
 B. Delete the device from the portal
-C. Isolate the device, which blocks network traffic while keeping the Defender connection
+C. Isolate the device, which blocks network traffic but keeps the Defender connection
 D. Run a full antivirus scan only
 
 <details>
@@ -86,8 +86,8 @@ D. Manual CSV upload
 ### Question 5
 **Scenario:** An analytics rule generates 400 alerts a day for the same benign administrative activity.
 
-A. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into a single incident
-B. Increase the ingestion cap
+A. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts
+B. Increase the ingestion cap on the workspace so the repeated alerts no longer count against the daily quota and stop being dropped
 C. Disable the rule
 D. Ignore the alerts
 
@@ -104,10 +104,10 @@ D. Ignore the alerts
 ### Question 6
 **Scenario:** A phishing email reached 50 mailboxes and must be removed from all of them.
 
-A. A transport rule for future mail only
-B. Threat Explorer in Defender for Office 365 with a soft-delete or hard-delete remediation action
-C. Reset all 50 passwords
-D. Ask users to delete it
+A. A transport rule for future mail only, which quarantines any message matching the sender and subject from now on
+B. Threat Explorer remediation in Defender for Office 365 (soft or hard delete)
+C. Reset all 50 passwords and force each user to register MFA again on the next sign-in
+D. Ask all 50 users to delete the message themselves and reply to confirm that they did
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Ask users to delete it
 ### Question 7
 **Scenario:** Which Defender product protects against identity attacks such as Pass-the-Hash against on-premises Active Directory?
 
-A. Defender for Cloud Apps
+A. Defender for Cloud Apps, the CASB for SaaS
 B. Defender for Identity
-C. Defender for Office 365
-D. Defender for Endpoint
+C. Defender for Office 365, the mail filter
+D. Defender for Endpoint, the device agent
 
 <details>
 <summary>Answer</summary>
@@ -140,7 +140,7 @@ D. Defender for Endpoint
 ### Question 8
 **Scenario:** A user's session in a SaaS app should be blocked from downloading sensitive files on an unmanaged device.
 
-A. An analytics rule
+A. An analytics rule that detects the download and automatically revokes the user's session once the alert fires
 B. A retention label
 C. Defender for Cloud Apps session policy with Conditional Access App Control
 D. A NSG rule
@@ -177,9 +177,9 @@ D. A hunting query
 **Scenario:** A hunting hypothesis is "an attacker used a rarely seen parent-child process pair." What is the right Sentinel feature?
 
 A. A workbook
-B. A hunting query, saved and optionally promoted to an analytics rule once validated
-C. A data connector
-D. An analytics rule
+B. A hunting query, saved and promoted to an analytics rule once validated
+C. A data connector that ingests process creation events from the endpoints into the workspace
+D. An analytics rule scheduled every five minutes so the rare pair raises an incident as soon as it appears
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. An analytics rule
 ### Question 11
 **Scenario:** Log ingestion costs are rising and much of the volume is verbose, low-value data needed only for occasional audit.
 
-A. Reduce retention to one day
-B. Route it to a cheaper tier such as auxiliary or basic logs, or archive with long-term retention, keeping analytics tier for data used in detections
-C. Sample randomly
-D. Stop collecting it
+A. Reduce retention to one day on the whole workspace, so the verbose data is purged before it adds meaningfully to storage cost
+B. Route it to a cheaper tier such as auxiliary or basic logs, or archive it
+C. Sample the verbose data randomly at ingestion and keep only about one event in ten
+D. Stop collecting it altogether and drop the connector that sends the verbose data
 
 <details>
 <summary>Answer</summary>
@@ -231,7 +231,7 @@ D. The raw table
 **Scenario:** A device group should get a more aggressive attack surface reduction rule set than the rest of the estate.
 
 A. Conditional Access
-B. A single tenant-wide policy
+B. A single tenant-wide policy set to the most aggressive level, applied to every device in the estate
 C. A firewall rule
 D. Device groups in Defender for Endpoint with a targeted ASR policy
 
@@ -248,10 +248,10 @@ D. Device groups in Defender for Endpoint with a targeted ASR policy
 ### Question 14
 **Scenario:** After containment, what should close out the incident process?
 
-A. Reboot the affected servers
+A. Reboot the affected servers and restore the previous day's snapshot, then close the ticket once users confirm
 B. Delete the incident
-C. Nothing further
-D. Eradication and recovery, then a post-incident review capturing detection gaps and turning them into new rules
+C. Nothing further, because containment has stopped the attack and the ticket can simply stay open
+D. Eradication and recovery, then a post-incident review that turns gaps into new rules
 
 <details>
 <summary>Answer</summary>
@@ -266,17 +266,17 @@ D. Eradication and recovery, then a post-incident review capturing detection gap
 ### Question 15
 **Scenario:** A rule must detect five failed sign-ins followed by a success from the same account within 10 minutes.
 
-A. A Fusion rule
+A. A Microsoft incident creation rule that turns alerts from other Microsoft security products into Sentinel incidents
 B. A watchlist
-C. A workbook
-D. A scheduled analytics rule with a KQL query using `summarize` over a time window and a `join` for the success
+C. A workbook charting failed and successful sign-ins per account over the last ten minutes, refreshed hourly
+D. A scheduled analytics rule with a KQL query that uses `summarize` and a `join` for the success
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Scheduled rules run KQL on an interval with a lookback window, which is where you express multi-event logic like this. Fusion is Microsoft's built-in multistage attack detection using machine learning and is not something you author. Workbooks and watchlists do not generate incidents.
+**Why:** Scheduled rules run KQL on an interval with a lookback window, which is where you express multi-event logic like this. A Microsoft incident creation rule (A) only turns alerts that other products already raised into incidents, so it cannot count sign-ins over a window. Workbooks and watchlists do not generate incidents.
 </details>
 
 ---

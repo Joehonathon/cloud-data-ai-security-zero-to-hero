@@ -10,9 +10,9 @@
 **Scenario:** A consultancy onboards 200 contractors per quarter. Each needs specific applications, a SharePoint site, and a group. Access must be self-requested, approved by the engaging partner, and expire after 90 days. The tenant has Entra ID Governance licensing.
 
 A. An entitlement management access package with an approval policy and 90-day expiry
-B. PIM eligible assignments
-C. Manual assignment with calendar reminders
-D. A dynamic group with a contractor attribute rule
+B. PIM eligible assignments of Entra roles for each contractor, activated on request with approval and an expiry of 90 days
+C. Manual assignment by the helpdesk each quarter, with calendar reminders to remove each contractor after 90 days
+D. A dynamic group with a contractor attribute rule, so that membership and application access follow the user's department and job title
 
 <details>
 <summary>Answer</summary>
@@ -27,10 +27,10 @@ D. A dynamic group with a contractor attribute rule
 ### Question 2
 **Scenario:** Administrators must use phishing-resistant MFA for the Azure portal. Standard users continue with Microsoft Authenticator. What should be configured?
 
-A. Per-user MFA settings for the administrators
-B. A custom authentication strength containing FIDO2 and Windows Hello for Business, required by a Conditional Access policy scoped to administrator roles and the Azure Management app
-C. A Conditional Access policy requiring MFA for the administrator roles
-D. Removal of SMS from the tenant authentication methods policy
+A. Per-user MFA settings enforced for each administrator account, so that they must complete a second factor on every sign-in
+B. A custom authentication strength of FIDO2 and Windows Hello for Business, required by Conditional Access for administrators on Azure Management, scoped to the administrator roles
+C. A Conditional Access policy requiring MFA for the administrator roles on all cloud apps, with Microsoft Authenticator as an accepted method
+D. Removal of SMS and voice call from the tenant authentication methods policy, so that only app-based methods remain for all users
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. Removal of SMS from the tenant authentication methods policy
 ### Question 3
 **Scenario:** Users synchronized from on-premises AD report that self-service password reset appears to succeed but their on-premises password is unchanged. What is missing?
 
-A. They have not completed combined registration
-B. SSPR is not enabled for their group
+A. They have not completed combined registration, so the service has no verified method on file and cannot change the on-premises password
+B. SSPR is not enabled for their group, so the reset flow completes in the cloud but is never applied to the on-premises directory
 C. Password writeback is not enabled in Entra Connect
-D. The authentication methods policy blocks their method
+D. The authentication methods policy blocks their registered method, so the reset is only partly processed by the service
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. The authentication methods policy blocks their method
 ### Question 4
 **Scenario:** A nightly job must read all users' calendars with no signed-in user. `Calendars.Read` was granted as a delegated permission and the job returns 403.
 
-A. Grant a higher delegated permission
-B. Assign the Global Reader role to the service principal
+A. Grant a higher delegated permission such as `Calendars.ReadWrite`, so that the app has enough rights to read every user's calendar
+B. Assign the Global Reader role to the service principal, so that it can read all directory, mailbox and calendar data in the tenant
 C. Grant `Calendars.Read` as an application permission with admin consent, and use client credentials or a managed identity
-D. Create a service account with a password
+D. Create a service account with a password and a license, and have the job sign in as that account
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. Create a service account with a password
 ### Question 5
 **Scenario:** An audit finds guests can enumerate the whole directory. B2B collaboration must continue. What fixes it?
 
-A. Block all B2B collaboration
-B. Convert guests to member accounts
-C. A Conditional Access policy targeting guest users
-D. Set external user permissions to the most restrictive option, restrict who can invite, and add an access review on guests
+A. Block all B2B collaboration in the external collaboration settings, which stops guests from enumerating the directory by removing them
+B. Convert guests to member accounts so that they are governed by the same policies as employees and are easier to review
+C. A Conditional Access policy targeting guest users and requiring MFA, which controls how guests sign in
+D. Restrict external user permissions to the most limited option, limit who can invite, and review guests regularly
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Set external user permissions to the most restrictive option, restrict who ca
 ### Question 6
 **Scenario:** A GitHub Actions workflow deploys to Azure using a service principal client secret that expired over a weekend. Security also objects to a long-lived credential with subscription Contributor rights.
 
-A. Configure workload identity federation with the subject scoped to the specific repository and environment, remove the secret, and narrow the RBAC scope
-B. Automate secret rotation
-C. Store the secret in Key Vault
-D. Use a user-assigned managed identity on the GitHub runner
+A. Configure workload identity federation scoped to the repository and environment, remove the secret, and narrow the RBAC scope
+B. Automate secret rotation with a pipeline job that creates a new client secret before the old one expires and updates GitHub each month
+C. Store the secret in Azure Key Vault and have the workflow retrieve it at run time, so it is no longer kept in GitHub
+D. Use a user-assigned managed identity on the GitHub-hosted runner, which then signs in to Azure without any stored secret, leaving the Contributor assignment as it is
 
 <details>
 <summary>Answer</summary>
@@ -117,10 +117,10 @@ D. Use a user-assigned managed identity on the GitHub runner
 ### Question 7
 **Scenario:** An administrator plans a Conditional Access policy requiring compliant devices for all users and all cloud apps. Intune enrolment is at 60%. What is the correct deployment approach?
 
-A. Exclude the Global Administrator role
-B. Deploy in report-only mode, review the workbook, exclude two break-glass accounts, and roll out in stages
-C. Enable security defaults instead
-D. Enable it for all users immediately
+A. Exclude the Global Administrator role from the policy, so that the most privileged accounts can never be locked out of the tenant
+B. Deploy in report-only mode, review the Conditional Access insights workbook, exclude two break-glass accounts, and roll out in stages as enrolment grows
+C. Enable security defaults instead, which require MFA for everyone and apply a fixed baseline without waiting for Intune enrolment
+D. Enable it for all users immediately, and have the 40% of users who are not enrolled enrol their devices when prompted at sign-in
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Enable it for all users immediately
 ### Question 8
 **Scenario:** Twelve engineers hold permanent Global Administrator. Audit requires no standing privilege, approval before elevation, recorded justification, and quarterly recertification of eligibility. The tenant has Entra ID P2.
 
-A. Conditional Access requiring MFA for administrators
-B. Remove the role and re-add it when needed
+A. Conditional Access requiring MFA for administrators, so that each of the twelve signs in with a second factor every time before using the role
+B. Remove the role from all twelve engineers and re-add it manually through a change ticket whenever a task needs it
 C. Convert to PIM eligible assignments with approval and justification, enable PIM alerts, and configure a quarterly PIM access review
-D. An entitlement management access package containing the role
+D. An entitlement management access package containing the role, with approval and expiry set on the request for each engineer
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. An entitlement management access package containing the role
 ### Question 9
 **Scenario:** Which role can reset the password of a user who holds the Application Administrator role?
 
-A. Helpdesk Administrator
-B. Authentication Administrator
-C. User Administrator
-D. Privileged Authentication Administrator
+A. Helpdesk Administrator, which can reset passwords for non-administrators and some limited roles but not for Application Administrators
+B. Authentication Administrator, which manages authentication methods and passwords for non-administrator users only
+C. User Administrator, which can create and manage users and groups and reset passwords for non-admin users
+D. Privileged Authentication Administrator, which can reset passwords and authentication methods for users in privileged roles
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Privileged Authentication Administrator
 ### Question 10
 **Scenario:** A tenant has Entra ID P1 only. Which requirement cannot be met without a license upgrade?
 
-A. Self-service password reset with writeback
-B. Conditional Access requiring MFA
+A. Self-service password reset with writeback, which lets synced users reset passwords and have them applied to on-premises AD
+B. Conditional Access requiring MFA, which applies grant controls to sign-ins by user, app and location
 C. Risk-based Conditional Access using sign-in risk
-D. Application Proxy for an on-premises web app
+D. Application Proxy for an on-premises web app, which publishes internal sites through connectors without opening inbound firewall ports
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. Application Proxy for an on-premises web app
 ### Question 11
 **Scenario:** What is the difference between an application registration and an enterprise application?
 
-A. The enterprise application is the older term
+A. The enterprise application is the older term and has been replaced by the app registration in the current portal
 B. The registration is the global definition in the home tenant; the enterprise application is the service principal instance in each tenant that consents to it
-C. The registration is for single-tenant apps and the enterprise application is for multi-tenant apps
-D. They are two names for the same object
+C. The registration is for single-tenant apps and the enterprise application is for multi-tenant apps, so a tenant uses one or the other
+D. They are two names for the same object, shown under different menus depending on the type of app
 
 <details>
 <summary>Answer</summary>
@@ -208,9 +208,9 @@ D. They are two names for the same object
 **Scenario:** A company must ensure that a specific group of users can only sign in from managed devices located in their home country, and that a stolen refresh token cannot be replayed elsewhere.
 
 A. Conditional Access requiring a compliant device plus a location condition, with token protection as a session control
-B. An IP allowlist on the application
-C. A named location condition alone
-D. Sign-in frequency set to one hour
+B. An IP allowlist on the application, which accepts sign-ins only from the corporate address ranges but cannot check device state
+C. A named location condition alone, which limits sign-ins to the home country but does not check the device
+D. Sign-in frequency set to one hour, which forces frequent reauthentication but allows a stolen token to be replayed within that hour
 
 <details>
 <summary>Answer</summary>
@@ -225,9 +225,9 @@ D. Sign-in frequency set to one hour
 ### Question 13
 **Scenario:** Which hybrid identity method allows Entra ID Protection to detect leaked credentials?
 
-A. Federation with AD FS
-B. Any of them, since detection is cloud-side
-C. Pass-through authentication
+A. Federation with AD FS, where authentication happens on-premises and no password hashes are stored in Entra ID
+B. Any of them, since detection of leaked credentials runs in the cloud regardless of which hybrid method is used
+C. Pass-through authentication, where passwords are validated by agents on-premises and no hash is stored in the cloud directory
 D. Password hash sync
 
 <details>
@@ -245,8 +245,8 @@ D. Password hash sync
 
 A. A custom role scoped to a security group
 B. An administrative unit containing the regional users, with the Helpdesk Administrator role assigned over it
-C. A dynamic group with the helpdesk as owners
-D. A Conditional Access policy restricting the helpdesk
+C. A dynamic group of regional users with the helpdesk staff as its owners
+D. A Conditional Access policy restricting the helpdesk to sign in from the regional office network and managed devices
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. A Conditional Access policy restricting the helpdesk
 ### Question 15
 **Scenario:** An access review must remove access automatically from anyone whose reviewer does not respond. What setting achieves this?
 
-A. Auto-apply results, with "If reviewers don't respond" set to Remove access
-B. Recurring reviews with a manual apply step
+A. Auto-apply results, with "If reviewers don't respond" set to Remove access, so silent reviewers lose access automatically
+B. Recurring reviews with a manual apply step, so that an administrator confirms every result
 C. Auto-apply results, with "If reviewers don't respond" set to No change
-D. A lifecycle workflow triggered on the review end date
+D. A lifecycle workflow triggered on the review end date, which runs a task to remove access for users whose review is incomplete
 
 <details>
 <summary>Answer</summary>

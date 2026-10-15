@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A training job needs a GPU for four hours a week and nothing the rest of the time.
 
-A. Serverless Spark
+A. Serverless Spark compute, which suits distributed data preparation jobs and would not be the way to provide a GPU for a training job
 B. A Compute Cluster with minimum nodes 0 and a GPU VM size
-C. A Kubernetes online endpoint
-D. An always-on Compute Instance
+C. A Kubernetes online endpoint, which hosts a model for real-time scoring and keeps nodes running, not a place to run a weekly job
+D. An always-on Compute Instance with a GPU, which is a single-user workstation that bills every hour it is running, including idle ones
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. An always-on Compute Instance
 ### Question 2
 **Scenario:** A model is trained with an experiment tracked in Azure Machine Learning. What is the correct order before serving traffic?
 
-A. Register, deploy, then train
-B. Deploy directly from the run output
+A. Register the model, deploy it, and then train it, which reverses the order
+B. Deploy directly from the run output folder without registering, which skips the versioning and lineage that a registry entry gives
 C. Evaluate, register the model in the workspace registry, then deploy to an endpoint
-D. Deploy, then register, then evaluate
+D. Deploy to the endpoint first, then register the model, then evaluate, which puts untested code in front of live traffic
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Deploy, then register, then evaluate
 ### Question 3
 **Scenario:** You need low-latency real-time predictions with autoscaling and no cluster management.
 
-A. A scheduled pipeline job
-B. Managed online endpoint
-C. A compute instance running a notebook
-D. Batch endpoint
+A. A scheduled pipeline job that runs on a cluster at fixed times, which scores in batches
+B. Managed online endpoint, which provides autoscaling, authentication, and low-latency scoring without cluster management
+C. A compute instance running a notebook, which is a single-user machine with no autoscaling
+D. Batch endpoint, which scores large inputs asynchronously and gives no low-latency responses
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Batch endpoint
 ### Question 4
 **Scenario:** A new model version should take 10% of live traffic before full rollout.
 
-A. Retrain with 10% of data
+A. Retrain the model using only 10% of the data, which changes the training set and has no effect on how much live traffic it receives
 B. Add a second deployment under the same online endpoint and set traffic allocation to 90/10
-C. Create a second endpoint
-D. Use a batch endpoint
+C. Create a second endpoint for the new version and ask clients to alternate between the two URLs at their own discretion in code
+D. Use a batch endpoint for the new version, which scores files in jobs and cannot take a share of live online requests
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Use a batch endpoint
 ### Question 5
 **Scenario:** Training data lives in an Azure Data Lake Storage Gen2 account and must be referenced without credentials in code.
 
-A. Register a datastore with identity-based access and use a data asset that points at it
-B. Hard-code a SAS token
-C. Make the container public
-D. Copy the data into the notebook
+A. Register a datastore with identity-based access and use a data asset that points at it, so no secret lives in the code
+B. Hard-code a SAS token in the training script, which puts a credential in source control
+C. Make the container public so that the job needs no credentials, which exposes the data
+D. Copy the data into the notebook's local disk each time, which duplicates the data, loses the link to the lake, and does not scale to large datasets
 
 <details>
 <summary>Answer</summary>
@@ -105,9 +105,9 @@ D. Copy the data into the notebook
 **Scenario:** You want the best model over a search space of learning rates and batch sizes, stopping unpromising runs early.
 
 A. A sweep job with a sampling method and an early termination policy such as bandit or median stopping
-B. Manual grid search in a notebook
-C. AutoML featurization only
-D. A single training run
+B. Manual grid search in a notebook, which is slow and has no early stopping
+C. AutoML featurization only, which transforms the input columns but does not search a space of learning rates and batch sizes
+D. A single training run with the framework's default values
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A single training run
 ### Question 7
 **Scenario:** A classification model must be explained to a regulator: which features drove a given prediction?
 
-A. The Responsible AI dashboard with feature importance, including per-prediction explanations
-B. The learning rate schedule
-C. The ROC curve
-D. The confusion matrix
+A. The Responsible AI dashboard with feature importance, including per-prediction explanations and counterfactuals
+B. The learning rate schedule used during training, which says nothing about feature influence
+C. The ROC curve, which shows threshold trade-offs but not which features drove a prediction
+D. The confusion matrix, which counts correct and incorrect predictions per class but does not explain why a given prediction was made
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. The confusion matrix
 ### Question 8
 **Scenario:** A dataset has 5% positive cases and the model reports 95% accuracy.
 
-A. Add more features
-B. The model is excellent
-C. Accuracy is misleading with imbalance; use precision, recall, F1, or AUC-PR and consider resampling or class weights
-D. Increase the learning rate
+A. Add more features to the model, which does not address the fact that accuracy hides the minority class
+B. The model is excellent, because 95% accuracy is high by the usual standard
+C. Accuracy is misleading with imbalance; use precision, recall, F1, or AUC-PR and consider resampling, class weights, or threshold tuning
+D. Increase the learning rate so that the model fits the positive cases faster, which can destabilize training
 
 <details>
 <summary>Answer</summary>
@@ -158,9 +158,9 @@ D. Increase the learning rate
 ### Question 9
 **Scenario:** Multiple steps (prep, train, evaluate, register) must run in sequence with reusable outputs.
 
-A. One long script
-B. Separate manual runs
-C. A cron job
+A. One long script that does everything in a single job, which works but gives no reusable steps or separate outputs for each stage
+B. Separate manual runs, with a person starting each step
+C. A cron job on a VM that calls the scripts in order, which gives scheduling but no tracked inputs, outputs, or reuse of components
 D. A pipeline job composed of components, with outputs passed between steps
 
 <details>
@@ -176,10 +176,10 @@ D. A pipeline job composed of components, with outputs passed between steps
 ### Question 10
 **Scenario:** A deployed model's accuracy degrades over months while the code is unchanged.
 
-A. The model file is corrupt
-B. The compute is undersized
-C. The endpoint is misconfigured
-D. Data drift: the input distribution has moved away from the training distribution, so monitor drift and schedule retraining
+A. The model file is corrupt, so predictions slowly degrade as the artifact is read from storage, which is unlikely with a file that is unchanged
+B. The compute is undersized for the traffic, which causes latency and timeouts but does not make the predictions less accurate
+C. The endpoint is misconfigured, which would cause failures from day one
+D. Data drift: the input distribution has moved away from the training data, so monitor drift and retrain
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Data drift: the input distribution has moved away from the training distribut
 ### Question 11
 **Scenario:** An experiment must be reproducible six months later.
 
-A. Note the results in a document
-B. Use a registered environment with pinned dependencies, versioned data assets, and logged parameters and metrics per run
-C. Save the notebook only
-D. Keep the compute instance running
+A. Note the results in a document, which records outcomes but not the code, data, and environment needed to rerun the experiment
+B. Use a registered environment with pinned dependencies, versioned data assets, and logged parameters per run
+C. Save the notebook only, which keeps the code but not the dependency versions or the exact data used in the original run
+D. Keep the compute instance running, which preserves the packages for now
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Keep the compute instance running
 ### Question 12
 **Scenario:** AutoML is used for a tabular classification task. What does it not do for you?
 
-A. Cross-validation
-B. Feature engineering
+A. Cross-validation, which AutoML runs on the training data when it validates candidate models, so it does that for you
+B. Feature engineering, which AutoML performs through its featurization settings, such as imputation and encoding, so it is done for you
 C. Decide whether the business problem is well posed and the label is correct
-D. Model selection
+D. Model selection, which AutoML performs by training and ranking many algorithms against the primary metric, so it is done for you
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Model selection
 ### Question 13
 **Scenario:** Scoring 50 million rows nightly with no latency requirement.
 
-A. A single VM script
-B. Managed online endpoint
-C. Real-time streaming
-D. Batch endpoint with a compute cluster
+A. A single VM script that loops through the rows, which does not scale for 50 million rows
+B. Managed online endpoint, which serves low-latency requests one at a time
+C. Real-time streaming, which processes events as they arrive and is more complex and costly than a nightly scheduled job needs
+D. Batch endpoint with a compute cluster, which parallelizes the scoring across nodes and writes results to storage
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. An NSG on the compute subnet only
 ### Question 15
 **Scenario:** A team wants to share a curated model across several workspaces.
 
-A. Copy the file to each workspace
-B. Email the pickle file
+A. Copy the file to each workspace, which creates duplicates that drift apart and have no shared version history or lineage
+B. Email the pickle file to teammates, which gives no access control, versioning, or audit trail and is unsafe to load
 C. Publish it to an Azure Machine Learning registry, which is cross-workspace and cross-region
-D. Store it in a public blob
+D. Store it in a public blob so any workspace can download it, which exposes the model to everyone on the internet
 
 <details>
 <summary>Answer</summary>

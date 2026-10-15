@@ -14,8 +14,8 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A model in production must be traceable back to the exact code, data, and hyperparameters that produced it.
 
-A. The deployment date
-B. A model registry entry linking the artifact to its training run, dataset version, and container image digest
+A. The deployment date plus the commit hash of the serving repository, which together identify which release was running then
+B. A model registry entry linking the artifact, training run, dataset version, and image digest, written automatically at training time
 C. A note in the wiki
 D. The filename
 
@@ -32,8 +32,8 @@ D. The filename
 ### Question 2
 **Scenario:** Triton must serve two model versions simultaneously so traffic can be shifted gradually.
 
-A. Two separate servers
-B. A model repository with both versions and a version policy, fronted by traffic splitting
+A. Two separate Triton servers on different ports, each holding one model version, with clients choosing a port by hand
+B. A model repository holding the versions with a version policy, fronted by traffic splitting
 C. Restart with the new version
 D. Only the latest version can be served
 
@@ -50,8 +50,8 @@ D. Only the latest version can be served
 ### Question 3
 **Scenario:** DCGM should detect a degrading GPU before it fails a production job.
 
-A. Run DCGM diagnostics on a schedule and alert on health checks, XID errors, thermal throttling, and remapped rows
-B. Monitor CPU only
+A. Run scheduled DCGM diagnostics and alert on health checks, XID errors, throttling, and remapped rows
+B. Monitor CPU temperature and load only, since GPU faults show up first in host metrics
 C. Check quarterly
 D. Wait for job failures
 
@@ -68,10 +68,10 @@ D. Wait for job failures
 ### Question 4
 **Scenario:** An inference service must meet a p99 latency SLO under variable load.
 
-A. Use a larger model
-B. Increase batch size indefinitely
-C. Size for average load
-D. Define the SLO, measure p99 not mean, autoscale on a queue or latency signal, and reserve headroom for the tail
+A. Use a larger model, because added capacity per request reduces tail latency under any load pattern
+B. Increase batch size indefinitely so that GPU utilization stays high and each request waits less on average
+C. Size the fleet for average load plus a ten percent margin, and read mean latency to confirm it holds
+D. Set the SLO, measure p99, autoscale on queue or latency, and reserve tail headroom
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. Define the SLO, measure p99 not mean, autoscale on a queue or latency signal,
 ### Question 5
 **Scenario:** Model accuracy in production degrades although the model file has not changed.
 
-A. The container is corrupt
+A. The image is corrupt, since each restart overwrites the weights on disk
 B. The network is slow
-C. Data drift or concept drift: monitor input distributions and outcome metrics, and trigger retraining
+C. Data or concept drift: monitor input distributions and outcomes, and trigger retraining
 D. The GPU is broken
 
 <details>
@@ -104,10 +104,10 @@ D. The GPU is broken
 ### Question 6
 **Scenario:** Driver versions have diverged across a 200-node fleet.
 
-A. Manage drivers declaratively (GPU Operator or configuration management), enforce a supported version policy, and roll upgrades in waves
+A. Manage drivers declaratively (GPU Operator or config management), enforce a version policy, roll in waves
 B. Ignore the divergence
-C. Reinstall the operating system everywhere
-D. Fix them one at a time by hand
+C. Reinstall the operating system on every node, and install whatever driver release the package repository currently offers
+D. Fix them one at a time by hand, logging into each node and updating the driver whenever spare capacity is free to do so
 
 <details>
 <summary>Answer</summary>
@@ -122,9 +122,9 @@ D. Fix them one at a time by hand
 ### Question 7
 **Scenario:** A CI pipeline for models should gate promotion to production.
 
-A. Automated tests: data validation, training reproducibility, evaluation against a threshold, and a canary before full rollout
+A. Automated tests: data validation, reproducibility, an evaluation threshold, and a canary
 B. Test in production
-C. Manual approval only
+C. Manual approval by one senior engineer only, who reads the training log and signs off before every release
 D. Deploy on merge with no checks
 
 <details>
@@ -140,10 +140,10 @@ D. Deploy on merge with no checks
 ### Question 8
 **Scenario:** An incident occurs: inference errors spike at 03:00.
 
-A. Follow the incident process: assess impact against the SLO, mitigate (roll back to the last known good version), then investigate root cause
+A. Follow the incident process: assess impact against the SLO, roll back to last good version, then find root cause
 B. Wait for business hours
-C. Restart everything
-D. Retrain the model
+C. Restart every serving pod and node at once, since a restart clears whatever state caused the spike overnight and gives a clean start
+D. Retrain the model on the latest data right away, then redeploy it, since errors this sudden mean the model has gone stale
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Retrain the model
 ### Question 9
 **Scenario:** GPU utilization on the serving fleet averages 20%.
 
-A. Leave it, headroom is good
-B. Consolidate with MIG or multi-model serving, right-size instances, and use autoscaling so idle capacity shrinks
-C. Increase the model size
-D. Add more GPUs
+A. Leave it, because headroom this large guarantees the p99 target holds and avoids any scale-up delay during traffic peaks
+B. Consolidate with MIG or multi-model serving, then right-size and autoscale
+C. Increase the model size so that each request keeps the GPU busier, which raises utilization
+D. Add more GPUs to the fleet so that the same load is spread across even more devices
 
 <details>
 <summary>Answer</summary>
@@ -176,7 +176,7 @@ D. Add more GPUs
 ### Question 10
 **Scenario:** Which metric best indicates that an inference server is saturated?
 
-A. GPU temperature
+A. GPU temperature, since a saturated server runs hot and thermal readings rise before any request is delayed
 B. Model file size
 C. Queue delay and its effect on end-to-end latency
 D. Disk usage
@@ -194,8 +194,8 @@ D. Disk usage
 ### Question 11
 **Scenario:** A disaster recovery plan is needed for an inference service in one region.
 
-A. A runbook that has never been executed
-B. A second region with the model registry replicated and deployment automation tested, plus a documented and rehearsed failover
+A. A written runbook reviewed once a year and stored with the service, assumed to work when the primary region fails
+B. A second region with replicated registry and tested deployment automation, plus a rehearsed failover
 C. Backups only
 D. Rely on the cloud provider
 
@@ -212,10 +212,10 @@ D. Rely on the cloud provider
 ### Question 12
 **Scenario:** Compliance requires knowing which model version produced a given prediction six months ago.
 
-A. Store predictions only
-B. Rely on the deployment history
-C. Log the model name, version, and input and output identifiers with each inference, retained per the policy
-D. Nothing is needed
+A. Store the predictions only, with a timestamp but without recording which model produced each one
+B. Rely on the deployment history, which lists every model version and the dates it was live in production
+C. Log model name, version, and input and output IDs per inference, retained per policy
+D. Nothing is needed, because auditors accept the current model's documentation for older predictions
 
 <details>
 <summary>Answer</summary>
@@ -230,9 +230,9 @@ D. Nothing is needed
 ### Question 13
 **Scenario:** A model update must be rolled back quickly if error rates rise.
 
-A. Rebuild the old model from source
-B. Keep the previous version loaded and shift traffic back, with an automated rollback trigger on the error-rate SLO
-C. Restore from backup
+A. Rebuild the old model from source and redeploy it, which restores the previous behavior once the build completes
+B. Keep the previous version loaded and shift traffic back, with an automated trigger on the error-rate SLO
+C. Restore the previous model from a nightly backup of the serving host and restart the server on that snapshot, then wait for it to warm up
 D. Retrain
 
 <details>
@@ -249,9 +249,9 @@ D. Retrain
 **Scenario:** Multiple teams share a GPU cluster and cost must be attributed.
 
 A. Do not attribute costs
-B. Estimate from headcount
-C. Split the bill evenly
-D. Label workloads by team and namespace, collect GPU-hours per label from DCGM and the scheduler, and report showback or chargeback
+B. Estimate each team's share from its headcount and budget size, without looking at any GPU usage data at all
+C. Split the bill evenly across teams every month, which is simple and avoids disputes about how GPU-hours were counted
+D. Label workloads by team, collect GPU-hours per label from DCGM, and report showback or chargeback
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Label workloads by team and namespace, collect GPU-hours per label from DCGM 
 ### Question 15
 **Scenario:** A post-incident review is scheduled after a serving outage.
 
-A. Add more monitoring dashboards generally
-B. Close the ticket
-C. Identify who caused it
-D. Establish the timeline, contributing factors, and detection and mitigation gaps, then produce specific action items with owners
+A. Add more monitoring dashboards across the whole platform so that every future outage is visible to everyone at a glance
+B. Close the ticket once service is restored and the dashboards have stayed green for a full day
+C. Identify the engineer who caused it, so that the team can retrain them and prevent a repeat
+D. Build the timeline, find the detection and mitigation gaps, and assign owned actions
 
 <details>
 <summary>Answer</summary>

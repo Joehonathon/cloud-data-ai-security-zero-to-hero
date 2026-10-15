@@ -20,10 +20,10 @@
 ### Question 1
 **Scenario:** A development team wants to implement agile project management in Azure DevOps. They need to track user stories, tasks, bugs, and sprints. They also want dashboards showing sprint progress and team velocity. What should they configure?
 
-A. SharePoint lists
-B. Azure Boards with Scrum process template, sprint configuration, and dashboard widgets
-C. Third-party project management tool
-D. Use only Git branches for tracking work
+A. SharePoint lists with custom columns for stories and tasks, plus a hand-built Power BI report
+B. Azure Boards with the Scrum process template, sprint configuration, and dashboard widgets for burndown and velocity
+C. A third-party project management tool that needs a connector to Azure DevOps and separate licences
+D. Use only Git branches and commit messages for tracking work, naming each branch after the story it delivers and linking commits to it
 
 <details>
 <summary>Answer</summary>
@@ -39,9 +39,9 @@ D. Use only Git branches for tracking work
 **Scenario:** A company needs to notify the team automatically when a build fails, a work item is assigned, or a pull request is created. Notifications should go to Microsoft Teams. What should they configure?
 
 A. Azure DevOps Service Hooks with Microsoft Teams integration
-B. Email subscriptions only
-C. Manual email notifications
-D. Check Azure DevOps portal manually
+B. Email subscriptions only, with each team member setting personal notification rules for builds, work items, and pull requests
+C. Manual email notifications sent by the person who owns the build or the work item whenever something changes
+D. Check the Azure DevOps portal manually at set times during the day, looking for failed builds and newly assigned items
 
 <details>
 <summary>Answer</summary>
@@ -74,10 +74,10 @@ D. Configure each project separately
 ### Question 4
 **Scenario:** A team wants to automate the process of creating a work item when a deployment fails. The work item should include failure details and be assigned to the on-call engineer. What should they implement?
 
-A. Email notification only
-B. Log the failure only
-C. Manual work item creation
-D. Pipeline task that creates work item on failure using REST API or built-in task
+A. An email notification only, sent to the on-call engineer when the deployment fails, with the failure log attached
+B. Log the failure only, writing the error details to the pipeline log and relying on the team to read it later
+C. Manual work item creation by the on-call engineer once they have read the alert and copied the failure details across
+D. A pipeline task that creates a work item on failure, through the REST API or built-in task
 
 <details>
 <summary>Answer</summary>
@@ -92,10 +92,10 @@ D. Pipeline task that creates work item on failure using REST API or built-in ta
 ### Question 5
 **Scenario:** A company has developers across multiple time zones. They want to maintain documentation about their DevOps practices, architecture decisions, and runbooks in a collaborative, version-controlled manner. What should they use?
 
-A. SharePoint documents
-B. Email chains
-C. Confluence
-D. Azure DevOps Wiki with Git-backed content
+A. SharePoint documents in a shared library, with check-in and check-out to track changes
+B. Email chains with the architecture decisions and runbooks sent to a distribution list that new joiners are added to
+C. Confluence, a hosted wiki with page history and comments that the team would have to integrate with Azure DevOps separately
+D. Azure DevOps Wiki with Git-backed content, stored as Markdown in a repo and reviewed through pull requests
 
 <details>
 <summary>Answer</summary>
@@ -132,10 +132,10 @@ D. Verbal policy only
 ### Question 7
 **Scenario:** A team uses Git in Azure Repos. They want to prevent force pushes to the main branch and ensure the branch cannot be deleted. What should they configure?
 
-A. Git hooks only
-B. Branch permissions to deny force push and delete for contributors
-C. Repository settings for the entire repo
-D. Client-side Git configuration
+A. Git hooks only, installed on each developer's machine to reject force pushes and branch deletions before they are sent
+B. Branch permissions to deny force push and delete for contributors on the main branch
+C. Repository settings for the whole repo, which apply one rule to every branch
+D. Client-side Git configuration that each developer sets, such as denying non-fast-forward updates in their local settings
 
 <details>
 <summary>Answer</summary>
@@ -150,10 +150,10 @@ D. Client-side Git configuration
 ### Question 8
 **Scenario:** A large development team wants to implement a branching strategy that supports continuous delivery with short-lived feature branches, release branches for production stabilization, and hotfixes. What strategy should they use?
 
-A. Git Flow with feature, develop, release, main, and hotfix branches
-B. Fork-based workflow for all developers
-C. Single branch for everything
-D. Feature branches only
+A. Git Flow, with feature, develop, release, main, and hotfix branches for structured releases and urgent fixes
+B. A fork-based workflow for all developers, where each person works in a personal fork and opens pull requests to the main repository
+C. A single branch for everything, with developers committing straight to it and tagging releases
+D. Feature branches only, merged into main when complete, with production fixes handled as normal work
 
 <details>
 <summary>Answer</summary>
@@ -168,10 +168,10 @@ D. Feature branches only
 ### Question 9
 **Scenario:** A developer accidentally committed a password to a Git repository. They need to remove it from the entire history. What should they do?
 
-A. Delete the file in a new commit
-B. Ignore it since it's in history
-C. Create a new repository
-D. Use git filter-repo or BFG Repo-Cleaner to rewrite history, then force push
+A. Delete the file in a new commit, which removes the password from the latest code
+B. Ignore it, because only people with repository access can read old commits
+C. Create a new repository and push the current code to it, leaving the old repository with the exposed history archived
+D. Use git filter-repo or BFG Repo-Cleaner to rewrite history, then force push and rotate the secret
 
 <details>
 <summary>Answer</summary>
@@ -186,9 +186,9 @@ D. Use git filter-repo or BFG Repo-Cleaner to rewrite history, then force push
 ### Question 10
 **Scenario:** A team wants to implement code review comments that persist across PR updates and allow reviewers to see if their comments have been addressed. What Azure DevOps feature supports this?
 
-A. Wiki pages
-B. Work item comments
-C. Email comments
+A. Wiki pages where reviewers write feedback on the change, linked to the pull request by its number
+B. Work item comments on the linked story, where reviewers discuss the change and mark their feedback as done
+C. Email comments sent between the author and the reviewers, tracked in the mailbox of each person involved
 D. PR comment threads with resolution status
 
 <details>
@@ -204,10 +204,10 @@ D. PR comment threads with resolution status
 ### Question 11
 **Scenario:** A company acquires another company using a different Git platform. They need to migrate 50 repositories to Azure Repos while preserving complete history and branches. What approach should they use?
 
-A. Use file copy
-B. Import repositories using Azure DevOps import feature or git push --mirror
-C. Copy only the latest code
-D. Recreate repositories manually
+A. Use file copy of the working directories from the old platform into new repositories, then commit the files as the first change
+B. Import repositories using the Azure DevOps import feature or git push --mirror
+C. Copy only the latest code from the main branch, then recreate the other branches from release tags if they are needed
+D. Recreate repositories manually in Azure Repos and push the current branches one at a time from developer clones
 
 <details>
 <summary>Answer</summary>
@@ -222,17 +222,17 @@ D. Recreate repositories manually
 ### Question 12
 **Scenario:** A team uses Git submodules to share common libraries across multiple repositories. Builds fail because submodules aren't being cloned. What pipeline configuration is needed?
 
-A. Use package manager instead
-B. Manually maintain copies of shared code
-C. Clone submodules in a script step
-D. Set checkout: submodules: true (or recursive) in the pipeline YAML
+A. Use a package manager instead of submodules, publishing shared libraries as feed packages and restoring them in the build
+B. Manually maintain copies of the shared code in each repository, updating them whenever the library changes
+C. Run git submodule update in a script step placed before the default checkout runs, in each job
+D. Set the checkout step's submodules option to true (or recursive) in the pipeline YAML
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Pipeline checkout step supports submodules option: true (one level) or recursive (nested submodules). This clones submodules automatically. Script step (C) works but is more complex. Manual copies (B) defeat the purpose. Package managers (A) are an alternative architecture but don't solve the submodule issue.
+**Why:** Pipeline checkout step supports submodules option: true (one level) or recursive (nested submodules). This clones submodules automatically. A script step before the checkout (C) has no repository to update yet. Manual copies (B) defeat the purpose. Package managers (A) are an alternative architecture but don't solve the submodule issue.
 
 **Key Concept:** [Checkout Submodules](https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/pipeline-options-for-git)
 </details>
@@ -262,10 +262,10 @@ D. Manual builds
 ### Question 14
 **Scenario:** A pipeline needs to deploy to development automatically but require manual approval before deploying to production. How should this be configured?
 
-A. Manual trigger for production
-B. Delay task in the pipeline
-C. Two separate pipelines
-D. Multi-stage YAML pipeline with environment approval on the production environment
+A. A manual trigger for production, so a person starts a separate run for prod after dev
+B. A Delay task before the production stage, which waits a fixed time and then continues
+C. Two separate pipelines, one for dev and one for prod, with the second started by hand after the first completes
+D. A multi-stage YAML pipeline with an approval check on the production environment, gating the prod stage
 
 <details>
 <summary>Answer</summary>
@@ -280,17 +280,17 @@ D. Multi-stage YAML pipeline with environment approval on the production environ
 ### Question 15
 **Scenario:** A team wants to implement infrastructure as code for their Azure resources. The pipeline should deploy ARM templates or Bicep files with parameterized values per environment. What task should they use?
 
-A. PowerShell script with az CLI
-B. Manual portal deployment
-C. Azure CLI task only
-D. AzureResourceManagerTemplateDeployment task with parameter files per environment
+A. A PowerShell script that calls az CLI commands with the template and a single parameter file shared by every environment
+B. Manual portal deployment, with an engineer uploading the template and typing parameter values for each environment
+C. The Azure CLI task only, with inline commands and variables for each value that differs between environments
+D. The AzureResourceManagerTemplateDeployment task with parameter files per environment
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** AzureResourceManagerTemplateDeployment task is designed for ARM/Bicep deployments. It supports template files, parameter files (dev.parameters.json, prod.parameters.json), and service connections for authentication. Parameter files enable environment-specific values. Scripts (A, C) work but require more code. Portal (B) isn't IaC.
+**Why:** AzureResourceManagerTemplateDeployment task is designed for ARM/Bicep deployments. It supports template files, parameter files (dev.parameters.json, prod.parameters.json), and service connections for authentication. Parameter files enable environment-specific values. Scripts (A, C) need more code, and a single shared parameter file (A) cannot give per-environment values. Portal (B) isn't IaC.
 
 **Key Concept:** [ARM Deployment Task](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-resource-manager-template-deployment-v3)
 </details>
@@ -298,10 +298,10 @@ D. AzureResourceManagerTemplateDeployment task with parameter files per environm
 ### Question 16
 **Scenario:** A pipeline builds a .NET application. The build takes 15 minutes, with 10 minutes spent restoring NuGet packages. How can this be optimized?
 
-A. Skip package restore
-B. Use faster agents
-C. Remove dependencies
-D. Implement pipeline caching for NuGet packages
+A. Skip package restore on the build, since the packages are already on the agent from an earlier run of the build
+B. Use faster agents, with more CPU and memory, so that the compile and the package restore steps finish sooner
+C. Remove dependencies until the restore step takes a minute or two
+D. Implement pipeline caching for NuGet packages, keyed on the lock file so changes invalidate it
 
 <details>
 <summary>Answer</summary>
@@ -334,17 +334,17 @@ D. Classic task groups
 ### Question 18
 **Scenario:** A pipeline needs to deploy a containerized application to Azure Kubernetes Service. The image should be built, pushed to Azure Container Registry, and deployed using Helm charts. What tasks are needed?
 
-A. Docker@2 to build/push, HelmDeploy@0 for deployment with ACR authentication
-B. Build manually and deploy via kubectl
-C. Use App Service instead
-D. Script everything
+A. Docker@2 to build and push, HelmDeploy@0 to deploy, with ACR authentication
+B. Build manually on a workstation and deploy with kubectl, using a kubeconfig file that holds the cluster credentials
+C. Use App Service instead, running the container there and avoiding Kubernetes and Helm in the deployment path
+D. One bash step with docker, az, and helm and the credentials hard-coded
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Docker@2 task builds and pushes images to ACR. HelmDeploy@0 packages and deploys Helm charts to AKS with proper authentication via Azure service connection. Tasks handle authentication and configuration. Manual kubectl (B) requires credential management. App Service (C) changes architecture. Scripts (D) require more maintenance.
+**Why:** Docker@2 task builds and pushes images to ACR. HelmDeploy@0 packages and deploys Helm charts to AKS with proper authentication via Azure service connection. Tasks handle authentication and configuration. Manual kubectl (B) requires credential management. App Service (C) changes architecture. Hard-coded credentials in a script (D) are insecure and hard to maintain.
 
 **Key Concept:** [Deploy to AKS](https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/kubernetes/deploy)
 </details>
@@ -352,10 +352,10 @@ D. Script everything
 ### Question 19
 **Scenario:** A team wants to implement blue-green deployments for their Azure App Service. The pipeline should deploy to a staging slot, run tests, then swap with production. If tests fail, no swap occurs. How should this be configured?
 
-A. Deploy directly to production
-B. AzureWebApp task to staging slot, test stage, AzureAppServiceManage task to swap slots
-C. Two separate App Services
-D. Manual slot management
+A. Deploy directly to production, then run the tests against the live site and redeploy the previous build if they fail
+B. AzureWebApp task to a staging slot, a test stage, and the AzureAppServiceManage task to swap slots
+C. Two separate App Services, with a load balancer or DNS record switched between them by hand after testing
+D. Manual slot management, where an engineer swaps the slots in the portal after they have read the test results
 
 <details>
 <summary>Answer</summary>
@@ -370,10 +370,10 @@ D. Manual slot management
 ### Question 20
 **Scenario:** A pipeline needs to run different steps based on the branch being built. Feature branches should only build and test, while main branch should also deploy. How should this be implemented?
 
-A. Manual selection at runtime
-B. Conditional stages/jobs using condition with Build.SourceBranch variable
-C. Always run all steps
-D. Separate pipelines for each branch
+A. Manual selection at runtime, where the person starting the pipeline chooses which steps run for the branch
+B. Conditional stages or jobs using condition with the Build.SourceBranch variable
+C. Always run all steps on every branch, including the deployment, and rely on the target environments to reject feature builds
+D. Separate pipelines for each branch, each with its own copy of the build and test steps and its own trigger
 
 <details>
 <summary>Answer</summary>
@@ -406,10 +406,10 @@ D. Trust developers completely
 ### Question 22
 **Scenario:** A developer needs to securely use an API key in a pipeline without exposing it in the YAML file. The key should be masked in logs. What should they use?
 
-A. Azure DevOps pipeline variable marked as secret, or Azure Key Vault integration
-B. Environment variable in agent
-C. Commit the key to the repository
-D. Plain text in YAML
+A. A pipeline variable marked as secret, or Azure Key Vault integration
+B. An environment variable set on the build agent machine, read by the script at run time
+C. Commit the key to the repository in a config file, and mask it with a logging command in the pipeline
+D. Plain text in the YAML file, with the value replaced by a variable name once the pipeline works
 
 <details>
 <summary>Answer</summary>
@@ -424,10 +424,10 @@ D. Plain text in YAML
 ### Question 23
 **Scenario:** A pipeline needs to run integration tests that require a database. The database should be created for the test, used during testing, and destroyed after. What approach should they use?
 
-A. Skip integration tests
-B. Manual database setup
-C. Docker container for database in pipeline using Docker@2 or container jobs
-D. Use production database
+A. Skip integration tests in the pipeline and run them by hand before release
+B. Manual database setup by a tester before each run, with the data removed again once the tests have finished
+C. A Docker container for the database in the pipeline, using Docker@2 or container jobs
+D. Use the production database for the test, with a dedicated test schema created and then dropped by the tests
 
 <details>
 <summary>Answer</summary>
@@ -442,10 +442,10 @@ D. Use production database
 ### Question 24
 **Scenario:** A team wants to implement canary deployments to AKS. They want to deploy to 10% of pods first, monitor for errors, then roll out to 100% if successful. What should they use?
 
-A. Kubernetes Deployment strategy with canary manifests and pipeline gates
-B. Manual pod management
-C. All-at-once deployment
-D. Blue-green only
+A. A Kubernetes deployment strategy with canary manifests and pipeline gates on Azure Monitor error rates
+B. Manual pod management, with an engineer scaling a second deployment up by hand
+C. An all-at-once deployment of the new version to every pod, with a rollback if errors rise
+D. Blue-green only, where all traffic is switched to the new version in one step after the green environment passes tests
 
 <details>
 <summary>Answer</summary>
@@ -478,10 +478,10 @@ D. Accept the 5-minute overhead
 ### Question 26
 **Scenario:** A company has multiple test environments (QA, UAT, staging). Deployments should progress through each environment sequentially with testing at each stage. How should this be modeled?
 
-A. Separate pipelines for each environment
-B. Multi-stage pipeline with stage dependencies (dependsOn) and environment approvals
-C. Manual deployments
-D. Single stage with sequential tasks
+A. Separate pipelines for each environment, each started by hand once the previous environment has been signed off
+B. A multi-stage pipeline with stage dependencies (dependsOn) and approvals on each environment
+C. Manual deployments to each environment, with the build artifact copied by a release engineer at each step
+D. A single stage with sequential tasks that deploy to QA, UAT, and staging
 
 <details>
 <summary>Answer</summary>
@@ -496,10 +496,10 @@ D. Single stage with sequential tasks
 ### Question 27
 **Scenario:** A deployment pipeline needs to update Azure SQL database schema as part of the deployment. What approach should they use?
 
-A. Skip schema updates
-B. Manual SQL scripts
-C. DACPAC deployment with SqlAzureDacpacDeployment task or EF Core migrations
-D. Update schema in production directly
+A. Skip schema updates and let the application create any missing tables at start-up
+B. Manual SQL scripts run by a database administrator after each release
+C. A DACPAC deployment with the SqlAzureDacpacDeployment task, or EF Core migrations applied by the pipeline
+D. Update the schema in production directly with a management tool, then copy the changes to dev
 
 <details>
 <summary>Answer</summary>
@@ -514,10 +514,10 @@ D. Update schema in production directly
 ### Question 28
 **Scenario:** A team wants to implement GitOps for Kubernetes deployments. Configuration changes in Git should automatically sync to the cluster without pipeline triggers. What should they implement?
 
-A. Manual kubectl apply
-B. Direct cluster modifications
-C. Pipeline triggered on every Git change
-D. Flux or ArgoCD GitOps operator in the cluster with Azure DevOps repo as source
+A. Manual kubectl apply from a workstation each time a config file changes
+B. Direct cluster modifications with kubectl edit, kept in step with the repository by occasional audits
+C. A pipeline triggered on every Git change, which runs kubectl or Helm from an agent to push the new configuration
+D. A Flux or ArgoCD operator in the cluster with the Azure DevOps repo as source
 
 <details>
 <summary>Answer</summary>
@@ -532,17 +532,17 @@ D. Flux or ArgoCD GitOps operator in the cluster with Azure DevOps repo as sourc
 ### Question 29
 **Scenario:** A pipeline deploys to multiple Azure regions in parallel to reduce deployment time. What YAML construct should they use?
 
-A. Matrix strategy
-B. Multiple pipelines
-C. Jobs within a stage with no dependencies (parallel execution)
-D. Sequential stages
+A. A matrix strategy that creates a job leg for each region
+B. Multiple pipelines, one for each region, started together by a scheduled trigger at the same time each day
+C. A single job that loops over the regions
+D. Sequential stages, one per region, each depending on the one before it, so that failures stop later regions
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Matrix strategy creates multiple job instances with different variable values (regions). Jobs run in parallel by default. Single definition with matrix simplifies maintenance. Sequential stages (D) don't run in parallel. Jobs without dependencies (C) work but matrix is cleaner. Multiple pipelines (B) duplicate configuration.
+**Why:** Matrix strategy creates multiple job instances with different variable values (regions). Jobs run in parallel by default. Single definition with matrix simplifies maintenance. Sequential stages (D) don't run in parallel. A single looping job (C) deploys one region at a time. Multiple pipelines (B) duplicate configuration.
 
 **Key Concept:** [Matrix Strategy](https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-job-strategy)
 </details>
@@ -572,10 +572,10 @@ D. No security scanning
 ### Question 31
 **Scenario:** A company needs to ensure that container images deployed to production have been scanned for vulnerabilities and come from approved registries. What should they implement?
 
-A. Manual image review
-B. Use latest tags always
-C. Trust all images
-D. Azure Container Registry tasks for scanning, Azure Policy for allowed registries
+A. Manual image review by a security engineer, who inspects the Dockerfile and base image
+B. Use latest tags always, so that deployments pull the most recently scanned and patched image from the registry
+C. Trust all images from a public registry that has a large number of downloads
+D. Azure Container Registry tasks for scanning, with Azure Policy limiting images to allowed registries
 
 <details>
 <summary>Answer</summary>
@@ -590,10 +590,10 @@ D. Azure Container Registry tasks for scanning, Azure Policy for allowed registr
 ### Question 32
 **Scenario:** A pipeline uses a service principal to deploy to Azure. The security team wants to limit what the service principal can do and track all its activities. What should they configure?
 
-A. No access controls
-B. Shared credentials
-C. Least-privilege custom RBAC role for the service principal and Azure AD audit logs
-D. Use global administrator service principal
+A. No controls on the service principal beyond the subscription Contributor role
+B. Shared credentials for the service principal, kept in a team password manager and used by several pipelines
+C. A least-privilege custom RBAC role for the service principal, plus Azure AD audit logs
+D. Use a global administrator service principal so that the pipeline never fails because of missing permissions
 
 <details>
 <summary>Answer</summary>
@@ -626,10 +626,10 @@ D. Plain text configuration
 ### Question 34
 **Scenario:** A compliance requirement mandates that all deployments are traceable to work items and approved by designated personnel. How can this be enforced?
 
-A. Manual documentation
-B. Environment approval checks, branch policies requiring linked work items, and Azure DevOps audit logs
-C. Email approvals
-D. Trust the process
+A. Manual documentation of each deployment in a shared spreadsheet, with the work item and approver
+B. Environment approval checks, branch policies requiring linked work items, and Azure DevOps audit logs for traceability
+C. Email approvals from the designated approvers, kept in a shared mailbox as the record
+D. Trust the process, because team members already follow the change procedure in the handbook
 
 <details>
 <summary>Answer</summary>
@@ -648,10 +648,10 @@ D. Trust the process
 ### Question 35
 **Scenario:** A team needs to implement monitoring for their microservices deployed to AKS. They need container metrics, logs, distributed tracing, and Kubernetes events. What should they configure?
 
-A. Azure Monitor Container insights with Application Insights for distributed tracing
-B. Basic kubectl logs
-C. Third-party monitoring only
-D. No monitoring
+A. Azure Monitor Container insights, with Application Insights for distributed tracing
+B. Basic kubectl logs and kubectl get events, run from an engineer's terminal when a problem is reported on a service
+C. Third-party monitoring only, with an agent deployed to each node and a separate dashboard outside Azure for the team
+D. No monitoring until a production problem is reported
 
 <details>
 <summary>Answer</summary>
@@ -666,10 +666,10 @@ D. No monitoring
 ### Question 36
 **Scenario:** A team wants to automatically roll back a deployment if error rate exceeds 5% within 10 minutes of deployment. What should they implement?
 
-A. Customer complaints trigger rollback
-B. Hope for the best
-C. Pipeline gates with Azure Monitor query that checks error rate, automatic rollback stage
-D. Manual monitoring and rollback
+A. Customer complaints trigger rollback, with the support team raising an incident when several users report errors
+B. Hope for the best, since a deployment that passed testing is unlikely to raise the error rate afterward
+C. Pipeline gates with an Azure Monitor query on error rate, and an automatic rollback stage
+D. Manual monitoring and rollback, with an engineer watching a dashboard for ten minutes after each deployment
 
 <details>
 <summary>Answer</summary>
@@ -684,10 +684,10 @@ D. Manual monitoring and rollback
 ### Question 37
 **Scenario:** A development team needs to track deployment frequency, lead time, change failure rate, and mean time to recovery (DORA metrics) for their CI/CD process. What should they use?
 
-A. Manual spreadsheet tracking
-B. Count deployments manually
-C. Azure DevOps Analytics with built-in pipeline reports or DORA metrics extension
-D. Ignore metrics
+A. Manual spreadsheet tracking, with a team member entering each deployment, its lead time, and failures
+B. Count deployments manually from the release history each month, and estimate the rest from tickets
+C. Azure DevOps Analytics with built-in pipeline reports, or a DORA metrics extension fed by pipeline and work item data
+D. Ignore metrics, since the pipeline already shows green or red for each run and that is enough to judge delivery of changes to the business
 
 <details>
 <summary>Answer</summary>
@@ -702,10 +702,10 @@ D. Ignore metrics
 ### Question 38
 **Scenario:** A team wants to create custom dashboards showing build success rates, deployment status, work item progress, and Azure resource health in a single view. What should they use?
 
-A. Email reports
-B. Check each service individually
-C. Azure DevOps Dashboards with widgets for builds, releases, and Azure Monitor integration
-D. Multiple separate tools
+A. Email reports sent every morning, built from queries on builds, work items, and alerts
+B. Check each service individually, opening Azure Boards, Pipelines, and the Azure portal in turn
+C. Azure DevOps Dashboards with widgets for builds, releases, work items, and Azure Monitor integration
+D. Multiple separate tools, each showing one area, with a team member combining their output in a weekly summary
 
 <details>
 <summary>Answer</summary>
@@ -720,10 +720,10 @@ D. Multiple separate tools
 ### Question 39
 **Scenario:** A deployed application is experiencing performance issues. The team needs to identify slow database queries, external API calls, and code-level performance bottlenecks. What should they use?
 
-A. Application Insights with dependency tracking, profiler, and snapshot debugger
-B. User complaints
-C. General Azure Monitor metrics
-D. Only review code
+A. Application Insights with dependency tracking, the profiler, and the snapshot debugger on the app
+B. User complaints collected through the support desk, grouped by feature
+C. General Azure Monitor metrics such as CPU, memory, and request counts for the hosting plan
+D. Only review the code by reading the data access layer and looking for loops or queries that seem inefficient
 
 <details>
 <summary>Answer</summary>
@@ -738,10 +738,10 @@ D. Only review code
 ### Question 40
 **Scenario:** A company needs to be alerted when deployments complete (success or failure) and when production exceptions exceed a threshold. Alerts should go to a PagerDuty rotation for on-call engineers. What should they configure?
 
-A. Manual monitoring
-B. Azure DevOps service hooks for deployment events, Application Insights alerts, both integrated with PagerDuty
-C. Email only
-D. Check dashboards hourly
+A. Manual monitoring of the pipeline results and application exceptions by the on-call engineer during working hours only
+B. Azure DevOps service hooks for deployment events, plus Application Insights alerts, integrated with PagerDuty
+C. Email only, with deployment and exception alerts sent to a distribution list that the team reads
+D. Check dashboards hourly for deployment results and exception counts, and phone the on-call engineer
 
 <details>
 <summary>Answer</summary>

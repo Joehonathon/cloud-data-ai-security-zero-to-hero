@@ -16,9 +16,9 @@ DAS-C01 has been retired and replaced by the Data Engineer Associate (DEA-C01). 
 ### Question 1
 **Scenario:** Clickstream events arrive at 50,000 records per second and must be available to several independent consumers.
 
-A. SQS
-B. Kinesis Data Streams, where multiple consumers read the same shards independently
-C. Direct writes to S3
+A. SQS, which keeps each record available to many independent consumers until every one of them has deleted it
+B. Kinesis Data Streams, where several consumers read the same shards independently
+C. Direct writes to S3 from each producer, with consumers polling the bucket for new objects as they arrive
 D. A single Lambda
 
 <details>
@@ -34,10 +34,10 @@ D. A single Lambda
 ### Question 2
 **Scenario:** A Kinesis stream has a hot shard because one partition key dominates.
 
-A. Choose a higher-cardinality partition key so records distribute evenly, and resize shards
-B. Add consumers
-C. Reduce the record size
-D. Increase retention
+A. Use a higher-cardinality partition key so writes spread evenly across all shards, then resize the shards
+B. Add consumers to the stream, so that more readers drain the hot shard faster and the producers stop being throttled
+C. Shrink the records so the hot shard's 1 MB per second limit is hit less, with the same skewed key
+D. Increase retention to 7 days so that the hot shard keeps the throttled records until it has room
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Increase retention
 ### Question 3
 **Scenario:** Athena queries over a large S3 dataset are slow and expensive.
 
-A. Add more Athena capacity
-B. Query the raw JSON with more workers
-C. Convert to columnar Parquet or ORC, compress, and partition by the common filter columns
-D. Increase the S3 storage class
+A. Add more Athena capacity by raising the query concurrency quota, so each query gets more workers to scan the data
+B. Query the raw JSON with more workers by splitting the workload into several parallel queries on each prefix
+C. Convert to Parquet or ORC, compress, and partition by common filters
+D. Move the objects to a faster S3 storage class, such as Intelligent-Tiering, so reads are quicker during scans
 
 <details>
 <summary>Answer</summary>
@@ -70,9 +70,9 @@ D. Increase the S3 storage class
 ### Question 4
 **Scenario:** A data lake needs table-level and column-level permissions across accounts.
 
-A. S3 bucket policies alone
-B. AWS Lake Formation permissions on Glue Data Catalog resources
-C. IAM policies on prefixes
+A. S3 bucket policies alone, with one prefix per column group and cross-account principals listed in each policy
+B. Lake Formation permissions on Glue Data Catalog resources
+C. IAM policies on prefixes, attached to roles in each account and scoped to the keys that hold each column
 D. Public read
 
 <details>
@@ -88,10 +88,10 @@ D. Public read
 ### Question 5
 **Scenario:** Redshift queries scan a huge fact table joined to a small dimension.
 
-A. Set the fact table's distribution style to KEY on the join column and the dimension to ALL
-B. Use EVEN distribution for both
-C. Remove sort keys
-D. Increase node count only
+A. Fact table DISTSTYLE KEY on the join column; dimension DISTSTYLE ALL
+B. EVEN distribution for the fact and dimension tables, so every node holds an equal slice and join work is balanced
+C. Remove the sort keys so that the fact table's blocks are written in arrival order and scans skip fewer zone maps
+D. Increase the node count only, so each node holds a smaller slice of the fact table and scans finish sooner
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Increase node count only
 ### Question 6
 **Scenario:** A Glue ETL job must process only new files since the last run.
 
-A. Delete files after processing
+A. Delete files after processing, so the next run sees only the new arrivals without any need for job state
 B. Enable job bookmarks so Glue tracks processed data
-C. Use a timestamp in the filename manually
-D. Reprocess everything
+C. Put a timestamp in each filename and have the script compare it with the time of the previous successful run
+D. Reprocess everything each night, since Glue deduplicates records already written to the target on its own
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Reprocess everything
 ### Question 7
 **Scenario:** Streaming data must land in S3 in Parquet, batched by size or time, with no code.
 
-A. Kinesis Data Streams alone
-B. A Lambda per record
-C. Kinesis Data Firehose with record format conversion and buffering hints
-D. Direct PUT from producers
+A. Kinesis Data Streams alone, which writes Parquet objects to S3 once its shards have buffered enough records
+B. A Lambda function per record, which converts each event to a Parquet object and writes it to S3 individually
+C. Firehose with record format conversion to Parquet from a Glue table schema, plus size and interval buffering hints
+D. Direct PUT from each producer to S3, with the producer batching and converting records to Parquet itself
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Direct PUT from producers
 ### Question 8
 **Scenario:** EMR jobs are expensive and run nightly.
 
-A. Use transient clusters that terminate on completion, with spot instances for task nodes and instance fleets for capacity
-B. Use a long-running cluster
-C. Increase instance sizes
-D. Move to a single EC2 instance
+A. Transient clusters created per run for the nightly job, with spot task nodes and instance fleets
+B. A long-running cluster sized for the peak job, with core and task nodes on-demand and reused for every nightly run
+C. Use bigger instances so each nightly job finishes sooner and the billed hours drop
+D. Move the job to one EC2 instance running Spark in local mode
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Move to a single EC2 instance
 ### Question 9
 **Scenario:** A QuickSight dashboard must be fast over a large dataset.
 
-A. Import into SPICE with a scheduled refresh
+A. Import into SPICE with a scheduled refresh, so queries run in memory
 B. Increase the source database size
-C. Direct query against the source for every visual
-D. Reduce the number of visuals
+C. Direct query against the source for every visual, which always shows live data and removes the refresh step
+D. Reduce the number of visuals on the page to a few, since the load per visual is what limits dashboard speed
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Reduce the number of visuals
 ### Question 10
 **Scenario:** Small files are accumulating in the data lake and query performance is degrading.
 
-A. Ignore it
-B. Add more partitions
-C. Compact small files into larger ones on a schedule, and tune the producer's buffering to write fewer, larger objects
-D. Switch to CSV
+A. Ignore it, since S3 merges small objects automatically in the background once their combined size reaches the block size, so no action is needed
+B. Add more partitions on a high-cardinality column, so each query opens a smaller number of objects per partition
+C. Compact small files into larger objects on a schedule and tune producer buffering and output partitions, so queries open fewer objects
+D. Switch to CSV, since text files are split on newline boundaries and so avoid the open overhead of each file
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Switch to CSV
 ### Question 11
 **Scenario:** Redshift must query data in S3 without loading it.
 
-A. UNLOAD
-B. COPY into Redshift
-C. A federated query to RDS
-D. Redshift Spectrum against external tables in the Glue Data Catalog
+A. UNLOAD, which exports query results from the cluster to S3 so they can be read there without loading
+B. COPY into Redshift, which reads the files in place and leaves them in S3 as external tables, with no data movement
+C. A federated query to RDS, which presents the S3 files as tables in the catalog without loading them
+D. Redshift Spectrum with external tables in the Glue Data Catalog, reading the S3 files in place (no loading)
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Redshift Spectrum against external tables in the Glue Data Catalog
 ### Question 12
 **Scenario:** PII must be masked for analysts but visible to a small compliance team.
 
-A. Deleting the columns
-B. Application filtering
-C. Two copies of the data
-D. Lake Formation column-level permissions and data filters, or dynamic masking in the query layer
+A. Dropping the PII columns from the shared table for analysts, then restoring them for compliance on request
+B. Application filtering in each dashboard tool, which removes or hides the PII columns for the analysts' sessions
+C. Two copies of the data, one with PII removed for analysts and a full one in a restricted prefix for compliance
+D. Lake Formation column permissions and data filters, or dynamic masking, enforced in the catalog for every query engine
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Lake Formation column-level permissions and data filters, or dynamic masking 
 ### Question 13
 **Scenario:** A streaming aggregation must compute a five-minute rolling count.
 
-A. A batch job hourly
-B. A windowed query in a stream processing service such as Managed Service for Apache Flink
-C. A DynamoDB scan
-D. Athena on raw data
+A. A batch job every hour that aggregates the previous hour and publishes five-minute counts
+B. A windowed query in a stream processor such as Managed Service for Apache Flink, using tumbling or sliding windows
+C. A DynamoDB scan every five minutes, counting the items whose timestamp falls in the latest window
+D. Athena on raw data, scheduled every minute with a WHERE clause on the event time of the last five minutes
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Athena on raw data
 ### Question 14
 **Scenario:** A Glue crawler keeps creating new tables instead of updating one.
 
-A. Run it less often
-B. That is expected
-C. Inconsistent schemas or partition structure under the path; fix the layout or configure the crawler's schema change and grouping behavior
-D. Delete the catalog
+A. Run it less often, since the crawler splits tables when runs overlap and so needs more time between them
+B. That is expected, because each crawler run creates a new table version and registers it under a fresh name
+C. Inconsistent schemas or partition layout; fix the layout or set the crawler's grouping behavior
+D. Delete the catalog and rebuild it, since crawlers keep stale table definitions that cannot be updated in place
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Delete the catalog
 ### Question 15
 **Scenario:** Analytics data must be retained for 7 years but is rarely queried after 90 days.
 
-A. Tier it: recent data in the warehouse, older data in S3 with lifecycle transitions to colder classes, queried through Spectrum or Athena when needed
-B. Keep everything in Redshift
-C. Store everything in S3 Standard
-D. Delete after 90 days
+A. Tier it: recent data in the warehouse, older data in S3 with lifecycle transitions, queried via Spectrum or Athena
+B. Keep everything in Redshift on RA3 nodes, since managed storage costs the same as archive tiers
+C. Store everything in S3 Standard and query it with Athena, since Standard is the cheapest class for data this rarely read
+D. Delete after 90 days, then restore from the nightly backups if an auditor requests older data within the seven year period
 
 <details>
 <summary>Answer</summary>

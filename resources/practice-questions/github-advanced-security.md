@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A developer tries to push a commit containing an API key.
 
-A. With push protection enabled, the push is blocked and the developer is prompted to remove the secret or provide a bypass reason
-B. The key is encrypted automatically
-C. The push succeeds and an alert is raised later
-D. Nothing happens
+A. With push protection on, the push is blocked and the developer must remove the secret or give a bypass reason
+B. The key is encrypted automatically by GitHub before it is stored, so the secret cannot be read from the commit or the history afterwards, even by a repository admin
+C. The push succeeds and an alert is raised later by a scheduled scan
+D. Nothing happens, because secret scanning only checks the default branch weekly
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Nothing happens
 ### Question 2
 **Scenario:** CodeQL must find injection vulnerabilities in application code.
 
-A. It runs the application
-B. It matches patterns of bad strings
-C. It checks dependencies only
-D. It builds a queryable database of the code and runs semantic queries, including data flow analysis from sources to sinks
+A. It runs the application in a sandbox and sends crafted requests at it to see which inputs cause a failure
+B. It matches patterns of bad strings, such as concatenated SQL keywords, in the source files with regular expressions alone
+C. It checks dependencies only, comparing declared package versions with the advisory database for known flaws
+D. It builds a queryable database of the code and runs semantic queries with data flow analysis from sources to sinks
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. It builds a queryable database of the code and runs semantic queries, includi
 ### Question 3
 **Scenario:** A code scanning alert is a false positive.
 
-A. Disable code scanning
-B. Delete the code
-C. Dismiss the alert with a reason (false positive, used in tests, or won't fix), which is recorded and auditable
-D. Ignore it
+A. Disable code scanning for the repository until the rule has been fixed by the maintainers of the query pack
+B. Delete the code that triggers the alert, then restore it from history once the alert has closed itself and the scan is green again
+C. Dismiss the alert with a reason, which is recorded and auditable
+D. Ignore it and leave the alert open, since open alerts do not block merges and will age out in time
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Ignore it
 ### Question 4
 **Scenario:** Dependabot must open pull requests for vulnerable dependencies.
 
-A. Dependabot alerts only
-B. Manual dependency review
-C. Enable Dependabot security updates, which open pull requests upgrading to a patched version, alongside alerts
-D. Secret scanning
+A. Dependabot alerts only, which tell the team about vulnerable dependencies and leave the upgrade to a person
+B. Manual dependency review each sprint, where a developer reads the advisory list and edits the manifests
+C. Enable Dependabot security updates, which open pull requests that upgrade to a patched version
+D. Secret scanning, which checks pushed content for credentials and opens an alert for each exposed token
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Secret scanning
 ### Question 5
 **Scenario:** A pull request adds a dependency with a known critical vulnerability.
 
-A. Only after merge
-B. Dependency review on the pull request surfaces it, and can be enforced as a required check that blocks the merge
-C. It merges normally
-D. Nothing detects it
+A. Only after merge, when the dependency graph updates on the default branch and Dependabot raises an alert that someone must then triage
+B. Dependency review on the pull request surfaces it, and can be a required check that blocks the merge
+C. It merges normally, because checks look only at the changed code
+D. Nothing detects it until a dependency review is run by hand
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Nothing detects it
 ### Question 6
 **Scenario:** Code scanning must run on a schedule as well as on pull requests.
 
-A. Once at setup
-B. Configure the workflow with `pull_request`, `push` to the default branch, and a `schedule` trigger, since new queries can find issues in unchanged code
-C. Manual runs only
-D. Pull requests only
+A. Once at setup, since the result of the first scan stays valid for as long as the code in the repo is unchanged
+B. Configure the workflow with `pull_request`, `push` to the default branch, and a `schedule` trigger
+C. Manual runs only, started by a maintainer from the Actions tab whenever a scan is wanted
+D. Pull requests only, because scanning code that has not changed cannot produce any new alert, whatever the query pack
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Pull requests only
 ### Question 7
 **Scenario:** A monorepo has code in several languages.
 
-A. Only one language can be scanned
+A. Only one language can be scanned per repository, so a monorepo needs a separate repository for each language
 B. Configure a matrix with one analysis per supported language, since CodeQL databases are per-language
-C. Use secret scanning instead
-D. CodeQL scans all languages automatically in one run
+C. Use secret scanning instead, which reads every file in any language
+D. CodeQL detects and scans all languages automatically in one run, using a single combined database for the repo
 
 <details>
 <summary>Answer</summary>
@@ -141,9 +141,9 @@ D. CodeQL scans all languages automatically in one run
 **Scenario:** Scanning results from a third-party tool must appear in the GitHub security tab.
 
 A. Upload results in SARIF format, which the code scanning API accepts from any tool
-B. It is not possible
-C. Paste them into an issue
-D. Only CodeQL is supported
+B. It is not possible, because the security tab only displays alerts produced by CodeQL analysis on GitHub
+C. Paste them into an issue in the repository and label it, so the security tab picks up the findings
+D. Only CodeQL is supported, and results from other tools must be converted into CodeQL query packs
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Only CodeQL is supported
 ### Question 9
 **Scenario:** A secret was pushed and is now in git history.
 
-A. Rotate the credential first, then optionally rewrite history; assume it was harvested
-B. Add it to `.gitignore`
-C. Delete the commit and consider it resolved
-D. Make the repository private
+A. Rotate the credential first, then optionally rewrite history
+B. Add the file to `.gitignore` so that it is not committed again and the secret leaves the repository
+C. Delete the commit and consider it resolved, since a removed commit can no longer be cloned or viewed
+D. Make the repository private, which stops anyone who has not already cloned it from reading the history
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Make the repository private
 ### Question 10
 **Scenario:** GHAS must be rolled out across a large enterprise without overwhelming teams.
 
-A. Leave it to individual teams
-B. Enable everything everywhere at once
-C. Phase it: start with secret scanning and push protection, then dependency management, then code scanning per language, with an owner for triage at each stage
-D. Enable code scanning only
+A. Leave it to individual teams to turn on whichever features they want and handle alerts as they see fit
+B. Enable everything everywhere at once, so every repository has secret, dependency, and code scanning together
+C. Phase it: secret scanning and push protection first, then dependency management, then code scanning per language, with a triage owner
+D. Enable code scanning only, across all repositories, and add the other features after the first year
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Enable code scanning only
 ### Question 11
 **Scenario:** Which explains secret scanning's partner program?
 
-A. It applies only to private repositories
-B. When a partner's credential pattern is detected in a public repository, GitHub notifies the provider so they can revoke it
-C. Partners write the scanner
-D. Secrets are shared with partners
+A. It applies only to private repositories, where GitHub checks each token against the issuing partner's own records
+B. When a partner's token pattern is found in a public repository, GitHub tells the provider, who can revoke it
+C. Partners write the scanner themselves, and GitHub runs their code against each repository on the partner's own servers, then reports back
+D. Secrets are shared with partners, who store a copy of each leaked value
 
 <details>
 <summary>Answer</summary>
@@ -212,9 +212,9 @@ D. Secrets are shared with partners
 ### Question 12
 **Scenario:** A custom CodeQL query must encode an organization-specific rule.
 
-A. Ask GitHub
-B. Use a regular expression in CI
-C. Not supported
+A. Ask GitHub support to add the rule to the default query suite for your organization
+B. Use a regular expression in CI that fails the build when the banned pattern appears in a changed file
+C. Not supported, because the query suites are fixed by GitHub and cannot be extended by any users of GitHub
 D. Write a custom query or query pack in QL and include it in the code scanning configuration
 
 <details>
@@ -230,10 +230,10 @@ D. Write a custom query or query pack in QL and include it in the code scanning 
 ### Question 13
 **Scenario:** A vulnerability is found in a repository's own code and must be fixed privately.
 
-A. Open a public issue
-B. Email everyone
-C. A private repository security advisory, with a temporary private fork for collaboration, then publish a CVE when the fix is released
-D. Fix it silently
+A. Open a public issue describing the flaw and how to reproduce it, so that users can mitigate it while a fix is being prepared
+B. Email everyone who contributes to the repository with the details, so the fix is reviewed at once
+C. A private repository security advisory, with a temporary private fork, then publish a CVE when the fix ships
+D. Fix it silently in a normal commit and a normal pull request, and describe it only in the release notes
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Fix it silently
 ### Question 14
 **Scenario:** Alert volume from code scanning is high on a legacy codebase.
 
-A. Fix all alerts before merging anything
-B. Dismiss everything
-C. Disable scanning
-D. Focus on new alerts introduced by pull requests, set a severity threshold for blocking, and burn down the historical backlog on a plan
+A. Fix all alerts before merging anything, so the repository starts from a clean state and stays that way
+B. Dismiss everything as won't fix, so the list is empty and new alerts stand out clearly from the old ones
+C. Disable scanning on the legacy repositories, then turn it back on for new code once the backlog is gone
+D. Focus on new alerts from pull requests, set a severity threshold for blocking, and burn down the backlog on a plan
 
 <details>
 <summary>Answer</summary>
@@ -267,9 +267,9 @@ D. Focus on new alerts introduced by pull requests, set a severity threshold for
 **Scenario:** GHAS licensing is described.
 
 A. Advanced Security features are free on public repositories; private repositories require licensing, historically committer-based and now also available as separate Code Security and Secret Protection products
-B. It is per repository
-C. It is free for all repositories
-D. It is included in all plans
+B. It is per repository, with a fee for each repository that has any of the features switched on
+C. It is free for all repositories, public or private, on every plan, including the free plan for organizations
+D. It is included in all plans at no cost, since the features are part of the base GitHub Enterprise subscription
 
 <details>
 <summary>Answer</summary>

@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Users, groups, and service principals must be managed once across all workspaces.
 
-A. Shared accounts
-B. Account-level identity federation, with SCIM provisioning from the identity provider and groups assigned to workspaces
-C. Per-workspace user lists
-D. Manual creation in each workspace
+A. Shared accounts for each team, so there are fewer identities to maintain
+B. Account-level identity federation, with SCIM provisioning from the IdP and groups assigned to workspaces
+C. Per-workspace user lists maintained by each workspace admin
+D. Manual creation of each user in every workspace they need, with the admin removing them again when they leave the team
 
 <details>
 <summary>Answer</summary>
@@ -33,9 +33,9 @@ D. Manual creation in each workspace
 **Scenario:** Data governance must span workspaces with a single permission model.
 
 A. Unity Catalog, with a metastore per region and a three-level `catalog.schema.table` namespace
-B. Cloud storage IAM only
-C. Notebook permissions
-D. Table ACLs per workspace
+B. Cloud storage IAM only, with bucket policies per team, since the files hold the data and so are the place to govern it
+C. Notebook permissions on each workspace, so that only people who can open a notebook can run the queries against its tables
+D. Table ACLs per workspace on the legacy Hive metastore, with the same grants repeated in each workspace by its admin
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Table ACLs per workspace
 ### Question 3
 **Scenario:** Unity Catalog must access cloud storage without embedded credentials.
 
-A. Access keys in the cluster configuration
-B. Per-user credentials
-C. A storage credential (using a managed identity or IAM role) plus an external location defining the path scope
-D. Public buckets
+A. Access keys stored in the cluster configuration as Spark properties
+B. Per-user credentials entered by each engineer in their notebook
+C. A storage credential (managed identity or IAM role) plus an external location defining the path scope
+D. Public buckets with read access open to the workspace's network range, so that no credentials are needed for the paths
 
 <details>
 <summary>Answer</summary>
@@ -69,9 +69,9 @@ D. Public buckets
 **Scenario:** Costs must be attributed to teams.
 
 A. Cluster policies enforcing tags, plus system tables and budget alerts for per-team reporting
-B. Estimate from headcount
-C. One shared cluster with no tags
-D. Split evenly
+B. Estimate from headcount, with each team's share in proportion to its size
+C. One shared cluster with no tags, so usage appears in a single line
+D. Split evenly across the teams, because the cost difference per team is small
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Split evenly
 ### Question 5
 **Scenario:** Users keep creating oversized clusters.
 
-A. Ask them not to
-B. Remove cluster creation entirely
-C. Cluster policies constraining instance types, node counts, autotermination, and enabling autoscaling
-D. Delete clusters manually
+A. Ask them not to, with guidance in the team wiki about sensible sizes for each type of workload and a monthly reminder
+B. Remove cluster creation entirely, so that all compute has to be requested from the platform team through a ticket
+C. Cluster policies limiting instance types, node counts and autotermination, with autoscaling on
+D. Delete oversized clusters manually each morning once the platform team has listed them from the clusters page
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Delete clusters manually
 ### Question 6
 **Scenario:** SQL analysts need low-latency queries with automatic scaling.
 
-A. A SQL warehouse, ideally serverless, with autostop and scaling configured
-B. An all-purpose cluster
-C. A job cluster
-D. A single node
+A. A SQL warehouse, ideally serverless, with autostop and scaling
+B. An all-purpose cluster with a large driver and autoscaling workers, shared by all the analysts through the JDBC endpoint
+C. A job cluster started for each query by the BI tool, which gives each analyst a fresh and isolated environment
+D. A single node cluster with a high-memory instance type, which avoids shuffle and so keeps the query latency low
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A single node
 ### Question 7
 **Scenario:** Notebook results containing sensitive data must not be visible to all workspace users.
 
-A. Delete notebooks
-B. Use a single admin account
-C. Trust users
-D. Restrict access with workspace object permissions, apply Unity Catalog grants to the underlying data, and consider disabling result downloads
+A. Delete notebooks as soon as they have been run, so no results remain stored
+B. Use a single admin account to run every sensitive notebook, so that nobody else has a reason to open the results afterwards
+C. Trust users to avoid opening results they do not need, with a written policy reminding them of their responsibilities every quarter
+D. Restrict workspace object permissions, apply Unity Catalog grants to the data, and consider disabling result downloads
 
 <details>
 <summary>Answer</summary>
@@ -141,9 +141,9 @@ D. Restrict access with workspace object permissions, apply Unity Catalog grants
 **Scenario:** An audit must show who queried a sensitive table last month.
 
 A. Unity Catalog audit logs and system tables, which record query and access events with the principal
-B. Cluster logs
-C. Notebook revision history
-D. Driver logs
+B. Cluster logs, which keep a record of every query and the user who submitted it, for as long as the cluster exists
+C. Notebook revision history, which shows which user ran each command and which tables were read at that time
+D. Driver logs from each cluster, which list the SQL statements executed together with the identity of the person
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Driver logs
 ### Question 9
 **Scenario:** A workspace must not be reachable from the public internet.
 
-A. Disable the UI
-B. A firewall on the laptop
-C. Strong passwords
-D. Network configuration: private connectivity to the control plane, IP access lists, and no public IPs on compute
+A. Disable the web UI for all users, so that nobody can open the workspace from a browser anywhere on the internet
+B. A firewall on each user's laptop that blocks the workspace unless on VPN
+C. Strong passwords with mandatory MFA on the public endpoint
+D. Private connectivity to the control plane, IP access lists, and no public IPs on compute
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Network configuration: private connectivity to the control plane, IP access l
 ### Question 10
 **Scenario:** A table's data must be deleted to satisfy a data subject request.
 
-A. Overwrite the file
-B. Drop the table
-C. Delete the rows, then `VACUUM` with an appropriate retention so the underlying files are removed, and confirm no clones or shares retain them
-D. Delete and rely on time travel expiring
+A. Overwrite the file that holds the row with new content, which replaces the old bytes and so removes the personal data
+B. Drop the table, which removes the metadata
+C. Delete the rows, then `VACUUM` with suitable retention, and confirm no clones or shares retain them
+D. Delete the rows and rely on time travel expiring in its own time, since old versions are removed automatically after a while
 
 <details>
 <summary>Answer</summary>
@@ -194,9 +194,9 @@ D. Delete and rely on time travel expiring
 ### Question 11
 **Scenario:** Data must be shared with an external organization without copying it.
 
-A. A public bucket
-B. Export to CSV and email
-C. Grant workspace access
+A. A public bucket holding a copy of the data, with the link sent to the partner so that they can download it when needed
+B. Export to CSV and email the files to the partner each week
+C. Grant workspace access to the partner's users
 D. Delta Sharing, with recipients granted access to specific shares
 
 <details>
@@ -212,10 +212,10 @@ D. Delta Sharing, with recipients granted access to specific shares
 ### Question 12
 **Scenario:** A workspace admin must delegate catalog administration to a data team.
 
-A. Grant account admin
-B. Grant the specific catalog's ownership or `USE CATALOG` and management privileges to a group, keeping account admin narrow
-C. Share credentials
-D. Grant metastore admin to everyone
+A. Grant account admin to the data team's lead
+B. Grant catalog ownership or `USE CATALOG` and management privileges to a group, keeping account admin narrow
+C. Share the credentials of an existing administrator with the team
+D. Grant metastore admin to everyone on the data team
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Grant metastore admin to everyone
 ### Question 13
 **Scenario:** Jobs are failing after a runtime upgrade.
 
-A. Ignore the failures
-B. Pin runtime versions for production jobs, test upgrades against a staging environment, and adopt LTS releases for stability
-C. Always use the newest runtime
-D. Roll back everything permanently
+A. Ignore the failures and wait for a patch
+B. Pin production runtime versions, test upgrades in staging, and adopt LTS releases
+C. Always use the newest runtime on every job cluster, since it has the latest fixes and is the best supported release
+D. Roll back everything permanently to the oldest runtime that ever worked, and never upgrade the production jobs again
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Roll back everything permanently
 ### Question 14
 **Scenario:** Secrets must be available to jobs without appearing in notebooks.
 
-A. Hard-code them
-B. Databricks secret scopes (optionally backed by a cloud key vault), referenced through `dbutils.secrets`, with redaction in output
-C. Environment variables in the notebook
-D. A config table
+A. Hard-code them in a cell at the top and restrict who can open the notebook
+B. Secret scopes (optionally backed by a cloud key vault) read through `dbutils.secrets`, with output redaction
+C. Environment variables set in the first cell of the notebook
+D. A config table in a restricted schema holding the values in plain text
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. A config table
 ### Question 15
 **Scenario:** Storage costs are growing from old table versions and unused data.
 
-A. Delete files manually
-B. Disable Delta
-C. Run `VACUUM` on a schedule with an appropriate retention, review table retention requirements, and drop or archive unused tables
-D. Increase the storage quota
+A. Delete files manually from the storage account for the table, starting with the oldest data files in the folder listing
+B. Disable Delta on the large tables so that no old versions are kept, and convert them back to plain Parquet files
+C. Run `VACUUM` on a schedule with suitable retention, review requirements, and drop or archive unused tables
+D. Increase the storage quota for the account
 
 <details>
 <summary>Answer</summary>

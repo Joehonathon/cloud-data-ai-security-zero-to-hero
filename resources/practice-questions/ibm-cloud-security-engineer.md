@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Permissions must be granted to 40 engineers with identical needs.
 
-A. Individual policies per user
-B. Shared credentials
-C. An access group with the policies attached, and users added to the group
-D. Administrator for all
+A. Individual policies per user, written once for each engineer so that each person's access can be traced to a single policy
+B. Shared credentials for the team, kept in one place so that nobody waits for a policy change when they join
+C. An access group with the policies attached, and users added to it
+D. Administrator for every engineer, with the unneeded access removed later once the team's actual usage is known
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Administrator for all
 ### Question 2
 **Scenario:** An application needs to call IBM Cloud APIs without a human account.
 
-A. A personal API key
-B. Root credentials
+A. A personal API key belonging to the engineer who built the application, since it already carries the permissions the application needs
+B. Root credentials of the account owner, stored in the application's configuration so that calls never fail on permissions
 C. A service ID with its own API key or trusted profile, scoped to the required services
-D. A shared user account
+D. A shared user account with a long-lived password kept in the deployment pipeline, used by every service that calls the APIs
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. A shared user account
 ### Question 3
 **Scenario:** Encryption keys must be under customer control in a dedicated HSM.
 
-A. Application-level encryption only
-B. Hyper Protect Crypto Services with Keep Your Own Key, where IBM cannot access the key material
-C. Key Protect only
-D. Provider-managed keys
+A. Application-level encryption only, with the keys held in the application's own configuration files and rotated by the team
+B. Hyper Protect Crypto Services with Keep Your Own Key, so IBM cannot reach the key material
+C. Key Protect only, since it is a dedicated single-tenant HSM whose master keys IBM can never access or use
+D. Provider-managed keys, which IBM generates and rotates so that the customer never has to look after key material
 
 <details>
 <summary>Answer</summary>
@@ -68,9 +68,9 @@ D. Provider-managed keys
 ### Question 4
 **Scenario:** Data must be protected while it is being processed.
 
-A. TLS
-B. Disk encryption
-C. A firewall
+A. TLS on every connection, which also protects data in memory
+B. Disk encryption with a customer-managed key
+C. A firewall around the subnet, which stops a compromised hypervisor reading memory
 D. Confidential computing with IBM Secure Execution or Hyper Protect, isolating data in use from privileged operators
 
 <details>
@@ -86,10 +86,10 @@ D. Confidential computing with IBM Secure Execution or Hyper Protect, isolating 
 ### Question 5
 **Scenario:** A VPC workload must reach IBM Cloud services without traversing the public internet.
 
-A. A VPN to the internet
-B. Virtual private endpoints or the private service endpoint network
-C. Public endpoints with an allowlist
-D. A NAT gateway
+A. A VPN to the internet, with an IPsec tunnel to the service's public endpoint
+B. Virtual private endpoints or the private service endpoint network, which keep traffic on the IBM Cloud private network
+C. Public endpoints with an allowlist of the VPC's floating IPs
+D. A public gateway that hides the workload's private address
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. A NAT gateway
 ### Question 6
 **Scenario:** VPC network traffic must be filtered at two levels.
 
-A. Host firewalls only
-B. ACLs only
-C. Security groups only
-D. Security groups (stateful, applied to network interfaces) and network ACLs (stateless, applied to subnets)
+A. Host firewalls only, such as iptables rules on each virtual server, because filtering at the guest keeps the policy next to the workload
+B. Network ACLs only, applied to subnets, since they track connections
+C. Security groups only, applied to subnets
+D. Security groups (stateful, on network interfaces) and network ACLs (stateless, on subnets)
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Security groups (stateful, applied to network interfaces) and network ACLs (s
 ### Question 7
 **Scenario:** Secrets used by applications must be centrally managed and rotated.
 
-A. IBM Cloud Secrets Manager, with rotation policies and short-lived dynamic credentials where supported
-B. Environment variables
-C. A configuration file
-D. A shared password vault spreadsheet
+A. Secrets Manager, with rotation policies and short-lived dynamic credentials where supported
+B. Environment variables set in the deployment manifest, which keep secrets out of the image and so make rotation unnecessary
+C. A configuration file in the repository, encrypted with a key committed beside it
+D. A shared password vault spreadsheet on the team drive, with one row per secret and a column for the last date changed
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. A shared password vault spreadsheet
 ### Question 8
 **Scenario:** Compliance posture must be evaluated continuously against a control framework.
 
-A. Manual checklists
-B. Security and Compliance Center evaluating resources against profiles, with attachments scoped to accounts and resource groups
-C. Provider attestations only
-D. An annual audit
+A. Manual checklists completed by each team every quarter and signed off by the security lead before the next audit
+B. Security and Compliance Center evaluating resources against profiles, with attachments scoped to accounts
+C. Provider attestations only, since IBM's certifications cover the customer's own configuration of every service as well
+D. An annual audit by an external assessor
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. An annual audit
 ### Question 9
 **Scenario:** Security events across the account must be centralized for investigation.
 
-A. Activity Tracker events and log data forwarded to a SIEM, with retention matching the investigation requirement
-B. Per-service consoles
-C. Nothing is available
-D. Screenshots
+A. Activity Tracker events and logs forwarded to a SIEM, with retention matching the investigation requirement
+B. Per-service consoles, checked one at a time by whoever is on call, using each service's own log viewer
+C. Nothing is available, since events remain inside each service and cannot be exported to another tool
+D. Screenshots of the dashboards saved to a shared folder at the end of each incident, with notes on what was seen on each screen
 
 <details>
 <summary>Answer</summary>
@@ -176,9 +176,9 @@ D. Screenshots
 ### Question 10
 **Scenario:** Container images must be checked before deployment.
 
-A. Trust the registry
-B. Vulnerability scanning in the registry and in the pipeline, with admission control or a build gate rejecting images above a severity threshold
-C. Scan after deployment
+A. Trust the registry, since images pulled from a vendor's public registry have already been scanned by the publisher
+B. Vulnerability scanning in the registry and pipeline, with a gate rejecting images over a severity threshold
+C. Scan after deployment, with a scheduled job over the running containers that raises tickets for anything critical or high
 D. Only scan base images
 
 <details>
@@ -194,10 +194,10 @@ D. Only scan base images
 ### Question 11
 **Scenario:** A Kubernetes or OpenShift cluster must limit what workloads can do.
 
-A. Trust developers
-B. Cluster admin for all
-C. RBAC scoped per namespace, security context constraints or Pod Security Standards, and network policies for segmentation
-D. Node-level firewalls only
+A. Trust developers to follow the guidelines, with a review by the platform team after each release has gone out
+B. Cluster admin for all developers, so that no workload is blocked from creating whatever resources it needs
+C. RBAC per namespace, security context constraints or Pod Security Standards, and network policies
+D. Node-level firewalls only, which filter traffic on each worker and so also control what the pods may do on the node
 
 <details>
 <summary>Answer</summary>
@@ -212,9 +212,9 @@ D. Node-level firewalls only
 ### Question 12
 **Scenario:** A DDoS and application-layer attack must be mitigated for a public web application.
 
-A. Larger instances
-B. A security group
-C. More replicas
+A. Larger instances behind the load balancer
+B. A security group that blocks the offending source addresses
+C. More replicas spread across zones
 D. A CDN and WAF in front of the application, with rate limiting and managed rule sets
 
 <details>
@@ -231,9 +231,9 @@ D. A CDN and WAF in front of the application, with rate limiting and managed rul
 **Scenario:** An account's root-equivalent access must be constrained.
 
 A. Restrict the account owner, use named administrator identities with MFA, and require IAM policies for privileged actions
-B. Use the account owner for daily work
-C. Disable MFA for convenience
-D. Share the owner credentials
+B. Use the account owner for daily work, since it avoids the delay of requesting access each time something needs changing in the account
+C. Disable MFA for convenience on administrator accounts
+D. Share the owner credentials among the administrators in a password vault so that someone is always available to act at any hour
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Share the owner credentials
 ### Question 14
 **Scenario:** Data classification must drive protection controls.
 
-A. Classification is documentation only
-B. Protect only production
-C. Classify data, then apply controls proportionate to sensitivity: key management, access scope, retention, and residency
-D. Encrypt everything the same way
+A. Classification is documentation only, and has no effect on which controls apply to any particular dataset or environment
+B. Protect only production, because test environments never hold sensitive data
+C. Classify data, then apply controls proportionate to sensitivity: keys, access scope, retention, residency
+D. Encrypt everything the same way with one key
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Encrypt everything the same way
 ### Question 15
 **Scenario:** An incident response plan must exist for cloud workloads.
 
-A. Define roles, detection sources, containment actions available in the cloud (isolate, snapshot, revoke credentials), evidence preservation, and rehearse it
-B. Rely on the provider
-C. Handle it when it happens
-D. Restore from backup only
+A. Define roles, detection sources, cloud containment actions (isolate, snapshot, revoke credentials) and evidence preservation, and rehearse it
+B. Rely on the provider, whose security operations team will detect and contain incidents in the customer's own workloads under the shared responsibility model
+C. Handle it when it happens, using the people who are on shift and the tools that are already to hand
+D. Restore from backup only, as returning to a known-good state removes the need to investigate what happened
 
 <details>
 <summary>Answer</summary>

@@ -9,7 +9,7 @@
 ### Question 1
 **Scenario:** A query is running slow. The team checks the query profile and sees 80% of time spent in Remote Spilling. What does that mean?
 
-A. Network is slow
+A. Network throughput between the client and Snowflake is slow, so the result set takes long to download to the BI tool after execution finishes
 B. Storage is slow
 C. Snowflake is broken
 D. The warehouse ran out of memory and is spilling to local disk and remote storage; needs a bigger warehouse
@@ -27,9 +27,9 @@ D. The warehouse ran out of memory and is spilling to local disk and remote stor
 ### Question 2
 **Scenario:** Which Snowflake feature lets you query data without loading it (read directly from cloud storage)?
 
-A. Stored Procedures
-B. Secure Views
-C. Internal Stages
+A. Stored Procedures with EXECUTE AS OWNER
+B. Secure Views, which hide the underlying definitions and allow querying of files stored in the cloud bucket
+C. Streams
 D. External Tables
 
 <details>
@@ -63,10 +63,10 @@ D. File a support ticket
 ### Question 4
 **Scenario:** Which Snowflake edition supports multi-cluster warehouses?
 
-A. Standard
-B. Enterprise and above (Enterprise, Business Critical, VPS)
+A. Standard, which supports multi-cluster warehouses of up to two clusters for a small extra credit charge
+B. Enterprise or higher (Enterprise, Business Critical, VPS)
 C. Only VPS
-D. All editions
+D. All editions, including Standard, when the account has more than one warehouse
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. All editions
 ### Question 5
 **Scenario:** Snowflake's storage layer is:
 
-A. Replicated across cloud regions automatically
-B. EBS volumes attached to compute
-C. Centralized columnar storage on the cloud provider's object store (S3 / ADLS / GCS), separated from compute
-D. Local SSD only
+A. Replicated across cloud regions automatically, with every table copied to a second region for resilience at no extra cost
+B. EBS volumes attached to each warehouse node and managed by the customer
+C. Columnar storage on cloud object storage, separate from compute
+D. Local SSD on each warehouse node and discarded when the warehouse is suspended
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Local SSD only
 ### Question 6
 **Scenario:** A virtual warehouse is sized X-Small. To halve query time, you'd typically:
 
-A. Restart Snowflake
-B. Add more clusters
-C. Resize to Small (X-Small × 2)
-D. Resize to 4X-Large
+A. Restart the warehouse and rerun the query
+B. Add more clusters to the warehouse so the single query is split across them
+C. Resize to Small
+D. Resize straight to 4X-Large instead
 
 <details>
 <summary>Answer</summary>
@@ -118,9 +118,9 @@ D. Resize to 4X-Large
 **Scenario:** A team wants to share a curated dataset with an external partner without copying it. Which feature?
 
 A. CSV email
-B. Data export to S3
-C. CDC replication
-D. Secure Data Sharing (cross-account share, no copies, partner pays for compute)
+B. Data export to S3 with a scheduled COPY INTO location, which the partner then loads into their own account
+C. CDC replication to the partner's own database account, run nightly by a scheduled task
+D. Secure Data Sharing (cross-account share, no copies, partner pays compute)
 
 <details>
 <summary>Answer</summary>
@@ -137,8 +137,8 @@ D. Secure Data Sharing (cross-account share, no copies, partner pays for compute
 
 A. A backup mechanism
 B. Empty clones
-C. A clone that costs nothing
-D. Snowflake clones share underlying storage; only changed micro-partitions consume new storage
+C. A clone that costs nothing at all, because no storage or compute is billed for it even after changes are made
+D. Clones share underlying storage; only changed micro-partitions use new storage
 
 <details>
 <summary>Answer</summary>
@@ -171,8 +171,8 @@ D. Identical
 ### Question 10
 **Scenario:** Role hierarchy in Snowflake?
 
-A. Roles inherit privileges from parent roles in a DAG; ACCOUNTADMIN is at the top of the system roles hierarchy
-B. Flat single tier
+A. Roles inherit privileges from parent roles in a DAG; ACCOUNTADMIN sits at the top
+B. Flat single tier where every role is independent, and privileges must be granted to each user separately
 C. Per-table only
 D. No hierarchy
 
@@ -189,10 +189,10 @@ D. No hierarchy
 ### Question 11
 **Scenario:** Resource Monitors do what?
 
-A. Monitor warehouse usage and trigger actions (notify, suspend) when credit thresholds are crossed
-B. Track network
-C. Track query performance only
-D. Backup data
+A. Notify or suspend warehouses at credit thresholds
+B. Track network throughput between clients and the cloud region
+C. Track query performance only, flagging statements that run longer than a set time and cancelling them automatically
+D. Back up table data to a second cloud region on a nightly schedule
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. External Table
 ### Question 13
 **Scenario:** Search Optimization Service helps which workload?
 
-A. Streaming inserts
-B. Point-lookup queries (`WHERE id = ?`) on large tables
-C. Time-series
-D. Big aggregations
+A. High-volume streaming inserts arriving through Snowpipe Streaming
+B. Point lookups (`WHERE id = ?`) on large tables
+C. Time-series trend queries over the most recent date ranges
+D. Big aggregations over large tables, since it pre-computes the aggregates so results return faster
 
 <details>
 <summary>Answer</summary>
@@ -244,8 +244,8 @@ D. Big aggregations
 **Scenario:** Snowpark vs SQL?
 
 A. They're identical
-B. Snowpark is slower
-C. Snowpark is a programmatic API (Python, Scala, Java) that compiles to SQL and runs on Snowflake's engine - useful for complex data engineering and ML feature engineering
+B. Snowpark is slower because the code runs outside Snowflake on a separate cluster that you must provision and size yourself
+C. Snowpark is a programmatic API (Python, Scala, Java) that compiles to SQL and runs on Snowflake's engine
 D. Snowpark replaces SQL
 
 <details>
@@ -261,7 +261,7 @@ D. Snowpark replaces SQL
 ### Question 15
 **Scenario:** A team wants to query semi-structured JSON. What's idiomatic?
 
-A. External Spark
+A. External Spark cluster reading the exported JSON files and writing flattened tables back to Snowflake
 B. Parse JSON in application code
 C. JSON isn't supported
 D. Snowflake's VARIANT type and FLATTEN function allow native SQL on JSON / XML / Avro / Parquet
@@ -279,10 +279,10 @@ D. Snowflake's VARIANT type and FLATTEN function allow native SQL on JSON / XML 
 ### Question 16
 **Scenario:** A team queries a 1 TB table frequently filtered by `transaction_date`. Performance is poor. What helps most?
 
-A. Define a clustering key on `transaction_date` so micro-partitions are co-located by date and pruning is effective
+A. Define a clustering key on `transaction_date` so micro-partitions are co-located by date
 B. Larger warehouse only
-C. Disable result cache
-D. Add a B-tree index
+C. Disable the result cache and rerun each query on a freshly resumed warehouse so that nothing is served from memory
+D. Add a B-tree index on `transaction_date` with CREATE INDEX so lookups skip scanning unrelated micro-partitions
 
 <details>
 <summary>Answer</summary>
@@ -297,10 +297,10 @@ D. Add a B-tree index
 ### Question 17
 **Scenario:** A virtual warehouse is X-Small but queries are slow due to long scans. The bottleneck shows full-scan on a 5 TB table. What's the lever?
 
-A. Resize the warehouse (X-Small to Small / Medium / Large) - more compute scales scan throughput linearly; combine with clustering / pruning to reduce data read
-B. Disable result cache
-C. Switch to Standard edition
-D. Add more rows
+A. Resize the warehouse for more scan throughput, and prune the table to read less data
+B. Disable result cache so that every run of the query rescans the table from storage and uses the warehouse
+C. Switch to Standard edition, which uses a faster scan engine for large tables and lowers the per-credit price for scan-heavy workloads on very large tables
+D. Add more rows to the table so that micro-partitions fill up completely and each scan runs faster
 
 <details>
 <summary>Answer</summary>
@@ -333,10 +333,10 @@ D. 0 days
 ### Question 19
 **Scenario:** Loading a 1 TB nightly dump from S3 - what's the fastest approach?
 
-A. Bulk PUT from a laptop
-B. COPY INTO from a stage with files split into ~100-250 MB compressed chunks, multiple files in parallel; the warehouse parallelizes file ingestion across compute nodes
-C. Many small INSERT statements
-D. Single 1 TB file
+A. Bulk PUT of the dump from a laptop over the corporate VPN, then a single COPY
+B. COPY INTO from a stage, files split into ~100-250 MB compressed chunks
+C. Many small INSERT statements, batched into transactions of 1,000 rows, executed from several client threads
+D. Load it as a single 1 TB file so that one server reads the whole dump in order
 
 <details>
 <summary>Answer</summary>
@@ -351,8 +351,8 @@ D. Single 1 TB file
 ### Question 20
 **Scenario:** Streams and Tasks - which describes their relationship?
 
-A. Streams require external Kafka
-B. Streams capture row-level changes (CDC) on a table; Tasks schedule SQL/Procedure execution. Combine them: a task runs on a schedule, consumes the stream's changes, processes them, advancing the stream offset on commit
+A. Streams require an external Kafka cluster to capture changes, and Tasks only run after the Kafka consumer commits
+B. Streams capture row-level changes (CDC) on a table; Tasks schedule SQL or procedure execution; together, a task consumes the stream on a schedule
 C. Streams replace tables
 D. Tasks send email
 
@@ -369,10 +369,10 @@ D. Tasks send email
 ### Question 21
 **Scenario:** Sharing data with a partner outside your account without copying?
 
-A. S3 bucket
+A. Copy the tables to an S3 bucket and give the partner a link to download the files
 B. Snowpipe
-C. SFTP export
-D. Secure Data Sharing - producer creates a share with selected objects; consumer accounts query in real time without data movement
+C. SFTP export of nightly files to the partner's server, with the partner loading them into their own tables each morning
+D. Secure Data Sharing - producer creates a share; consumers query it in place
 
 <details>
 <summary>Answer</summary>
@@ -387,10 +387,10 @@ D. Secure Data Sharing - producer creates a share with selected objects; consume
 ### Question 22
 **Scenario:** Data masking on PII columns visible only to authorized roles?
 
-A. Manual filtering in every query
-B. Column-level Dynamic Data Masking policy applied to the column - masks values for unauthorized roles, returns clear values for authorized roles, transparent at query time
+A. Add a hand-written CASE expression to every query, view and dashboard that reads the column
+B. Column-level Dynamic Data Masking policy that hides values from unauthorized roles
 C. Drop the column
-D. Encrypt with KMS
+D. Encrypt the column with a KMS key managed by your cloud provider, so only authorized roles hold the decryption permission for it
 
 <details>
 <summary>Answer</summary>
@@ -405,10 +405,10 @@ D. Encrypt with KMS
 ### Question 23
 **Scenario:** A user reports: "the query returned in 0 ms, no compute used." What happened?
 
-A. Result cache hit - identical query within the cache TTL (default 24h) returned the prior result without using a warehouse
-B. Time Travel
-C. Snowpipe
-D. Bug
+A. Result cache hit - identical query within 24h returned the prior result without a warehouse
+B. Time Travel served the query from a prior snapshot of the table, which needs no warehouse compute for reads and so completes in under a millisecond
+C. Snowpipe finished the load earlier in the day, so the query had no work to do and no warehouse was needed
+D. A Snowflake defect skipped the warehouse and returned an empty result set without scanning any of the table's micro-partitions
 
 <details>
 <summary>Answer</summary>
@@ -423,7 +423,7 @@ D. Bug
 ### Question 24
 **Scenario:** Query history shows a query "spilled to remote storage" - what does that mean?
 
-A. Query needed more memory than the warehouse had so it spilled intermediate results to local SSD and then to remote (S3) storage - significantly slower; resize warehouse, optimize query, or reduce data scanned
+A. Query needed more memory than the warehouse had, so it spilled to local SSD and then remote storage - much slower; resize the warehouse or optimize the query
 B. Network failure
 C. Backup completed
 D. Streaming write
@@ -441,9 +441,9 @@ D. Streaming write
 ### Question 25
 **Scenario:** Account-level security baseline beyond basic users/roles?
 
-A. Single shared admin
+A. A single shared admin account with a strong password that is rotated every quarter, stored in the team vault, and used by every engineer for all administration
 B. Disable encryption
-C. Network policies (allow-list IPs), MFA enforcement, SCIM for user lifecycle from your IdP, key-pair auth for service accounts, password policies, audit via ACCESS_HISTORY view
+C. Network policies (allow-list IPs), MFA enforcement, SCIM for user lifecycle, key-pair auth for service accounts, and audit via ACCESS_HISTORY
 D. Public access only
 
 <details>

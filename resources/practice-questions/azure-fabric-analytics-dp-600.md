@@ -14,9 +14,9 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What storage layer underpins every Fabric workload?
 
-A. Azure SQL Database
+A. Azure SQL Database, provisioned separately for each workspace to hold all of its tables
 B. Cosmos DB
-C. Azure Blob Storage with CSV files
+C. Azure Blob Storage with CSV files, created as a separate storage account inside each workspace for its own items
 D. OneLake, a single logical data lake per tenant storing data in Delta Parquet
 
 <details>
@@ -32,7 +32,7 @@ D. OneLake, a single logical data lake per tenant storing data in Delta Parquet
 ### Question 2
 **Scenario:** A team needs to query existing data in an ADLS Gen2 account from Fabric without copying it.
 
-A. Dataflow Gen2
+A. Dataflow Gen2 that reads the ADLS Gen2 account on a schedule and loads it into a lakehouse table
 B. A pipeline copy activity
 C. A OneLake shortcut to the external location
 D. Export to CSV
@@ -50,10 +50,10 @@ D. Export to CSV
 ### Question 3
 **Scenario:** A semantic model must query lakehouse Delta tables directly at import-like speed without scheduled refresh.
 
-A. DirectQuery
+A. DirectQuery to the SQL endpoint
 B. Direct Lake mode
-C. Live connection
-D. Import mode
+C. Live connection to a dataset
+D. Import mode with scheduled refresh
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Import mode
 ### Question 4
 **Scenario:** Which item type gives you both a Spark-writable table area and a read-only T-SQL query surface?
 
-A. Warehouse
+A. Warehouse with T-SQL writes
 B. Lakehouse
-C. KQL database
-D. Power BI dataset
+C. KQL database (Eventhouse)
+D. Power BI semantic model
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Power BI dataset
 ### Question 5
 **Scenario:** A dimensional model should perform well and be easy to write DAX against.
 
-A. Many-to-many relationships throughout
+A. Many-to-many relationships throughout, so each table can filter every other table in whichever direction the report needs
 B. A single wide flat table
 C. A fully normalized snowflake
-D. A star schema: one fact table joined to dimension tables with single-direction one-to-many relationships
+D. A star schema: one fact table joined to dimension tables by single-direction one-to-many relationships
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. A star schema: one fact table joined to dimension tables with single-directio
 ### Question 6
 **Scenario:** A measure must ignore all filters from slicers on the report page.
 
-A. `SUM(Table[Sales])`
+A. `SUM(Table[Sales])` with no CALCULATE wrapper
 B. `CALCULATE([Sales], KEEPFILTERS(Table))`
 C. `CALCULATE([Sales], ALL(Table))`
-D. `RELATED(Table[Sales])`
+D. `RELATED(Table[Sales])` on the dimension side
 
 <details>
 <summary>Answer</summary>
@@ -122,8 +122,8 @@ D. `RELATED(Table[Sales])`
 ### Question 7
 **Scenario:** A capacity is throttled and interactive reports are slow while a large Spark job runs.
 
-A. Review capacity metrics, and either scale the SKU, move the workload to another capacity, or reschedule the background job
-B. Switch to DirectQuery
+A. Review capacity metrics, then scale the SKU, move the workload to another capacity, or reschedule the job
+B. Switch to DirectQuery so the semantic model stops using capacity memory and queries run against the source instead
 C. Buy more Power BI Pro licenses
 D. Delete the semantic model
 
@@ -158,10 +158,10 @@ D. Renaming the column
 ### Question 9
 **Scenario:** A medallion architecture is being adopted. What belongs in the bronze layer?
 
-A. Aggregated business metrics
-B. Raw ingested data, minimally transformed, retaining source fidelity
-C. The star schema
-D. Report visuals
+A. Aggregated business metrics prepared per department, with deduplicated and conformed dimension keys
+B. Raw ingested data kept as it arrived from the source
+C. The star schema of conformed dimensions and facts that reports consume
+D. Report visuals and the dashboards that business users build on top of them
 
 <details>
 <summary>Answer</summary>
@@ -178,8 +178,8 @@ D. Report visuals
 
 A. Warehouse
 B. Eventhouse with a KQL database
-C. Dataflow Gen2
-D. Lakehouse batch pipeline
+C. Dataflow Gen2 on an hourly refresh schedule
+D. Lakehouse batch pipeline that loads logs every minute into Delta tables queried from the SQL analytics endpoint
 
 <details>
 <summary>Answer</summary>
@@ -196,7 +196,7 @@ D. Lakehouse batch pipeline
 
 A. Git integration for source control plus deployment pipelines with dev, test, and production stages
 B. Share the workspace
-C. Export and import PBIX files
+C. Export and import PBIX files between workspaces, with a reviewer comparing the files before each manual import into production
 D. Copy items by hand
 
 <details>
@@ -231,9 +231,9 @@ D. `RELATED(Sales[Amount])`
 **Scenario:** A large fact table's Direct Lake model keeps falling back to DirectQuery.
 
 A. Nothing can be done
-B. Increase the refresh frequency
-C. Switch every model to import
-D. Investigate the cause: unsupported features, guardrail limits for the SKU, or views instead of Delta tables, then remove the blocker
+B. Increase the refresh frequency of the semantic model to every five minutes and move the workspace to the next SKU
+C. Switch every model to import mode and schedule a refresh every hour so fallback to DirectQuery never happens
+D. Investigate the cause: unsupported features, SKU guardrail limits, or views instead of Delta tables
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Manual documentation
 ### Question 15
 **Scenario:** A Delta table accumulates thousands of small files and queries slow down.
 
-A. Run `OPTIMIZE` (with V-Order) and `VACUUM` to compact files and clean old versions
-B. Convert to CSV
+A. Run `OPTIMIZE` (with V-Order) and `VACUUM` to compact small files and remove old ones
+B. Convert the table to CSV files, which can be read in parallel without the overhead of transaction log checks
 C. Rewrite the queries
-D. Increase capacity
+D. Increase capacity to the next SKU so that the extra compute reads the many small files faster
 
 <details>
 <summary>Answer</summary>

@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** How does the shared responsibility split change between IaaS and SaaS?
 
-A. The provider's share grows as you move from IaaS to PaaS to SaaS, but the customer always retains responsibility for data, identities, and access configuration
-B. It is identical
-C. The provider is responsible for everything in IaaS
-D. The customer is responsible for everything in SaaS
+A. The provider's share grows from IaaS to PaaS to SaaS, but the customer always retains data, identity, and access responsibility
+B. It is identical across service models, because the contract fixes one split regardless of what is consumed
+C. The provider is responsible for everything in IaaS, including the guest operating system, the data, and user access
+D. The customer is responsible for everything in SaaS, including the application code, the runtime platform, and the physical datacenter
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. The customer is responsible for everything in SaaS
 ### Question 2
 **Scenario:** Which document establishes what a provider is actually contractually obliged to do?
 
-A. The customer's policy
-B. The provider's marketing material
-C. The contract and its service level agreements, since the contract is the primary governance tool in cloud
-D. A certification badge
+A. The customer's internal policy, which binds the provider once it has been sent to the account manager
+B. The provider's marketing material and website, which describe the features included in each service tier
+C. The contract and its SLAs, since the contract is the primary governance tool in cloud
+D. A certification badge on the provider's website, which proves the provider will meet every customer requirement
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. A certification badge
 ### Question 3
 **Scenario:** What is the Cloud Controls Matrix?
 
-A. A pricing model
-B. A cloud-specific control framework mapped to other standards, used with the CAIQ for provider assessment
-C. A network diagram
-D. An encryption standard
+A. A pricing model that predicts monthly cost from instance count and data volume
+B. A cloud-specific control framework mapped to other standards, used with the CAIQ to assess providers
+C. A network diagram that shows how workloads and gateways are connected inside the provider's data centers and regions
+D. An encryption standard that defines approved key lengths and algorithms
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. An encryption standard
 ### Question 4
 **Scenario:** A cloud provider's data center is in another jurisdiction.
 
-A. No law applies
-B. Multiple jurisdictions may apply, including where data resides, where the provider operates, and where the customer operates, which is why data residency and sovereignty are contract terms
-C. Only the provider's country's law applies
-D. Only the customer's country's law applies
+A. No law applies, because data stored in a cloud service sits outside the jurisdiction of any single country
+B. Several jurisdictions can apply, such as where data resides and where each party operates, so residency is a contract term
+C. Only the provider's country's law applies, since the provider operates the facility that holds the data
+D. Only the customer's country's law applies, because the customer owns the data wherever the provider stores it
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Only the customer's country's law applies
 ### Question 5
 **Scenario:** Which is the most significant difference in cloud incident response?
 
-A. Limited forensic access to underlying infrastructure, dependence on provider logs and cooperation, and the need to agree escalation paths in advance
-B. The provider handles everything
-C. Nothing changes
-D. Incidents do not occur
+A. Limited forensic access to infrastructure, dependence on provider logs, and escalation paths agreed in advance with the provider
+B. The provider handles everything, including investigating and containing incidents
+C. Nothing changes, because forensic acquisition works the same on a hypervisor the customer does not own
+D. Incidents do not occur in major cloud providers, since their infrastructure is audited and certified continuously
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Incidents do not occur
 ### Question 6
 **Scenario:** Which access control model best fits dynamic cloud environments?
 
-A. Individual accounts per system
-B. Shared credentials
-C. Attribute-based access control with policy conditions, combined with just-in-time elevation and federated identity
-D. Static role assignments only
+A. Individual local accounts on each system, created by the administrator of that system when a person asks for access
+B. Shared credentials stored in a team password vault, rotated whenever someone leaves the group
+C. Attribute-based access control with policy conditions, plus just-in-time elevation and federated identity
+D. Static role assignments only, reviewed once a year, since a fixed role list is easier to audit than conditions
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Static role assignments only
 ### Question 7
 **Scenario:** What is the primary security benefit of infrastructure as code?
 
-A. It is faster
-B. It eliminates all risk
-C. It removes the need for monitoring
-D. Consistent, reviewable, version-controlled configuration that can be scanned for policy violations before deployment
+A. It is faster, because a template runs quickly and a deployment needs less time than manual steps, which cuts the window for human error
+B. It eliminates all risk, because templates are tested and a tested template cannot contain a misconfiguration or a vulnerable dependency
+C. It removes the need for monitoring, because deployed resources never drift
+D. Configuration that is consistent, reviewable, version-controlled, and scannable for violations before deployment
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Consistent, reviewable, version-controlled configuration that can be scanned 
 ### Question 8
 **Scenario:** Which encryption approach keeps the provider unable to read customer data?
 
-A. Provider-managed keys
-B. Encryption at rest by default
-C. Customer-managed or customer-held keys, with client-side encryption being the strongest form
-D. TLS only
+A. Provider-managed keys, which keep the provider unable to read the data because it never sees the plaintext
+B. Encryption at rest by default, which the provider applies and decrypts transparently whenever data is read
+C. Customer-managed or customer-held keys, with client-side encryption being strongest
+D. TLS only, which encrypts data in transit and so protects it from the provider as well as from eavesdroppers
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. TLS only
 ### Question 9
 **Scenario:** Which describes the main risk of serverless functions from a security perspective?
 
-A. The provider secures the code
-B. They cannot be attacked
-C. There is no attack surface
-D. The attack surface shifts to code, dependencies, event sources, and over-permissive function roles rather than to hosts
+A. The provider secures the code, so the customer's only task is to choose the memory size and timeout
+B. They cannot be attacked, because each invocation runs in a short-lived isolated environment and then disappears entirely
+C. There is no attack surface, because there is no server for an attacker to log in to or to patch
+D. The attack surface shifts to code, dependencies, event sources, and over-permissive roles rather than hosts
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. The attack surface shifts to code, dependencies, event sources, and over-perm
 ### Question 10
 **Scenario:** A container image must be trusted before deployment.
 
-A. Scan images for vulnerabilities, sign them, verify signatures at admission, and build from minimal trusted base images
-B. Use the latest tag
-C. Scan at runtime only
-D. Trust the registry
+A. Scan images, sign them, verify signatures at admission, and build from minimal trusted base images
+B. Use the latest tag, so each deployment automatically pulls the most recently patched version of the image
+C. Scan at runtime only, because vulnerabilities found in running containers are the only ones that matter
+D. Trust the registry, since any image stored in the organization's private registry has already been vetted
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Trust the registry
 ### Question 11
 **Scenario:** Which best describes cloud network security compared with traditional?
 
-A. Only firewalls matter
-B. No network controls exist
-C. Software-defined and identity-aware: security groups and micro-segmentation replace the perimeter, and topology is defined by policy rather than by cabling
-D. Identical
+A. Only firewalls matter, because every cloud workload is protected by one perimeter firewall at the provider edge
+B. No network controls exist, because the provider's network is shared
+C. Software-defined and identity-aware: security groups and micro-segmentation replace the perimeter
+D. Identical, since cloud networks use the same zones, appliances, and cabling-based segmentation as a data center
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Identical
 ### Question 12
 **Scenario:** How should cloud misconfiguration be prevented at scale?
 
-A. Training only
-B. Annual audits
-C. Manual review
-D. Preventive guardrails through policy as code and organization-level controls, backed by continuous posture management to detect drift
+A. Training only, since misconfigurations come from people and a well-trained engineer will not make them, whatever the pace of change
+B. Annual audits, performed by an external assessor who reviews a sample of the production configuration and issues a report
+C. Manual review of every change by a second engineer before the change is approved to deploy, with sign-off recorded in a ticket
+D. Preventive guardrails through policy as code and organization-level controls, plus posture management for drift
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Preventive guardrails through policy as code and organization-level controls,
 ### Question 13
 **Scenario:** What is the significance of the cloud management plane?
 
-A. It is the network layer
-B. It is the highest-value target, because control of the management plane means control of every resource regardless of workload-level controls
-C. It is unimportant
-D. It is the storage layer
+A. It is the network layer, which carries customer traffic between workloads and the provider's routers and switches
+B. It is the highest-value target, since controlling it means controlling every resource whatever the workload-level controls
+C. It is unimportant, because it only handles billing and reporting and has no effect on workloads
+D. It is the storage layer, which holds customer data and so is where encryption is applied by the provider
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. It is the storage layer
 ### Question 14
 **Scenario:** A business unit must be prevented from creating resources in unapproved regions.
 
-A. Preventive policy at the organization or account level, such as a service control policy or equivalent, denying actions outside approved regions
-B. A monthly report
-C. Tagging
-D. A policy document
+A. Preventive policy at the organization level, such as a service control policy, denying actions outside approved regions
+B. A monthly report listing resources outside approved regions, reviewed by the cloud team and followed up by tickets to owners
+C. Tagging every resource with its region, so finance can see where each business unit has deployed
+D. A policy document stating which regions are approved, signed by every manager in the business unit and filed with compliance
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. A policy document
 ### Question 15
 **Scenario:** How should a cloud exit or portability requirement be addressed?
 
-A. Assume the provider will always be available
-B. Plan for it: understand data export formats and egress costs, avoid unnecessary proprietary coupling where portability matters, and define exit terms contractually
-C. Keep a copy on premises always
-D. Use multicloud for everything
+A. Assume the provider will always be available, since major providers publish uptime figures that exceed typical on-premises results
+B. Plan for it: know export formats and egress costs, limit proprietary coupling, and define exit terms contractually
+C. Keep a copy on premises always, with a full second copy of every workload
+D. Use multicloud for everything, running every workload on two providers at all times
 
 <details>
 <summary>Answer</summary>

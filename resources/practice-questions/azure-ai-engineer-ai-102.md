@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** A company wants to use GPT-4 via Azure OpenAI Service. What's the correct way to deploy?
 
-A. Public endpoint with API key only
-B. Use OpenAI's public API directly
-C. Provision an Azure OpenAI resource, deploy a model in Azure AI Studio, and call it from an Azure-resident app or via private endpoint
-D. Self-host on a VM
+A. Public endpoint with an API key only, shared by all developers and kept in the application's settings file for simplicity
+B. Use OpenAI's public API directly with a company credit card, since the models are identical
+C. Provision an Azure OpenAI resource, deploy the model in AI Studio, and call it from an Azure app or private endpoint
+D. Self-host the model on a GPU VM in the subscription, because Microsoft lets customers download the GPT-4 weights for that purpose
 
 <details>
 <summary>Answer</summary>
@@ -28,9 +28,9 @@ D. Self-host on a VM
 **Scenario:** A team needs to translate documents into 30 languages with formatting preserved. Which service?
 
 A. Azure Translator (Document Translation feature)
-B. Azure Form Recognizer
-C. Custom Translator
-D. Azure Speech
+B. Azure Form Recognizer, which extracts text and tables from the documents and returns them as JSON
+C. Custom Translator, which trains a model on parallel documents and is required for every translation job
+D. Azure Speech, which converts spoken audio to text and can read the translated text aloud afterwards
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. Azure Speech
 ### Question 3
 **Scenario:** Which Azure service extracts structured data (key-value pairs, tables) from invoices and receipts?
 
-A. Azure Computer Vision OCR (text extraction only)
-B. Azure AI Document Intelligence (formerly Form Recognizer) - has prebuilt models for invoices, receipts, IDs
-C. Azure Cognitive Search
-D. Azure OpenAI
+A. Azure Computer Vision OCR, which returns the key-value pairs and tables
+B. Azure AI Document Intelligence (formerly Form Recognizer), with prebuilt models for invoices, receipts, and IDs
+C. Azure Cognitive Search, which indexes the invoices and extracts fields with a built-in invoice model
+D. Azure OpenAI, which can read the scanned image and return a fixed table of fields in the same format every time it is asked
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. Azure OpenAI
 ### Question 4
 **Scenario:** A chatbot must use company-specific knowledge. Which architecture?
 
-A. Custom NLU model only
-B. Bot Framework alone
-C. Train GPT-4 from scratch
-D. RAG: Azure AI Search with vector index + Azure OpenAI for generation, "use your data" feature in Azure AI Studio
+A. A custom NLU model only, trained with intents and entities for each question that employees might ask, with new ones added by hand
+B. Bot Framework alone, which stores the company knowledge in the bot's state
+C. Train GPT-4 from scratch on the company documents
+D. RAG: Azure AI Search with a vector index plus Azure OpenAI for generation (the "use your data" feature)
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. RAG: Azure AI Search with vector index + Azure OpenAI for generation, "use yo
 ### Question 5
 **Scenario:** Real-time speech-to-text with speaker diarization (who said what)?
 
-A. Azure Cognitive Search
-B. Azure OpenAI
-C. Azure Speech Service - speech-to-text with speaker recognition
-D. Azure Video Indexer
+A. Azure Cognitive Search, which indexes transcripts and can label the speakers later
+B. Azure OpenAI Whisper, which transcribes uploaded audio files one request at a time
+C. Azure Speech Service - real-time speech-to-text with speaker diarization, using the Speech SDK conversation transcriber
+D. Azure Video Indexer, which only works on uploaded video files
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Azure Video Indexer
 ### Question 6
 **Scenario:** Computer Vision custom image classification on 5000 product images?
 
-A. Train from scratch in Azure ML
+A. Train from scratch in Azure ML with a custom convolutional network, after requesting GPU quota for the job
 B. Azure Custom Vision (custom image classification + object detection)
-C. Built-in Computer Vision API only
-D. Document Intelligence
+C. Built-in Computer Vision API with no training
+D. Document Intelligence prebuilt models
 
 <details>
 <summary>Answer</summary>
@@ -117,10 +117,10 @@ D. Document Intelligence
 ### Question 7
 **Scenario:** Azure Cognitive Search vs Azure AI Search?
 
-A. Cognitive Search is older
-B. They're the same service - rebranded
-C. AI Search has fewer features
-D. Different services
+A. Cognitive Search is the older service that is being retired in favor of a separate AI Search product
+B. They're the same service, rebranded
+C. AI Search has fewer features, because vector search was removed when the service was renamed
+D. Different services, with separate pricing and APIs, so an index cannot move between them
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Different services
 ### Question 8
 **Scenario:** Content moderation for user-generated text (hate speech, harassment, sexual content)?
 
-A. Azure Content Safety (hate, sexual, self-harm, violence with severity levels) - successor to Content Moderator
-B. Azure OpenAI alone
-C. Azure Form Recognizer
-D. Azure Translator
+A. Azure AI Content Safety (hate, sexual, self-harm, violence, with severity levels)
+B. Azure OpenAI alone, with a system prompt that asks the model to refuse harmful input of any kind
+C. Azure Form Recognizer, which scans user text and flags any phrase that matches its trained categories
+D. Azure Translator, which detects the language of each message and removes words that are not appropriate
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. Azure Translator
 ### Question 9
 **Scenario:** Which Azure service generates speech from text in 50+ languages with voice customization?
 
-A. Azure Translator
+A. Azure Translator, which converts the text into 50 languages and reads each translation aloud in a neural voice
 B. Azure Speech Service - text-to-speech with neural voices and Custom Neural Voice
-C. Azure AI Studio
-D. Azure OpenAI
+C. Azure AI Studio, which synthesizes speech directly from text through its portal without any other service
+D. Azure OpenAI, which generates spoken audio from text using GPT models in 50 languages
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Azure OpenAI
 ### Question 10
 **Scenario:** Securing an Azure OpenAI deployment - key controls?
 
-A. Public access only
-B. API key in code
-C. Private endpoint + Microsoft Entra ID auth + Managed Identity from caller + content filtering + abuse monitoring
-D. No security needed
+A. Public access only, restricted by a firewall rule that allows the company's office IP address range
+B. An API key in code, rotated yearly in the config file
+C. Private endpoint + Entra ID auth + Managed Identity + content filtering + abuse monitoring
+D. No security needed, because Microsoft secures the service and the customer has no shared responsibility at all
 
 <details>
 <summary>Answer</summary>
@@ -189,9 +189,9 @@ D. No security needed
 ### Question 11
 **Scenario:** A team needs to fine-tune a GPT model on customer support tickets. What's required?
 
-A. Azure OpenAI fine-tuning support for the model + curated training file in JSONL format + sufficient examples (50-100k typical) + hyperparameter tuning
-B. Just upload tickets
-C. Train from scratch
+A. Model support for fine-tuning, a curated JSONL training file, enough examples, and tuned hyperparameters
+B. Just upload the raw tickets as PDF files to the resource, which fine-tunes the model automatically overnight with no extra setup
+C. Train from scratch, which Azure OpenAI supports by letting customers upload their own model weights and architecture
 D. Fine-tuning isn't supported in Azure OpenAI
 
 <details>
@@ -208,9 +208,9 @@ D. Fine-tuning isn't supported in Azure OpenAI
 **Scenario:** Which feature controls LLM output to follow a specific JSON schema?
 
 A. Function calling / structured output / response_format
-B. Random sampling
-C. Temperature = 0
-D. System prompts only
+B. Random sampling, with the top-p value set low enough that the output always matches the schema
+C. Temperature = 0, which makes the output deterministic and therefore always valid for the schema
+D. System prompts only, because the model cannot be constrained by anything outside the prompt text
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. System prompts only
 ### Question 13
 **Scenario:** Azure AI Studio's primary value?
 
-A. A unified workspace for building, testing, evaluating, and deploying generative AI applications, including prompt flow, evaluation, and "use your data" RAG
-B. Cheaper than other clouds
-C. Replaces Azure ML
-D. Only for data scientists
+A. A unified workspace to build, test, evaluate, and deploy generative AI apps, including prompt flow and evaluation
+B. Cheaper than other clouds, because every model call made in the portal is billed at a flat discounted rate
+C. Replaces Azure ML completely, so custom model training and deployment move into the new portal
+D. Only for data scientists, because the portal can be used only through Python notebooks and SDK code
 
 <details>
 <summary>Answer</summary>
@@ -245,8 +245,8 @@ D. Only for data scientists
 
 A. Azure AI Content Safety Prompt Shield
 B. Cannot be detected
-C. Hardcoded blocklists
-D. Azure Active Directory
+C. Hardcoded blocklists of known attack phrases, maintained by the application team in code
+D. Azure Active Directory, which authenticates each caller and rejects users who send malicious prompts
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. Azure Active Directory
 ### Question 15
 **Scenario:** A team wants to evaluate LLM response quality across 100 prompts on 3 model deployments. What feature?
 
-A. Azure AI Studio Evaluation (groundedness, relevance, similarity, fluency metrics with built-in or LLM-as-judge evaluators)
-B. Azure Test Plans
-C. Application Insights
-D. Manual review only
+A. Azure AI Studio Evaluation (groundedness, relevance, similarity, fluency, with built-in or LLM-as-judge evaluators)
+B. Azure Test Plans, which runs scripted test cases against the app and records pass or fail results
+C. Application Insights, which records latency and failures per request and also scores the answer quality
+D. Manual review only, because the quality of a language model answer cannot be measured automatically
 
 <details>
 <summary>Answer</summary>
@@ -279,7 +279,7 @@ D. Manual review only
 ### Question 16
 **Scenario:** A team uses Azure AI Search with vector index for a RAG bot. Retrieval relevance is poor on multi-sentence questions. Which change usually helps most?
 
-A. Increase the embedding model temperature
+A. Increase the embedding model temperature so that the vectors capture more varied meanings of the question
 B. Switch from cosine similarity to dot product
 C. Reduce chunk size to 50 tokens
 D. Enable hybrid retrieval (BM25 keyword + vector) and add a semantic ranker
@@ -297,10 +297,10 @@ D. Enable hybrid retrieval (BM25 keyword + vector) and add a semantic ranker
 ### Question 17
 **Scenario:** Your application sends 8K-token prompts to GPT-4o thousands of times a day, often with the same long system prompt. Cost is high. What helps most?
 
-A. Add more context
-B. Disable streaming
-C. Switch to GPT-3.5
-D. Enable prompt caching on the static system prompt prefix so cached input tokens are billed at a discounted rate
+A. Add more context to every request
+B. Disable streaming, because streamed responses are billed at a higher per-token rate than complete ones
+C. Switch to GPT-3.5, which has the same quality as GPT-4o and accepts 8K-token prompts at a lower price per token
+D. Enable prompt caching on the static system prompt prefix so cached tokens are discounted
 
 **Correct: D**
 
@@ -311,9 +311,9 @@ D. Enable prompt caching on the static system prompt prefix so cached input toke
 ### Question 18
 **Scenario:** A developer wants to enrich documents in AI Search with custom logic during indexing (e.g., call an internal classifier). Which feature?
 
-A. Power Automate
-B. Indexer schedule
-C. Built-in OCR
+A. Power Automate, which can call the internal classifier from a cloud flow whenever a new file lands
+B. Indexer schedule, which runs the indexer at fixed intervals and lets you add a classifier call to each run
+C. Built-in OCR, which reads the text in images and scanned pages but runs no external code
 D. Custom skill - exposed as a Web API skill in the AI Search skillset
 
 <details>
@@ -329,9 +329,9 @@ D. Custom skill - exposed as a Web API skill in the AI Search skillset
 ### Question 19
 **Scenario:** Bot Framework: which choice connects a published bot to Microsoft Teams without rewriting code?
 
-A. Webhook proxy
-B. Azure Logic Apps
-C. Build a separate Teams app
+A. A webhook proxy that forwards Teams messages to the bot and returns its replies to the chat
+B. Azure Logic Apps, which relay every message between Teams and the bot through a connector workflow
+C. Build a separate Teams app that wraps the bot logic in a new project and publish it again
 D. Add a Microsoft Teams channel in Azure Bot resource configuration
 
 <details>
@@ -347,10 +347,10 @@ D. Add a Microsoft Teams channel in Azure Bot resource configuration
 ### Question 20
 **Scenario:** Document Intelligence: which model type is best for extracting fields from a custom contract layout that varies slightly across vendors?
 
-A. Layout API only
+A. Layout API only, which returns raw structure
 B. Read API only
 C. Custom neural model trained on labeled samples (5+ per layout)
-D. Prebuilt invoice model
+D. Prebuilt invoice model, which handles any document that contains vendor names, dates, and totals
 
 <details>
 <summary>Answer</summary>
@@ -367,8 +367,8 @@ D. Prebuilt invoice model
 
 A. Document Intelligence + Speech
 B. Azure OpenAI vision input + multilingual prompt
-C. Custom Vision
-D. Computer Vision describe + Translator
+C. Custom Vision trained on labeled images
+D. Computer Vision describe + Translator, which describes the image in English and then translates it
 
 <details>
 <summary>Answer</summary>
@@ -383,10 +383,10 @@ D. Computer Vision describe + Translator
 ### Question 22
 **Scenario:** Responsible AI: a chatbot occasionally outputs ungrounded answers ("hallucinations") despite having retrieval-based context. Which mitigations stack best?
 
-A. Add more training data
-B. Layered: tighter retrieval + system prompt that says "if not in context, say I don't know" + Azure AI Studio Groundedness evaluation in CI + Content Safety Groundedness Detection at runtime
-C. Lower temperature only
-D. Switch models
+A. Add more training data to the base model so that it memorizes the facts in the company documents, then retrain it every quarter
+B. Layered: better retrieval, an abstain instruction in the system prompt, offline groundedness evaluation, and runtime Groundedness Detection
+C. Lower temperature only, setting it to 0 so the model always picks the most likely token and never invents text
+D. Switch models to the newest and largest one available, since larger models do not produce hallucinations
 
 <details>
 <summary>Answer</summary>
@@ -401,10 +401,10 @@ D. Switch models
 ### Question 23
 **Scenario:** Speech Service: how do you build a voicebot that can be interrupted mid-sentence by the user?
 
-A. Cancel after each turn
-B. Use REST API only
-C. Speech SDK with continuous recognition + push-to-talk on the synthesized audio so the engine can stop output when user speech is detected (barge-in)
-D. Polling
+A. Cancel after each turn, so that the user must wait until the bot finishes before starting to speak again
+B. Use the REST API only, sending each utterance as a request and playing the reply when it is returned
+C. Speech SDK with continuous recognition, stopping synthesized playback when user speech is detected (barge-in)
+D. Polling the service every second for new audio and stopping playback when a transcript is found
 
 <details>
 <summary>Answer</summary>
@@ -419,10 +419,10 @@ D. Polling
 ### Question 24
 **Scenario:** A team builds a multi-agent app in Azure AI Studio's prompt flow. Which design ensures observability and reproducibility across runs?
 
-A. Print to console
-B. Disable telemetry
-C. Manual notes
-D. Enable trace + log to Application Insights, save flow versions, parameterize models so swapping deployments is one-line
+A. Print to console from each node
+B. Disable telemetry, so that no prompt or response data leaves the workspace and results stay private
+C. Manual notes in a shared document about each run, listing the settings that the team remembers using for it
+D. Enable tracing to Application Insights, save flow versions, and parameterize model deployments
 
 <details>
 <summary>Answer</summary>
@@ -437,17 +437,17 @@ D. Enable trace + log to Application Insights, save flow versions, parameterize 
 ### Question 25
 **Scenario:** Pricing: which decision lever has the largest direct impact on monthly Azure OpenAI spend for a bursty workload?
 
-A. Number of API keys
-B. Resource group name
-C. Choosing PTU (provisioned throughput units) for steady high volume vs pay-as-you-go for bursty
-D. Region
+A. Number of API keys, since each additional key adds a monthly fee to the Azure OpenAI resource
+B. Resource group name, which determines the billing tier of every resource placed in the group
+C. Choosing between PTU for steady high volume and pay-as-you-go for bursty load, matching the commitment to utilization
+D. Region name alone, since every Region bills its own flat monthly fee for the resource
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** PTU buys reserved throughput at a flat hourly rate - cheaper if utilization is high, expensive if idle. Pay-as-you-go is per-token, no commitment - fits bursty / unpredictable load. Wrong choice can swing costs 5-10x. Region affects availability and data residency, not directly the unit price for the same SKU.
+**Why:** PTU buys reserved throughput at a flat hourly rate - cheaper if utilization is high, expensive if idle. Pay-as-you-go is per-token, no commitment - fits bursty / unpredictable load. Wrong choice can swing costs 5-10x. Azure OpenAI does not bill a flat monthly fee per Region (D), per API key (A), or per resource group name (B).
 </details>
 
 ---

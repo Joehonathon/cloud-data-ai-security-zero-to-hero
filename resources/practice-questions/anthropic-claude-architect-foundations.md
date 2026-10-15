@@ -16,10 +16,10 @@ These are original practice questions, not vendor exam questions. Verify API det
 ### Question 1
 **Scenario:** A team wants to know whether their task warrants an agent.
 
-A. Check four things: is the task multi-step and hard to specify in advance, does the outcome justify higher cost and latency, is the model capable at it, and can errors be caught and recovered
-B. Always build an agent
-C. Agents are for chat only
-D. Build an agent if the task uses tools
+A. Check four things: multi-step and hard to specify, worth the cost and latency, model capable at it, errors catchable
+B. Always build an agent, since a model-driven loop handles every task at least as well as fixed code can and needs less engineering effort
+C. Agents are for chat only, so a task with no human conversation partner is better built as a plain workflow with fixed steps
+D. Build an agent if the task uses tools, because any task that calls tools needs the model to drive the loop
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. Build an agent if the task uses tools
 ### Question 2
 **Scenario:** Which describes the tiers from simplest to most complex?
 
-A. Workflow, agent, single call
-B. They are equivalent
-C. Single LLM call, workflow with code-controlled logic, agent with a model-driven loop
-D. Agent, workflow, single call
+A. Workflow, agent, single call, with each tier adding one more step of model-controlled decisions to the one before
+B. They are equivalent, so the choice between them is a matter of the preferred framework and the team's habits
+C. Single LLM call, code-controlled workflow, then a model-driven agent loop
+D. Agent, workflow, single call, because an agent is the least complex and a single call needs the most code
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Agent, workflow, single call
 ### Question 3
 **Scenario:** A custom-tool agent is being built and the team is writing the request-execute-loop by hand.
 
-A. The SDK's tool runner drives the loop for you and still exposes per-turn hooks for approval gates, error interception, result modification, and retries
-B. Hand-writing the loop gives more control in every case
-C. That is the only option
-D. Loops are not needed
+A. The SDK's tool runner drives the loop and still exposes per-turn hooks for approval, error interception and retries
+B. Hand-writing the loop gives more control in every case, because the runner hides each turn from the code and cannot be intercepted
+C. That is the only option, since the API leaves the request, execute and respond steps for the application to write by hand
+D. Loops are not needed, because the model runs each tool call itself and returns the final answer in one response to the first request
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Loops are not needed
 ### Question 4
 **Scenario:** The team confuses the Tool Runner with the Claude Agent SDK.
 
-A. The Tool Runner is a helper in the regular API SDK that loops over tools you define; the Claude Agent SDK is a separate library packaging the Claude Code harness with built-in file, bash, and search tools
-B. They are the same
-C. The Agent SDK has no tools
-D. The Tool Runner hosts your compute
+A. The Tool Runner is a regular SDK helper that loops over your tools; the Agent SDK packages the Claude Code harness with its built-in tools
+B. They are the same product under two names, and the Agent SDK is only the newer release of the Tool Runner helper in the regular SDK, with a longer name
+C. The Agent SDK has no tools of its own, so you must define the file, bash and search tools before it can act on a repository
+D. The Tool Runner hosts your compute, running each tool in an Anthropic-managed sandbox for the length of the session
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. The Tool Runner hosts your compute
 ### Question 5
 **Scenario:** Should an action be a bash command or a dedicated tool?
 
-A. Start with bash for breadth; promote to a dedicated tool when you need to gate, render, audit, or parallelize that specific action
-B. Always bash for flexibility
-C. Always dedicated tools
-D. It makes no difference
+A. Start with bash for breadth; promote an action to a dedicated tool when you need to gate, render, audit or parallelize it
+B. Always bash for flexibility, since one string covers any command and the harness never needs to tell the different actions apart or gate them
+C. Always dedicated tools, so that every action is a typed call and no shell ever runs inside the agent's environment, whatever the task
+D. It makes no difference, because the harness sees the same request whichever way the action is described to the model
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. It makes no difference
 ### Question 6
 **Scenario:** A tool description is one vague sentence and its parameters have no descriptions.
 
-A. Add urgent capitalized instructions
-B. Shorter is always better
-C. Fine, the schema is enough
-D. Under-described: tool descriptions are the biggest factor in tool performance, so write several sentences covering what it does, when to use it, when not to, and what each parameter means
+A. Add urgent capitalized instructions to the description so the model always calls the tool
+B. Shorter is always better, since a long description uses up context and the model picks tools by name
+C. Fine, the schema is enough, since the model can infer each parameter's purpose from its name and type
+D. Under-described: write several sentences covering what the tool does, when to use it, when not to, and what each parameter means
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Under-described: tool descriptions are the biggest factor in tool performance
 ### Question 7
 **Scenario:** MCP in one sentence.
 
-A. A prompt format
-B. An open protocol for exposing tools, prompts, and resources to a model through a standard server interface
-C. A model architecture
-D. A hosting platform
+A. A prompt format for combining tool results and system instructions in one message
+B. An open protocol for exposing tools, prompts and resources to a model through a standard server interface
+C. A model architecture that routes each request among experts during inference
+D. A hosting platform where a provider runs your tools so models can reach them online
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. A hosting platform
 ### Question 8
 **Scenario:** A prompt must produce guaranteed-valid JSON.
 
-A. Prefill the assistant turn with an opening brace
+A. Prefill the assistant turn with an opening brace, so the model continues the object and cannot start with prose
 B. Structured outputs with a JSON schema
-C. A stop sequence
-D. Ask politely and retry on parse failure
+C. A stop sequence at the closing brace, which ends the response as soon as the object is complete and valid
+D. Ask politely for JSON only and retry on parse failure up to three times, then fall back to a default value
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Ask politely and retry on parse failure
 ### Question 9
 **Scenario:** A system prompt carried over from an older model is full of "CRITICAL: You MUST" instructions and the model now overtriggers a tool.
 
-A. Lower the temperature
-B. Add more emphasis
-C. Dial the language back to plain statements; current models follow the system prompt closely, so emphasis written to overcome older reluctance now over-applies
-D. Remove the tool
+A. Lower the temperature to zero, which stops the model overweighting any instruction
+B. Add more emphasis to the tool's description, so that the model learns the exact conditions under which it must not call the tool at all
+C. Dial the language back to plain statements; current models follow the system prompt closely, so emphasis over-applies
+D. Remove the tool from the request, since a model cannot call a tool it was never given
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Remove the tool
 ### Question 10
 **Scenario:** Where should thinking depth be controlled?
 
-A. By instructing "think step by step" in the prompt
-B. By raising `max_tokens`
+A. By instructing "think step by step" in the prompt, which sets the depth the model reasons to before it answers
+B. By raising `max_tokens`, since a higher cap makes the model reason for longer on every request that it receives
 C. Through configuration: adaptive thinking plus the effort parameter
-D. It cannot be controlled
+D. It cannot be controlled, because the model decides its own thinking depth for each request without any setting
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. It cannot be controlled
 ### Question 11
 **Scenario:** A long-running agent's context window fills with old tool results.
 
-A. Restart the conversation
-B. Delete the oldest messages arbitrarily
-C. Raise `max_tokens`
-D. Context editing to clear stale tool results, compaction to summarize when near the limit, and memory for state that must survive the session
+A. Restart the conversation with only the latest user message, so that the context starts empty on every task and the old results are gone
+B. Delete the oldest messages arbitrarily until the window has room, keeping the most recent turns intact and the system prompt in place
+C. Raise `max_tokens` so that the model has more room in the window to hold the old tool results
+D. Context editing to clear stale tool results, compaction near the limit, and memory for state that outlives a session
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Context editing to clear stale tool results, compaction to summarize when nea
 ### Question 12
 **Scenario:** An agent's prompt cache keeps missing after the team added a mode switch that edits the system prompt mid-session.
 
-A. Accept the cost
-B. Editing the system prompt changes the front of the prefix and invalidates everything; on supporting models, append a system-role message to `messages` instead so the cached history survives
-C. Disable caching
-D. Add more breakpoints
+A. Accept the cost, since a cache miss on each mode switch is simply part of using a system prompt that is changed in the middle of a session
+B. Editing the system prompt invalidates the cached prefix; on supporting models, append a system-role message to `messages` instead
+C. Disable caching, since a prompt that changes during a session cannot benefit from caching of any part of the request
+D. Add more breakpoints, so that the changed system prompt is cached again at each of the new positions in the request
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Add more breakpoints
 ### Question 13
 **Scenario:** An agent loop must not run forever.
 
-A. Increase the context window
+A. Increase the context window, so the loop has enough room to keep running until the model decides on its own that the task is finished
 B. Bound it: maximum iterations, a wall-clock timeout, a token budget, and detection of repeated states
-C. Trust the model to stop
-D. Use a larger model
+C. Trust the model to stop once it judges the task done
+D. Use a larger model, which finishes in fewer iterations
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Use a larger model
 ### Question 14
 **Scenario:** A repository uses a `CLAUDE.md` and skill files.
 
-A. Longer is always better
-B. They replace the system prompt
-C. They are documentation for humans only
-D. They are context loaded into the model's working set, so every paragraph is paid for on use and should carry information only the author knows
+A. Longer is always better, because more instructions give the model more guidance for every task it is given
+B. They replace the system prompt, so the API call no longer needs one once the files are in the repository, and the model reads them first
+C. They are documentation for humans only, and the model never reads them when it works in the repository, so they cost nothing in context
+D. They are context loaded into the working set, so each paragraph is paid for on use and should hold what only the author knows
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. They are context loaded into the model's working set, so every paragraph is p
 ### Question 15
 **Scenario:** A tool with side effects, such as sending email, is exposed to an agent.
 
-A. Trust the loop
-B. Log the calls and review later
-C. Validate inputs and gate destructive or irreversible actions behind confirmation, whether you use the tool runner or a manual loop
-D. Add a warning to the system prompt
+A. Trust the loop, since the model asks before sending anything the user may not want sent
+B. Log the calls and review them later, alerting on email to addresses outside the company domain
+C. Validate inputs and gate destructive or irreversible actions behind confirmation, with the runner or a manual loop
+D. Add a line to the system prompt telling the model never to send email without explicit approval
 
 <details>
 <summary>Answer</summary>

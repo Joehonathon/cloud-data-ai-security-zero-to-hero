@@ -9,10 +9,10 @@
 ### Question 1 - Domain 1: Security and Risk Management
 **Scenario:** A Chief Risk Officer asks for a risk treatment for a vulnerability with low likelihood but catastrophic impact. The vulnerability cannot be remediated for 6 months. What's the BEST treatment?
 
-A. Mitigate by adding a compensating control
-B. Accept the risk
-C. Avoid the risk by retiring the affected system
-D. Transfer the risk via cyber insurance for the interim
+A. Mitigate by adding a compensating control, such as extra monitoring or a firewall rule, while the fix waits
+B. Accept the risk because the likelihood is low and the decision can be documented
+C. Avoid the risk by retiring the affected system immediately, which removes the exposure but is not feasible when the business depends on that system
+D. Transfer the risk by buying cyber insurance for the interim period, which covers financial loss but leaves the vulnerability open and unprotected
 
 <details>
 <summary>Answer</summary>
@@ -27,10 +27,10 @@ D. Transfer the risk via cyber insurance for the interim
 ### Question 2 - Domain 1
 **Scenario:** What's the order of priorities in a Business Impact Analysis (BIA)?
 
-A. They're equal
-B. Safety of life > Critical assets > Reputation > Cost
-C. Compliance > Cost > Reputation > Safety
-D. Cost > Safety > Reputation > Compliance
+A. They're equal, because a BIA assigns the same weight to every impact category
+B. Safety of life > Critical business assets > Reputation > Cost, with human safety always ranked above any financial or operational impact
+C. Compliance > Cost > Reputation > Safety, because regulators can fine the organization
+D. Cost > Safety > Reputation > Compliance, because the BIA exists mainly to justify recovery spending
 
 <details>
 <summary>Answer</summary>
@@ -45,17 +45,17 @@ D. Cost > Safety > Reputation > Compliance
 ### Question 3 - Domain 2: Asset Security
 **Scenario:** Personal Health Information (PHI) under HIPAA must be classified at what level minimum?
 
-A. It depends on the organization's classification scheme
-B. Public
-C. Confidential / Restricted (highest standard tier the organization uses for sensitive data)
-D. Internal
+A. It depends on the organization's own classification scheme, because HIPAA sets safeguards but does not name a label
+B. Public, because HIPAA protects data only once it is breached
+C. Confidential / Restricted (highest standard tier the organization uses for sensitive data), because HIPAA names that exact tier as a minimum
+D. Internal, because PHI is shared within the covered entity for treatment
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Classification schemes vary by organization. Most have 3-4 tiers (Public, Internal, Confidential, Restricted). PHI must be at the highest sensitivity tier the org defines. The right answer recognizes that classification labels are organization-specific while the underlying control requirements (encryption, access controls, audit) are mandated by HIPAA.
+**Why:** Classification schemes vary by organization, and HIPAA does not name a label. Most schemes have 3-4 tiers (Public, Internal, Confidential, Restricted). In practice PHI belongs in one of the most sensitive tiers the org defines. The right answer recognizes that classification labels are organization-specific while the underlying control requirements (encryption, access controls, audit) are mandated by HIPAA.
 </details>
 
 ---
@@ -63,10 +63,10 @@ D. Internal
 ### Question 4 - Domain 3: Security Architecture
 **Scenario:** What's the primary purpose of a Trusted Platform Module (TPM)?
 
-A. Storing cryptographic keys in tamper-resistant hardware tied to a specific machine
-B. Application sandboxing
-C. Network packet filtering
-D. Providing physical security
+A. Storing cryptographic keys in tamper-resistant hardware tied to one machine, enabling attestation and disk encryption
+B. Application sandboxing, which isolates a running program from the rest of the system
+C. Network packet filtering, which allows or blocks packets by port and address
+D. Providing physical security for the data center, such as locks, badge readers, and cameras that control who enters the facility
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. Providing physical security
 ### Question 5 - Domain 3
 **Scenario:** A defense-in-depth strategy adds firewall, IDS, EDR, and email filtering. What concept does this exemplify?
 
-A. Layered controls / defense in depth
-B. Reactive security
-C. Single point of failure
-D. Compliance theater
+A. Layered controls / defense in depth, using several independent control types
+B. Reactive security, adding controls only after an incident
+C. Single point of failure, a design weakness where one component outage takes down the service, which layering is meant to avoid
+D. Compliance theater, where controls are deployed to satisfy an audit checklist without any real effect on the organization's risk
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Compliance theater
 ### Question 6 - Domain 4: Communication and Network Security
 **Scenario:** Which TLS handshake step proves the server's identity to the client?
 
-A. ClientHello with cipher suites
-B. The server's certificate signed by a trusted CA
-C. The pre-master secret exchange
-D. Application data encryption
+A. ClientHello with cipher suites, which lets the client offer the versions and algorithms it supports
+B. The server's X.509 certificate signed by a trusted CA, which the client validates against its trust store and checks against the hostname
+C. The pre-master secret exchange, which lets both sides derive session keys
+D. Application data encryption, which protects data after the handshake is finished
 
 <details>
 <summary>Answer</summary>
@@ -118,9 +118,9 @@ D. Application data encryption
 **Scenario:** Type 1, Type 2, Type 3 authentication factors - which is which?
 
 A. Something you know / something you have / something you are
-B. Required / recommended / optional
-C. Username / password / biometric
-D. Hardware / software / cloud
+B. Required / recommended / optional, which are priority labels used in policy language and not categories of authentication factor
+C. Username / password / biometric, which lists three examples of credentials and mixes a claim of identity with two factors
+D. Hardware / software / cloud, which describes where an authenticator runs and not the kind of evidence being offered
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Hardware / software / cloud
 ### Question 8 - Domain 5
 **Scenario:** A federated identity model with SAML - what does the Identity Provider (IdP) provide?
 
-A. Network access
-B. The application itself
+A. Network access, such as an IP address and VLAN assignment for the user's device, which is the job of the network layer and not the IdP
+B. The application itself, which the user wants to reach, hosted by the service provider and not by the identity provider
 C. Authentication assertions about a user (the IdP says "yes, this is alice@example.com")
-D. Audit logs
+D. Audit logs of user activity inside every application in the federation, which each service provider keeps itself
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. Audit logs
 ### Question 9 - Domain 6: Security Assessment and Testing
 **Scenario:** A penetration test should be conducted with what authorization?
 
-A. Implicit consent of management
+A. Implicit consent of management, assumed because the test helps
 B. Explicit, written authorization (rules of engagement document) from senior management
-C. Verbal approval from the CISO
-D. No authorization needed if internal
+C. Verbal approval from the CISO, which leaves no record of scope or limits
+D. No authorization needed if internal, because employees on the security team already have access to the systems involved
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. No authorization needed if internal
 ### Question 10 - Domain 7: Security Operations
 **Scenario:** During incident response, what's the first phase per the standard 6-step process?
 
-A. Identification
+A. Identification, in which the team detects and confirms an event, which can only happen well once tools and roles are in place
 B. Preparation
-C. Recovery
-D. Containment
+C. Recovery, in which systems are restored and monitored, which comes near the end of the process after the threat is removed
+D. Containment, in which the team limits the spread of an incident, which comes after the event has been identified
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. Containment
 ### Question 11 - Domain 7
 **Scenario:** RAID 5 vs RAID 6 - the key difference?
 
-A. RAID 5 is faster
-B. RAID 6 uses encryption
-C. They're the same
-D. RAID 5 has one parity disk; RAID 6 has two (tolerates two simultaneous disk failures)
+A. RAID 5 is always faster because it uses fewer parity disks
+B. RAID 6 uses encryption on the extra parity disks, which protects data at rest, whereas RAID 5 stores blocks in plain form
+C. They're the same, with the number only showing how many disks are in the array
+D. RAID 5 has one parity disk and survives one failure; RAID 6 has two (tolerates two simultaneous disk failures)
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. RAID 5 has one parity disk; RAID 6 has two (tolerates two simultaneous disk f
 ### Question 12 - Domain 7
 **Scenario:** RTO vs RPO?
 
-A. RTO is recovery time objective; RPO is recovery point objective
-B. RTO = how much data loss is acceptable; RPO = how long the outage can last
-C. RTO = how long the outage can last; RPO = how much data loss is acceptable
-D. Both A and C
+A. RTO is the maximum acceptable data loss measured in time; RPO is the maximum acceptable outage duration, as agreed with the business owner during planning
+B. RTO is how long the team has to detect an incident; RPO is how long it takes to close the incident after the investigation
+C. RTO and RPO each measure outage duration and differ only in whether the outage was planned or unplanned
+D. RTO is the maximum acceptable time to restore service; RPO is the maximum acceptable data loss, measured back from the incident
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. Both A and C
 ### Question 13 - Domain 8: Software Development Security
 **Scenario:** SQL injection is mitigated primarily by:
 
-A. Input validation alone
-B. Web Application Firewall
-C. Parameterized queries (prepared statements) with bound parameters
-D. Output encoding
+A. Input validation alone, which rejects odd characters but can be bypassed
+B. Web Application Firewall, which blocks known attack patterns but can be evaded
+C. Parameterized queries (prepared statements) with bound parameters, so user input is always treated as data and never as SQL code
+D. Output encoding, which is a defense for XSS and not for SQL injection
 
 <details>
 <summary>Answer</summary>
@@ -243,9 +243,9 @@ D. Output encoding
 ### Question 14 - Domain 8
 **Scenario:** A code review finds a hardcoded API key in source. What's the BEST remediation?
 
-A. Encrypt the key in code
-B. Use environment variables instead
-C. Comment it out and ship
+A. Encrypt the key in code with a symmetric key stored beside it, which obscures the value but leaves a recoverable secret in the repository
+B. Use environment variables instead, which moves the value out of the source but leaves the leaked key valid and in the history
+C. Comment it out and ship, which hides the line from the running program but leaves the key valid and readable in source control
 D. Rotate the key, store in a secret manager, fix the code, audit version control history for prior leaks, and rotate any other credentials that may have been compromised
 
 <details>
@@ -261,10 +261,10 @@ D. Rotate the key, store in a secret manager, fix the code, audit version contro
 ### Question 15 - Cross-domain
 **Scenario:** A company hires a third-party SaaS for HR data. From a security perspective, what document is MOST important?
 
-A. SLA + SOC 2 Type II report + Data Processing Agreement (DPA)
-B. NDA
-C. Master Service Agreement
-D. Insurance certificate
+A. SLA + SOC 2 Type II report + Data Processing Agreement (DPA), covering availability, assurance, and data handling
+B. NDA, which restricts what each party may disclose
+C. Master Service Agreement, which sets commercial terms such as fees and term but not the security controls or audit evidence
+D. Insurance certificate, which proves that the provider has coverage for losses but does not show what controls protect the data
 
 <details>
 <summary>Answer</summary>
@@ -279,10 +279,10 @@ D. Insurance certificate
 ### Question 16
 **Scenario:** A new security control is proposed. What's the security manager's FIRST step before approving?
 
-A. Buy the most expensive option
-B. Skip if it's expensive
+A. Buy the most expensive option, assuming price means strength
+B. Skip the control if it is expensive, since the cost of a control should never be allowed to exceed the budget of the department
 C. Conduct a risk assessment to determine if the control's cost is justified by the risk it mitigates
-D. Implement immediately
+D. Implement immediately to close the gap quickly, then evaluate the effect on risk after the control is running in production
 
 <details><summary>Answer</summary>
 
@@ -296,10 +296,10 @@ D. Implement immediately
 ### Question 17
 **Scenario:** During incident response, the FIRST priority is:
 
-A. Forensic analysis
-B. Restoration
-C. Containment to prevent further damage
-D. Public statement
+A. Forensic analysis of the root cause
+B. Restoration of services from clean backups, which is premature while the threat is still active on the network
+C. Containment to prevent further damage while evidence is preserved
+D. A public statement to customers and the press, which is managed by the communications team after the facts are known
 
 <details><summary>Answer</summary>
 
@@ -314,9 +314,9 @@ D. Public statement
 **Scenario:** Best evidence in a fraud investigation:
 
 A. Original / direct evidence (system logs, signed documents, video)
-B. Eyewitness testimony
-C. Hearsay
-D. Circumstantial evidence
+B. Eyewitness testimony, which can be useful but depends on memory and perception and is weaker than records created at the time
+C. Hearsay, a statement made outside the court by someone who is not testifying, which is generally inadmissible as proof
+D. Circumstantial evidence, which supports an inference but does not directly prove the fact in question without further links
 
 <details><summary>Answer</summary>
 
@@ -331,15 +331,15 @@ D. Circumstantial evidence
 **Scenario:** RTO is 4 hours, RPO is 15 minutes. Which DR pattern fits?
 
 A. Backup and restore
-B. Pilot light
-C. Warm standby
-D. Multi-site active-active
+B. Pilot light, with the data replicated and the app tier switched off
+C. Warm standby, with a scaled-down but fully running copy of the whole stack in the DR region
+D. Multi-site active-active, with full capacity serving traffic in both sites at all times
 
 <details><summary>Answer</summary>
 
 **Correct: B (or C depending on cost tolerance)**
 
-**Why:** RTO 4h means tens of minutes of warm-up are acceptable. RPO 15 min requires near-continuous replication. Pilot light (data tier replicated, app off) fits. Warm standby tightens RTO further at higher cost. Backup-restore (A) blows the RTO; active-active (D) is overkill.
+**Why:** RTO 4h means tens of minutes of warm-up are acceptable. RPO 15 min requires near-continuous replication. Pilot light (data tier replicated, app off) fits. Warm standby tightens RTO further at higher cost. Backup-restore (A) cannot meet the 15-minute RPO unless backups run every few minutes, and a cold restore is slow; active-active (D) is overkill.
 </details>
 
 ---
@@ -347,9 +347,9 @@ D. Multi-site active-active
 ### Question 20
 **Scenario:** Defense in depth means:
 
-A. One very strong control
-B. Hiring more security staff
-C. Buying expensive products
+A. One very strong control, such as a next-generation firewall, placed at the perimeter so that attackers cannot get into the network
+B. Hiring more security staff so that each system is watched by a person, which adds oversight but is not a layering of controls
+C. Buying expensive products from several vendors, which adds cost but does not make the controls work together as separate layers
 D. Multiple layered controls so failure of any one doesn't compromise the system
 
 <details><summary>Answer</summary>
@@ -364,9 +364,9 @@ D. Multiple layered controls so failure of any one doesn't compromise the system
 ### Question 21
 **Scenario:** Most secure password storage:
 
-A. SHA-256 fast hash
-B. Reversible encryption
-C. Plain text
+A. SHA-256 fast hash without a salt, which is one-way but lets attackers test billions of guesses per second and use rainbow tables
+B. Reversible encryption with a key held by the application, which allows recovery of the password if the key is ever stolen
+C. Plain text stored in a restricted database table, protected only by access controls and file permissions on the server
 D. One-way hash with salt + slow KDF (bcrypt, scrypt, Argon2)
 
 <details><summary>Answer</summary>
@@ -381,9 +381,9 @@ D. One-way hash with salt + slow KDF (bcrypt, scrypt, Argon2)
 ### Question 22
 **Scenario:** Bell-LaPadula model focuses on:
 
-A. Availability
-B. Integrity
-C. Non-repudiation
+A. Availability, ensuring that systems and data are accessible when needed, which is the focus of redundancy and recovery models
+B. Integrity, preventing improper changes to data, which is the focus of the Biba and Clark-Wilson models, not Bell-LaPadula
+C. Non-repudiation, ensuring that a party cannot deny an action, which is provided by digital signatures and audit logs
 D. Confidentiality (no read up, no write down)
 
 <details><summary>Answer</summary>
@@ -398,10 +398,10 @@ D. Confidentiality (no read up, no write down)
 ### Question 23
 **Scenario:** Which legal concept applies when an employee's actions cause harm and the employer is held responsible?
 
-A. Strict liability
-B. Vicarious liability
-C. Comparative fault
-D. Negligence per se
+A. Strict liability, which holds a party responsible for harm regardless of fault
+B. Vicarious liability, where the employer answers for acts an employee commits within the scope of employment
+C. Comparative fault, which divides responsibility by each party's share of blame
+D. Negligence per se, where violating a statute is treated as negligence
 
 <details><summary>Answer</summary>
 
@@ -415,10 +415,10 @@ D. Negligence per se
 ### Question 24
 **Scenario:** A penetration test discovers a vulnerability that the team disagrees about exploiting in scope. The CORRECT response:
 
-A. Inform a competitor
+A. Inform a competitor about the vulnerability, which breaches confidentiality
 B. Stop, refer to the rules of engagement, get written authorization to expand scope before exploiting
-C. Test it anyway
-D. Ignore it
+C. Test it anyway, because the finding may be serious
+D. Ignore it and say nothing in the report, since any issue outside the agreed scope is not the tester's concern
 
 <details><summary>Answer</summary>
 
@@ -432,10 +432,10 @@ D. Ignore it
 ### Question 25
 **Scenario:** Most important component of an effective security awareness program:
 
-A. Posters
-B. Email reminders
+A. Posters displayed in common areas, which raise visibility for a short time but give no measured change in behavior
+B. Email reminders sent each month, which are easy to ignore and give no evidence that staff know what to do
 C. Continuous, role-relevant content + measured outcomes (phish simulation pass rates, time-to-report) + non-punitive culture for reporting
-D. Annual mandatory training
+D. Annual mandatory training delivered to all staff, which satisfies a checklist but is quickly forgotten and not tied to roles
 
 <details><summary>Answer</summary>
 

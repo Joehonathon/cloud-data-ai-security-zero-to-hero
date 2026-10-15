@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** A pipeline reads from S3, transforms with Spark, and writes Delta tables. Which storage layer should the curated tables use?
 
-A. CSV
-B. JSON
+A. CSV, since it is plain text that any Spark job can write and that every downstream tool can open
+B. JSON with one record per line, which keeps the nested structure of the source and supports schema evolution
 C. Delta Lake (which is Parquet + transaction log)
-D. Parquet
+D. Parquet, which is columnar and compressed and so also gives ACID transactions through its file footers
 
 <details>
 <summary>Answer</summary>
@@ -27,10 +27,10 @@ D. Parquet
 ### Question 2
 **Scenario:** A streaming job reads Kafka and writes to Delta. The query crashes after 4 hours and you need to resume from where it left off. What feature?
 
-A. Delta time travel
-B. Manual offset tracking in a separate table
+A. Delta time travel, which lets the query reread the table at the version where it stopped and carry on
+B. Manual offset tracking in a separate table, updated by the job itself after each micro-batch is written
 C. Spark Structured Streaming checkpointing
-D. Auto Loader
+D. Auto Loader, which records the offset of each Kafka partition and restarts the query from that position
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. Auto Loader
 ### Question 3
 **Scenario:** Auto Loader (`cloudFiles`) is best for what use case?
 
-A. Streaming Kafka topics
-B. One-time bulk migration
-C. ETL between Delta tables
-D. Incrementally ingesting new files arriving in cloud storage with schema inference and evolution
+A. Streaming Kafka topics, where it manages each partition's offsets
+B. A one-time bulk migration of historical files
+C. ETL between Delta tables, where it follows the transaction log versions of the source table as they appear
+D. Incrementally ingesting new cloud storage files, with schema inference and evolution
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. Incrementally ingesting new files arriving in cloud storage with schema infer
 ### Question 4
 **Scenario:** Which Delta operation is appropriate for upserts (insert if not exists, update if exists)?
 
-A. MERGE INTO
-B. COPY INTO
-C. UPDATE
-D. INSERT
+A. MERGE INTO, matching on the key to update existing rows and insert new ones
+B. COPY INTO, which loads files and updates the rows that match the target's key as part of the load
+C. UPDATE, which changes existing rows and also inserts the rows that do not yet exist in the target
+D. INSERT, which adds each source row as a new row
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. INSERT
 ### Question 5
 **Scenario:** A team has a long-running data pipeline that takes 3 hours daily. They want to optimize. Which technique reduces compute cost the most?
 
-A. Add more workers
-B. Use Photon engine + autoscaling clusters with min nodes = 1
-C. Switch to standard runtime
-D. Run on serverless SQL only
+A. Add more workers to the cluster so each stage has more parallel tasks
+B. Photon plus autoscaling clusters with min nodes = 1, so the faster engine shortens the run and idle workers are released
+C. Switch to the standard runtime, which drops the extra libraries
+D. Run on serverless SQL only, since the pipeline code can be rewritten as queries
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Run on serverless SQL only
 ### Question 6
 **Scenario:** Delta Lake `OPTIMIZE` does what?
 
-A. Compacts small files into larger files for read performance
-B. Updates statistics
-C. Vacuums orphaned files
-D. Deletes old data
+A. Compacts small files into larger files for read performance, optionally co-locating data with Z-ordering
+B. Updates table statistics so the optimizer can choose better plans
+C. Vacuums orphaned files the log no longer references
+D. Deletes old data once it is outside the time travel window
 
 <details>
 <summary>Answer</summary>
@@ -117,10 +117,10 @@ D. Deletes old data
 ### Question 7
 **Scenario:** Unity Catalog three-level namespace is:
 
-A. catalog.schema.table
+A. catalog.schema.table, with the catalog as the top level governed by Unity Catalog
 B. workspace.database.table
 C. database.schema.table
-D. region.workspace.table
+D. region.workspace.table, which names the cloud region and the workspace that hold the table's files
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. region.workspace.table
 ### Question 8
 **Scenario:** A team needs to share a Delta table with another organization that uses Snowflake. What feature?
 
-A. CSV export
-B. Delta Sharing (open protocol; works with Snowflake, Power BI, etc. without Databricks at the receiver)
-C. Snowflake Sharing only
-D. SSO federation
+A. CSV export of the table to a shared bucket, refreshed on a schedule so the other side has recent data, then loaded by hand
+B. Delta Sharing, an open protocol that works with Snowflake and Power BI, with no Databricks at the receiver
+C. Snowflake Sharing only, which reads the Delta table directly from the Databricks workspace
+D. SSO federation between the two organizations' identity providers, which exposes the tables to the other side's analysts
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. SSO federation
 ### Question 9
 **Scenario:** What does `VACUUM` do on a Delta table?
 
-A. Removes data files no longer referenced by the transaction log AND older than the retention threshold (default 7 days)
-B. Deletes the table
-C. Backs up the table
-D. Compacts small files (same as OPTIMIZE)
+A. Removes data files that the log no longer references and that are older than the retention threshold (default 7 days)
+B. Deletes the table's data files and its transaction log, leaving only the empty definition behind
+C. Backs up the table to a second location, keeping the last 7 days of its versions
+D. Compacts small files into larger ones, the same as OPTIMIZE does
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Compacts small files (same as OPTIMIZE)
 ### Question 10
 **Scenario:** Delta Live Tables (DLT) primary value proposition?
 
-A. Lower cost
-B. Faster than vanilla Spark
-C. SQL-only
-D. Declarative pipeline definition (declare tables; DLT handles dependency, retries, lineage, data quality)
+A. Lower cost, because the service runs on cheaper hardware than a Spark cluster of the same size would use
+B. Faster than vanilla Spark, because it replaces the Spark engine
+C. SQL-only authoring, which avoids Python so that analysts can write a whole pipeline without help from an engineer or a notebook
+D. Declarative pipelines: declare tables; DLT handles dependencies, retries, lineage and quality
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. Declarative pipeline definition (declare tables; DLT handles dependency, retr
 ### Question 11
 **Scenario:** Streaming Tables (DLT) vs Materialized Views (DLT) - when to use each?
 
-A. They're identical
-B. Streaming for incremental processing of new data; MV for full recomputation when source changes
-C. MV is for historical only
-D. Streaming is for real-time only
+A. They're identical, since each keeps a table up to date
+B. Streaming tables for incremental processing of new append-only data; materialized views recompute their results when the source changes
+C. MV is for historical data only
+D. Streaming is for real-time only, while a materialized view can only run once a day
 
 <details>
 <summary>Answer</summary>
@@ -208,9 +208,9 @@ D. Streaming is for real-time only
 **Scenario:** A pipeline must enforce data quality. Which DLT feature?
 
 A. Expectations (`@dlt.expect_or_drop`, `@dlt.expect_or_fail`, `@dlt.expect`)
-B. Manual SQL checks
-C. Cluster permissions
-D. Spark `assert` statements
+B. Manual SQL checks run in a notebook cell after each update, with the results compared against the expected counts
+C. Cluster permissions set so that only the pipeline owner can write to the target tables of the pipeline
+D. Spark `assert` statements in the notebook, which stop the pipeline run when a row fails the check
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. Spark `assert` statements
 ### Question 13
 **Scenario:** An analyst needs ad-hoc SQL on Delta tables with serverless compute. Which Databricks product?
 
-A. ML compute
-B. All-purpose cluster
+A. ML compute, a runtime with the machine learning libraries preinstalled, meant for training rather than SQL
+B. An all-purpose cluster, which becomes serverless when it autoscales and is designed for ad-hoc SQL
 C. Databricks SQL warehouse (formerly SQL Endpoint)
-D. Job cluster
+D. A job cluster, which starts on demand for each query and shuts down again when the query ends
 
 <details>
 <summary>Answer</summary>
@@ -243,9 +243,9 @@ D. Job cluster
 ### Question 14
 **Scenario:** Time-travel a Delta table to last week's state for a comparison query?
 
-A. Use snapshots
-B. Time travel isn't supported
-C. Restore from backup
+A. Use snapshots taken by the metastore each night, which are queried with a `SNAPSHOT` clause in the SELECT
+B. Time travel isn't supported, because Delta overwrites data files in place when rows are updated or deleted
+C. Restore from a backup of the storage account, then load that copy into a second table for the comparison
 D. `SELECT * FROM tbl VERSION AS OF 12345` or `TIMESTAMP AS OF '2026-04-20'`
 
 <details>
@@ -263,8 +263,8 @@ D. `SELECT * FROM tbl VERSION AS OF 12345` or `TIMESTAMP AS OF '2026-04-20'`
 
 A. `chmod` on the underlying S3 path
 B. `GRANT SELECT ON TABLE catalog.schema.tbl TO `analyst-group``
-C. IAM only
-D. `GRANT SELECT ON TABLE tbl TO USER alice`
+C. IAM only, with a bucket policy
+D. `GRANT SELECT ON TABLE tbl TO USER alice`, repeated for each analyst, using the default catalog and schema
 
 <details>
 <summary>Answer</summary>
@@ -279,10 +279,10 @@ D. `GRANT SELECT ON TABLE tbl TO USER alice`
 ### Question 16
 **Scenario:** A Delta table has accumulated 10,000 small files from frequent micro-batch writes. Read latency is poor. Which command compacts files without changing schema?
 
-A. `OPTIMIZE table_name` (combined with `ZORDER BY` for clustering on common filter columns)
-B. `MSCK REPAIR`
-C. `CONVERT TO DELTA`
-D. `VACUUM`
+A. `OPTIMIZE table_name`, optionally with `ZORDER BY` on common filter columns; it bin-packs small files and leaves the schema unchanged
+B. `MSCK REPAIR` on the table, which merges small files into larger ones as it re-registers the partitions
+C. `CONVERT TO DELTA` on the table, which rewrites the data files at the target size without a schema change
+D. `VACUUM`, which merges the small files and removes the older versions in the same pass over the table
 
 <details>
 <summary>Answer</summary>
@@ -297,10 +297,10 @@ D. `VACUUM`
 ### Question 17
 **Scenario:** Difference between MERGE INTO and a separate DELETE + INSERT pattern?
 
-A. MERGE is slower
-B. MERGE only works on partitioned tables
-C. They produce the same output
-D. MERGE INTO is atomic in a single transaction and supports WHEN MATCHED / WHEN NOT MATCHED clauses with conditions; manual delete+insert needs explicit transaction management and is error-prone
+A. MERGE is slower, since it must scan the whole target table for every source row, so the manual pattern is faster in practice for large tables
+B. MERGE only works on partitioned tables, because it needs the partition columns to match rows
+C. They produce the same output and the same guarantees, so the choice between them is only one of style
+D. MERGE INTO is atomic in one transaction and supports MATCHED / NOT MATCHED conditions; delete+insert needs explicit transaction handling
 
 <details>
 <summary>Answer</summary>
@@ -315,10 +315,10 @@ D. MERGE INTO is atomic in a single transaction and supports WHEN MATCHED / WHEN
 ### Question 18
 **Scenario:** Delta Live Tables (DLT) - what does Auto Loader solve?
 
-A. Cluster autoscaling
-B. SQL query optimization
-C. Incremental ingestion of new files from cloud storage with exactly-once semantics, schema evolution, and a rescued data column for malformed rows
-D. Hyperparameter tuning
+A. Cluster autoscaling for the pipeline, which adds and removes workers as the number of new files arriving in the storage account changes through the day
+B. SQL query optimization, by rewriting the joins and aggregations in the pipeline's queries to a faster execution plan
+C. Incremental ingestion of new files with exactly-once semantics, schema evolution and a rescued data column
+D. Hyperparameter tuning for the models trained on the bronze tables
 
 <details>
 <summary>Answer</summary>
@@ -333,10 +333,10 @@ D. Hyperparameter tuning
 ### Question 19
 **Scenario:** Unity Catalog: which scope does `GRANT SELECT ON SCHEMA` apply to?
 
-A. The whole metastore
-B. Single table
-C. All current and future tables/views in the schema (and their columns)
-D. Cluster only
+A. The whole metastore, so the user can select from every catalog and schema attached to it
+B. A single table named in the statement, since grants on a schema apply only to the object they name
+C. All current and future tables and views in the schema
+D. The cluster only, so the user can run the SELECT from the one cluster where the grant was issued
 
 <details>
 <summary>Answer</summary>
@@ -351,10 +351,10 @@ D. Cluster only
 ### Question 20
 **Scenario:** Bronze ingests raw JSON. Silver applies cleansing. Gold serves aggregates. Typical refresh cadence?
 
-A. Bronze is daily only
-B. Bronze near-real-time (Auto Loader / DLT continuous), Silver follows bronze (often same DLT pipeline), Gold on business-aligned schedule (hourly/daily) or on-demand
-C. All three refresh hourly
-D. Gold refreshes first
+A. Bronze is daily only, because raw JSON can only be ingested in a batch once the day's files have all arrived in the storage location
+B. Bronze near-real-time (Auto Loader or DLT continuous), Silver follows, Gold on a business schedule or on demand
+C. All three refresh hourly, so every layer is exactly as fresh as the one that feeds it
+D. Gold refreshes first, since aggregates are what users query, and the others catch up later
 
 <details>
 <summary>Answer</summary>
@@ -369,10 +369,10 @@ D. Gold refreshes first
 ### Question 21
 **Scenario:** Time Travel in Delta - which is true?
 
-A. Time Travel is a paid add-on
-B. Time Travel only works on partitioned tables
-C. Time Travel is unlimited
-D. You can query historical versions with `VERSION AS OF` or `TIMESTAMP AS OF` until VACUUM removes the underlying files (default retention 7 days)
+A. Time Travel is a paid add-on that must be enabled per workspace before the history is kept for a table in that workspace
+B. Time Travel only works on partitioned tables, because the versions are tracked at partition level
+C. Time Travel is unlimited, since the transaction log keeps every version of the data files forever and VACUUM only removes logs
+D. Query old versions with `VERSION AS OF` or `TIMESTAMP AS OF` until VACUUM removes the files (default 7 days)
 
 <details>
 <summary>Answer</summary>
@@ -387,10 +387,10 @@ D. You can query historical versions with `VERSION AS OF` or `TIMESTAMP AS OF` u
 ### Question 22
 **Scenario:** A nightly notebook job fails 1 in 5 times due to transient cluster startup issues. Best fix?
 
-A. Disable logging
-B. Switch to interactive cluster
-C. Manual retry every morning
-D. Configure job-level retries and use Jobs Compute (job clusters) - fresh cluster per run, not shared all-purpose, plus library version pinning
+A. Disable logging, since writing log files to storage at startup is what makes it fail
+B. Switch to an interactive cluster that stays running, and attach the notebook to it for each run each night, sized for the job
+C. Manual retry every morning by the on-call engineer
+D. Configure job-level retries and use job clusters (a fresh cluster per run), plus library version pinning
 
 <details>
 <summary>Answer</summary>
@@ -405,10 +405,10 @@ D. Configure job-level retries and use Jobs Compute (job clusters) - fresh clust
 ### Question 23
 **Scenario:** Photon - what is it and when does it help most?
 
-A. A serverless tier
-B. A SQL syntax extension
-C. A vectorized C++ query engine that replaces the JVM operator implementations - largely benefits SQL/DataFrame workloads with heavy CPU work (joins, aggregations); minimal benefit for IO-bound or UDF-heavy code
-D. A model registry
+A. A serverless tier of compute that starts in seconds and is billed per query rather than by the cluster hour, with no clusters to size
+B. A SQL syntax extension that adds window and pivot functions to Spark SQL, helping the queries that use those functions the most
+C. A vectorized C++ engine replacing JVM operators; helps CPU-heavy SQL/DataFrame work, little for IO-bound or UDF-heavy code
+D. A model registry for tracking versions of trained models, which helps most when many teams share the same models and need approvals
 
 <details>
 <summary>Answer</summary>
@@ -423,10 +423,10 @@ D. A model registry
 ### Question 24
 **Scenario:** A streaming pipeline reads Kafka and writes Delta. What configuration achieves exactly-once?
 
-A. Spark Structured Streaming with unique checkpoint location per query and Delta sink (Delta's transaction log provides idempotency); avoid `failOnDataLoss=false` unless intentional
-B. Disable checkpoints
-C. Set startingOffsets=latest
-D. Use foreachBatch always
+A. Structured Streaming with a unique checkpoint per query and a Delta sink; avoid `failOnDataLoss=false` unless intended
+B. Disable checkpoints, so the query always restarts from the earliest offset
+C. Set startingOffsets=latest, so the query never reads a message twice after a restart
+D. Use foreachBatch always, writing each micro-batch with a plain append
 
 <details>
 <summary>Answer</summary>
@@ -441,10 +441,10 @@ D. Use foreachBatch always
 ### Question 25
 **Scenario:** Cost optimization: workload runs 16 hours/day, idle 8 hours. Best cluster choice?
 
-A. All-purpose cluster running 24/7
-B. Job cluster + Workflows scheduling, or SQL Warehouse with auto-stop set to 5-15 min idle - pay only when running
-C. Use serverless for everything
-D. Photon disabled
+A. An all-purpose cluster running 24/7, so that it is always warm when the first job of the day starts
+B. Job cluster plus Workflows scheduling, or a SQL warehouse with auto-stop at 5-15 minutes idle
+C. Use serverless for everything, including long Spark jobs that need custom libraries and instance types
+D. Photon disabled on every cluster
 
 <details>
 <summary>Answer</summary>

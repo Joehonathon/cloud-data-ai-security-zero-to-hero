@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** A table must store one row per customer and many rows per order, with orders deleted when the customer is deleted.
 
-A. A lookup column with no relationship
-B. A one-to-many relationship with a cascade delete behavior of Cascade All
-C. A many-to-many relationship
-D. Two unrelated tables
+A. A lookup column on the order table and no configured relationship behavior
+B. A one-to-many relationship with Cascade All delete behavior
+C. A many-to-many relationship, which uses an intersect table and cannot cascade deletes from customer to orders
+D. Two unrelated tables, with orders matched to customers by a text column
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Two unrelated tables
 ### Question 2
 **Scenario:** A choice column needs values shared across several tables and kept consistent.
 
-A. A separate table with a lookup
+A. A separate table, with the values copied by a flow into a text column on each table
 B. A global choice (option set)
 C. A text column
-D. A local choice on each table
+D. A local choice defined separately on each table
 
 <details>
 <summary>Answer</summary>
@@ -50,7 +50,7 @@ D. A local choice on each table
 ### Question 3
 **Scenario:** Users in a regional team should see records owned by their own business unit only.
 
-A. Organization scope
+A. Organization scope, which grants read access to every record in the environment regardless of ownership
 B. User scope only
 C. A security role with Business Unit scope on the read privilege
 D. Column-level security
@@ -68,9 +68,9 @@ D. Column-level security
 ### Question 4
 **Scenario:** Two users in different business units must collaborate on one specific record.
 
-A. Change both users' business units
+A. Change the users' business units to the same unit, which also moves ownership of their other records
 B. Share the record with the other user or team, granting specific privileges
-C. Give both Organization-level access
+C. Give the two users Organization-level access on the table so every record is visible to them
 D. Duplicate the record
 
 <details>
@@ -86,10 +86,10 @@ D. Duplicate the record
 ### Question 5
 **Scenario:** A business process flow should branch based on the value of a field.
 
-A. Create two separate flows and ask users to pick
+A. Create two separate business process flows and ask users to pick the right one when they start
 B. Add a condition to the business process flow to create a branch
 C. Use a canvas app
-D. Use a business rule
+D. Use a business rule on the form to hide and show the stages of the process
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Use a business rule
 ### Question 6
 **Scenario:** A cloud flow must process 5,000 records and complete reliably within the platform's limits.
 
-A. Use pagination, batching, and controlled concurrency, and consider a child flow to isolate the per-item work
-B. Increase the timeout indefinitely
-C. Loop sequentially with no concurrency
-D. Run it manually
+A. Use pagination, batching and controlled concurrency, with a child flow for each item
+B. Increase the flow timeout to its maximum so that the run is never cut off by the platform limits
+C. Loop through all 5,000 records one at a time with no concurrency, and hope it finishes in time
+D. Run it manually in small groups of 100 records at a time, and track progress in a spreadsheet
 
 <details>
 <summary>Answer</summary>
@@ -140,8 +140,8 @@ D. Ignore the failures
 ### Question 8
 **Scenario:** A model-driven app should show a chart of cases by priority on the main dashboard.
 
-A. A canvas app
-B. An Excel export
+A. A canvas app built separately and opened from a link on the dashboard
+B. An Excel export that users refresh by hand each morning
 C. A Dataverse chart added to a dashboard
 D. An embedded Power BI report requiring a separate license for every viewer
 
@@ -161,7 +161,7 @@ D. An embedded Power BI report requiring a separate license for every viewer
 A. Configure duplicate detection rules and use an alternate key for upsert during import
 B. Import and delete duplicates later
 C. Import into a new table
-D. Disable duplicate detection for speed
+D. Disable duplicate detection for speed and run a scheduled bulk delete job to remove duplicates afterward
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Disable duplicate detection for speed
 ### Question 10
 **Scenario:** A consultant must document requirements before configuration begins.
 
-A. Capture functional and non-functional requirements, process maps, data model, and success measures, then validate them with stakeholders
-B. Ask developers to decide
-C. Start configuring and adjust as feedback arrives
-D. Copy a previous project's document
+A. Capture functional and non-functional requirements and success measures, then validate them
+B. Ask the developers to decide what the requirements are, based on what is easiest for them to build
+C. Start configuring straight away and adjust the design as feedback arrives from the business users
+D. Copy the requirements document from a previous project and change only the customer name in the title
 
 <details>
 <summary>Answer</summary>
@@ -197,7 +197,7 @@ D. Copy a previous project's document
 A. End the conversation
 B. Repeat the question
 C. Configure escalation to a live agent through the Escalate system topic
-D. Redirect to a website
+D. Redirect to a website that shows the support phone number, without transferring the conversation
 
 <details>
 <summary>Answer</summary>
@@ -232,8 +232,8 @@ D. Managed solutions promoted through Power Platform Pipelines or Azure DevOps, 
 
 A. Multiple forms with form order and security role assignment
 B. One form for all users
-C. Separate apps per role
-D. Hiding sections with JavaScript for everyone
+C. Separate model-driven apps per role, each pointing at its own copy of the table
+D. Hiding sections with JavaScript for everyone, based on a role check written in the form's onLoad event
 
 <details>
 <summary>Answer</summary>
@@ -248,7 +248,7 @@ D. Hiding sections with JavaScript for everyone
 ### Question 14
 **Scenario:** An integration must call an external REST API that has no standard connector.
 
-A. Use a desktop flow
+A. Use a desktop flow that drives a browser to the API's web page and scrapes the results
 B. Copy the data manually
 C. Store the API key in the flow
 D. Build a custom connector describing the API's operations and authentication

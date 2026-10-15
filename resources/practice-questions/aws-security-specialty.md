@@ -21,10 +21,10 @@
 ### Question 1
 **Scenario:** Your company's security team received an alert from Amazon GuardDuty indicating "UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS". An EC2 instance's credentials appear to be used from an external IP address. What is the MOST appropriate immediate response?
 
-A. Terminate the EC2 instance immediately
-B. Isolate the instance by modifying its security group, preserve evidence, and investigate
-C. Rotate the instance's IAM role credentials by stopping and starting the instance
-D. Delete the IAM role attached to the instance
+A. Terminate the EC2 instance immediately, then launch a clean replacement from the AMI
+B. Isolate the instance with a security group change, preserve evidence
+C. Stop and start the instance so its IAM role credentials rotate, then resume normal operation once new credentials are issued
+D. Delete the IAM role attached to the instance and recreate it with the same name
 
 <details>
 <summary>Answer</summary>
@@ -41,7 +41,7 @@ D. Delete the IAM role attached to the instance
 
 A. GuardDuty → CloudWatch Events → Step Functions (orchestrate isolation, forensics, notification)
 B. GuardDuty → S3 export → Athena analysis → manual remediation
-C. GuardDuty → SNS → Lambda → SSM Run Command + Security Group modification
+C. GuardDuty → SNS → Lambda → SSM Run Command and a security group change, with one Lambda handling the whole flow in sequence
 D. GuardDuty → Security Hub → AWS Config auto-remediation
 
 <details>
@@ -58,9 +58,9 @@ D. GuardDuty → Security Hub → AWS Config auto-remediation
 **Scenario:** During a security incident investigation, you need to analyze VPC Flow Logs to identify data exfiltration patterns. The logs are stored in S3 in their default format. You need to query terabytes of logs quickly and cost-effectively. Which approach is BEST?
 
 A. Download logs to an EC2 instance and use grep/awk for analysis
-B. Use Amazon Athena with partition projection on the S3 data
+B. Use Athena with partition projection
 C. Import logs into Amazon OpenSearch Service for analysis
-D. Use Amazon Macie to analyze the flow logs
+D. Use Amazon Macie to analyze the flow logs for sensitive data and anomalies
 
 <details>
 <summary>Answer</summary>
@@ -76,9 +76,9 @@ D. Use Amazon Macie to analyze the flow logs
 **Scenario:** An organization wants to detect when IAM credentials are used from IP addresses outside their corporate network range. They also need alerts for API calls from Tor exit nodes and known malicious IPs. Which solution provides this detection?
 
 A. Use AWS Config rules to evaluate IAM policy compliance
-B. Create CloudWatch Logs metric filters on CloudTrail logs for source IP patterns
+B. Create CloudWatch Logs metric filters on CloudTrail logs for source IP patterns, with an alarm on each
 C. Enable GuardDuty with threat intelligence feeds and create custom threat lists
-D. Implement VPC Flow Logs analysis with custom Lambda functions
+D. Implement VPC Flow Logs analysis with custom Lambda functions that flag traffic from known bad IP addresses
 
 <details>
 <summary>Answer</summary>
@@ -111,7 +111,7 @@ D. Enable long-term retention in each service's console settings
 ### Question 6
 **Scenario:** Amazon Detective shows that an IAM user has been making unusual API calls to download S3 objects at 3 AM, which is outside normal business hours. The user's regular pattern shows activity only during business hours. What additional context does Detective provide that GuardDuty does not?
 
-A. Real-time alerting on the suspicious activity
+A. Real-time alerting on the suspicious activity as it happens, which Detective generates from the behavior graph
 B. Automatic remediation of the threat
 C. The specific S3 objects that were accessed
 D. Visualization of the user's historical behavior patterns and entity relationships
@@ -133,10 +133,10 @@ D. Visualization of the user's historical behavior patterns and entity relations
 ### Question 7
 **Scenario:** A company needs to aggregate security findings from GuardDuty, Inspector, Macie, IAM Access Analyzer, and Firewall Manager across 200 AWS accounts. They need a single dashboard for prioritization and automated response. Which solution provides this?
 
-A. Build a custom solution using EventBridge and a central Lambda function
+A. Build a custom EventBridge and Lambda aggregator
 B. Use AWS Security Hub with organization-wide enablement and custom insights
-C. Create a centralized CloudWatch dashboard pulling metrics from all accounts
-D. Deploy third-party SIEM and configure each service to export findings
+C. Create a centralized CloudWatch dashboard pulling metrics from all accounts and every service
+D. Deploy third-party SIEM and configure each service in each account to export its findings
 
 <details>
 <summary>Answer</summary>
@@ -151,10 +151,10 @@ D. Deploy third-party SIEM and configure each service to export findings
 ### Question 8
 **Scenario:** Your organization requires that all API activity across all accounts be logged, protected from tampering, and retained for 7 years for compliance. Logs must be queryable for security investigations. How should you architect this?
 
-A. Enable CloudTrail in each account logging to local S3 buckets with Object Lock
-B. Create an organization trail logging to a central S3 bucket with S3 Object Lock (Governance mode), lifecycle to Glacier after 1 year
+A. Enable CloudTrail in each account logging to local S3 buckets with Object Lock, with each account team managing its own retention rules, bucket policies, and log access for its own account
+B. Create an organization trail logging to a central S3 bucket with S3 Object Lock (Governance mode), a 7-year retention period, and a lifecycle rule moving logs to Glacier after 1 year
 C. Enable CloudTrail Insights in each account with extended retention
-D. Create an organization trail to a central S3 bucket in a dedicated log archive account with S3 Object Lock (Compliance mode) and SCPs preventing log deletion
+D. Create an organization trail to a central S3 bucket in a dedicated log archive account with Object Lock (Compliance mode) and SCPs preventing log deletion
 
 <details>
 <summary>Answer</summary>
@@ -170,7 +170,7 @@ D. Create an organization trail to a central S3 bucket in a dedicated log archiv
 **Scenario:** A security team needs real-time alerts when root user credentials are used in any account across their AWS Organization. The alerts should include the source IP, user agent, and which API was called. What is the MOST efficient solution?
 
 A. Configure EventBridge rules in each account forwarding to a central SNS topic
-B. Use an organization trail with EventBridge rule in the management account matching root user events
+B. Use an organization trail with an EventBridge rule in the management account matching root user events
 C. Enable GuardDuty root user monitoring across the organization
 D. Create CloudWatch Alarms on CloudTrail metrics in each account
 
@@ -188,9 +188,9 @@ D. Create CloudWatch Alarms on CloudTrail metrics in each account
 **Scenario:** An application team wants to log access to sensitive DynamoDB tables containing PII. They need to capture who accessed which items, when, and from where. Standard CloudTrail only shows API calls, not item-level access. What solution provides this granularity?
 
 A. Implement application-level logging using X-Ray and custom annotations
-B. Enable CloudTrail data events for DynamoDB and use attribute-based access logging
+B. Enable CloudTrail data events for DynamoDB and deliver them to a trail bucket
 C. Enable DynamoDB Streams and process with Lambda to log access
-D. DynamoDB doesn't support item-level access logging; use a different database
+D. DynamoDB doesn't support item-level access logging; use a different database that records reads, such as Amazon RDS
 
 <details>
 <summary>Answer</summary>
@@ -205,8 +205,8 @@ D. DynamoDB doesn't support item-level access logging; use a different database
 ### Question 11
 **Scenario:** You need to monitor for changes to security-critical resources (security groups, NACLs, IAM policies) across all accounts and receive alerts within 1 minute of changes occurring. Changes should be automatically reverted if they violate security policies. Which solution provides this?
 
-A. CloudTrail events triggering Lambda functions for each change
-B. AWS Config rules with automatic remediation using SSM Automation
+A. CloudTrail log files in S3 scanned by a Lambda that reverts violating changes
+B. AWS Config rules with automatic remediation using SSM Automation documents across accounts
 C. GuardDuty detecting configuration changes
 D. Security Hub with automated response playbooks
 
@@ -215,7 +215,7 @@ D. Security Hub with automated response playbooks
 
 **Correct: B**
 
-**Why:** AWS Config provides near real-time configuration change detection (typically within minutes), managed and custom rules for evaluation, and automatic remediation via SSM Automation documents. This covers security groups, NACLs, and IAM policies natively. CloudTrail/Lambda (A) requires custom development and doesn't have built-in compliance evaluation. GuardDuty (C) detects threats, not general config changes. Security Hub (D) aggregates but doesn't provide config-level remediation.
+**Why:** AWS Config provides near real-time configuration change detection (typically within minutes), managed and custom rules for evaluation, and automatic remediation via SSM Automation documents. This covers security groups, NACLs, and IAM policies natively. CloudTrail/Lambda (A) requires custom development, and waiting on CloudTrail log delivery to S3 would miss the 1-minute target. GuardDuty (C) detects threats, not general config changes. Security Hub (D) aggregates but doesn't provide config-level remediation.
 
 **Key Concept:** [AWS Config Auto Remediation](https://docs.aws.amazon.com/config/latest/developerguide/remediation.html)
 </details>
@@ -223,17 +223,17 @@ D. Security Hub with automated response playbooks
 ### Question 12
 **Scenario:** A company is using AWS WAF to protect their web applications. Security requires that all blocked requests be logged with full request details for forensic analysis, but they want to minimize costs for allowed traffic logging. How should they configure WAF logging?
 
-A. Enable WAF logging to CloudWatch Logs with a filter to log only blocked requests
-B. Use CloudFront access logs instead of WAF logging
-C. Enable WAF logging to Kinesis Data Firehose with a filter for blocked requests, deliver to S3
-D. Enable WAF logging to S3 with a logging filter for BLOCK actions only
+A. Enable WAF logging to CloudWatch Logs for all requests, then delete the allowed ones with a daily Lambda function
+B. Use CloudFront access logs instead of WAF logging, and keep them for a year
+C. WAF logging to Firehose with a BLOCK filter, delivered to S3
+D. Enable WAF logging to an S3 bucket named waf-logs with a logging filter for BLOCK actions only
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** WAF logging with Kinesis Data Firehose supports log filtering at the source, allowing you to log only BLOCK actions. Firehose can deliver to S3 for cost-effective storage and Athena analysis. This reduces log volume and costs significantly. WAF logging to CloudWatch (A) doesn't support source filtering. Direct S3 logging (D) doesn't support filtering. CloudFront logs (B) don't include WAF rule details.
+**Why:** WAF logging filters let you keep only BLOCK actions, and Firehose can deliver the filtered stream to S3 for cost-effective storage and Athena analysis. This reduces log volume and costs significantly. Logging everything to CloudWatch and deleting later (A) pays for all the traffic first. A direct S3 destination (D) must be a bucket whose name starts with aws-waf-logs-, which this one does not. CloudFront logs (B) don't include WAF rule details.
 
 **Key Concept:** [AWS WAF Logging](https://docs.aws.amazon.com/waf/latest/developerguide/logging.html)
 </details>
@@ -241,10 +241,10 @@ D. Enable WAF logging to S3 with a logging filter for BLOCK actions only
 ### Question 13
 **Scenario:** Your organization needs to ensure all CloudWatch Log Groups containing security logs are encrypted with customer-managed KMS keys and have retention periods of at least 1 year. How can you continuously monitor and enforce this?
 
-A. Create a Lambda function running daily to check log group configurations
-B. Use Service Control Policies to require encryption on log group creation
+A. Run a daily Lambda to check log groups
+B. Use Service Control Policies to require encryption on log group creation in every account
 C. Use AWS Config custom rules evaluating log group encryption and retention
-D. Enable CloudTrail and alert on CreateLogGroup events missing encryption
+D. Enable CloudTrail and alert on CreateLogGroup events that are missing encryption settings
 
 <details>
 <summary>Answer</summary>
@@ -263,9 +263,9 @@ D. Enable CloudTrail and alert on CreateLogGroup events missing encryption
 ### Question 14
 **Scenario:** A company needs to allow HTTPS traffic from the internet to their application load balancer while ensuring all traffic between the ALB and EC2 instances in private subnets is also encrypted. The EC2 instances should not be directly accessible from the internet. How should this be architected?
 
-A. ALB in public subnet with HTTPS listener, HTTPS to instances using ACM certificates, security groups restricting instance access to ALB only
+A. ALB in public subnet with HTTPS listener, HTTPS to instances using ACM certificates, instance security groups allowing only the ALB
 B. NLB in public subnet with TLS passthrough to instances
-C. ALB in public subnet with HTTPS listener, HTTP to instances in private subnets
+C. ALB in public subnet with HTTPS listener, HTTP to instances in private subnets, with security groups restricting instance access to the ALB
 D. ALB in private subnet using AWS PrivateLink for internet access
 
 <details>
@@ -283,8 +283,8 @@ D. ALB in private subnet using AWS PrivateLink for internet access
 
 A. Implement IAM policies with conditions restricting ec2:RunInstances to AMIs with specific tags
 B. Create an SCP that allows ec2:RunInstances only for specific AMI IDs
-C. Use EC2 Image Builder with automatic distribution and deprecate old AMIs
-D. Use AWS Config rule to detect non-compliant instances and terminate them
+C. Use EC2 Image Builder with automatic distribution and deprecate old AMIs once new hardened ones are published
+D. Use an AWS Config rule to detect instances launched from unapproved AMIs and terminate them automatically within minutes
 
 <details>
 <summary>Answer</summary>
@@ -300,7 +300,7 @@ D. Use AWS Config rule to detect non-compliant instances and terminate them
 **Scenario:** A security team needs to ensure no security group in their VPCs has inbound rules allowing SSH (port 22) from 0.0.0.0/0. They want automatic remediation that removes such rules while preserving other rules in the security group. What solution provides this?
 
 A. AWS Config managed rule "restricted-ssh" with SSM Automation remediation that deletes the security group
-B. AWS Config managed rule "restricted-ssh" with custom Lambda remediation that revokes only the offending rules
+B. AWS Config managed rule "restricted-ssh" with custom Lambda remediation that removes every inbound rule from the group
 C. GuardDuty detecting open security groups with EventBridge remediation
 D. AWS Firewall Manager security group policy with auto-remediation
 
@@ -309,7 +309,7 @@ D. AWS Firewall Manager security group policy with auto-remediation
 
 **Correct: D**
 
-**Why:** AWS Firewall Manager security group policies can audit and auto-remediate security groups across accounts and VPCs. It can specifically remove rules allowing 0.0.0.0/0 on specified ports while preserving other rules. This is purpose-built for this use case. Option B requires custom Lambda code. Option A's remediation would delete the entire group. GuardDuty (C) doesn't detect security group configurations.
+**Why:** AWS Firewall Manager security group policies can audit and auto-remediate security groups across accounts and VPCs. It can specifically remove rules allowing 0.0.0.0/0 on specified ports while preserving other rules. This is purpose-built for this use case. Option B would strip every inbound rule, not only the offending one. Option A's remediation would delete the entire group. GuardDuty (C) doesn't detect security group configurations.
 
 **Key Concept:** [AWS Firewall Manager Security Group Policies](https://docs.aws.amazon.com/waf/latest/developerguide/security-group-policies.html)
 </details>
@@ -317,10 +317,10 @@ D. AWS Firewall Manager security group policy with auto-remediation
 ### Question 17
 **Scenario:** An organization uses AWS Network Firewall to inspect traffic between VPCs in their Transit Gateway architecture. They need to ensure all east-west traffic between production and development VPCs is inspected, but traffic within the same environment bypasses inspection for performance. How should routing be configured?
 
-A. Use VPC peering for same-environment traffic and Transit Gateway for cross-environment
-B. Deploy Network Firewall in each VPC for local inspection
-C. Attach all VPCs directly to Transit Gateway and use TGW route tables for inspection routing
-D. Create separate TGW route tables for prod and dev, with routes sending cross-environment traffic through the inspection VPC
+A. Use VPC peering for same-environment traffic and Transit Gateway for cross-environment flows
+B. Deploy a Network Firewall in every VPC, inspecting both local and cross-environment traffic
+C. Attach all VPCs directly to Transit Gateway with a single shared route table and rely on Network Firewall rules to pick out cross-environment flows
+D. Separate prod and dev TGW route tables, routing cross traffic via an inspection VPC
 
 <details>
 <summary>Answer</summary>
@@ -336,7 +336,7 @@ D. Create separate TGW route tables for prod and dev, with routes sending cross-
 **Scenario:** A company is running sensitive workloads on EC2 that require protection against hardware-level attacks, including protection of data in memory from AWS operators. Which EC2 feature provides this capability?
 
 A. EC2 instances in a dedicated tenancy VPC
-B. EC2 Dedicated Hosts with host-based encryption
+B. EC2 Dedicated Hosts, which give physical isolation on hardware only your account uses
 C. AWS Nitro Enclaves for processing sensitive data
 D. EC2 instances with encrypted EBS volumes
 
@@ -353,10 +353,10 @@ D. EC2 instances with encrypted EBS volumes
 ### Question 19
 **Scenario:** An application running on EC2 needs to access an S3 bucket containing sensitive data. Security requires that the traffic never traverses the public internet and that access be restricted to only this specific application. How should this be implemented?
 
-A. Use an S3 VPC endpoint (gateway type) with bucket policy restricting access to the endpoint
-B. Use an S3 VPC endpoint (interface type) with security groups and bucket policy restricting access to the endpoint ID
-C. Configure S3 Transfer Acceleration for private connectivity
-D. Use AWS PrivateLink for S3 with Direct Connect
+A. Use an S3 gateway VPC endpoint with a bucket policy naming the endpoint, which any instance in the VPC can use through the route table
+B. S3 interface endpoint with security groups and a bucket policy on the endpoint ID
+C. Configure S3 Transfer Acceleration for private connectivity from the instances to the bucket
+D. Use AWS PrivateLink for S3 over a Direct Connect link from the VPC to the bucket and back
 
 <details>
 <summary>Answer</summary>
@@ -371,10 +371,10 @@ D. Use AWS PrivateLink for S3 with Direct Connect
 ### Question 20
 **Scenario:** A web application protected by AWS WAF is experiencing a Layer 7 DDoS attack with requests that appear legitimate but are overwhelming the application. The attack is using multiple IP addresses that rotate frequently. Which WAF feature helps mitigate this?
 
-A. IP reputation rule group blocking known bad IPs
-B. Rate-based rule with custom aggregation keys (URI, header values) combined with Bot Control
-C. Rate-based rule with IP address aggregation key
-D. Geo-blocking rules for suspicious countries
+A. IP reputation rule group blocking known bad IP addresses from Amazon threat intelligence feeds
+B. Rate-based rule with custom aggregation keys plus Bot Control
+C. Rate-based rule with the IP address aggregation key, set to a low threshold so that each rotating address is blocked quickly
+D. Geo-blocking rules for suspicious countries, applied at the web ACL for all requests
 
 <details>
 <summary>Answer</summary>
@@ -392,7 +392,7 @@ D. Geo-blocking rules for suspicious countries
 A. Training developers to always enable flow logs
 B. CloudFormation StackSets deploying flow logs to all VPCs nightly
 C. AWS Config rule with auto-remediation that creates flow logs when missing
-D. SCP preventing VPC creation combined with a Service Catalog product that creates VPCs with flow logs
+D. SCP preventing VPC creation except through a Service Catalog product that creates VPCs with flow logs
 
 <details>
 <summary>Answer</summary>
@@ -411,10 +411,10 @@ D. SCP preventing VPC creation combined with a Service Catalog product that crea
 ### Question 22
 **Scenario:** A company is federating their on-premises Active Directory with AWS using AWS IAM Identity Center (successor to AWS SSO). They have 500+ employees who need different levels of access to 50 AWS accounts based on their AD group membership. What is the MOST scalable approach?
 
-A. Sync AD users to Cognito and use Cognito for AWS console access
-B. Configure IAM Identity Center with AD integration, create permission sets, and assign permission sets to AD groups for account access
+A. Sync AD users to Cognito and use Cognito identity pools to give them AWS console access across the 50 accounts
+B. Configure IAM Identity Center with AD integration, create permission sets, and assign them to AD groups per account
 C. Create IAM users in each account matched to AD users
-D. Use SAML 2.0 federation with IAM roles in each account mapped to AD groups
+D. Use SAML 2.0 federation with an IAM role in each account mapped to AD groups, maintaining the trust and role definitions per account
 
 <details>
 <summary>Answer</summary>
@@ -429,10 +429,10 @@ D. Use SAML 2.0 federation with IAM roles in each account mapped to AD groups
 ### Question 23
 **Scenario:** An application needs to access AWS services from both EC2 instances and on-premises servers. The on-premises servers cannot use IAM roles. The credentials must be short-lived and automatically rotated. What solution meets these requirements?
 
-A. Use AWS STS directly from on-premises servers with hard-coded credentials
+A. Use AWS STS directly from on-premises servers with hard-coded credentials embedded in the application configuration files
 B. Store long-term credentials in Secrets Manager with automatic rotation
-C. Use IAM Roles Anywhere with private certificate authority for on-premises, IAM roles for EC2
-D. Create IAM users with programmatic access and rotate access keys monthly
+C. Use IAM Roles Anywhere with a private CA for on-premises servers, and IAM roles for EC2
+D. Create IAM users with programmatic access and rotate access keys monthly by a scheduled script
 
 <details>
 <summary>Answer</summary>
@@ -447,7 +447,7 @@ D. Create IAM users with programmatic access and rotate access keys monthly
 ### Question 24
 **Scenario:** A company wants to implement the principle of least privilege for their Lambda functions. Each function should only have access to the specific DynamoDB tables and S3 buckets it needs. Currently, all functions share a single IAM role with broad permissions. What is the BEST approach to remediate this?
 
-A. Use resource-based policies on DynamoDB and S3 to restrict Lambda access
+A. Keep the single shared role and use resource-based policies on the tables and buckets to tell the functions apart
 B. Implement application-level access controls in the Lambda code
 C. Add IAM policy conditions based on the Lambda function name
 D. Create separate IAM roles for each Lambda function with resource-level permissions
@@ -457,7 +457,7 @@ D. Create separate IAM roles for each Lambda function with resource-level permis
 
 **Correct: D**
 
-**Why:** Each Lambda function should have its own execution role with permissions scoped to only the resources it needs. This follows least privilege and blast radius reduction. Resource-level permissions specify exact table/bucket ARNs. Policy conditions (C) are complex and error-prone. Resource-based policies (A) work for S3 but DynamoDB doesn't support them for Lambda. Application controls (B) don't restrict IAM permissions.
+**Why:** Each Lambda function should have its own execution role with permissions scoped to only the resources it needs. This follows least privilege and blast radius reduction. Resource-level permissions specify exact table/bucket ARNs. Policy conditions (C) are complex and error-prone. Resource-based policies (A) cannot tell the functions apart while they all share one role, because the role is the principal. Application controls (B) don't restrict IAM permissions.
 
 **Key Concept:** [Lambda Execution Role](https://docs.aws.amazon.com/lambda/latest/dg/lambda-intro-execution-role.html)
 </details>
@@ -467,7 +467,7 @@ D. Create separate IAM roles for each Lambda function with resource-level permis
 
 A. The IAM policy has a typo in the bucket name
 B. S3 Block Public Access is preventing access
-C. An SCP at the OU or root level is denying S3 access
+C. An SCP is denying S3 access
 D. The bucket has server-side encryption that the user cannot access
 
 <details>
@@ -483,9 +483,9 @@ D. The bucket has server-side encryption that the user cannot access
 ### Question 26
 **Scenario:** A security audit revealed that several IAM users have not used their credentials in over 90 days. Some have both console and programmatic access. The security team wants to automatically identify and disable inactive credentials without manual review of each user. What is the MOST efficient solution?
 
-A. Use AWS Config rules for IAM user credential age
-B. Create a Lambda function that calls GetAccessKeyLastUsed and DisableKey APIs weekly
-C. Use IAM credential reports and manually disable inactive credentials monthly
+A. Use the access-keys-rotated Config rule, which only checks key age
+B. Create a Lambda function that calls GetAccessKeyLastUsed and the disable API weekly, scanning every IAM user in the account
+C. Use IAM credential reports, reviewed and acted on manually by a security analyst each month
 D. Use IAM Access Analyzer unused access findings with automated remediation via Lambda
 
 <details>
@@ -493,7 +493,7 @@ D. Use IAM Access Analyzer unused access findings with automated remediation via
 
 **Correct: D**
 
-**Why:** IAM Access Analyzer's unused access analysis continuously identifies credentials (passwords and access keys) not used within a specified period. Findings can trigger EventBridge rules for automated remediation (disabling credentials via Lambda). This is a managed service approach. Credential reports (C) are manual. Custom Lambda (B) duplicates Access Analyzer functionality. Config rules (A) check age, not last used date.
+**Why:** IAM Access Analyzer's unused access analysis continuously identifies credentials (passwords and access keys) not used within a specified period. Findings can trigger EventBridge rules for automated remediation (disabling credentials via Lambda). This is a managed service approach. Credential reports (C) are manual. Custom Lambda (B) duplicates Access Analyzer functionality. The access-keys-rotated Config rule (A) flags keys by age since creation, not by last use, and has no built-in disable step.
 
 **Key Concept:** [IAM Access Analyzer Unused Access](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-unused-access.html)
 </details>
@@ -501,17 +501,17 @@ D. Use IAM Access Analyzer unused access findings with automated remediation via
 ### Question 27
 **Scenario:** A cross-account setup requires Account A's Lambda function to write to Account B's DynamoDB table. Account B's security team wants to ensure only this specific Lambda function from Account A can access the table, not any other resources from Account A. How should this be configured?
 
-A. Create an IAM user in Account B and share credentials with Account A
+A. Create an IAM user in Account B with a DynamoDB policy and share its access keys with Account A's Lambda function configuration
 B. Enable cross-account access in DynamoDB table settings
-C. Use DynamoDB resource-based policy to allow Account A access
-D. Create an IAM role in Account B that Account A's Lambda assumes, with trust policy specifying the Lambda execution role ARN
+C. Use a DynamoDB resource-based policy allowing Account A's root principal to write, then rely on Account A's IAM policy to limit which function uses it
+D. Create an IAM role in Account B that Account A's Lambda assumes, with a trust policy naming the Lambda execution role ARN
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** The trust policy on Account B's IAM role should specify the exact ARN of Account A's Lambda execution role as the principal. This ensures only that specific Lambda function can assume the role. The role's permissions policy grants DynamoDB write access. DynamoDB (C) doesn't have resource-based policies like S3. Shared credentials (A) violate security best practices. There's no cross-account setting (B) in DynamoDB.
+**Why:** The trust policy on Account B's IAM role should specify the exact ARN of Account A's Lambda execution role as the principal. This ensures only that specific Lambda function can assume the role. The role's permissions policy grants DynamoDB write access. Allowing the Account A root principal in a resource-based policy (C) would let any identity in Account A that its own IAM policies permit reach the table, so Account B could not guarantee that only this function gets in. Shared credentials (A) violate security best practices. There's no cross-account setting (B) in DynamoDB.
 
 **Key Concept:** [Cross-Account IAM Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html)
 </details>
@@ -523,7 +523,7 @@ D. Create an IAM role in Account B that Account A's Lambda assumes, with trust p
 ### Question 28
 **Scenario:** A healthcare application stores PHI in DynamoDB. Compliance requires that all data be encrypted with customer-managed keys, the keys must be rotated annually, and key usage must be audited. Which configuration meets all requirements?
 
-A. Enable DynamoDB encryption with a customer managed KMS key, enable automatic rotation, and use CloudTrail to log key usage
+A. Enable DynamoDB encryption with a customer managed KMS key, enable automatic rotation, and log key usage in CloudTrail
 B. Encrypt data in the application before storing in DynamoDB
 C. Use DynamoDB default encryption with AWS managed keys
 D. Use DynamoDB encryption with AWS owned keys and application-level encryption
@@ -543,7 +543,7 @@ D. Use DynamoDB encryption with AWS owned keys and application-level encryption
 
 A. Store credentials in Secrets Manager with automatic rotation using alternating users strategy
 B. Use IAM database authentication instead of credentials
-C. Store credentials in environment variables and update Lambda when rotating
+C. Store credentials in Lambda environment variables and update every function's configuration each time the password rotates
 D. Store credentials in Parameter Store SecureString with manual rotation
 
 <details>
@@ -559,7 +559,7 @@ D. Store credentials in Parameter Store SecureString with manual rotation
 ### Question 30
 **Scenario:** A company needs to encrypt S3 objects with different keys for different customers' data within the same bucket. Each customer should only be able to decrypt their own data. How should this be implemented?
 
-A. Use SSE-KMS with a separate customer managed key per customer, with key policies granting access only to that customer
+A. Use SSE-KMS with a separate customer managed key per customer, with key policies granting access to that customer only
 B. Create separate S3 buckets for each customer with SSE-S3
 C. Use SSE-S3 with different prefixes for each customer
 D. Use client-side encryption with customer-provided keys
@@ -577,10 +577,10 @@ D. Use client-side encryption with customer-provided keys
 ### Question 31
 **Scenario:** An organization needs to share encrypted EBS snapshots with a partner AWS account. The snapshots are encrypted with a customer managed KMS key. What steps are required to enable the partner to use these snapshots?
 
-A. Share the snapshot and share the KMS key by adding the partner account to the key policy
-B. Share the snapshot, modify the KMS key policy to allow the partner's account, and create a grant for the partner to use the key
-C. Export the snapshot to S3, share via cross-account bucket access
-D. Copy the snapshot using an AWS managed key, then share the copy
+A. Share the snapshot and share the KMS key by adding the partner account to the key policy, with no further steps
+B. Share the snapshot, allow the partner in the key policy, and add a grant
+C. Export the snapshot to S3 as an encrypted object, then share it through cross-account bucket access and a bucket policy
+D. Copy the snapshot using an AWS managed key, then share the copy with the partner account
 
 <details>
 <summary>Answer</summary>
@@ -595,7 +595,7 @@ D. Copy the snapshot using an AWS managed key, then share the copy
 ### Question 32
 **Scenario:** A security team needs to discover and classify sensitive data (PII, financial data) across hundreds of S3 buckets. They need ongoing monitoring for new sensitive data uploads and integration with their security workflow. Which service provides this?
 
-A. AWS Config rules checking for S3 object tags
+A. AWS Config rules checking S3 object tags that your team applies after reviewing each bucket's contents
 B. S3 Storage Lens with custom metrics
 C. Amazon Macie with automated sensitive data discovery and Security Hub integration
 D. Amazon Inspector scanning S3 buckets
@@ -613,17 +613,17 @@ D. Amazon Inspector scanning S3 buckets
 ### Question 33
 **Scenario:** An application uses AWS KMS for encryption. The security team wants to ensure that specific KMS operations (like ScheduleKeyDeletion and DisableKey) can only be performed by a senior administrator role, even if other administrators have full KMS permissions. How can this be enforced?
 
-A. Use IAM permission boundaries to restrict KMS operations
-B. Enable MFA delete on KMS keys
-C. Create an SCP denying these operations organization-wide, with an exception for the senior admin role
-D. Use KMS key policies to deny these operations to all except the senior admin role
+A. Use IAM permission boundaries to restrict KMS operations for the other administrators
+B. Enable MFA delete on KMS keys, and require a hardware token for key deletion
+C. Create an SCP that denies these operations to every principal in every account in the organization
+D. A key policy deny for all but the senior admin role
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** KMS key policies are resource-based policies that have explicit precedence. A policy statement explicitly denying ScheduleKeyDeletion and DisableKey to all principals except the senior admin role ARN will be enforced regardless of IAM permissions. The key policy is the primary authorization mechanism for KMS keys. SCPs (C) apply to accounts, not specific resources within accounts. Permission boundaries (A) apply to users/roles, not resources. MFA delete (B) isn't a KMS feature.
+**Why:** KMS key policies are resource-based policies that have explicit precedence. A policy statement explicitly denying ScheduleKeyDeletion and DisableKey to all principals except the senior admin role ARN will be enforced regardless of IAM permissions. The key policy is the primary authorization mechanism for KMS keys. An SCP that denies the operations for everyone (C) would block the senior administrator as well. Permission boundaries (A) apply to users/roles, not resources. MFA delete (B) isn't a KMS feature.
 
 **Key Concept:** [KMS Key Policies](https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)
 </details>
@@ -631,8 +631,8 @@ D. Use KMS key policies to deny these operations to all except the senior admin 
 ### Question 34
 **Scenario:** A company needs to encrypt data with keys that have never been and will never be accessible to AWS, including during encryption/decryption operations. The keys must remain in their on-premises HSM. How can they achieve this?
 
-A. Use AWS KMS customer managed keys with imported key material
-B. Use client-side encryption with keys stored on-premises
+A. Use AWS KMS customer managed keys with key material imported from the on-premises HSM
+B. Use client-side encryption with the AWS Encryption SDK, using data keys generated by AWS KMS
 C. Use AWS CloudHSM clusters
 D. Use AWS KMS with external key store (XKS) connected to their HSM
 
@@ -641,7 +641,7 @@ D. Use AWS KMS with external key store (XKS) connected to their HSM
 
 **Correct: D**
 
-**Why:** KMS External Key Store (XKS) allows you to use KMS with keys stored in HSMs outside of AWS. All cryptographic operations are performed by your external HSM - the key material never enters AWS. This meets "hold your own key" (HYOK) requirements. CloudHSM (C) keys are in AWS-hosted hardware. Client-side (B) doesn't integrate with AWS services that require KMS. Imported key material (A) copies keys into KMS.
+**Why:** KMS External Key Store (XKS) allows you to use KMS with keys stored in HSMs outside of AWS. All cryptographic operations are performed by your external HSM - the key material never enters AWS. This meets "hold your own key" (HYOK) requirements. CloudHSM (C) keys are in AWS-hosted hardware. Client-side encryption with KMS-generated data keys (B) exposes the keys to AWS. Imported key material (A) copies keys into KMS.
 
 **Key Concept:** [KMS External Key Store](https://docs.aws.amazon.com/kms/latest/developerguide/keystore-external.html)
 </details>
@@ -673,8 +673,8 @@ D. Write Lambda functions triggered by account creation events
 
 A. Use Systems Manager Patch Manager compliance reports and AWS Config conformance packs
 B. Export CloudTrail logs showing patch commands
-C. Create custom CloudWatch dashboards showing patch status
-D. Manually document patches in a spreadsheet
+C. Create custom CloudWatch dashboards showing patch status for each instance, with alarms when a patch is missing for 30 days
+D. Manually document patches in a spreadsheet, filled in by each system owner after every patch window
 
 <details>
 <summary>Answer</summary>
@@ -708,7 +708,7 @@ D. Create custom AWS Config rules for each control
 **Scenario:** An organization wants to implement a "break glass" process allowing emergency access to production accounts that bypasses normal approval workflows. The access should be heavily logged and automatically revoked after 4 hours. How should this be implemented?
 
 A. Store root account credentials in a sealed envelope
-B. Create a break glass IAM role with time-limited session duration, require MFA, and enable CloudTrail logging
+B. Create a break glass IAM role with a 4-hour session duration, require MFA to assume it, and enable CloudTrail logging of all its activity
 C. Use AWS IAM Identity Center with an emergency access permission set, time-bound, requiring MFA and manager approval
 D. Provide production credentials to on-call engineers
 
@@ -745,7 +745,7 @@ D. Send all logs to Security Hub for analysis
 
 A. Run AWS Trusted Advisor and review security checks
 B. Hire a third-party penetration testing firm
-C. Enable Security Hub with all security standards, review findings sorted by severity
+C. Enable Security Hub with all security standards and review findings sorted by severity
 D. Manually review all resources in the AWS console
 
 <details>

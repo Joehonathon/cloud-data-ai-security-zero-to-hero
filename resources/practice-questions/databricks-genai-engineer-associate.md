@@ -15,9 +15,9 @@ difficulty: intermediate
 **Scenario:** A RAG application must answer questions from internal policy documents.
 
 A. Train a model from scratch
-B. Chunk and embed the documents into a Vector Search index, retrieve relevant chunks at query time, and generate an answer from them
-C. Fine-tune a model on the documents
-D. Put all documents in the prompt
+B. Chunk and embed the documents into a Vector Search index, retrieve chunks at query time, and generate from them
+C. Fine-tune a model on the documents so that the policy text is stored in its weights and answers are always current without reindexing
+D. Put all of the documents into the prompt on every single request and let the model find the relevant policy text on its own
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Put all documents in the prompt
 ### Question 2
 **Scenario:** A Delta table of documents must stay in sync with a vector index.
 
-A. A Databricks Vector Search Delta Sync index, which keeps the index updated as the source table changes
+A. A Delta Sync Vector Search index, which updates as the source table changes
 B. Manual upserts
-C. Rebuild the index nightly by hand
-D. Export to CSV
+C. Rebuild the index by hand each night from a full table export, accepting that it lags the data by a day
+D. Export the table to CSV files and upload them to the index through the workspace UI each week
 
 <details>
 <summary>Answer</summary>
@@ -68,7 +68,7 @@ D. One sentence per chunk
 ### Question 4
 **Scenario:** Retrieval misses documents when the user's query uses different wording from the source.
 
-A. Keyword search only
+A. Keyword search only, matching the exact words that appear in the source documents, with no synonym expansion
 B. Increase temperature
 C. Vector (semantic) search, optionally hybrid with keyword search for exact identifiers
 D. A bigger model
@@ -87,8 +87,8 @@ D. A bigger model
 **Scenario:** A model endpoint must serve an external foundation model and a fine-tuned model behind one interface.
 
 A. Manual routing
-B. Mosaic AI Model Serving with external model endpoints and custom model endpoints, optionally behind an AI Gateway
-C. A load balancer
+B. Mosaic AI Model Serving with external and custom model endpoints, optionally behind an AI Gateway
+C. A load balancer in front of the two providers' separate APIs, which translates request formats and tracks usage
 D. Two applications
 
 <details>
@@ -104,10 +104,10 @@ D. Two applications
 ### Question 6
 **Scenario:** A chain of retrieval, prompt, and model must be tracked and versioned.
 
-A. A notebook only
-B. A text file
-C. Log the chain as an MLflow model, register it in Unity Catalog, and deploy the registered version
-D. Copy the code to production
+A. A notebook only, kept in the author's workspace folder, with the chain cells run by hand each time
+B. A text file in a shared folder holding the prompt template and the name of the model version in use
+C. Log the chain as an MLflow model, register it in Unity Catalog, and deploy that version
+D. Copy the code to production by hand each time a change is ready, and rename the folder with the date
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Copy the code to production
 ### Question 7
 **Scenario:** The application must be evaluated for answer quality against ground truth.
 
-A. User complaints
-B. Latency only
-C. Spot checks
-D. An evaluation set with metrics such as answer correctness, groundedness, and retrieval recall, run automatically on each change
+A. User complaints collected through the support desk after release, reviewed once a month by the product owner
+B. Latency only, measured as the median response time per request across a full week of real production traffic
+C. Spot checks by the team on a handful of favorite questions before each release, recorded in a shared document
+D. An evaluation set with metrics like correctness, groundedness and retrieval recall, run on each change
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. An evaluation set with metrics such as answer correctness, groundedness, and 
 ### Question 8
 **Scenario:** Retrieval must respect who is asking, so users only see permitted documents.
 
-A. Rely on the model's training
-B. Post-process the answer
+A. Rely on the model's training, which teaches it not to repeat documents the current user is not entitled to see
+B. Post-process the answer by scanning it for document titles and removing any the user may not see
 C. Filter at retrieval time by metadata reflecting the user's entitlements, enforced in code
-D. Instruct the model to refuse
+D. Instruct the model in the system prompt to refuse any request for documents the user may not see
 
 <details>
 <summary>Answer</summary>
@@ -176,8 +176,8 @@ D. MLflow Tracing capturing spans for retrieval, prompt construction, and genera
 ### Question 10
 **Scenario:** An agent must call tools to complete a task.
 
-A. The model emits a structured tool call, your code executes it with a scoped credential and an authorization check, and the result returns to the model
-B. The model executes tools itself
+A. The model emits a tool call, your code runs it with a scoped credential and authorization check
+B. The model executes tools itself, calling each API directly with the credentials supplied in its system prompt
 C. Give the agent admin access
 D. Skip authorization
 
@@ -196,8 +196,8 @@ D. Skip authorization
 
 A. Increase the index size
 B. Re-embed the entire index, because vectors from different models are not comparable
-C. Re-embed new documents only
-D. No further action
+C. Re-embed new documents only, since existing vectors stay valid and only the new content needs the upgraded model
+D. No further action is needed, because the new model can read the old vectors in the index without a problem
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. No further action
 **Scenario:** Unsafe or off-topic outputs must be constrained.
 
 A. Prompt instructions alone
-B. Layered guardrails: input and output classification, topic constraints in the gateway, and measurement of both violation rate and false refusal rate
+B. Layered guardrails: input and output classifiers, gateway topic limits, and measured violation and false refusal rates
 C. Reduce the max tokens
-D. Lower temperature
+D. Lower temperature, which makes the model deterministic and therefore stops it producing unsafe or off-topic text on any input
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Lower temperature
 ### Question 13
 **Scenario:** Costs rise sharply as usage grows.
 
-A. Measure tokens per request, use a smaller model for simple steps, cache repeated prefixes, and cap retrieved context size
-B. Increase the model size
-C. Add more endpoints
-D. Accept it
+A. Measure tokens per request, use smaller models for simple steps, cache repeated prefixes, cap context
+B. Increase the model size, since a larger model answers correctly more often, so fewer retries and fewer total tokens are needed per resolved task
+C. Add more serving endpoints in several other regions so that each one carries a smaller share of the total traffic
+D. Accept the rise as the normal price of growth, and revisit the bill again only when the quarter closes and finance asks
 
 <details>
 <summary>Answer</summary>
@@ -249,9 +249,9 @@ D. Accept it
 **Scenario:** Which describes the difference between prompt engineering, RAG, and fine-tuning?
 
 A. RAG replaces the model
-B. They are interchangeable
-C. Fine-tuning is always best
-D. Prompt engineering shapes behavior with instructions and examples, RAG supplies external knowledge at query time, and fine-tuning adjusts weights for consistent task behavior
+B. They are interchangeable techniques that give the same results on every task, so the choice is purely a matter of team preference and cost
+C. Fine-tuning is always best, because changing the weights gives the model permanent, up-to-date knowledge of your data and so removes any need for retrieval or prompts
+D. Prompt engineering shapes behavior with instructions, RAG supplies knowledge at query time, and fine-tuning adjusts weights
 
 <details>
 <summary>Answer</summary>
@@ -267,8 +267,8 @@ D. Prompt engineering shapes behavior with instructions and examples, RAG suppli
 **Scenario:** A model serving endpoint must scale down when idle.
 
 A. A fixed provisioned endpoint
-B. Scale-to-zero on the serving endpoint, accepting cold start latency on the first request after idle
-C. Delete the endpoint each night
+B. Scale-to-zero on the endpoint, accepting cold start latency on the first request after idle
+C. Delete the endpoint each night and recreate it each morning
 D. A larger instance
 
 <details>

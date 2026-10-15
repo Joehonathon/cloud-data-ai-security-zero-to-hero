@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** An application must call several foundation models through one API with no infrastructure to manage.
 
-A. Amazon Bedrock
+A. Amazon Bedrock with its unified API
 B. Amazon Comprehend
-C. Amazon SageMaker training jobs
-D. EC2 with self-hosted models
+C. Amazon SageMaker training jobs on dedicated instances
+D. EC2 with self-hosted models behind a load balancer
 
 <details>
 <summary>Answer</summary>
@@ -33,9 +33,9 @@ D. EC2 with self-hosted models
 **Scenario:** A chatbot must answer from a corpus of internal PDFs stored in S3, with citations.
 
 A. A Bedrock Knowledge Base over the S3 corpus, with retrieval and generation returning source attribution
-B. Paste the PDFs into the prompt
-C. Fine-tune the model on the PDFs
-D. Use Amazon Textract alone
+B. Paste the full text of every PDF into the prompt on each request, so that the model always has the source documents available to quote
+C. Fine-tune the model on the PDFs so that it learns the content of the documents and can cite the source file it learned each fact from
+D. Use Amazon Textract alone to extract the text of each PDF, then return the matching extract directly to the user as the answer
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Use Amazon Textract alone
 ### Question 3
 **Scenario:** Model responses must be blocked when they contain a defined set of denied topics and PII.
 
-A. A prompt instruction
-B. Post-hoc log review
-C. Lower temperature
-D. Bedrock Guardrails with denied topics, content filters, and sensitive information filters
+A. A prompt instruction telling the model never to discuss the denied topics or output personal data, repeated at the start of every request
+B. Post-hoc log review by the security team, searching the invocation logs each day for denied topics
+C. Lower the temperature so the model's responses become more deterministic and so less likely to stray
+D. Bedrock Guardrails with denied topics, content filters, and sensitive information filters on input and output
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Bedrock Guardrails with denied topics, content filters, and sensitive informa
 ### Question 4
 **Scenario:** An agent must call internal APIs to complete multistep tasks.
 
-A. A single prompt
-B. A Knowledge Base alone
-C. Bedrock Agents with action groups defined by an OpenAPI schema and backed by Lambda
-D. Step Functions alone
+A. A single prompt that describes every API and asks the model to write out the calls to run in order
+B. A Knowledge Base alone, which retrieves documents about each internal API but has no way to invoke the APIs on behalf of the user
+C. Bedrock Agents with action groups defined by an OpenAPI schema and backed by Lambda functions that hold the permissions
+D. Step Functions alone, which runs a fixed workflow of API calls but has no model choosing the next action
 
 <details>
 <summary>Answer</summary>
@@ -87,9 +87,9 @@ D. Step Functions alone
 **Scenario:** Guaranteed throughput is required for a latency-sensitive Bedrock workload.
 
 A. Provisioned Throughput for the model
-B. A larger model
-C. Batch inference
-D. On-demand invocation
+B. A larger model, since it has more capacity and so serves each request quickly even when other customers are using the service
+C. Batch inference, which processes a file of prompts asynchronously at a lower price but does not give predictable latency
+D. On-demand invocation with a retry policy, which scales automatically with traffic and so avoids any throttling during peak periods
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. On-demand invocation
 ### Question 6
 **Scenario:** Prompts and completions must never traverse the public internet.
 
-A. An internet gateway with a security group
-B. A NAT gateway
-C. VPC interface endpoints (PrivateLink) for Bedrock, with the application in a private subnet
-D. TLS is sufficient
+A. An internet gateway with a security group that only allows HTTPS, so the traffic is encrypted and restricted to Bedrock's address ranges
+B. A NAT gateway in a public subnet, so that instances in the private subnet can call Bedrock without being reachable
+C. VPC interface endpoints (PrivateLink) for Bedrock, with the application in a private subnet and no route to the internet
+D. TLS is sufficient, because the encrypted traffic cannot be read in transit even if it crosses the public internet
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. TLS is sufficient
 ### Question 7
 **Scenario:** A model must be customized on proprietary examples without that data being used to train the base model.
 
-A. Prompt engineering only
+A. Prompt engineering only, placing the proprietary examples in every prompt as few-shot context, which keeps the base model untouched
 B. Bedrock custom model fine-tuning, where the customized model is private to your account
-C. Sharing the data with the provider
-D. Public fine-tuning
+C. Sharing the data with the provider so their team can train a private variant
+D. Public fine-tuning through the provider's shared model program, where the improved model is then offered to all customers
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Public fine-tuning
 ### Question 8
 **Scenario:** Costs are high because a long system prompt repeats on every request.
 
-A. Increase max tokens
-B. Add more replicas
+A. Increase max tokens so that the model can accept the longer system prompt in one pass and spend fewer requests on it
+B. Add more replicas of the application, which spreads the repeated prompt across more instances and lowers the cost per request
 C. Prompt caching for the stable prefix
-D. Switch to a larger model
+D. Switch to a larger model, which follows the long system prompt more reliably and so needs fewer retries
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Switch to a larger model
 ### Question 9
 **Scenario:** A retrieval system must not return documents the requesting user is not entitled to see.
 
-A. Rely on the model's safety training
-B. Instruct the model to refuse
-C. Post-process the answer
-D. Filter at retrieval time using metadata filters bound to the user's entitlements
+A. Rely on the model's safety training to refuse to reveal documents the user is not entitled to read, and treat that as sufficient
+B. Instruct the model in the system prompt to refuse any question about documents outside the user's entitlements
+C. Post-process the answer with a classifier that redacts content the user is not allowed to see before it is displayed
+D. Filter at retrieval time using metadata filters bound to the user's entitlements, so that unauthorized chunks never enter the prompt context
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Filter at retrieval time using metadata filters bound to the user's entitleme
 ### Question 10
 **Scenario:** A generative feature must be evaluated for quality and safety before launch and on every change.
 
-A. Latency tests
-B. Manual review
-C. A single smoke test
-D. An evaluation suite (automated and human) covering task accuracy, groundedness, refusal behavior, and adversarial prompts, run in the pipeline
+A. Latency tests that measure response time under load before each release, which show speed but not whether answers are correct or safe
+B. Manual review of a sample of outputs by the product team before launch, repeated whenever someone remembers
+C. A single smoke test that sends one representative prompt and checks that a response comes back before each release, failing the release if nothing is returned
+D. An automated and human evaluation suite for accuracy, groundedness, refusals and adversarial prompts, run in the pipeline
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. An evaluation suite (automated and human) covering task accuracy, groundednes
 ### Question 11
 **Scenario:** An indirect prompt injection is embedded in a retrieved document.
 
-A. Assume it may succeed: scope tool permissions to the user's rights, require confirmation for irreversible actions, and treat model output as untrusted before it reaches a renderer or another system
-B. Filter the input for suspicious phrases
-C. Increase the guardrail strictness only
-D. Use a larger model
+A. Assume it may succeed: scope tools to the user's rights, confirm irreversible actions, and treat model output as untrusted
+B. Filter the retrieved text for suspicious phrases such as "ignore previous instructions" before it reaches the prompt, and block any match
+C. Increase the guardrail strictness only, raising the content filter thresholds so that injected instructions are blocked on input and output
+D. Use a larger model, which follows the system prompt more reliably and so is less likely to obey instructions found in retrieved text
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Use a larger model
 ### Question 12
 **Scenario:** Which service converts documents into vectors and stores them for similarity search on AWS?
 
-A. Amazon Kinesis
+A. Amazon Kinesis, which ingests streaming data in real time but does not create embeddings
 B. Amazon OpenSearch Serverless (or Aurora pgvector, or another supported vector store) fed by Bedrock embedding models
-C. Amazon RDS for MySQL
-D. Amazon DynamoDB Streams
+C. Amazon RDS for MySQL, a relational database that stores rows and supports SQL queries but has no vector index for similarity search
+D. Amazon DynamoDB Streams, which captures item-level changes and is not a vector store
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Amazon DynamoDB Streams
 ### Question 13
 **Scenario:** A regulated workload must record every prompt and response for audit.
 
-A. Rely on application logs
+A. Rely on application logs written by the service code, which record whatever the developers chose to log at each call
 B. Enable Bedrock model invocation logging to CloudWatch Logs or S3, with retention and access controls
-C. No logging is possible
-D. Log only errors
+C. No logging is possible, because Bedrock does not retain or expose prompts and completions for customer inspection
+D. Log only errors from the invocation API, which keeps volume low
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Log only errors
 ### Question 14
 **Scenario:** A model upgrade is available. What is the safe rollout?
 
-A. Switch all traffic
+A. Switch all traffic to the new version on release day, because newer models are expected to match or exceed the old one
 B. Evaluate the new version against the suite, then canary a small share while comparing quality, latency, and cost before full cutover
-C. Wait for complaints
-D. Use both permanently at random
+C. Wait for complaints from users and roll back only if enough tickets arrive to show a real problem
+D. Run the old and new versions side by side at random permanently, never retiring either version after the upgrade
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Use both permanently at random
 ### Question 15
 **Scenario:** An application must choose between fine-tuning, RAG, and prompt engineering.
 
-A. Always fine-tune
+A. Always fine-tune, because training the model on your data gives the best accuracy for every kind of application
 B. Prompt engineering first, RAG when the need is current or proprietary knowledge, fine-tuning when the need is consistent format, style, or task behavior
-C. They are interchangeable
-D. Always use RAG
+C. They are interchangeable, because each one changes the model's output and so any of them solves any problem equally well
+D. Always use RAG, because retrieval adds current knowledge to every request and so also fixes output format and style
 
 <details>
 <summary>Answer</summary>

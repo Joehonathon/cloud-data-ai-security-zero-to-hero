@@ -14,7 +14,7 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A requirement states "the system must be highly available." What should the architect do first?
 
-A. Add redundancy everywhere
+A. Add redundancy everywhere, duplicating every component and database in each zone before any availability target has been agreed with the business
 B. Quantify it: define the availability target, RTO, and RPO, and identify what the business loses per hour of downtime
 C. Buy the largest instances
 D. Deploy across three zones
@@ -33,7 +33,7 @@ D. Deploy across three zones
 **Scenario:** An application must be portable across IBM Cloud, another public cloud, and on-premises.
 
 A. Rewrite per environment
-B. Virtual machines with manual configuration
+B. Virtual machines with manual configuration scripts kept separately for each cloud and each data center
 C. Use IBM-specific PaaS everywhere
 D. Containerize on Red Hat OpenShift, keeping cloud-specific dependencies behind abstractions
 
@@ -52,8 +52,8 @@ D. Containerize on Red Hat OpenShift, keeping cloud-specific dependencies behind
 
 A. Business capabilities and data ownership, so each service owns its data and changes independently
 B. Code file count
-C. Team size
-D. Technology preference
+C. Team size, creating one service per team and sizing each service to match that team's headcount exactly
+D. Technology preference, so that each team picks its favourite language and framework for its own service
 
 <details>
 <summary>Answer</summary>
@@ -70,8 +70,8 @@ D. Technology preference
 
 A. The saga pattern, with local transactions and compensating actions, accepting eventual consistency
 B. A shared database
-C. Two-phase commit
-D. Manual reconciliation
+C. Two-phase commit across the services' databases, with a coordinator locking rows until every participant votes
+D. Manual reconciliation by operations staff, who compare the two databases each night and fix the differences
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Manual reconciliation
 ### Question 5
 **Scenario:** An architecture must tolerate a regional outage with an RPO under 15 minutes.
 
-A. Multi-zone within one region
-B. A larger instance
-C. Backups to the same region
-D. Cross-region asynchronous replication with a documented, rehearsed failover procedure
+A. Multi-zone within one region, which survives a data center failure but not the loss of the whole region
+B. A larger instance size in the primary region, with more CPU and memory for the database
+C. Backups taken every five minutes to a bucket in the same region as the production system
+D. Cross-region asynchronous replication with a rehearsed failover procedure
 
 <details>
 <summary>Answer</summary>
@@ -106,7 +106,7 @@ D. Cross-region asynchronous replication with a documented, rehearsed failover p
 
 A. It adds no benefit
 B. It decouples producers from consumers in time and rate, absorbing bursts and letting the consumer fail without losing work
-C. It removes the need for error handling
+C. It removes the need for error handling because messages are always delivered exactly once and processed successfully by every consumer
 D. It guarantees ordering globally
 
 <details>
@@ -122,10 +122,10 @@ D. It guarantees ordering globally
 ### Question 7
 **Scenario:** Data residency requires that customer data never leaves a specific country.
 
-A. Use a global CDN
-B. Select regions in that country, restrict replication and backup targets, and verify that managed services and support access honor the boundary
-C. Encrypt it
-D. Document the intent
+A. Use a global CDN so that customer data is cached close to the users in every country they live in
+B. Use in-country regions, restrict replication and backup targets, and verify managed services
+C. Encrypt the data with a customer-managed key and then store the encrypted copies in any convenient region
+D. Document the residency intent in the security policy and ask each team to follow it when it deploys
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Document the intent
 ### Question 8
 **Scenario:** A security architecture must limit lateral movement after a compromise.
 
-A. A perimeter firewall
+A. A single perimeter firewall at the network edge that blocks inbound traffic while trusting every workload already inside the internal network
 B. Strong passwords
-C. Network segmentation, per-service identity with least privilege, and controls that assume the perimeter has already been breached
-D. Antivirus
+C. Network segmentation, per-service identity with least privilege, and an assume-breach posture
+D. Antivirus software installed on every server and developer laptop, with signatures updated every day
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Antivirus
 ### Question 9
 **Scenario:** An architecture decision must be recorded for future teams.
 
-A. A diagram alone
+A. A diagram alone, drawn once in a slide deck, shared by email at kickoff and never updated after the design changes later
 B. A verbal agreement
-C. An architecture decision record capturing the context, the options considered, the decision, and its consequences
-D. Code comments
+C. An architecture decision record with the context, options considered, decision and consequences
+D. Code comments written by the developers next to the relevant source code at the time of each change, kept in the repo
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Code comments
 ### Question 10
 **Scenario:** Performance requirements must be validated before go-live.
 
-A. Measure only average response time
-B. Test in production
-C. Load test against the defined targets, including a soak test and a test at expected peak plus headroom, then fix what the results reveal
-D. Assume it will scale
+A. Measure only the average response time under the normal daily load and report it to the sponsor
+B. Test in production after launch, using the first wave of paying customers as the load test
+C. Load test against the defined targets, including soak and peak-plus-headroom tests
+D. Assume it will scale because the cloud provider advertises elastic capacity for every service
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. It is simpler to write
 ### Question 13
 **Scenario:** An integration must connect to an on-premises system from cloud.
 
-A. Poll over the internet
-B. Private connectivity (Direct Link or VPN) plus a defined integration pattern such as an API gateway or a secure connector
-C. Copy data nightly by hand
-D. Expose the on-premises system publicly
+A. Poll the on-premises system over the public internet on a schedule from a cloud function
+B. Private connectivity (Direct Link or VPN) plus an API gateway or secure connector
+C. Copy the data by hand every night using exported files that are moved across on a shared drive
+D. Expose the on-premises system publicly through a static IP address and rely on a shared application password sent in a request header
 
 <details>
 <summary>Answer</summary>
@@ -266,7 +266,7 @@ D. Design for metrics, logs, and traces from the start, with correlation identif
 ### Question 15
 **Scenario:** A stakeholder asks for a technology the architect believes is wrong for the requirement.
 
-A. Build it differently without saying so
+A. Build it the way the architect prefers without telling the stakeholder, then explain the change after delivery if someone notices and complains
 B. Comply silently
 C. State the trade-offs with evidence, propose an alternative, and if the decision stands, record it as an ADR with the accepted risks
 D. Refuse

@@ -20,10 +20,10 @@
 ### Question 1
 **Scenario:** A company needs to implement a least privilege access model for their Google Cloud environment. They have 500 employees across multiple teams who need different levels of access to various projects. What approach should they use to manage IAM efficiently?
 
-A. Give all users Owner role and train them on responsibility
-B. Assign IAM roles directly to individual user accounts
-C. Create custom roles for each individual user
-D. Use Google Groups for role assignments, mapping teams to groups with appropriate roles at folder/project level
+A. Give all users the Owner role at the organization level so nobody is ever blocked, and rely on training for responsible use
+B. Assign IAM roles directly to each individual user account, project by project, as people ask for access
+C. Create a separate custom role for each individual user, tailored to what that person does day to day
+D. Map teams to Google Groups and grant roles to the groups at folder or project level
 
 <details>
 <summary>Answer</summary>
@@ -38,10 +38,10 @@ D. Use Google Groups for role assignments, mapping teams to groups with appropri
 ### Question 2
 **Scenario:** A development team needs temporary elevated access to production projects for troubleshooting. The access should expire automatically, require approval, and be fully audited. What solution provides this?
 
-A. Share service account keys when needed
-B. Privileged Access Manager (PAM) with just-in-time access grants requiring approval and time-bound duration
-C. Permanently assign elevated roles to developers
-D. Temporarily add developers to admin group
+A. Share a service account key with the team for the length of the troubleshooting session
+B. Privileged Access Manager (PAM) with time-bound grants that require approval
+C. Permanently assign the elevated roles to the developers so they can always troubleshoot
+D. Temporarily add developers to a shared admin Google group and remove them by hand once the troubleshooting is finished
 
 <details>
 <summary>Answer</summary>
@@ -56,7 +56,7 @@ D. Temporarily add developers to admin group
 ### Question 3
 **Scenario:** An application running on GKE needs to access Cloud Storage and Pub/Sub. The security team requires that no service account keys be used and that each workload has its own identity. How should this be configured?
 
-A. Hardcode service account credentials in container images
+A. Hardcode service account credentials in the container images so every pod can authenticate without extra setup
 B. Use Workload Identity to bind Kubernetes service accounts to Google service accounts
 C. Mount service account key files into pods
 D. Use the default compute service account for all pods
@@ -94,7 +94,7 @@ D. Create Google accounts for all external users
 
 A. Configure Workload Identity Federation for GitHub Actions with short-lived token exchange
 B. Use interactive user authentication
-C. Store service account key in GitHub secrets
+C. Store a service account key in GitHub encrypted secrets and rotate it every 90 days with a scheduled workflow
 D. Manually approve each deployment
 
 <details>
@@ -110,10 +110,10 @@ D. Manually approve each deployment
 ### Question 6
 **Scenario:** A healthcare organization needs to ensure that only users accessing from their corporate network or managed devices can access sensitive patient data in BigQuery. How should this be enforced?
 
-A. Implement network firewall rules only
-B. Trust all authenticated users
-C. Configure context-aware access with access levels requiring corporate network IP or device trust, then apply in IAM conditions
-D. Use VPC Service Controls only
+A. Implement VPC firewall rules only, allowing the corporate CIDR ranges and denying all other source addresses on every ingress path
+B. Trust every authenticated user, because Google sign-in already verifies who they are and that is enough
+C. Context-aware access levels for corporate IP or device trust, applied through IAM conditions
+D. Use a VPC Service Controls perimeter with no access levels defined, so only the project boundary is enforced
 
 <details>
 <summary>Answer</summary>
@@ -128,10 +128,10 @@ D. Use VPC Service Controls only
 ### Question 7
 **Scenario:** An organization wants to ensure that no user can grant themselves additional IAM permissions, even if they have IAM admin capabilities in their project. How can this be enforced?
 
-A. Don't grant any IAM permissions
-B. Review permissions quarterly
-C. Trust admins to not escalate privileges
-D. Use Organization Policy constraints to restrict IAM role bindings, or implement custom constraints
+A. Do not grant any IAM permissions to anyone in the project, including the project administrators
+B. Review all IAM bindings every quarter and remove any permissions that look excessive or unnecessary
+C. Trust admins not to escalate privileges, and rely on the Admin Activity audit logs to catch any misuse afterwards
+D. Use Organization Policy constraints or custom constraints to restrict IAM role bindings
 
 <details>
 <summary>Answer</summary>
@@ -164,7 +164,7 @@ D. Audit impersonation after the fact
 ### Question 9
 **Scenario:** An application needs to access secrets stored in Secret Manager. Different environments (dev, staging, prod) have their own secrets, and the application should only access secrets for its environment. How should access be configured?
 
-A. Use a single secret with environment-specific JSON keys
+A. Use a single secret with environment-specific JSON keys and let the application read only the keys for its own environment
 B. Store all secrets in environment variables
 C. Use separate service accounts per environment with IAM permissions scoped to specific secret resource paths
 D. Grant access to all secrets and trust the application to access only appropriate ones
@@ -182,10 +182,10 @@ D. Grant access to all secrets and trust the application to access only appropri
 ### Question 10
 **Scenario:** A company needs to provision Google Cloud access for employees during onboarding and revoke access immediately upon termination. They use Okta as their IdP. What approach ensures timely provisioning and deprovisioning?
 
-A. Create Google accounts separate from Okta
-B. Weekly batch synchronization
-C. Configure Cloud Identity or Workspace with Okta SCIM provisioning for automated lifecycle management
-D. Manual account creation and deletion
+A. Create separate Google accounts for each employee and have HR email the helpdesk to disable them when staff leave
+B. Run a weekly batch synchronization job that adds new hires and removes departed employees from the directory
+C. Okta SCIM provisioning into Cloud Identity for automated lifecycle management
+D. Create and delete each account manually in the Google Admin console whenever HR files a ticket
 
 <details>
 <summary>Answer</summary>
@@ -205,9 +205,9 @@ D. Manual account creation and deletion
 **Scenario:** A security team needs to detect suspicious activities across all Google Cloud projects in their organization, including unusual API access patterns, data exfiltration attempts, and potential compromised credentials. What service provides this capability?
 
 A. Security Command Center Premium with Event Threat Detection
-B. Cloud Logging with custom queries
+B. Cloud Logging with custom log-based metrics and saved queries written for each project separately by the team
 C. Cloud Monitoring alerts
-D. Manual log review
+D. Review logs by hand each morning, going through the projects one at a time
 
 <details>
 <summary>Answer</summary>
@@ -222,10 +222,10 @@ D. Manual log review
 ### Question 12
 **Scenario:** During a security incident, the team needs to investigate what a compromised service account did over the past week. They need to see all API calls made, resources accessed, and any errors. Where should they look?
 
-A. VPC Flow Logs
-B. Cloud Audit Logs (Admin Activity and Data Access logs) filtered by the service account principal
-C. Cloud Monitoring metrics
-D. Application logs
+A. VPC Flow Logs capturing the network connections between the VM instances that the service account was attached to
+B. Cloud Audit Logs (Admin Activity and Data Access) filtered by the service account
+C. Cloud Monitoring metrics and dashboards covering the instances the service account was attached to
+D. Application logs written by each service the account called, searched for errors and access events
 
 <details>
 <summary>Answer</summary>
@@ -241,9 +241,9 @@ D. Application logs
 **Scenario:** A company needs to ensure that their Google Cloud resources comply with CIS Benchmarks. They want continuous monitoring with automatic notification of compliance violations. What service provides this?
 
 A. Security Command Center with Security Health Analytics comparing against CIS Benchmarks
-B. Penetration testing
+B. Penetration testing performed by an external firm once a year against the production projects only
 C. Manual compliance audits
-D. Cloud Monitoring dashboards
+D. Cloud Monitoring dashboards showing CPU, network and storage trends across the projects each week
 
 <details>
 <summary>Answer</summary>
@@ -258,10 +258,10 @@ D. Cloud Monitoring dashboards
 ### Question 14
 **Scenario:** A security analyst needs to investigate the attack path an adversary could take from an internet-exposed VM to sensitive data in BigQuery. What Security Command Center feature helps visualize this?
 
-A. Compliance reporting
+A. Compliance reporting that maps findings to CIS and PCI-DSS controls across the whole organization
 B. Asset inventory
 C. Attack Path Simulation showing possible paths from exposed assets to high-value resources
-D. Vulnerability scanning
+D. Vulnerability scanning that lists known CVEs on the VMs and containers across the whole organization
 
 <details>
 <summary>Answer</summary>
@@ -276,10 +276,10 @@ D. Vulnerability scanning
 ### Question 15
 **Scenario:** A company needs to ensure all access to production data in BigQuery is logged, including which datasets and tables were queried, by whom, and what data was returned. How should this be configured?
 
-A. Query BigQuery job history only
-B. Application-level logging
-C. Enable Admin Activity audit logs only
-D. Enable Data Access audit logs for BigQuery with ADMIN_READ and DATA_READ log types
+A. Query the BigQuery job history only, and export it to a table once a day for the auditors
+B. Add application-level logging in every client application that sends queries to BigQuery
+C. Enable Admin Activity audit logs only, since they are on by default and are assumed to record all resource access
+D. Enable BigQuery Data Access audit logs, including ADMIN_READ and DATA_READ
 
 <details>
 <summary>Answer</summary>
@@ -312,10 +312,10 @@ D. Manual finding review
 ### Question 17
 **Scenario:** A company needs to detect if any of their GKE containers are running with known vulnerabilities. They want continuous scanning with integration into their security workflow. What should be enabled?
 
-A. Annual penetration tests
-B. Manual container inspection
+A. Annual penetration tests run by a third party against the cluster endpoints and the running workloads
+B. Inspect the containers by hand, one image at a time, whenever the team ships a release
 C. Network-level scanning only
-D. GKE Security Posture with container vulnerability scanning integrated with SCC
+D. GKE Security Posture vulnerability scanning, with findings sent to SCC
 
 <details>
 <summary>Answer</summary>
@@ -330,10 +330,10 @@ D. GKE Security Posture with container vulnerability scanning integrated with SC
 ### Question 18
 **Scenario:** During incident response, the team needs to quickly identify all resources that could have been affected by a compromised service account. The account had Viewer role at the project level. What tool helps identify the blast radius?
 
-A. Assume all resources are affected
-B. List all resources manually
-C. Use Policy Analyzer to show all resources the service account can access based on effective permissions
-D. Check only the resources mentioned in logs
+A. Assume every resource in the whole organization was affected, and rebuild all of them from scratch
+B. List every resource in the project by hand in the console and check each one for signs of misuse
+C. Policy Analyzer, to list what the account can reach through its effective permissions
+D. Check only the resources mentioned in the audit log entries for that service account and ignore the rest
 
 <details>
 <summary>Answer</summary>
@@ -348,7 +348,7 @@ D. Check only the resources mentioned in logs
 ### Question 19
 **Scenario:** A security team needs to review who has access to sensitive GCS buckets and whether any permissions are overly broad. They want recommendations for removing unused permissions. What tool provides this analysis?
 
-A. Remove all permissions and add back as needed
+A. Remove all permissions from the buckets and add them back one request at a time as users complain
 B. Grant minimum permissions and never review
 C. IAM Recommender analyzing actual usage patterns to suggest removing unused permissions
 D. Manual permission review
@@ -370,7 +370,7 @@ D. Manual permission review
 ### Question 20
 **Scenario:** A company wants to ensure that their Cloud Storage and BigQuery data cannot be exfiltrated to unauthorized projects, even by users with data access permissions. Data should only be accessible from within approved projects. What security control addresses this?
 
-A. IAM permissions only
+A. IAM permissions only, granting storage.objectViewer and bigquery.dataViewer to a vetted group of principals
 B. Encryption
 C. Firewall rules
 D. VPC Service Controls with a perimeter around sensitive projects blocking data egress
@@ -407,9 +407,9 @@ D. Configure an egress rule allowing access to specific BigQuery resources for t
 **Scenario:** A web application running on GKE needs to be protected from common web attacks (SQL injection, XSS, OWASP Top 10). The application uses external HTTPS load balancing. What security control should be implemented?
 
 A. Cloud Armor with WAF rules (OWASP ModSecurity Core Rule Set) attached to the load balancer
-B. VPC firewall rules for HTTP filtering
+B. VPC firewall rules for HTTP filtering that block known SQL injection and XSS patterns in request payloads
 C. Network-level firewalls only
-D. Application-level input validation only
+D. Application-level input validation only, written by each development team inside its own services
 
 <details>
 <summary>Answer</summary>
@@ -442,10 +442,10 @@ D. Review firewall logs for violations
 ### Question 24
 **Scenario:** A company needs to inspect all traffic between VPCs in their hub-and-spoke network architecture for threat detection and compliance logging. Traffic includes both north-south (internet) and east-west (VPC to VPC). What architecture supports this?
 
-A. Firewall rules between VPCs
-B. VPC peering only
-C. Network-level ACLs
-D. Cloud NGFW (Cloud Firewall Plus) with intrusion detection and traffic inspection at network choke points
+A. VPC firewall rules between the hub and spokes that allow only required ports and log every accepted connection
+B. VPC peering only, with routes exchanged between the hub and each spoke network in the design
+C. Network-level ACLs applied at the subnet boundaries of both the hub and the spoke VPC networks
+D. Cloud NGFW with intrusion detection and traffic inspection at the network choke points
 
 <details>
 <summary>Answer</summary>
@@ -461,9 +461,9 @@ D. Cloud NGFW (Cloud Firewall Plus) with intrusion detection and traffic inspect
 **Scenario:** Developers need to access GKE cluster APIs for kubectl commands. The cluster should not have a public endpoint. Developers work remotely without VPN access to the VPC. How should secure access be provided?
 
 A. Use Connect Gateway to access private GKE clusters through Cloud Identity authentication
-B. Enable public cluster endpoint
+B. Enable the public cluster endpoint and limit it to authorized networks used by the developers
 C. VPN for all developers
-D. SSH tunneling through a bastion
+D. SSH tunneling through a bastion host in the VPC, with each developer's key added to the instance metadata
 
 <details>
 <summary>Answer</summary>
@@ -480,7 +480,7 @@ D. SSH tunneling through a bastion
 
 A. Enable Private Google Access with restricted.googleapis.com VIP for all Google API traffic
 B. Use VPN to Google Cloud
-C. Accept that some traffic goes over internet
+C. Accept that some traffic goes over the internet because TLS encrypts it, and document the exception
 D. Proxy all API calls through a VM
 
 <details>
@@ -496,7 +496,7 @@ D. Proxy all API calls through a VM
 ### Question 27
 **Scenario:** A company hosts customer-facing APIs on Cloud Run. They need to rate limit requests per customer, block requests from known bad actors, and protect against DDoS. What security controls should be implemented?
 
-A. Application-level rate limiting only
+A. Application-level rate limiting only, implemented inside the Cloud Run service with an in-memory counter in each container instance
 B. Cloud Armor with rate limiting policies, IP deny lists, and DDoS protection in front of Cloud Run via load balancer
 C. No protection - rely on Cloud Run scaling
 D. Network firewall rules
@@ -520,7 +520,7 @@ D. Network firewall rules
 
 A. Use any Google Cloud services
 B. Sign Google Cloud BAA, use only HIPAA-eligible services, configure according to compliance guides, and enable Assured Workloads
-C. Assume Google Cloud is automatically HIPAA compliant
+C. Assume Google Cloud is automatically HIPAA compliant because the platform holds ISO 27001 and SOC 2 certifications
 D. HIPAA only applies to on-premises
 
 <details>
@@ -536,10 +536,10 @@ D. HIPAA only applies to on-premises
 ### Question 29
 **Scenario:** A company needs to restrict their Google Cloud resources to specific geographic regions for data sovereignty requirements. They cannot have any data processed or stored outside the EU. How should this be enforced?
 
-A. Document regional requirements
-B. Organization Policy constraints for resource locations combined with Assured Workloads for EU region compliance
-C. Manually check resource locations
-D. Trust teams to deploy in correct regions
+A. Document the regional requirements in the security policy and share it with every project team
+B. Organization Policy resource location constraints plus Assured Workloads for the EU
+C. Manually check resource locations in the console each month and delete any resource found outside the approved regions
+D. Trust each team to deploy only in the correct EU regions and remind them during onboarding
 
 <details>
 <summary>Answer</summary>
@@ -554,9 +554,9 @@ D. Trust teams to deploy in correct regions
 ### Question 30
 **Scenario:** An organization needs to prove to auditors that their Google Cloud environment has maintained continuous compliance with SOC 2 controls over the past year. What evidence should they provide?
 
-A. Point-in-time assessment only
-B. Google's SOC 2 report combined with organization's SCC compliance reports and audit logs showing continuous compliant state
-C. Current configuration screenshots
+A. A point-in-time assessment only, run by an external auditor in the weeks before the annual audit and filed as evidence for the full year
+B. Google's SOC 2 report plus SCC compliance reports and audit logs over time
+C. Screenshots of the current configuration taken in the console just before the auditors arrive
 D. Verbal assurance
 
 <details>
@@ -590,7 +590,7 @@ D. Application-level deletion
 ### Question 32
 **Scenario:** An organization needs to ensure that sensitive data classifications (PII, financial, health) are consistently applied across their data assets and that security controls match the classification. What approach should they use?
 
-A. Spreadsheet tracking data classifications
+A. A shared spreadsheet that tracks the classification of each dataset, updated by hand and reviewed by the data owners every quarter
 B. Same security for all data
 C. Data Catalog with policy tags for classification, BigQuery column-level security enforcing access based on tags
 D. Informal data classification
@@ -630,7 +630,7 @@ D. Disable all delete permissions broadly
 ### Question 34
 **Scenario:** A company needs to encrypt data at rest with keys they control, rotate keys automatically, and ensure Google cannot access the plaintext encryption keys. The data is in Cloud Storage and BigQuery. What encryption approach meets these requirements?
 
-A. Default Google-managed encryption
+A. Default Google-managed encryption, which rotates keys automatically and gives the customer full control over the key lifecycle
 B. Client-side encryption only
 C. Cloud HSM only
 D. Customer-managed encryption keys (CMEK) in Cloud KMS with automatic rotation enabled
@@ -648,8 +648,8 @@ D. Customer-managed encryption keys (CMEK) in Cloud KMS with automatic rotation 
 ### Question 35
 **Scenario:** A financial services company requires that their encryption keys are protected by FIPS 140-2 Level 3 certified hardware and that keys never exist in plaintext outside the HSM. Which Cloud KMS option meets this requirement?
 
-A. Cloud KMS software keys
-B. Cloud EKM (External Key Manager)
+A. Cloud KMS software keys protected by Google's FIPS 140-2 validated cryptographic modules at Level 1
+B. Cloud EKM (External Key Manager) with keys held in a supported partner key manager
 C. Default Google encryption
 D. Cloud HSM (Hardware Security Module) keys in Cloud KMS
 
@@ -666,7 +666,7 @@ D. Cloud HSM (Hardware Security Module) keys in Cloud KMS
 ### Question 36
 **Scenario:** A company has strict data sovereignty requirements mandating that encryption keys remain on-premises in their own data center. They still want to use Google Cloud services for compute and storage. What Cloud KMS option supports this?
 
-A. Cloud KMS regional keys
+A. Cloud KMS regional keys created in the same region as the data, so the key material stays in-country
 B. Import keys into Cloud KMS
 C. Cloud HSM in Google's data centers
 D. Cloud EKM (External Key Manager) connecting to their on-premises key management system
@@ -703,9 +703,9 @@ D. Share original data with NDAs
 **Scenario:** A company wants to ensure that sensitive data (credit card numbers, SSNs) is not accidentally stored in Cloud Storage or BigQuery. They want automatic detection and alerting when such data is discovered. What service provides this capability?
 
 A. Keyword searching
-B. Trust developers not to store sensitive data
+B. Trust developers not to store sensitive data, and add a policy reminder to the engineering onboarding checklist
 C. Cloud DLP inspection jobs with automated scanning of Cloud Storage and BigQuery, alerting via Pub/Sub/SCC
-D. Manual data inspection
+D. Manual data inspection, with analysts opening a sample of the objects and tables from every project each quarter
 
 <details>
 <summary>Answer</summary>
@@ -720,8 +720,8 @@ D. Manual data inspection
 ### Question 39
 **Scenario:** A database application needs to encrypt specific columns containing sensitive data (SSN, credit card) so that database administrators cannot see the plaintext values. The application should transparently encrypt on write and decrypt on read. What approach provides this?
 
-A. Network encryption only
-B. Database-level encryption (TDE)
+A. Network encryption only, using TLS between the application servers and the database, with certificates rotated
+B. Database-level encryption (TDE), which encrypts the files on disk but lets any authorized database user read the columns
 C. Application-layer encryption using Cloud KMS tink library, storing ciphertext in database columns
 D. File-system encryption
 

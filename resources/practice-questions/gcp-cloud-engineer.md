@@ -18,10 +18,10 @@
 ### Question 1
 **Scenario:** A company is starting to use Google Cloud and needs to organize resources for three departments: Marketing, Engineering, and Sales. Each department should have separate billing and resource management. What is the recommended approach?
 
-A. Create one project with three folders
+A. Create one project with three folders inside it, one per department, and use labels on the resources for the billing split
 B. Create one organization with three folders, each containing projects
-C. Create three billing accounts with shared projects
-D. Create three separate projects
+C. Create three billing accounts, each linked to the same shared projects, and let each department manage its own account
+D. Create three separate projects with no organization over them, one per department, and link each to its own billing account
 
 <details>
 <summary>Answer</summary>
@@ -38,9 +38,9 @@ D. Create three separate projects
 ### Question 2
 **Scenario:** A developer needs to use the gcloud CLI to manage resources in a specific project. They have access to multiple projects. How should they configure gcloud to work with the correct project?
 
-A. Edit the ~/.gcloud/config file manually
-B. Set the GOOGLE_PROJECT environment variable
-C. Add --project flag to every command
+A. Hand-edit the gcloud config file
+B. Export a GOOGLE_PROJECT variable
+C. Add the --project flag only to the first command in each session
 D. Run `gcloud config set project PROJECT_ID`
 
 <details>
@@ -48,7 +48,7 @@ D. Run `gcloud config set project PROJECT_ID`
 
 **Correct: D**
 
-**Why:** `gcloud config set project PROJECT_ID` sets the default project for all subsequent gcloud commands. While --project flag works, it's not efficient for repeated use. The environment variable is GOOGLE_CLOUD_PROJECT, not GOOGLE_PROJECT. Manual config editing is not recommended.
+**Why:** `gcloud config set project PROJECT_ID` sets the default project for all subsequent gcloud commands. The --project flag applies to one command only, so it does not persist for the session. GOOGLE_PROJECT is not a gcloud setting (the real variable is CLOUDSDK_CORE_PROJECT). Manual config editing is not recommended.
 
 **Key Concept:** [gcloud CLI Configuration](https://cloud.google.com/sdk/gcloud/reference/config/set)
 </details>
@@ -58,9 +58,9 @@ D. Run `gcloud config set project PROJECT_ID`
 ### Question 3
 **Scenario:** A company needs to grant a contractor temporary access to view Cloud Storage buckets in a specific project for an audit. The access should expire in 30 days. What should be configured?
 
-A. Grant storage.admin role temporarily
-B. Add the contractor to a Google Group with storage.objectViewer role
-C. Create a service account and share credentials
+A. Grant the storage.admin role temporarily and ask the contractor to stop using it, with a calendar reminder to remove it after 30 days
+B. Add the contractor to a Google Group that holds the storage.objectViewer role, and remove the person from the group when the audit ends
+C. Create a service account with read access and share its key file with the contractor, rotating the key after 30 days
 D. Grant storage.objectViewer role with an IAM condition for time-based access
 
 <details>
@@ -99,7 +99,7 @@ D. Configure Cloud NAT for specific regions
 **Scenario:** A team needs to create multiple identical environments (dev, staging, prod) with the same infrastructure configuration. What tool should they use?
 
 A. gcloud CLI scripts only
-B. Deployment Manager or Terraform
+B. Infrastructure Manager or Terraform
 C. Cloud Marketplace
 D. Cloud Console
 
@@ -108,7 +108,7 @@ D. Cloud Console
 
 **Correct: B**
 
-**Why:** Deployment Manager (GCP-native) or Terraform (multi-cloud) provides infrastructure as code for creating repeatable, version-controlled environments. Console is manual. CLI scripts lack state management and idempotency. Marketplace is for pre-built solutions.
+**Why:** Infrastructure Manager (GCP-native, managed Terraform) or Terraform itself provides infrastructure as code for creating repeatable, version-controlled environments. Console is manual. CLI scripts lack state management and idempotency. Marketplace is for pre-built solutions.
 
 **Key Concept:** [Cloud Deployment Manager](https://cloud.google.com/deployment-manager/docs)
 </details>
@@ -118,9 +118,9 @@ D. Cloud Console
 ### Question 6
 **Scenario:** A company wants to monitor and control cloud spending with alerts when costs exceed budgets. What should they configure?
 
-A. Organization policies
-B. Quotas and limits
-C. Cloud Monitoring alerts
+A. Organization policies that restrict which services and regions can be used, to keep spending within what finance has approved
+B. Quotas and limits on each API, so that resource usage stops when the project reaches the maximum that is allowed
+C. Cloud Monitoring alerts on the CPU and instance count metrics, which indicate cost growth ahead of the monthly invoice
 D. Cloud Billing budgets and alerts
 
 <details>
@@ -128,7 +128,7 @@ D. Cloud Billing budgets and alerts
 
 **Correct: D**
 
-**Why:** Cloud Billing budgets allow setting spending thresholds with alerts when actual or forecasted spending approaches or exceeds the budget. Cloud Monitoring tracks performance, not costs. Quotas limit resource creation. Organization policies enforce compliance rules.
+**Why:** Cloud Billing budgets allow setting spending thresholds with alerts when actual or forecasted spending approaches or exceeds the budget. Cloud Monitoring tracks performance, not costs. Quotas limit resource creation. Organization policies restrict what can be created, not how much is spent.
 
 **Key Concept:** [Cloud Billing Budgets](https://cloud.google.com/billing/docs/how-to/budgets)
 </details>
@@ -138,10 +138,10 @@ D. Cloud Billing budgets and alerts
 ### Question 7
 **Scenario:** An administrator needs to view all IAM policy changes across the organization for compliance auditing. Where should they look?
 
-A. Cloud Monitoring
-B. Security Command Center
+A. Cloud Monitoring dashboards, which chart performance metrics and can show a count of policy updates over time
+B. Security Command Center, which lists vulnerabilities and misconfigurations found in the organization's resources
 C. Cloud Audit Logs (Admin Activity logs)
-D. Cloud Billing reports
+D. Cloud Billing reports, which break down spending by project and service and show who changed the billing settings
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Cloud Billing reports
 ### Question 8
 **Scenario:** A web application needs to automatically scale based on CPU usage. The application runs on Compute Engine VMs. What should be configured?
 
-A. Cloud Run with automatic scaling
-B. Cloud Functions with concurrent execution
+A. Cloud Run with automatic scaling, which adds container instances as request concurrency rises for stateless services
+B. Cloud Functions with concurrent execution, which runs more copies of an event-driven function as events arrive
 C. Managed Instance Group with autoscaling policy
-D. Kubernetes HPA
+D. Kubernetes HPA, which adds pods to a Deployment when CPU rises but needs a GKE cluster to run on
 
 <details>
 <summary>Answer</summary>
@@ -180,10 +180,10 @@ D. Kubernetes HPA
 ### Question 9
 **Scenario:** A company needs to store 100 TB of data that will be accessed about once per year for compliance purposes. Cost is the primary concern. What storage option should they choose?
 
-A. Cloud Storage Coldline
-B. Cloud Storage Nearline
+A. Cloud Storage Coldline, with a 90-day minimum
+B. Cloud Storage Nearline, with a 30-day minimum
 C. Cloud Storage Archive
-D. Cloud Storage Standard
+D. Standard storage
 
 <details>
 <summary>Answer</summary>
@@ -200,9 +200,9 @@ D. Cloud Storage Standard
 ### Question 10
 **Scenario:** An application needs a fully managed relational database with automatic replication across multiple regions for high availability and disaster recovery. What should be used?
 
-A. Cloud Spanner
+A. Cloud Spanner with a multi-region configuration
 B. Firestore
-C. Cloud SQL with read replicas
+C. Cloud SQL with cross-region read replicas and manual promotion
 D. BigQuery
 
 <details>
@@ -221,9 +221,9 @@ D. BigQuery
 **Scenario:** A data analytics team needs to run SQL queries on petabytes of data without managing infrastructure. The queries are ad-hoc and run a few times per day. What service should they use?
 
 A. Dataproc
-B. BigQuery
-C. Cloud Spanner
-D. Cloud SQL
+B. BigQuery with on-demand pricing
+C. Cloud Spanner with a multi-region configuration
+D. Cloud SQL with a read replica for reports
 
 <details>
 <summary>Answer</summary>
@@ -261,9 +261,9 @@ D. Cloud Router
 **Scenario:** An application needs to send 10 million push notifications per day with minimal latency. The notifications must be processed exactly once. What GCP service should be used?
 
 A. Cloud Run
-B. Pub/Sub
+B. Pub/Sub with exactly-once delivery
 C. Cloud Tasks
-D. Cloud Functions
+D. Cloud Functions with a trigger per message
 
 <details>
 <summary>Answer</summary>
@@ -282,7 +282,7 @@ D. Cloud Functions
 
 A. GKE Standard
 B. App Engine Flexible
-C. Cloud Run
+C. Cloud Run (fully managed), which scales to zero when idle
 D. Compute Engine
 
 <details>
@@ -302,9 +302,9 @@ D. Compute Engine
 ### Question 15
 **Scenario:** A developer needs to deploy a Compute Engine VM from a custom image. The VM should automatically restart if it fails. How should this be configured?
 
-A. Create a single VM with automatic restart enabled
-B. Create an instance template and unmanaged instance group
-C. Create an instance template and managed instance group
+A. Create a single Spot VM with the stop termination action
+B. Create an instance template and an unmanaged instance group
+C. Create an instance template and a managed instance group with autohealing
 D. Use Kubernetes with node auto-repair
 
 <details>
@@ -312,7 +312,7 @@ D. Use Kubernetes with node auto-repair
 
 **Correct: C**
 
-**Why:** A managed instance group (MIG) with an instance template automatically recreates failed VMs to maintain the desired count. While single VMs can restart, MIGs provide better reliability. Unmanaged instance groups don't auto-heal. Kubernetes is for containers.
+**Why:** A managed instance group (MIG) with an instance template automatically recreates failed VMs to maintain the desired count. A single Spot VM (A) can be preempted and stopped, and it is not recreated if the host fails. Unmanaged instance groups don't auto-heal. Kubernetes is for containers.
 
 **Key Concept:** [Managed Instance Groups](https://cloud.google.com/compute/docs/instance-groups/creating-groups-of-managed-instances)
 </details>
@@ -322,10 +322,10 @@ D. Use Kubernetes with node auto-repair
 ### Question 16
 **Scenario:** A developer needs to deploy a containerized application to GKE. The application needs 2 replicas with a load balancer. What Kubernetes resources should be created?
 
-A. DaemonSet and NodePort Service
+A. A DaemonSet and a NodePort Service, which run one pod on each node and expose each node on a high port number
 B. Deployment and Service (type: LoadBalancer)
-C. StatefulSet and Ingress
-D. Pod and Service (type: ClusterIP)
+C. A StatefulSet and an Ingress, which give each pod a stable name and storage and route HTTP traffic by path
+D. A single Pod and a Service of type ClusterIP, which gives the pod a stable internal address inside the cluster
 
 <details>
 <summary>Answer</summary>
@@ -344,7 +344,7 @@ D. Pod and Service (type: ClusterIP)
 
 A. Cloud Storage bucket
 B. Runtime Configurator (Deployment Manager)
-C. Environment variables
+C. Environment variables in the service definition
 D. Secret Manager
 
 <details>
@@ -383,9 +383,9 @@ D. gsutil cp command
 **Scenario:** A developer needs to create a Cloud SQL PostgreSQL instance with high availability within a region. What configuration is required?
 
 A. Enable regional availability (HA) configuration
-B. Create two instances with manual failover
-C. Use Cloud SQL Proxy with multiple endpoints
-D. Create read replicas in different zones
+B. Create two separate instances in different zones and fail over manually by promoting the second one when the first fails
+C. Use Cloud SQL Proxy with multiple endpoints, so that clients connect to whichever instance is healthy at that time
+D. Create read replicas in different zones of the region, and promote one of the replicas when the primary becomes unavailable
 
 <details>
 <summary>Answer</summary>
@@ -402,7 +402,7 @@ D. Create read replicas in different zones
 ### Question 20
 **Scenario:** A developer needs to deploy a Cloud Function that triggers when a file is uploaded to a Cloud Storage bucket. What trigger type should be configured?
 
-A. Cloud Storage trigger
+A. Cloud Storage trigger on object finalize
 B. Cloud Scheduler trigger
 C. HTTP trigger
 D. Pub/Sub trigger
@@ -422,10 +422,10 @@ D. Pub/Sub trigger
 ### Question 21
 **Scenario:** A web application on GKE needs to serve HTTPS traffic with automatic SSL certificate management. What should be configured?
 
-A. GKE Ingress with managed certificates
+A. GKE Ingress with Google-managed certificates
 B. Cloud Armor with SSL policies
 C. Cloud CDN with custom certificates
-D. Network Load Balancer with manual certificates
+D. Network Load Balancer with manually uploaded certificates
 
 <details>
 <summary>Answer</summary>
@@ -443,7 +443,7 @@ D. Network Load Balancer with manual certificates
 **Scenario:** A developer needs to deploy updates to a Cloud Run service with the ability to gradually shift traffic to the new revision and rollback if issues occur. What should they use?
 
 A. Canary deployment with GKE
-B. Blue/green deployment with two services
+B. Blue/green deployment with two separate services
 C. Traffic splitting between revisions
 D. Instance group rolling update
 
@@ -464,8 +464,8 @@ D. Instance group rolling update
 
 A. Cloud Composer
 B. Dataflow
-C. Compute Engine cluster
-D. Dataproc
+C. A Compute Engine cluster with Spark installed by hand
+D. Dataproc with managed Spark clusters
 
 <details>
 <summary>Answer</summary>
@@ -483,16 +483,16 @@ D. Dataproc
 **Scenario:** A developer needs to expose a set of microservices through a single API endpoint with authentication, rate limiting, and monitoring. What service should be used?
 
 A. Traffic Director
-B. Apigee API Platform
-C. Cloud Load Balancing
-D. Cloud Endpoints
+B. Cloud CDN with signed URLs, which caches responses and limits who can fetch them
+C. Cloud Load Balancing, which spreads traffic
+D. Cloud Endpoints with an OpenAPI spec
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Cloud Endpoints provides API management including authentication, rate limiting, monitoring, and a single entry point for microservices. Apigee is enterprise-grade but more complex. Load Balancing distributes traffic. Traffic Director is a service mesh control plane.
+**Why:** Cloud Endpoints provides API management including authentication, quotas, monitoring, and a single entry point for microservices. Cloud CDN only caches content. Load Balancing distributes traffic. Traffic Director is a service mesh control plane.
 
 **Key Concept:** [Cloud Endpoints](https://cloud.google.com/endpoints/docs)
 </details>
@@ -504,10 +504,10 @@ D. Cloud Endpoints
 ### Question 25
 **Scenario:** A Cloud SQL instance is experiencing slow query performance. What tool should be used to identify the problematic queries?
 
-A. Cloud Monitoring dashboards
-B. Query Insights
+A. Cloud Monitoring dashboards of instance metrics
+B. Query Insights for Cloud SQL
 C. Cloud Trace
-D. Cloud Profiler
+D. Cloud Profiler, which samples application code
 
 <details>
 <summary>Answer</summary>
@@ -524,10 +524,10 @@ D. Cloud Profiler
 ### Question 26
 **Scenario:** An application running on GKE needs to be notified when CPU usage exceeds 80% so the team can investigate. What should be configured?
 
-A. Cloud Monitoring alerting policy
-B. Kubernetes liveness probe
-C. Horizontal Pod Autoscaler
-D. GKE cluster autoscaler
+A. Cloud Monitoring alerting policy on CPU utilization above 80%, with an email notification channel
+B. A Kubernetes liveness probe on the container, which restarts it when a health check fails
+C. A Horizontal Pod Autoscaler with an 80% CPU target, which adds pods past that level
+D. The GKE cluster autoscaler, which adds nodes when pods cannot be scheduled
 
 <details>
 <summary>Answer</summary>
@@ -544,17 +544,17 @@ D. GKE cluster autoscaler
 ### Question 27
 **Scenario:** A Cloud Function is failing intermittently. The developer needs to view the error messages and stack traces. Where should they look?
 
-A. Cloud Monitoring metrics
+A. Cloud Monitoring metrics, charted on a custom dashboard
 B. Cloud Trace
-C. Cloud Debugger
-D. Cloud Logging
+C. Cloud Profiler, which samples CPU and memory use in the code
+D. Cloud Logging, queried by the function name
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Cloud Logging captures function logs including errors and stack traces. Cloud Monitoring shows metrics. Cloud Trace shows request latency. Cloud Debugger inspects running code state.
+**Why:** Cloud Logging captures function logs including errors and stack traces. Cloud Monitoring shows metrics. Cloud Trace shows request latency. Cloud Profiler samples code resource use.
 
 **Key Concept:** [Cloud Functions Logging](https://cloud.google.com/functions/docs/monitoring/logging)
 </details>
@@ -564,10 +564,10 @@ D. Cloud Logging
 ### Question 28
 **Scenario:** A company needs to create automated backups of a Cloud SQL database and retain them for 30 days. What should be configured?
 
-A. Scheduled Cloud Functions to export data
+A. Scheduled Cloud Functions that export the data to a bucket every night and delete the files after 30 days
 B. Cloud SQL automated backups with retention settings
-C. Compute Engine snapshots
-D. Cloud Storage lifecycle policies
+C. Compute Engine snapshots of the instance's boot disk on a schedule, kept for 30 days by a snapshot policy
+D. Cloud Storage lifecycle policies on a bucket that holds exported dump files, deleting them after 30 days
 
 <details>
 <summary>Answer</summary>
@@ -584,10 +584,10 @@ D. Cloud Storage lifecycle policies
 ### Question 29
 **Scenario:** A managed instance group needs to be updated to a new VM image with minimal disruption. The update should replace instances gradually. What update type should be used?
 
-A. Recreate update
-B. Proactive rolling update
-C. Blue/green deployment
-D. Opportunistic update
+A. A recreate update, which stops all instances first
+B. Proactive rolling update, replacing a few instances at a time
+C. A blue/green deployment with a second full group
+D. An opportunistic update, which applies the new template only when instances are recreated for other reasons
 
 <details>
 <summary>Answer</summary>
@@ -604,7 +604,7 @@ D. Opportunistic update
 ### Question 30
 **Scenario:** A GKE workload needs to read data from Cloud Storage. What is the recommended way to grant access without storing credentials in the container?
 
-A. Use Workload Identity
+A. Use Workload Identity, binding the Kubernetes service account to a Google service account
 B. Grant permissions to the default compute service account
 C. Use Cloud SQL Auth proxy
 D. Store service account key in a Kubernetes secret
@@ -627,7 +627,7 @@ D. Store service account key in a Kubernetes secret
 A. Labels on resources
 B. Multiple service accounts
 C. Separate billing accounts
-D. Resource quotas
+D. Quotas
 
 <details>
 <summary>Answer</summary>
@@ -644,9 +644,9 @@ D. Resource quotas
 ### Question 32
 **Scenario:** A Compute Engine VM is running slowly. The administrator needs to analyze CPU, memory, and disk performance. What tool should they use?
 
-A. Serial console output
-B. VM instance details page
-C. Cloud Shell
+A. Serial console output, which shows boot messages and kernel logs and can reveal a startup problem on the VM
+B. The VM instance details page, which shows machine type, disks, network settings, and the status of the instance
+C. Cloud Shell, which opens a terminal where the administrator can run top over SSH and read the load by hand
 D. Cloud Monitoring metrics explorer
 
 <details>
@@ -666,10 +666,10 @@ D. Cloud Monitoring metrics explorer
 ### Question 33
 **Scenario:** A developer needs to grant a service account permission to read objects from a specific Cloud Storage bucket but not other buckets. What is the recommended approach?
 
-A. Grant storage.admin role at project level
+A. Grant the storage.admin role at project level, so it covers every bucket
 B. Add the service account to allUsers
 C. Grant storage.objectViewer role at bucket level
-D. Grant storage.objectViewer role at project level
+D. Grant storage.objectViewer role at project level, covering every bucket
 
 <details>
 <summary>Answer</summary>
@@ -686,7 +686,7 @@ D. Grant storage.objectViewer role at project level
 ### Question 34
 **Scenario:** A company needs to ensure all service account keys are rotated every 90 days. How can they enforce this?
 
-A. Organization policy
+A. IAM Recommender, which suggests removing excess role grants from principals but does not track key age or rotate keys
 B. IAM Conditions
 C. VPC Service Controls
 D. Cloud Asset Inventory with monitoring
@@ -706,10 +706,10 @@ D. Cloud Asset Inventory with monitoring
 ### Question 35
 **Scenario:** A Cloud Run service needs to access a Cloud SQL database. The service should authenticate securely without managing passwords. What should be configured?
 
-A. Store password in Secret Manager
-B. Whitelist Cloud Run IP addresses
-C. Use Cloud SQL Auth Proxy with IAM database authentication
-D. Use VPC connector with public IP
+A. Store the password in Secret Manager and read it at startup
+B. Whitelist the Cloud Run IP addresses in Cloud SQL authorized networks
+C. Use Cloud SQL Auth Proxy with IAM database authentication for the service account
+D. Use a VPC connector, a public IP, and a database user with a file password
 
 <details>
 <summary>Answer</summary>
@@ -727,9 +727,9 @@ D. Use VPC connector with public IP
 **Scenario:** A company wants to prevent data exfiltration from their GCP project to external destinations. What should they implement?
 
 A. VPC Service Controls
-B. Firewall rules
+B. Firewall rules on the VPC network
 C. Cloud NAT
-D. Cloud Armor policies
+D. Cloud Armor security policies on the load balancer
 
 <details>
 <summary>Answer</summary>
@@ -747,7 +747,7 @@ D. Cloud Armor policies
 **Scenario:** An application needs to encrypt data using a customer-managed encryption key (CMEK). Where should the key be created and managed?
 
 A. Secret Manager
-B. Cloud Storage
+B. Cloud Storage buckets
 C. IAM
 D. Cloud KMS
 
@@ -766,10 +766,10 @@ D. Cloud KMS
 ### Question 38
 **Scenario:** A developer accidentally committed a service account key to a public GitHub repository. What is the first action they should take?
 
-A. Delete the GitHub repository
-B. Revoke all user access to the project
+A. Delete the GitHub repository, so that the key is no longer public, and then review the logs for any use of it
+B. Revoke all user access to the project, so that nobody can sign in while the team works out what happened
 C. Disable or delete the service account key
-D. Create a new service account
+D. Create a new service account with the same roles, and update the application to use it from now on
 
 <details>
 <summary>Answer</summary>
@@ -786,10 +786,10 @@ D. Create a new service account
 ### Question 39
 **Scenario:** A GKE cluster needs to restrict which container images can be deployed. Only images from the company's Artifact Registry should be allowed. What should be configured?
 
-A. Pod Security Policy
-B. Kubernetes RBAC
-C. Network Policy
-D. Binary Authorization
+A. Pod Security Policy, which sets pod security contexts
+B. Kubernetes RBAC for approved users creating Deployments
+C. A Network Policy that blocks egress from the cluster to every registry apart from the company's Artifact Registry
+D. Binary Authorization with a policy that allows only approved registry images
 
 <details>
 <summary>Answer</summary>
@@ -806,10 +806,10 @@ D. Binary Authorization
 ### Question 40
 **Scenario:** A company needs to audit who accessed specific BigQuery tables containing sensitive data. What should be enabled?
 
-A. Cloud Audit Logs - Data Access logs
-B. VPC Flow Logs
-C. BigQuery INFORMATION_SCHEMA
-D. Cloud Monitoring metrics
+A. Cloud Audit Logs - Data Access logs, enabled for BigQuery to record who read each table
+B. VPC Flow Logs, which record network flows between the database hosts
+C. BigQuery INFORMATION_SCHEMA views, which show table metadata and jobs
+D. Cloud Monitoring metrics for BigQuery, charting query counts and bytes scanned
 
 <details>
 <summary>Answer</summary>

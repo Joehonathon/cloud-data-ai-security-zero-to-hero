@@ -15,7 +15,7 @@ difficulty: intermediate
 **Scenario:** An instance must access Object Storage without any credential stored on it.
 
 A. A public bucket
-B. An API key in a file
+B. An API key and private PEM file stored in the opc user's .oci directory and rotated manually by an administrator each quarter
 C. A shared password
 D. A dynamic group matching the instance, with a policy granting that dynamic group access (instance principals)
 
@@ -35,7 +35,7 @@ D. A dynamic group matching the instance, with a policy granting that dynamic gr
 A. A local peering gateway in each VCN, with route rules and non-overlapping CIDRs
 B. An internet gateway
 C. A service gateway
-D. A NAT gateway
+D. A NAT gateway in each VCN, which lets the instances reach the private addresses of the other VCN
 
 <details>
 <summary>Answer</summary>
@@ -52,8 +52,8 @@ D. A NAT gateway
 
 A. A load balancer
 B. A dynamic routing gateway with route tables and route distribution (transit routing)
-C. Separate internet gateways
-D. A mesh of local peering gateways
+C. Separate internet gateways on each VCN, with traffic between networks crossing the public internet
+D. A full mesh of local peering gateways between every pair of VCNs, each with its own static routes and no central route table
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. A mesh of local peering gateways
 ### Question 4
 **Scenario:** Security lists and network security groups both exist. Which should be preferred?
 
-A. Security lists, since they are subnet-wide
-B. Network security groups, which apply to selected VNICs and can reference each other as a source or destination
-C. Neither
-D. They are identical
+A. Security lists, because they let you target individual VNICs and can reference other lists as sources
+B. Network security groups, which apply to chosen VNICs and can reference each other
+C. Skip them, because OCI relies only on host-based firewalls inside each instance for traffic filtering
+D. Security lists, because they are the newer feature and replace network security groups entirely
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. They are identical
 ### Question 5
 **Scenario:** A workload must scale out automatically based on CPU.
 
-A. Manual instance creation
+A. Manual instance creation by an operator who watches the CPU graph in the Console and adds instances
 B. A larger shape
-C. A load balancer alone
+C. A load balancer alone, which spreads traffic across the existing instances but never adds any new ones
 D. An instance pool from an instance configuration, with an autoscaling policy on a metric
 
 <details>
@@ -122,7 +122,7 @@ D. Use Object Storage
 ### Question 7
 **Scenario:** A database must survive an availability domain failure with minimal data loss.
 
-A. A read replica
+A. A read replica in the same availability domain, which offloads queries but fails together with the primary
 B. Backups only
 C. Data Guard in synchronous (maximum availability) mode to a standby in another AD or region
 D. A larger shape
@@ -141,7 +141,7 @@ D. A larger shape
 **Scenario:** Administrative access to a private instance is needed without a public IP.
 
 A. Open port 22 to the internet
-B. A jump host with a public IP
+B. A jump host with a public IP and port 22 open to 0.0.0.0/0, shared by all of the administrators
 C. A VPN for every user
 D. OCI Bastion service, creating time-limited managed SSH sessions to private resources
 
@@ -158,10 +158,10 @@ D. OCI Bastion service, creating time-limited managed SSH sessions to private re
 ### Question 9
 **Scenario:** A load balancer must terminate TLS and route by URL path.
 
-A. A NAT gateway
-B. A flexible load balancer operating at layer 7, with a certificate and path-based routing rules
-C. A network load balancer
-D. DNS round robin
+A. A NAT gateway, which lets private instances start outbound connections to the internet
+B. A flexible load balancer at layer 7 with a certificate and path-based routing
+C. A network load balancer, which works at layer 4 and passes TLS through without inspecting URL paths
+D. DNS round robin across the backend servers, with no health checks or path awareness
 
 <details>
 <summary>Answer</summary>
@@ -177,9 +177,9 @@ D. DNS round robin
 **Scenario:** Object Storage costs must fall for data accessed rarely.
 
 A. Delete it
-B. Move to Block Volume
+B. Move to Block Volume, which offers lower per-gigabyte pricing than infrequent access object tiers
 C. Lifecycle policy rules transitioning objects to infrequent access and then archive tiers
-D. Compress it only
+D. Compress it only, using a client-side tool before upload, and leave it in the standard tier forever
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Compress it only
 ### Question 11
 **Scenario:** A compartment's resources must be constrained so nobody can create non-compliant configurations.
 
-A. A Security Zone attached to the compartment, which denies operations violating the zone's policies
-B. Tags
-C. Documentation
-D. Budgets
+A. A Security Zone on the compartment, which denies operations that violate its policies
+B. Tags applied to the compartment's resources to mark them as compliant, which label but do not block operations
+C. Documentation that lists the approved configurations and is circulated to every team in the tenancy
+D. Budgets with alert rules that email the compartment owners when spending passes a set threshold
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Split evenly
 ### Question 14
 **Scenario:** A file share must be mounted by many instances concurrently.
 
-A. Object Storage
+A. Object Storage, which serves objects over HTTP and has no mount targets or file locking
 B. Local disk
 C. File Storage service, providing NFS shares with mount targets in a subnet
-D. Block Volume attached to each
+D. Block Volume attached read-write to each instance and formatted with an ordinary ext4 file system
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Block Volume attached to each
 ### Question 15
 **Scenario:** An architecture must span two regions for disaster recovery.
 
-A. A second availability domain
-B. Cross-region replication for data (Object Storage replication, Data Guard, or volume backup copies), plus infrastructure defined as code so the second region can be built and a rehearsed failover procedure
-C. One region with backups
-D. Larger instances
+A. A second availability domain in the same region, with the workload spread evenly across both domains and a load balancer
+B. Cross-region replication of the data, infrastructure as code, and a rehearsed failover
+C. One region with frequent backups kept in a bucket in that same region, and restored after an outage if needed
+D. Larger instances with more OCPUs and memory in the primary region, to absorb the extra load after any failure
 
 <details>
 <summary>Answer</summary>

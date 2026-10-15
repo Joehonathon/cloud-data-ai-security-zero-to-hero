@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A streaming job must process only new files arriving in cloud storage, at scale.
 
-A. A cron job with timestamps
-B. Reprocess everything
-C. Auto Loader (`cloudFiles`), which tracks discovered files with a scalable file notification or directory listing mode
-D. List the directory each run
+A. A cron job that compares file modification timestamps to the last run time and loads any newer files
+B. Reprocess everything on each run and rely on a merge into the target table to remove the duplicate rows
+C. Auto Loader (`cloudFiles`), which tracks discovered files
+D. List the directory each run and diff the result against a table of already-loaded file names
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. List the directory each run
 ### Question 2
 **Scenario:** A Delta table must apply updates and inserts from a change feed atomically.
 
-A. Append everything
-B. `MERGE INTO` keyed on the business key, using the change type to decide insert, update, or delete
-C. Overwrite the table
-D. Delete then insert
+A. Append everything and de-duplicate on read by key
+B. `MERGE INTO` keyed on the business key, with the change type choosing insert, update, or delete
+C. Overwrite the table with the latest batch, which drops every row not in the feed
+D. Delete the affected keys first, then insert the new versions in a second statement run straight afterwards
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Delete then insert
 ### Question 3
 **Scenario:** Downstream jobs need to know exactly which rows changed in a Delta table.
 
-A. Use the transaction log manually
-B. Compare full snapshots
-C. Enable Change Data Feed on the table and read the change data with row-level change types
-D. Add a timestamp column
+A. Use the transaction log manually, parsing the JSON commit files in `_delta_log` to infer which rows changed
+B. Compare full snapshots of the table from two versions with an anti join to find the differences
+C. Enable Change Data Feed on the table and read the changes with row-level change types
+D. Add a last-modified timestamp column and have each downstream job filter on values after its last run
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Add a timestamp column
 ### Question 4
 **Scenario:** A structured streaming job must guarantee exactly-once processing across restarts.
 
-A. Manual offset tracking
-B. A checkpoint location plus an idempotent sink, which Delta provides through transactional writes
-C. Reprocess from the beginning
-D. Nothing is needed
+A. Manual offset tracking in a separate table that the job updates after each micro-batch completes successfully
+B. A checkpoint location plus an idempotent sink, which Delta provides with transactional writes
+C. Reprocess from the beginning on every restart and drop rows already in the sink
+D. Nothing is needed, because Structured Streaming is exactly-once by default without any state saved anywhere
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. Nothing is needed
 ### Question 5
 **Scenario:** A slowly changing dimension must keep history of attribute changes.
 
-A. Use a view
-B. Overwrite the row (SCD Type 1)
-C. Delete old rows
+A. Use a view that selects the latest value of each attribute from the source table at query time
+B. Overwrite the row in place (SCD Type 1) so that each dimension key always holds current values
+C. Delete old rows once a new version arrives, keeping one row per key
 D. SCD Type 2: close the current row with an end timestamp and insert a new current row
 
 <details>
@@ -104,10 +104,10 @@ D. SCD Type 2: close the current row with an end timestamp and insert a new curr
 ### Question 6
 **Scenario:** Query performance on a large Delta table filtered by two high-cardinality columns is poor.
 
-A. Increase cluster size only
-B. Use liquid clustering (or Z-ordering with `OPTIMIZE`) on the filter columns to co-locate related data
-C. Convert to CSV
-D. Add more partitions
+A. Increase cluster size only, adding workers so that more cores scan the same number of files in parallel
+B. Use liquid clustering (or Z-ordering with `OPTIMIZE`) on the filter columns to co-locate related data for file skipping
+C. Convert the table to CSV files, which any reader can scan without Delta metadata overhead
+D. Add more partitions on the two high-cardinality columns so each filter value gets its own directory
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Add more partitions
 ### Question 7
 **Scenario:** A table has accumulated thousands of small files.
 
-A. Repartition to 10,000
-B. Ignore it
-C. `OPTIMIZE` to compact, tune the writer to produce fewer larger files, and enable auto compaction and optimized writes
-D. Add more nodes
+A. Repartition to 10,000 partitions so that each task has less data and every file is smaller still
+B. Ignore it, because the Delta transaction log already merges small files in the background
+C. `OPTIMIZE` to compact, then enable auto compaction and optimized writes
+D. Add more nodes so that the many small files can be opened in parallel by additional executors
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Add more nodes
 ### Question 8
 **Scenario:** Access must be governed centrally across workspaces with lineage.
 
-A. Notebook permissions
-B. Table ACLs per workspace
-C. Cloud storage permissions only
-D. Unity Catalog, providing a three-level namespace, centralized grants, lineage, and audit across workspaces
+A. Notebook permissions, setting who can view, run, or edit each notebook in the workspace
+B. Table ACLs per workspace, configured separately by an admin in every workspace that uses the data, with no shared lineage view
+C. Cloud storage permissions only, using IAM roles on the buckets that hold the table files
+D. Unity Catalog: a three-level namespace with centralized grants, lineage, and audit across workspaces
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Unity Catalog, providing a three-level namespace, centralized grants, lineage
 ### Question 9
 **Scenario:** A streaming job's state store grows without bound on a windowed aggregation.
 
-A. Set a watermark so state for closed windows can be dropped, and bound how late events are accepted
-B. Restart daily
-C. Disable checkpointing
-D. Increase memory
+A. Set a watermark so state for closed windows can be dropped and late events are bounded
+B. Restart the job daily so the state is rebuilt from the checkpoint
+C. Disable checkpointing, so Spark has no state to keep
+D. Increase memory on the driver and workers until the whole state store fits in memory comfortably
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Increase memory
 ### Question 10
 **Scenario:** A pipeline must enforce data quality and stop bad records reaching downstream tables.
 
-A. Delta Live Tables expectations, choosing per rule whether to warn, drop the record, or fail the update
-B. Trust the source
-C. A comment
-D. Check afterwards
+A. Delta Live Tables expectations, choosing per rule to warn, drop the record, or fail the update
+B. Trust the source system to send clean data and reject bad rows itself
+C. Add a comment to the table definition that describes the rules each column is expected to follow in detail
+D. Check the quality afterwards with a scheduled query and fix any bad rows that have been found, in the next sprint
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Check afterwards
 ### Question 11
 **Scenario:** Old versions of a Delta table must be removed to reduce storage cost.
 
-A. `VACUUM` with a retention period, understanding it breaks time travel beyond that window
-B. Nothing can be removed
-C. Drop the table
-D. Delete files from storage directly
+A. `VACUUM` with a retention period, knowing it limits time travel to that window
+B. Nothing can be removed, because Delta keeps every version permanently for audit purposes
+C. Drop the table and recreate it from the latest data, so that no old versions remain
+D. Delete the old data files directly from cloud storage with a lifecycle rule or the console
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Delete files from storage directly
 ### Question 12
 **Scenario:** A job is failing intermittently with skew: one task takes ten times longer than the rest.
 
-A. Increase the timeout
-B. Address skew: enable adaptive query execution's skew join handling, salt the skewed key, or broadcast the small side
-C. Reduce partitions to one
-D. Add nodes
+A. Increase the timeout so the slowest task has enough time to finish
+B. Address skew: use AQE skew join handling, salt the skewed key, or broadcast the small side of the join
+C. Reduce partitions to one so that every row is processed by a single task, in order
+D. Add nodes so that the cluster has spare capacity to run the slow task more quickly
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Add nodes
 ### Question 13
 **Scenario:** A production job must be orchestrated with dependencies, retries, and alerting.
 
-A. Databricks Jobs with multiple tasks, dependencies, retry policies, and notifications, defined as code
-B. A scheduled notebook
-C. An external cron calling a notebook
-D. Manual runs
+A. Databricks Jobs with multiple tasks, dependencies, retries, and notifications, defined as code
+B. A scheduled notebook that runs each step in sequence in one cell and emails the owner if the run fails midway
+C. An external cron job on a virtual machine that calls the notebook through the REST API and checks the exit code
+D. Manual runs by an engineer who starts each notebook in order and watches for failures
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Manual runs
 ### Question 14
 **Scenario:** Development, staging, and production must use the same code against different data.
 
-A. One shared environment
-B. Copy notebooks between workspaces
-C. Hard-code paths
-D. Databricks Asset Bundles or CI/CD with parameterized catalogs and environment-specific configuration
+A. One shared environment where the three stages are separated only by naming conventions on the tables, with no separate catalogs
+B. Copy notebooks between workspaces by hand and edit the paths after each copy
+C. Hard-code the paths for each environment inside the notebooks
+D. Databricks Asset Bundles or CI/CD, with parameterized catalogs and per-environment configuration
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Databricks Asset Bundles or CI/CD with parameterized catalogs and environment
 ### Question 15
 **Scenario:** A pipeline's cost is higher than expected on an all-purpose cluster.
 
-A. Increase the cluster size
-B. Keep it running
-C. Use job clusters that terminate on completion, right-size the instance types, enable autoscaling, and consider spot for non-critical work
-D. Run more frequently
+A. Increase the cluster size so that the pipeline finishes sooner and the cluster is idle less often
+B. Keep it running continuously so that start-up time is never paid again on the next run
+C. Use job clusters that end with the run, right-size the instances, and enable autoscaling for variable load
+D. Run more frequently, so each run processes less data and the cluster does less work each time
 
 <details>
 <summary>Answer</summary>

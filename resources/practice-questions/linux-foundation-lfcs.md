@@ -17,9 +17,9 @@ LFCS is performance-based on a live system. These reinforce which tool to reach 
 **Scenario:** A directory must let any user create files but only allow the file's owner to delete their own file.
 
 A. `chmod 1777 /shared` (sticky bit)
-B. `chmod 2775 /shared` (setgid)
-C. `chmod 777 /shared`
-D. `chattr +i /shared`
+B. `chmod 2775 /shared` (setgid), so new files inherit the group and group members can manage them
+C. `chmod 777 /shared`, giving read, write, and execute on the directory to owner, group, and others
+D. `chattr +i /shared`, which sets the immutable flag so that nothing in the directory can be changed
 
 <details>
 <summary>Answer</summary>
@@ -35,9 +35,9 @@ D. `chattr +i /shared`
 **Scenario:** A service should start automatically at boot and start now.
 
 A. `systemctl status nginx`
-B. `systemctl enable --now nginx`
-C. `systemctl start nginx`
-D. `service nginx restart`
+B. `systemctl enable --now nginx`, which enables the unit at boot and starts it
+C. `systemctl start nginx`, which keeps the unit enabled
+D. `service nginx restart`, which stops and starts the daemon and also enables it for the next boot
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. `service nginx restart`
 ### Question 3
 **Scenario:** You need to find which process is listening on TCP port 8080.
 
-A. `top`
-B. `ps aux | grep 8080`
-C. `ss -tlnp | grep 8080`
-D. `df -h`
+A. `top`, sorted by network usage, to see which process is bound to the port
+B. `ps aux | grep 8080`, which searches each process's command line for the port number
+C. `ss -tlnp | grep 8080`, which lists listening TCP sockets with numeric ports and the owning process
+D. `df -h`, which lists mounted filesystems and the processes that have files open on them
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. `df -h`
 ### Question 4
 **Scenario:** A logical volume must be extended by 5 GB and its ext4 filesystem grown to match, online.
 
-A. `pvcreate` then `mount -o remount`
+A. `pvcreate` on the logical volume, then `mount -o remount` to make the kernel see the extra 5 GB
 B. `lvextend -L +5G /dev/vg/lv` then `resize2fs /dev/vg/lv`
-C. `fdisk` then reboot
-D. `mkfs.ext4` on the volume
+C. `fdisk` to delete and recreate the partition, then reboot so that the filesystem grows by itself
+D. `mkfs.ext4` on the volume, which formats it at the new size and brings the old files back from the journal
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. `mkfs.ext4` on the volume
 ### Question 5
 **Scenario:** A user should run one specific command as root without a password.
 
-A. `chmod u+s /usr/bin/systemctl`
-B. Add them to the `wheel` group
-C. Give them the root password
-D. Add a sudoers rule via `visudo`: `alice ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
+A. `chmod u+s /usr/bin/systemctl`, so the binary runs as root for every user who calls it
+B. Add them to the `wheel` group, which grants sudo rights for all commands after a password prompt
+C. Give them the root password and ask them to use it only for that one command
+D. Add a sudoers rule with `visudo` limited to one command: `alice ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
 
 <details>
 <summary>Answer</summary>
@@ -106,9 +106,9 @@ D. Add a sudoers rule via `visudo`: `alice ALL=(root) NOPASSWD: /usr/bin/systemc
 ### Question 6
 **Scenario:** A filesystem must mount automatically at boot and survive device renaming.
 
-A. Add a `mount` command to `.bashrc`
-B. Add an `/etc/fstab` entry using `/dev/sdb1`
-C. Mount it manually after each boot
+A. Add `mount` to `.bashrc`
+B. Add an `/etc/fstab` entry using `/dev/sdb1`, the device name that the kernel assigns today
+C. Mount it by hand after every boot, using the same command each time
 D. Add an `/etc/fstab` entry using `UUID=`
 
 <details>
@@ -126,8 +126,8 @@ D. Add an `/etc/fstab` entry using `UUID=`
 
 A. `journalctl -u nginx -n 50 -f`
 B. `dmesg`
-C. `systemctl status nginx`
-D. `tail -f /var/log/messages`
+C. `systemctl status nginx`, which prints the unit's state together with its most recent log lines
+D. `tail -f /var/log/messages`, which follows the traditional syslog file for every service on the host machine
 
 <details>
 <summary>Answer</summary>
@@ -143,9 +143,9 @@ D. `tail -f /var/log/messages`
 **Scenario:** Replace every occurrence of `old.example.com` with `new.example.com` in a config file, keeping a backup.
 
 A. `sed -i.bak 's/old\.example\.com/new.example.com/g' file.conf`
-B. `grep -r old.example.com`
-C. `awk '{print $1}' file.conf`
-D. `tr old new < file.conf`
+B. `grep -r old.example.com`, which searches every file under the directory for the old name and rewrites each match
+C. `awk '{print $1}' file.conf`, which prints the first field of each line to the terminal
+D. `tr old new < file.conf`, which swaps each character in the first set for the one in the second set
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. `tr old new < file.conf`
 ### Question 9
 **Scenario:** SSH password authentication must be disabled so only keys work.
 
-A. Set `PermitRootLogin no`
-B. Delete all user passwords
+A. Set `PermitRootLogin no` in `/etc/ssh/sshd_config` and reload sshd, which blocks every password login on the host
+B. Set `PermitEmptyPasswords no` in `/etc/ssh/sshd_config` and restart the server
 C. Set `PasswordAuthentication no` in `/etc/ssh/sshd_config` and reload sshd
-D. Change the SSH port
+D. Change the SSH port in `sshd_config` to a high number, so password logins are no longer reachable
 
 <details>
 <summary>Answer</summary>
@@ -179,9 +179,9 @@ D. Change the SSH port
 **Scenario:** A job must run at 02:30 every weekday.
 
 A. `* * 2 30 1-5`
-B. `30 2 * * 0-4`
-C. `30 2 * * 1-5` in a crontab
-D. `2 30 * * 1-5`
+B. `30 2 * * 0-4`, Monday as day 0
+C. `30 2 * * 1-5` in a crontab, minute first and hour second
+D. `2 30 * * 1-5`, which reads the hour first and the minute second on Monday to Friday
 
 <details>
 <summary>Answer</summary>
@@ -196,8 +196,8 @@ D. `2 30 * * 1-5`
 ### Question 11
 **Scenario:** A process is consuming CPU and must be stopped gracefully first, forcibly only if it ignores that.
 
-A. `renice`
-B. `kill -HUP <pid>`
+A. `renice`, raising the niceness to 19 so that the process gives up CPU time to everything else and then waits
+B. `kill -HUP <pid>`, a clean shutdown
 C. `kill -9` immediately
 D. `kill <pid>` (SIGTERM), then `kill -9 <pid>` if it does not exit
 
@@ -214,7 +214,7 @@ D. `kill <pid>` (SIGTERM), then `kill -9 <pid>` if it does not exit
 ### Question 12
 **Scenario:** A firewall must permit inbound HTTPS permanently on a firewalld system.
 
-A. `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
+A. `iptables -A INPUT -p tcp --dport 443 -j ACCEPT`, which opens the port directly in the netfilter table and bypasses firewalld
 B. `firewall-cmd --permanent --add-service=https` then `firewall-cmd --reload`
 C. `systemctl stop firewalld`
 D. `firewall-cmd --add-service=https` only
@@ -232,10 +232,10 @@ D. `firewall-cmd --add-service=https` only
 ### Question 13
 **Scenario:** You must give a group read and write access to a directory tree without changing individual ownership everywhere.
 
-A. `chgrp -R devs /srv/app && chmod -R g+rw /srv/app && chmod g+s /srv/app`
-B. `umask 000`
-C. `chown -R root /srv/app`
-D. `chmod -R 777 /srv/app`
+A. `chgrp -R devs /srv/app && chmod -R g+rw /srv/app && chmod g+s /srv/app`, so new files inherit the `devs` group
+B. `umask 000` set in `/etc/profile`, so new files created by anybody are read-write for every user
+C. `chown -R root /srv/app` so the files have a single owner and the group can reach them through root
+D. `chmod -R 777 /srv/app`, giving full access to the group and to everyone else
 
 <details>
 <summary>Answer</summary>
@@ -251,7 +251,7 @@ D. `chmod -R 777 /srv/app`
 **Scenario:** The system boots but one service failed. You need a list of failed units.
 
 A. `journalctl -b`
-B. `ls /etc/systemd/system`
+B. `ls /etc/systemd/system/*.service`
 C. `systemctl --failed`
 D. `systemctl list-units --all`
 
@@ -268,10 +268,10 @@ D. `systemctl list-units --all`
 ### Question 15
 **Scenario:** An NFS export must be available to a subnet with read and write access.
 
-A. `chmod 777 /srv/share`
-B. Add `/srv/share 10.0.0.0/24(rw,sync,no_subtree_check)` to `/etc/exports` and run `exportfs -ra`
-C. Start Samba
-D. Add it to `/etc/fstab`
+A. `chmod 777 /srv/share` so every client can read and write
+B. Add `/srv/share 10.0.0.0/24(rw,sync,no_subtree_check)` to `/etc/exports`, then run `exportfs -ra`
+C. Start Samba with `systemctl start smb` and define a `[share]` section for the path in `smb.conf`, so clients can mount it
+D. Add it to `/etc/fstab` on the server with the `rw` option so that the subnet can mount it at boot, after a reboot
 
 <details>
 <summary>Answer</summary>

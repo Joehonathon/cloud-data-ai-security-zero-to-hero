@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Which principles guide building applications for cloud?
 
-A. The twelve-factor principles: configuration from the environment, stateless processes, backing services as attached resources, disposability, and logs as event streams
-B. Store state on local disk
+A. The twelve-factor principles: config in the environment, stateless processes, attached backing services, disposability
+B. Keep session state on the local disk of each instance, so that restarts reload it quickly and scaling stays simple and cheap for the team
 C. Manual configuration per environment
-D. One large deployable unit
+D. One large deployable unit, in which every feature and library is built, tested and released together on one fixed release schedule
 
 <details>
 <summary>Answer</summary>
@@ -32,7 +32,7 @@ D. One large deployable unit
 ### Question 2
 **Scenario:** An application must run as a container without managing a cluster.
 
-A. Virtual servers
+A. Virtual servers, where the cloud provider patches the operating system and orchestrates the container lifecycle for you
 B. A Kubernetes cluster you operate
 C. IBM Cloud Code Engine, which runs containers, jobs, and functions with scale-to-zero
 D. Bare metal
@@ -51,9 +51,9 @@ D. Bare metal
 **Scenario:** An application binds to a managed database.
 
 A. Ask an administrator each time
-B. Hard-code the connection string
-C. A configuration file in the image
-D. Create a service credential or use a service binding, injecting the connection details as environment variables at run time
+B. Hard-code the connection string in a constant in the source code, so the application starts without needing any lookup
+C. A configuration file in the image holding the connection string, which the container registry encrypts at rest
+D. Use a service credential or binding, injecting connection details as environment variables at run time
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Object Storage
 ### Question 5
 **Scenario:** A large file uploaded by a user must be stored durably.
 
-A. In memory
-B. A database BLOB column
+A. In the memory of the process that received the upload, kept until the next restart
+B. A BLOB column in a single-instance database that has no replication or backups configured
 C. IBM Cloud Object Storage, with the object key returned to the application
-D. The application's local filesystem
+D. The application's local filesystem, mirrored to a second disk on the same host for durability
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. The application's local filesystem
 ### Question 6
 **Scenario:** Services must communicate asynchronously with durable delivery.
 
-A. Direct synchronous HTTP for everything
-B. A message queue or event stream such as IBM MQ or Event Streams (Kafka), decoupling producer and consumer
-C. Local files
-D. Shared database polling
+A. Direct synchronous HTTP for everything, with the caller waiting on each response before it continues
+B. A message queue or event stream such as IBM MQ or Event Streams (Kafka)
+C. Local files written by the producer and read by the consumer from the same shared folder
+D. Consumers polling a shared database table every few seconds, with no delivery guarantees
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Train a model first
 ### Question 8
 **Scenario:** An API must be exposed to external consumers with rate limiting and keys.
 
-A. A load balancer
+A. A load balancer, which authenticates callers with API keys and enforces per-consumer rate limits and quotas
 B. A firewall
-C. Expose the service directly
-D. An API gateway (API Connect or equivalent) handling authentication, rate limits, versioning, and analytics
+C. Expose the service directly to consumers on its own public URL, and leave the limits to each service's own code
+D. An API gateway (API Connect or equivalent) handling authentication, rate limits, and analytics
 
 <details>
 <summary>Answer</summary>
@@ -159,9 +159,9 @@ D. An API gateway (API Connect or equivalent) handling authentication, rate limi
 **Scenario:** Users must authenticate with social or enterprise identities.
 
 A. Store passwords in the database
-B. Build your own user store
+B. Build your own user store with hashed passwords and a login page, which keeps all identities under your control
 C. Basic authentication
-D. IBM Cloud App ID (or another identity provider) handling sign-in, token issuance, and federation
+D. IBM Cloud App ID (or another identity provider) handling sign-in and tokens
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. IBM Cloud App ID (or another identity provider) handling sign-in, token issua
 ### Question 10
 **Scenario:** A container image must be built and deployed on every commit.
 
-A. Deploy from an IDE
-B. A pipeline (Continuous Delivery toolchain or another CI system) building, scanning, and deploying with environment promotion
-C. Manual builds
-D. Build on a developer laptop
+A. Deploy straight from an IDE plugin on each developer's machine whenever that developer decides a change is finished
+B. A pipeline (Continuous Delivery toolchain or other CI) that builds, scans and deploys with promotion
+C. Manual builds run by the release manager from a written checklist on the day of each planned release, with no automation
+D. Build on a developer laptop, then push the finished image to the registry by hand from that same machine each time
 
 <details>
 <summary>Answer</summary>
@@ -194,8 +194,8 @@ D. Build on a developer laptop
 ### Question 11
 **Scenario:** An application must handle a transient failure calling a downstream service.
 
-A. Retry forever
-B. Fail immediately
+A. Retry forever until the service answers, which guarantees that no request is ever lost during an outage
+B. Fail immediately and return an error to the caller on the first timeout or error response, with no retry
 C. Retry with exponential backoff and jitter, bounded, with a circuit breaker and a timeout
 D. Ignore errors
 
@@ -212,9 +212,9 @@ D. Ignore errors
 ### Question 12
 **Scenario:** Application logs must be searchable across instances.
 
-A. Write structured logs to stdout and let the platform collect them into a centralized logging service
+A. Write structured logs to stdout and let the platform collect them centrally
 B. Print to the console only
-C. Write to local files
+C. Write to local files on each instance and rotate them nightly, then search them with grep over SSH
 D. Email logs
 
 <details>
@@ -230,10 +230,10 @@ D. Email logs
 ### Question 13
 **Scenario:** A configuration value differs per environment.
 
-A. Environment variables or a configuration service, so the same image runs everywhere
-B. Rebuild per environment
-C. Hard-code with an if statement
-D. Separate code branches
+A. Environment variables or a config service, so one image runs everywhere
+B. Rebuild per environment, baking each environment's values into its own image at build time
+C. Hard-code the value with an if statement that checks which environment the code runs in
+D. Keep a separate code branch for each environment, with the values edited directly in each branch
 
 <details>
 <summary>Answer</summary>
@@ -267,8 +267,8 @@ D. A scheduled job
 **Scenario:** An application's dependencies must be kept current and free of known vulnerabilities.
 
 A. Pin forever
-B. Automated dependency scanning in the pipeline with alerts and update pull requests, plus a policy for severity thresholds
-C. Update only when something breaks
+B. Automated dependency scanning in the pipeline with update pull requests and severity thresholds
+C. Update only when something breaks, because stable pinned versions avoid regressions from untested upgrades
 D. Update once a year
 
 <details>

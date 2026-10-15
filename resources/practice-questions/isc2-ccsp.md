@@ -16,10 +16,10 @@ CCSP rewards vendor-neutral thinking. Answers describe concepts and processes ra
 ### Question 1
 **Scenario:** What are the phases of the cloud secure data lifecycle?
 
-A. Ingest, process, output
+A. Ingest, process, output, the three stages a data pipeline uses to move records through a cloud analytics platform
 B. Collect, analyze, report
 C. Create, store, use, share, archive, destroy
-D. Create, store, delete
+D. Create, store, use, and delete, with no separate share, archive, or destroy phases
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. Create, store, delete
 ### Question 2
 **Scenario:** Data must be rendered unrecoverable on a cloud provider's multi-tenant storage.
 
-A. Overwriting
-B. Physical destruction
-C. Cryptoshredding: destroy the encryption keys so the ciphertext is unrecoverable
-D. Degaussing
+A. Overwriting the volumes several times with random patterns, which the provider's replication guarantees reaches every copy
+B. Physical destruction of the drives by shredding them in the provider's data center
+C. Cryptoshredding: destroy the keys so the ciphertext is unrecoverable
+D. Degaussing the drives before they return to the provider's shared storage pool
 
 <details>
 <summary>Answer</summary>
@@ -52,8 +52,8 @@ D. Degaussing
 ### Question 3
 **Scenario:** Which technique replaces sensitive values with non-sensitive surrogates that can be reversed by an authorized system?
 
-A. Hashing
-B. Tokenization, where a token vault maps tokens back to the original values
+A. Hashing, which turns each value into a fixed-length digest that a stored key can convert back
+B. Tokenization, with a token vault mapping each token back to the original value for authorized systems
 C. Anonymization
 D. Masking
 
@@ -70,10 +70,10 @@ D. Masking
 ### Question 4
 **Scenario:** Which cloud deployment model serves a group of organizations with shared concerns?
 
-A. Private
+A. Private cloud, provisioned for exclusive use by a single organization, whether on its premises or hosted by a third party
 B. Community cloud
-C. Public
-D. Hybrid
+C. Public cloud open to any customer
+D. Hybrid cloud joining two cloud types
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Hybrid
 ### Question 5
 **Scenario:** What does a Type 2 SOC 2 report add over a Type 1?
 
-A. Nothing
+A. Nothing beyond Type 1, other than a newer date on the cover page
 B. A different scope
 C. A financial audit
-D. Testing of operating effectiveness over a period, rather than design suitability at a point in time
+D. Testing of operating effectiveness over a period, not design at a point in time
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Testing of operating effectiveness over a period, rather than design suitabil
 ### Question 6
 **Scenario:** A cloud application must be assessed for vulnerabilities during development.
 
-A. Runtime monitoring
+A. Runtime monitoring in production, using the provider's logs to find injection attempts and unpatched libraries as they occur
 B. A code review only
-C. Penetration testing only, after release
-D. SAST on source, SCA on dependencies, DAST on the running application, and threat modeling during design
+C. Penetration testing only, run once after release by an outside firm against the live production site
+D. SAST on source, SCA on dependencies, DAST on the running app, and threat modeling in design
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. SAST on source, SCA on dependencies, DAST on the running application, and thr
 ### Question 7
 **Scenario:** Which best describes a cloud access security broker?
 
-A. A control point between users and cloud services enforcing visibility, compliance, data security, and threat protection
-B. An identity provider
+A. A control point between users and cloud services enforcing policy and visibility
+B. An identity provider that issues tokens and federates sign-on, giving users single sign-on to every SaaS application
 C. A load balancer
-D. A firewall
+D. A firewall at the network edge that filters traffic by port and protocol and drops unwanted connections
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. A firewall
 ### Question 8
 **Scenario:** Virtualization introduces which distinctive risk?
 
-A. Hypervisor escape and inter-VM attacks, plus VM sprawl and snapshot data leakage
-B. None
-C. Only physical risk
-D. Only network risk
+A. Hypervisor escape, inter-VM attacks, VM sprawl, and snapshot data leakage
+B. None, because the hypervisor isolates tenants completely and the main concern is only guest operating system patching
+C. Only physical risk, such as theft of servers from the provider's data centers or sites
+D. Only network risk, such as denial of service against the provider's public endpoints
 
 <details>
 <summary>Answer</summary>
@@ -161,8 +161,8 @@ D. Only network risk
 **Scenario:** A business impact analysis is being performed for a cloud-hosted service.
 
 A. Assume the provider handles continuity
-B. Identify critical processes, their maximum tolerable downtime, and dependencies including the provider's own dependencies, then derive RTO and RPO
-C. Copy the provider's SLA
+B. Identify critical processes, maximum tolerable downtime, and dependencies including the provider's, then derive RTO and RPO
+C. Copy the provider's published SLA into the plan and use its uptime commitment as the recovery objective
 D. Focus on technical recovery only
 
 <details>
@@ -180,8 +180,8 @@ D. Focus on technical recovery only
 
 A. Provider-managed keys
 B. No encryption
-C. Provider-generated customer-managed keys
-D. Hold Your Own Key, where keys remain in customer-controlled infrastructure and the provider requests use
+C. Provider-generated customer-managed keys, created and rotated inside the provider's KMS under the customer's access policies
+D. Hold Your Own Key: keys stay in customer-controlled infrastructure and the provider requests use
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Hold Your Own Key, where keys remain in customer-controlled infrastructure an
 ### Question 11
 **Scenario:** An eDiscovery request covers data held by a cloud provider.
 
-A. The customer remains responsible for producing the data; the contract should address preservation, collection assistance, and chain of custody
-B. It cannot be fulfilled
-C. Only the provider's data is discoverable
-D. The provider handles it
+A. The customer remains responsible; the contract should cover preservation and collection
+B. It cannot be fulfilled, because multi-tenant storage cannot be placed under legal hold by the customer or the provider
+C. Only the provider's own data is discoverable, not the customer's data or backups in the service
+D. The provider handles it entirely under its standard terms, since it controls the storage and so owns the legal hold
 
 <details>
 <summary>Answer</summary>
@@ -214,8 +214,8 @@ D. The provider handles it
 ### Question 12
 **Scenario:** Which control best addresses the risk of a malicious insider at the cloud provider?
 
-A. Customer-held encryption keys, comprehensive logging, and contractual and audit assurance over the provider's personnel controls
-B. Multi-factor authentication for customer staff
+A. Customer-held keys, comprehensive logging, and contractual and audit assurance over provider personnel
+B. Multi-factor authentication for customer staff and conditional access, which protects the customer's own console logins
 C. Trusting the provider
 D. Network segmentation
 
@@ -233,8 +233,8 @@ D. Network segmentation
 **Scenario:** Which describes the correct approach to security in a DevOps pipeline?
 
 A. Manual review before release
-B. A security gate at the end
-C. Security integrated throughout: threat modeling in design, automated scanning in the pipeline, policy as code, and secrets handled through a managed store
+B. A single security gate at the end of the pipeline, where a dedicated team signs off each release candidate before production
+C. Integrated security: threat modeling, automated scans, policy as code, managed secret store
 D. Post-deployment scanning only
 
 <details>
@@ -251,8 +251,8 @@ D. Post-deployment scanning only
 **Scenario:** Which logging capability is most important for cloud security operations?
 
 A. Provider status pages
-B. Management plane and API activity logs, centralized in tamper-resistant storage with defined retention, alongside workload and network logs
-C. Application logs only
+B. Management plane and API logs, centralized in tamper-resistant storage with retention, plus workload logs
+C. Application logs only, because the services running in the workload are where an attack on customer data is seen first
 D. Billing records
 
 <details>
@@ -268,9 +268,9 @@ D. Billing records
 ### Question 15
 **Scenario:** How should a cloud provider's compliance certifications be used in a customer's own compliance program?
 
-A. As full transfer of the requirement
-B. As a replacement for the customer's own audit
-C. As inherited controls covering the provider's share, with the customer documenting its own controls and any complementary user entity controls
+A. As a full transfer of the requirement, because the provider's certificate means the customer has no controls left to prove
+B. As a replacement for the customer's own audit, since the provider's auditor has already examined the whole service and no further evidence is needed
+C. As inherited controls for the provider's share, with the customer documenting its own and complementary controls
 D. As irrelevant
 
 <details>

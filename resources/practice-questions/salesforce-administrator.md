@@ -14,7 +14,7 @@ difficulty: beginner
 ### Question 1
 **Scenario:** A user must see only their own records on a custom object, while their manager sees the whole team's.
 
-A. Set the object's organization-wide default to Public Read/Write
+A. Set the object's organization-wide default to Public Read/Write and rely on page layouts to keep other users' records out of view
 B. Create a permission set
 C. Set the organization-wide default to Private and enable Grant Access Using Hierarchies
 D. Use field-level security
@@ -33,9 +33,9 @@ D. Use field-level security
 **Scenario:** A field must be hidden from one group of users but visible to another.
 
 A. Field-level security via profiles or permission sets
-B. Record types
+B. Record types, assigning one record type to the first group and a different one to the second group
 C. Validation rules
-D. Page layouts alone
+D. Page layouts alone, removing the field from the layout assigned to the group that must not see it
 
 <details>
 <summary>Answer</summary>
@@ -50,9 +50,9 @@ D. Page layouts alone
 ### Question 3
 **Scenario:** Additional permissions must be granted to a handful of users without cloning their profile.
 
-A. Change the role
-B. Assign a permission set, or a permission set group for a bundle of related access
-C. Create a new profile
+A. Change each user's role so that the extra permissions come down through the role hierarchy
+B. Assign a permission set, or a permission set group for a bundle of related access, without touching the user's profile
+C. Create a new profile that is a copy of the current one and add the extra permissions there
 D. Change the organization-wide default
 
 <details>
@@ -70,8 +70,8 @@ D. Change the organization-wide default
 
 A. Record types, each with its own picklist value sets and page layout assignments
 B. Two profiles
-C. Field dependencies
-D. Two custom objects
+C. Field dependencies, which filter a dependent picklist based on the value chosen in a controlling field
+D. Two custom objects, one per division, each with its own fields, picklist values, and page layouts
 
 <details>
 <summary>Answer</summary>
@@ -86,8 +86,8 @@ D. Two custom objects
 ### Question 5
 **Scenario:** Which automation tool should be used for new declarative automation?
 
-A. Process Builder
-B. Workflow Rules
+A. Process Builder, because it is the most flexible declarative tool for building multi-step record automation
+B. Workflow Rules, because they have been available the longest and are the most widely documented
 C. Flow Builder, which Salesforce has consolidated automation into
 D. Apex triggers
 
@@ -104,10 +104,10 @@ D. Apex triggers
 ### Question 6
 **Scenario:** A value must be prevented from being saved when it fails a business rule.
 
-A. A formula field
+A. A formula field that returns an error message whenever the value does not satisfy the business rule
 B. A required field on the page layout
 C. A validation rule that evaluates to true when the data is invalid
-D. A workflow rule
+D. A workflow rule with a field update action that clears the value shortly after the record is saved
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A workflow rule
 ### Question 7
 **Scenario:** A relationship must cascade delete children when the parent is deleted and support roll-up summaries.
 
-A. An external lookup
+A. An external lookup relationship, which links the child to records held in an external data source
 B. A master-detail relationship
-C. A hierarchical relationship
-D. A lookup relationship
+C. A hierarchical relationship, a special lookup that links a user to another user
+D. A lookup relationship on the child object, with the parent field marked as required on the page layout
 
 <details>
 <summary>Answer</summary>
@@ -141,9 +141,9 @@ D. A lookup relationship
 **Scenario:** Duplicate accounts are being created by users.
 
 A. Duplicate rules with matching rules, set to alert or block on create and edit
-B. Data Loader
-C. A report
-D. A validation rule
+B. Data Loader, scheduled to export and de-duplicate the accounts each night after users have created them
+C. A report that lists accounts with similar names so that users can check it before creating records
+D. A validation rule that checks only the Account Name field for an exact text match with another record
 
 <details>
 <summary>Answer</summary>
@@ -158,8 +158,8 @@ D. A validation rule
 ### Question 9
 **Scenario:** A report must show accounts with no related opportunities.
 
-A. A summary report
-B. A joined report
+A. A summary report grouped by account name, built on a report type that only returns accounts with opportunities
+B. A joined report with two blocks
 C. A standard report
 D. A cross filter with "without" on the Opportunities object
 
@@ -176,10 +176,10 @@ D. A cross filter with "without" on the Opportunities object
 ### Question 10
 **Scenario:** 50,000 records must be updated from a spreadsheet.
 
-A. Manual entry
-B. Data Loader (or the Data Import Wizard below its 50,000-record limit), with the record IDs or an external ID for matching
-C. A report
-D. A flow
+A. Manual entry through the standard edit pages, working through batches of records one at a time
+B. Data Loader, or the Import Wizard under its 50,000-record cap, matching on record IDs or an external ID
+C. A report with inline editing turned on, saving the changes to all 50,000 rows at once
+D. A flow that loops over the spreadsheet after it is attached to a record as a file, updating each row it finds
 
 <details>
 <summary>Answer</summary>
@@ -194,9 +194,9 @@ D. A flow
 ### Question 11
 **Scenario:** Sales users must follow a defined selling process with different stages per business line.
 
-A. Path only
-B. One set of stages for everyone
-C. Sales processes tied to record types, each exposing its own subset of opportunity stages
+A. Path only, configuring different guidance and key fields for each business line
+B. One set of stages for everyone, told apart by a picklist field on the opportunity
+C. Sales processes tied to record types, each exposing its own subset of opportunity stages, assigned by profile
 D. Validation rules
 
 <details>
@@ -212,10 +212,10 @@ D. Validation rules
 ### Question 12
 **Scenario:** Cases must route to the right support queue automatically.
 
-A. Manual assignment
+A. Manual assignment by a support manager who watches the new case list and reassigns each case
 B. Case assignment rules with ordered entry criteria, assigning to a queue or user
-C. Escalation rules
-D. Auto-response rules
+C. Escalation rules that reassign each case to the correct queue at the moment it is created
+D. Auto-response rules that send the right team a notification email about each new case
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Auto-response rules
 ### Question 13
 **Scenario:** A user reports they cannot see a field they were told they have access to.
 
-A. Change the organization-wide default
-B. Check field-level security on the profile and permission sets, then the page layout assignment for their record type and profile
-C. Give them the System Administrator profile
-D. Recreate the field
+A. Change the organization-wide default to Public Read/Write so that every user can see all fields and all records in the org
+B. Check field-level security on the profile and permission sets, then the page layout for their record type
+C. Give them the System Administrator profile to bypass layouts and security
+D. Delete and recreate the field with the same API name, then re-add it to the page layouts
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Recreate the field
 ### Question 14
 **Scenario:** Changes must move from a sandbox to production safely.
 
-A. Edit production directly
-B. Data Loader
-C. Rebuild them manually in production
-D. Change sets, or a source-driven pipeline with SFDX and version control for larger teams
+A. Edit production directly in Setup, making each change during a quiet window outside business hours
+B. Data Loader, exporting the configuration records from the sandbox and importing them into production
+C. Rebuild each change by hand in production while reading from a screenshot of the sandbox configuration
+D. Change sets, or a source-driven SFDX pipeline with version control for larger teams
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Change sets, or a source-driven pipeline with SFDX and version control for la
 ### Question 15
 **Scenario:** Data must be recoverable after a bad bulk update.
 
-A. The Recycle Bin for deletes within 15 days, an Export Service or Data Loader backup for updates, and a documented backup approach for anything critical
-B. Salesforce restores it free
-C. Nothing can be done
-D. Rollback in Setup
+A. The Recycle Bin for deletes within 15 days, plus your own Data Loader or export backup taken before any update
+B. Salesforce Support restores any bulk change at no cost if a case is opened within the same week
+C. Nothing can be done once a bulk update commits, because Salesforce keeps no history
+D. A Rollback button in Setup that reverts the organization to its state before the bulk job ran
 
 <details>
 <summary>Answer</summary>

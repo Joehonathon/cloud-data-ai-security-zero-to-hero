@@ -16,7 +16,7 @@ DP-900 tests recognition and vocabulary rather than implementation, so these que
 ### Question 1
 **Scenario:** Which describes structured data?
 
-A. Free-text emails
+A. Free-text emails and documents, whose content is kept in files without a predefined schema
 B. Images
 C. Data organized into rows and columns with a predefined schema
 D. Video files
@@ -34,10 +34,10 @@ D. Video files
 ### Question 2
 **Scenario:** Which workload type describes a system handling many small, fast inserts and updates from an application?
 
-A. Batch analytics
-B. OLTP
+A. Batch analytics over the full history of sales
+B. OLTP (online transaction processing)
 C. OLAP
-D. Data warehousing
+D. Data warehousing for historical reporting
 
 <details>
 <summary>Answer</summary>
@@ -54,7 +54,7 @@ D. Data warehousing
 
 A. Analytics, Caching, Indexing, Data
 B. Access, Control, Identity, Directory
-C. Available, Consistent, Isolated, Distributed
+C. Available, Consistent, Isolated, Distributed - the four guarantees of a replicated cluster
 D. Atomicity, Consistency, Isolation, Durability
 
 <details>
@@ -70,9 +70,9 @@ D. Atomicity, Consistency, Isolation, Durability
 ### Question 4
 **Scenario:** Which Azure service is a fully managed relational PaaS database with automatic patching and backups?
 
-A. Azure Blob Storage
-B. Azure Files
-C. Azure Cosmos DB
+A. Azure Blob Storage, which holds unstructured objects rather than relational tables
+B. Azure Files, which offers managed SMB file shares rather than a relational engine
+C. Azure Cosmos DB, a NoSQL database that is not a relational PaaS engine
 D. Azure SQL Database
 
 <details>
@@ -88,10 +88,10 @@ D. Azure SQL Database
 ### Question 5
 **Scenario:** A key-value, document, graph, and column-family API from one service.
 
-A. Azure SQL Managed Instance
+A. Azure SQL Managed Instance (relational)
 B. Azure Data Factory
-C. Azure Cosmos DB
-D. Azure Synapse Analytics
+C. Azure Cosmos DB (multi-model)
+D. Azure Synapse Analytics (data warehouse)
 
 <details>
 <summary>Answer</summary>
@@ -107,9 +107,9 @@ D. Azure Synapse Analytics
 **Scenario:** Unstructured files such as images and backups need cheap, massively scalable storage.
 
 A. Azure Blob Storage
-B. Azure Table Storage
-C. Azure Cache for Redis
-D. Azure SQL Database
+B. Azure Table Storage (key-value)
+C. Azure Cache for Redis (in-memory)
+D. Azure SQL DB
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Azure SQL Database
 ### Question 7
 **Scenario:** Which service orchestrates data movement and transformation across sources on a schedule?
 
-A. Azure Monitor
-B. Azure DevOps
+A. Azure Monitor, which collects metrics and logs but does not move or transform data between sources
+B. Azure DevOps, which manages code repositories and release pipelines for software, not data movement
 C. Azure Data Factory
-D. Azure Functions
+D. Azure Functions, which runs event-driven code but is not a managed data integration service
 
 <details>
 <summary>Answer</summary>
@@ -162,7 +162,7 @@ D. ELT is only for streaming
 
 A. Report definitions
 B. User permissions
-C. Descriptive attributes such as product name and category
+C. Descriptive attributes such as product name and category, which belong in the dimension tables instead
 D. Numeric measures and foreign keys to dimensions, at a defined grain
 
 <details>
@@ -214,7 +214,7 @@ D. Azure Data Box
 ### Question 12
 **Scenario:** Which describes streaming data processing?
 
-A. Processing large sets at scheduled intervals
+A. Processing large sets at scheduled intervals, such as a nightly job over the previous day's files
 B. Processing events continuously as they arrive, often with windowed aggregation
 C. Only for relational databases
 D. Manual data entry
@@ -250,10 +250,10 @@ D. Eliminate the need for indexes
 ### Question 14
 **Scenario:** Who is typically responsible for building and maintaining data pipelines?
 
-A. Data scientist
+A. Data scientist (machine learning)
 B. Database administrator
 C. Data engineer
-D. Data analyst
+D. Analyst
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Data analyst
 ### Question 15
 **Scenario:** Which statement about a relational primary key is correct?
 
-A. It may contain duplicate values
+A. It may contain duplicate values as long as another column in the same row is unique
 B. It uniquely identifies each row and cannot be null
-C. It must be an integer
-D. Each table can have many primary keys
+C. It must be an integer, because text and GUID columns cannot serve as primary keys
+D. Each table can have many primary keys, one for every column that must stay unique
 
 <details>
 <summary>Answer</summary>

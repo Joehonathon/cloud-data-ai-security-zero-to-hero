@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An engineer is asked to reduce a service's cost without harming reliability.
 
-A. Attack waste first: rightsize against measured utilization, remove idle and orphaned resources, and schedule non-production, before touching anything that carries the reliability
-B. Move to a cheaper region
-C. Reduce replicas
-D. Reduce redundancy
+A. Attack waste first: rightsize against measured utilization, remove idle and orphaned resources, and schedule non-production
+B. Move the service to a cheaper region, which lowers the unit price but adds migration work and latency
+C. Reduce replicas to the minimum the service can run on, since each replica removed is cost saved with no effect on availability or on how much traffic it can absorb
+D. Reduce redundancy by moving from three zones to one, which cuts cross-zone charges and capacity at the expense of resilience and zone-failure tolerance
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Reduce redundancy
 ### Question 2
 **Scenario:** Instances are sized from a spreadsheet estimate made before launch.
 
-A. Double every instance
-B. Halve every instance
-C. Keep them
-D. Rightsize against observed CPU, memory, and I/O percentiles over a representative period, allowing headroom for peaks rather than sizing to the average
+A. Double every instance to be safe, so that the launch estimate is replaced by a generous margin that no later peak could exceed
+B. Halve every instance on the assumption the spreadsheet was cautious, then restore any size that causes alerts
+C. Keep them as they are, since the estimate was approved before launch and has not caused an incident yet
+D. Rightsize against observed CPU, memory, and I/O percentiles, with headroom for peaks rather than sizing to the average
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Rightsize against observed CPU, memory, and I/O percentiles over a representa
 ### Question 3
 **Scenario:** A batch workload tolerates interruption and reruns cheaply.
 
-A. On-demand instances
-B. Dedicated hosts
+A. On-demand instances, which give steady availability with no interruptions at the full list price for every hour
+B. Dedicated hosts, which give the single-tenant isolation that suits licence-bound workloads but cost more than shared capacity
 C. Spot or preemptible capacity with checkpointing, falling back to on-demand when spot is unavailable
-D. Reserved instances
+D. Reserved instances for a one-year term, which discount steady usage but are wasted when the batch runs only occasionally
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Reserved instances
 ### Question 4
 **Scenario:** Storage costs grow steadily while access falls off after 30 days.
 
-A. Lifecycle policies transitioning to colder tiers on a schedule, with expiry where retention allows, plus a review of whether snapshots and versions are accumulating
-B. Buy more storage
-C. Compress the data
-D. Delete everything after 30 days
+A. Lifecycle policies moving data to colder tiers on a schedule, with expiry where retention allows, plus a review of old snapshots and versions
+B. Buy more storage capacity in advance at the committed rate, which lowers the unit price as volumes keep growing
+C. Compress the data at the application layer before writing, which reduces the stored bytes but leaves every object in the hot tier
+D. Delete everything after 30 days, which stops growth but also removes data that retention rules or audits may still require
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Delete everything after 30 days
 ### Question 5
 **Scenario:** Data transfer charges are unexpectedly high.
 
-A. Reduce the data volume only
-B. Move to another provider
-C. Map the flows: cross-zone and cross-region traffic, NAT gateway processing, and egress to the internet, then co-locate chatty components and use private endpoints or a CDN where they apply
-D. Compress everything
+A. Reduce the data volume only, by trimming payload fields and response sizes, while leaving traffic paths between zones, regions, and the internet unchanged
+B. Move to another provider whose list price per gigabyte is lower, and migrate the heaviest workloads
+C. Map the flows: cross-zone and cross-region traffic, NAT processing, and egress; then co-locate, use private endpoints or a CDN
+D. Compress everything at the application layer, which reduces bytes but not the paths traffic takes
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Compress everything
 ### Question 6
 **Scenario:** A Kubernetes cluster runs at 20% node utilization.
 
-A. Reduce replicas
-B. Set resource requests to match observed usage, enable cluster autoscaling with bin-packing, and consolidate workloads; requests, not actual usage, drive scheduling
-C. Add more nodes
-D. Buy commitments for the nodes
+A. Reduce replicas of every deployment to the minimum, which frees pod capacity but does not change the requests that reserve node capacity
+B. Set requests to match observed usage, enable cluster autoscaling with bin-packing, and consolidate workloads
+C. Add more nodes to the cluster so each node carries a smaller share of the pods and utilization stays under control
+D. Buy commitments for the nodes at the current count, which lowers the rate while leaving the idle capacity in place
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Buy commitments for the nodes
 ### Question 7
 **Scenario:** A serverless function is invoked millions of times and costs more than a container would.
 
-A. Serverless is always cheaper
-B. Model the crossover: serverless wins for spiky and low-volume workloads, while sustained high-volume traffic often favors provisioned compute
-C. Reduce the timeout
-D. Increase the memory allocation
+A. Serverless is always cheaper than provisioned compute at any volume, because there is no idle capacity to pay for
+B. Model the crossover: serverless wins for spiky or low-volume work, while sustained high-volume traffic often favors provisioned compute or containers with committed pricing
+C. Reduce the timeout to the shortest value the function can meet, which caps the cost of a slow call but not of many calls
+D. Raise memory and timeout to the maximum, since billing is per request only and these settings do not affect cost
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Increase the memory allocation
 ### Question 8
 **Scenario:** Cost must be considered before code ships, not after.
 
-A. Monthly review meetings
-B. A dashboard for engineers
-C. Shift left: cost estimation in infrastructure-as-code pull requests, policy checks blocking oversized or untagged resources, and cost as a design constraint alongside performance
-D. Quarterly audits
+A. Monthly review meetings between finance and engineering, where the previous month's spend is compared with the budget set for each team
+B. A dashboard for engineers that shows each team's daily spend, which they can check whenever they want to
+C. Shift left: cost estimates in infrastructure-as-code pull requests, policy checks, and cost as a design constraint
+D. Quarterly audits of the largest accounts by a central team, who list savings opportunities for the owners to act on later
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Quarterly audits
 ### Question 9
 **Scenario:** Idle non-production resources must stop accruing cost automatically.
 
-A. Automated scheduling to stop resources outside working hours, plus expiry policies on ephemeral environments with a documented override
-B. Delete them weekly
-C. Reduce their size
-D. Ask developers to remember
+A. Automated scheduling that stops resources outside working hours, plus expiry on ephemeral environments with an override
+B. Delete them every weekend and have developers recreate what they need on Monday, which saves cost but loses state and setup time
+C. Reduce their size to the smallest type, which lowers the hourly rate but leaves the resources running at all hours
+D. Ask developers to remember to stop their own environments, backed by a reminder posted in the team channel on Friday afternoons each week
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Ask developers to remember
 ### Question 10
 **Scenario:** A team wants to know whether an optimization actually worked.
 
-A. Ask the team
-B. Check the invoice total
+A. Ask the team whether it feels cheaper, since the people who made the change know best
+B. Check the invoice total for the month after the change against the previous month's invoice
 C. Measure the specific resource or unit metric before and after, isolating the change from unrelated growth
-D. Look at total spend next month
+D. Look at total spend next month across all accounts and judge the change a success if the figure has fallen at all
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Look at total spend next month
 ### Question 11
 **Scenario:** A database is over-provisioned but the team fears a resize.
 
-A. Leave it
-B. Add a cache instead
-C. Halve it immediately
-D. Reduce in stages with monitoring and a rollback plan, and use a read replica or a test restore to validate the smaller size under realistic load first
+A. Leave it as it is, since a resize risks an outage and the current cost has already been accepted in the budget
+B. Add a cache in front of the database instead, which cuts read load but leaves the instance oversized
+C. Halve it immediately in one change, and watch for alerts, since the instance can be scaled back up if needed
+D. Reduce in stages with monitoring and a rollback plan, validating the smaller size on a replica or a test restore under realistic load first
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Reduce in stages with monitoring and a rollback plan, and use a read replica 
 ### Question 12
 **Scenario:** Which architectural change most reduces cost for a read-heavy workload?
 
-A. Caching in front of the datastore and a CDN for static content, removing repeated work entirely
-B. More replicas
-C. A larger database instance
-D. A faster disk
+A. Caching in front of the datastore and a CDN for static content, removing repeated work
+B. Add more read replicas to the database tier, which spreads reads across instances but still serves every request from the datastore
+C. A larger database instance class with more memory, which speeds up each query but does not reduce how many are run
+D. A faster disk type such as provisioned IOPS, which cuts latency per read but adds cost for every request still served
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. A faster disk
 ### Question 13
 **Scenario:** GPU instances for machine learning sit idle between training runs.
 
-A. Keep them running for convenience
-B. Buy commitments for them
-C. Use CPU instead
-D. Use managed training jobs or clusters that scale to zero, checkpoint to durable storage, and separate training from inference so each scales on its own pattern
+A. Keep them running between runs for convenience, so the next training job starts without waiting for capacity or any setup time
+B. Buy one-year commitments for them, which lowers the hourly rate but leaves the idle hours in place
+C. Use CPU instead of GPU for all training, which removes the GPU cost entirely at the price of much longer runs and slower iteration
+D. Managed training jobs that scale to zero, checkpoint to durable storage, and keep training apart from inference
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Use managed training jobs or clusters that scale to zero, checkpoint to durab
 ### Question 14
 **Scenario:** An engineer is asked to commit to a three-year reservation.
 
-A. Commit to peak
-B. Commit only to the stable baseline that survives planned changes, after rightsizing, and weigh the flexibility cost of the longer term
-C. Never commit
-D. Commit to current usage
+A. Commit to the peak so every hour of usage is covered, and accept the discount on capacity that sits idle off-peak
+B. Commit only to the stable baseline that survives planned changes, after rightsizing
+C. Never commit to a term, because the flexibility of paying on demand outweighs any discount over three years
+D. Commit to current usage as measured last month, which is easy to justify but locks in any waste that is already present in it
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Commit to current usage
 ### Question 15
 **Scenario:** Cost anomalies should reach the engineer who caused them.
 
-A. An annual review
+A. An annual review of cloud spend by the finance team, where the largest variances are explained afterward
 B. Automated anomaly detection routing alerts to the owning team by tag or account, close to when the change happened
-C. A shared inbox
-D. A monthly report to finance
+C. A shared inbox where all anomaly alerts are collected, so that anyone in the organization can pick one up and look into it
+D. A monthly report to finance listing the accounts over budget, who then ask engineering why
 
 <details>
 <summary>Answer</summary>

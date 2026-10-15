@@ -15,9 +15,9 @@ difficulty: advanced
 **Scenario:** What is the relationship between ESXi and vCenter Server?
 
 A. They are the same product
-B. ESXi is the hypervisor running on physical hosts; vCenter is the central management plane for many ESXi hosts and their features
+B. ESXi is the hypervisor on each physical host; vCenter is the central management plane for many hosts
 C. ESXi manages vCenter
-D. vCenter is a hypervisor
+D. vCenter is a bare-metal hypervisor that runs VMs directly, with ESXi as its web client
 
 <details>
 <summary>Answer</summary>
@@ -34,7 +34,7 @@ D. vCenter is a hypervisor
 
 A. Power it off and migrate
 B. vMotion, which migrates a running VM's compute state between hosts while it keeps running
-C. Storage vMotion only
+C. Storage vMotion, which moves the VM's disk files between datastores
 D. Clone it
 
 <details>
@@ -50,10 +50,10 @@ D. Clone it
 ### Question 3
 **Scenario:** Which feature restarts VMs on surviving hosts after a host failure?
 
-A. Fault Tolerance
-B. vMotion
-C. vSphere HA, which restarts the failed host's VMs on other hosts in the cluster
-D. DRS
+A. Fault Tolerance, which runs a lockstep shadow VM so a failed host's workload continues, though it restarts nothing elsewhere
+B. vMotion, which moves a running VM between hosts at the administrator's request
+C. vSphere HA, which restarts failed host's VMs on other hosts
+D. DRS, which rebalances running VMs by resource use, not by host failure
 
 <details>
 <summary>Answer</summary>
@@ -69,7 +69,7 @@ D. DRS
 **Scenario:** Which feature balances VM load across hosts automatically?
 
 A. vMotion alone
-B. Storage DRS only
+B. Storage DRS only, which balances datastore capacity and I/O latency across a datastore cluster using Storage vMotion
 C. DRS, which uses vMotion to distribute VMs according to resource use and configured automation level
 D. HA
 
@@ -86,10 +86,10 @@ D. HA
 ### Question 5
 **Scenario:** A distributed switch is preferred over standard switches in a large cluster.
 
-A. Standard switches span hosts
-B. A vSphere Distributed Switch is configured once at vCenter and spans all hosts, giving consistent configuration and advanced features that per-host standard switches lack
-C. They are equivalent
-D. Distributed switches are per host
+A. Standard switches span all hosts in a cluster automatically once they share the same vCenter inventory, with no per-host setup
+B. A distributed switch is configured once at vCenter and spans all hosts
+C. They are equivalent in features, differing only in the name shown in the vSphere Client
+D. Distributed switches are configured separately on each host and do not span the cluster
 
 <details>
 <summary>Answer</summary>
@@ -105,9 +105,9 @@ D. Distributed switches are per host
 **Scenario:** Which storage protocol presents block storage to ESXi over an IP network?
 
 A. SMB
-B. Fibre Channel only
+B. Fibre Channel only, which carries SCSI block commands over a dedicated fabric and cannot run on an IP network
 C. NFS
-D. iSCSI, presenting LUNs formatted with VMFS over TCP/IP
+D. iSCSI, presenting LUNs formatted with VMFS
 
 <details>
 <summary>Answer</summary>
@@ -124,8 +124,8 @@ D. iSCSI, presenting LUNs formatted with VMFS over TCP/IP
 
 A. NFS
 B. Raw device mapping
-C. VMFS on a SAN
-D. vSAN, which pools local storage across cluster hosts into a single datastore governed by storage policies
+C. VMFS on a SAN, which presents shared LUNs from an external array that all hosts mount as one clustered datastore
+D. vSAN, which pools local host disks into one datastore governed by storage policies
 
 <details>
 <summary>Answer</summary>
@@ -140,9 +140,9 @@ D. vSAN, which pools local storage across cluster hosts into a single datastore 
 ### Question 8
 **Scenario:** A VM needs guaranteed access to a minimum amount of CPU or memory.
 
-A. Increase the VM's vCPU count
-B. Affinity rules
-C. A resource reservation, guaranteeing a minimum, alongside limits and shares for contention
+A. Increase the VM's vCPU count so it can claim more scheduler time on a busy host whenever contention appears
+B. VM-to-VM affinity rules that keep the VM on the same host as its partner VM
+C. A resource reservation, with limits and shares for contention
 D. A larger host
 
 <details>
@@ -159,9 +159,9 @@ D. A larger host
 **Scenario:** A point-in-time copy of a VM must be taken before a risky change.
 
 A. A backup only
-B. A template
-C. A clone
-D. A snapshot, capturing the VM's state and data so it can be reverted, understanding that snapshots are not backups
+B. A template, which converts the VM into a master image that can be reverted to its earlier state whenever needed
+C. vMotion to another host, which keeps a copy of the VM's earlier state for reverting later
+D. A snapshot, capturing state and data so it can be reverted (not a backup)
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. A snapshot, capturing the VM's state and data so it can be reverted, understa
 ### Question 10
 **Scenario:** A standardized VM must be deployed repeatedly.
 
-A. A template, a non-runnable master image deployed to new VMs, optionally customized with a guest customization specification
-B. Manual installation
-C. A snapshot
-D. Clone a running VM each time
+A. A template: a non-runnable master image deployed to new VMs, optionally customized
+B. Manual installation of the guest operating system on every new VM, from the installation media
+C. A snapshot of the first VM, which can be deployed repeatedly to create new powered-on copies
+D. Clone a running VM each time and rename it by hand, which copies the source VM's identity and any drift into every copy
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Clone a running VM each time
 ### Question 11
 **Scenario:** ESXi hosts must be patched consistently across a cluster.
 
-A. vSphere Lifecycle Manager, using a desired image or baselines to remediate hosts, coordinated with maintenance mode
+A. Lifecycle Manager, using a desired image or baselines with maintenance mode
 B. A script per host
-C. Patch each host manually
-D. Reinstall ESXi
+C. Patch each host manually through its own host client, one at a time, relying on each host to keep its own baseline
+D. Reinstall ESXi on each host from the installation media whenever a patch is released
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. Reinstall ESXi
 **Scenario:** Two VMs must never run on the same host for availability.
 
 A. A DRS anti-affinity rule keeping the VMs on separate hosts
-B. A reservation
-C. A resource pool
-D. Nothing can enforce this
+B. A reservation of CPU and memory for each VM, which guarantees resources on its host
+C. A resource pool, which divides cluster CPU and memory by shares and also keeps its member VMs on different hosts
+D. Nothing can enforce this, because DRS has no rules that depend on VM placement
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Nothing can enforce this
 ### Question 13
 **Scenario:** A resource pool is used to divide cluster capacity between two teams.
 
-A. Resource pools guarantee equal split always
+A. Resource pools always guarantee an equal split of cluster capacity between the teams, whatever their share values or VM counts
 B. Pools are only for storage
-C. Resource pools apportion cluster resources with shares, reservations, and limits, but misusing nested pools and shares can produce unexpected allocations
-D. Pools replace clusters
+C. Resource pools apportion resources with shares, reservations, and limits, but nested pools can give odd results
+D. Pools replace clusters, because a pool carries its own hosts, storage, and network settings, plus its own DRS and HA
 
 <details>
 <summary>Answer</summary>
@@ -249,9 +249,9 @@ D. Pools replace clusters
 **Scenario:** What does entering maintenance mode on a host do in a DRS cluster?
 
 A. Nothing until reboot
-B. Prevents new VMs being placed and, with DRS, migrates running VMs off the host so it can be serviced
+B. Blocks new VM placement and, with DRS, migrates running VMs off the host
 C. Deletes the VMs
-D. Powers off the host immediately
+D. Powers off the host immediately and restarts its VMs elsewhere through HA, without waiting for any migration to finish
 
 <details>
 <summary>Answer</summary>
@@ -266,9 +266,9 @@ D. Powers off the host immediately
 ### Question 15
 **Scenario:** Which network feature isolates traffic types such as management, vMotion, and storage?
 
-A. VLANs and separate VMkernel adapters per traffic type, ideally on distinct networks, so management, vMotion, and storage do not contend
+A. VLANs and separate VMkernel adapters per traffic type, ideally on distinct networks
 B. Fault Tolerance
-C. A single network for everything
+C. One shared network for all traffic, since VLANs matter only for guest VMs
 D. One VMkernel adapter
 
 <details>

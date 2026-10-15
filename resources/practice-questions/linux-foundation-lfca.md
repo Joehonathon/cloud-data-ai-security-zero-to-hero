@@ -18,8 +18,8 @@ LFCA is multiple choice and entry-level. It covers breadth across IT, not depth 
 
 A. `whoami`
 B. `cd`
-C. `pwd`
-D. `ls`
+C. `pwd` (print working directory)
+D. `ls -la`, which lists every file in the directory along with its permissions
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. The owner and group
 ### Question 3
 **Scenario:** Which is the correct description of an IP subnet mask of /24?
 
-A. 24 subnets
-B. The first 24 bits are the network portion, leaving 256 addresses of which 254 are usable
-C. 24 usable hosts
-D. IPv6 only
+A. 24 subnets, one for each bit of the mask, each holding the same number of addresses
+B. The first 24 bits are the network portion, leaving 256 addresses, of which 254 are usable
+C. 24 usable hosts, one per bit of the mask, with the rest reserved for the network
+D. IPv6 only, since the prefix length notation is not used for IPv4 addressing
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. IPv6 only
 ### Question 4
 **Scenario:** What is the main advantage of infrastructure as code?
 
-A. Infrastructure is defined in version-controlled files, so changes are reviewable, repeatable, and auditable
-B. It removes the need for testing
-C. It eliminates cloud costs
-D. It runs faster than a GUI
+A. Infrastructure is defined in version-controlled files, so changes are reviewable and repeatable
+B. It removes the need for testing, because the declared state is guaranteed to match what is actually deployed in the cloud
+C. It eliminates cloud costs by shutting down every undeclared resource
+D. It runs faster than a GUI because the provider's API handles scripted calls faster than console ones do in every case
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. It runs faster than a GUI
 ### Question 5
 **Scenario:** Which cloud service model gives you the operating system to manage but not the physical hardware?
 
-A. FaaS
-B. IaaS
-C. PaaS
-D. SaaS
+A. FaaS, where you upload single functions that run on demand with no server to manage
+B. IaaS, where you rent virtual machines and patch the OS yourself
+C. PaaS, where the provider manages the OS and runtime and you deploy only application code
+D. SaaS, where the provider runs the finished application and you use it through a browser
 
 <details>
 <summary>Answer</summary>
@@ -107,9 +107,9 @@ D. SaaS
 **Scenario:** A git workflow requires a change to be reviewed before entering the main branch.
 
 A. Create a branch, push it, and open a pull request for review before merging
-B. Commit directly to main
-C. Email a patch
-D. Use `git push --force`
+B. Commit directly to main, then ask a teammate to read the commit after it has been pushed
+C. Email a patch to the whole team and merge it into main when nobody replies in two days
+D. Use `git push --force` to publish the branch to main, which triggers a mandatory review
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Use `git push --force`
 ### Question 7
 **Scenario:** What does DNS do?
 
-A. Routes packets between networks
-B. Encrypts web traffic
+A. Routes packets between networks using each router's forwarding table
+B. Encrypts web traffic between the browser and the server
 C. Resolves human-readable names to IP addresses
-D. Assigns IP addresses to devices
+D. Assigns IP addresses to devices when they join a network
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Assigns IP addresses to devices
 ### Question 8
 **Scenario:** Which practice best describes continuous integration?
 
-A. Monitoring servers
-B. Merging changes to a shared branch frequently, with automated build and test on every merge
-C. Writing documentation continuously
-D. Deploying to production several times a day
+A. Monitoring servers and alerting the team whenever a deployment fails in production
+B. Merging changes to a shared branch often, with an automated build and test on every merge
+C. Writing documentation continuously as part of every commit, with a build step that publishes it
+D. Deploying to production several times a day, with each change released as soon as it is merged
 
 <details>
 <summary>Answer</summary>
@@ -161,9 +161,9 @@ D. Deploying to production several times a day
 **Scenario:** A password policy should reduce the impact of a leaked credential most effectively.
 
 A. Requiring multi-factor authentication
-B. Forbidding password managers
-C. Requiring a longer password
-D. Rotating passwords monthly
+B. Forbidding password managers, so passwords cannot be copied out of a vault
+C. Requiring a longer password of twenty characters, which stays useful if it leaks
+D. Rotating passwords monthly, so a leaked credential expires before it can be used
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Rotating passwords monthly
 ### Question 10
 **Scenario:** What is the purpose of a service level objective (SLO)?
 
-A. An incident report
-B. An internal target for a measured reliability indicator, used to decide when to prioritize reliability work
-C. A monitoring dashboard
-D. A legal contract with a customer
+A. An incident report written after an outage, listing its causes, the timeline, and the follow-up work
+B. An internal target for a measured reliability indicator, which sets the error budget
+C. A monitoring dashboard showing the current error rate and latency
+D. A legal contract with a customer that sets refund terms when availability drops under target
 
 <details>
 <summary>Answer</summary>
@@ -198,8 +198,8 @@ D. A legal contract with a customer
 
 A. `free -h`
 B. `lsblk`
-C. `df -h`
-D. `du -sh`
+C. `df -h`, which reports used and free space for each mounted filesystem
+D. `du -sh` run on a path, which adds up the size of all files and folders beneath it
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. `du -sh`
 ### Question 12
 **Scenario:** What does a load balancer accomplish?
 
-A. It encrypts databases
-B. It compresses data
-C. It stores static files
-D. It distributes incoming requests across multiple backend servers and removes unhealthy ones from rotation
+A. It encrypts database storage so that backend servers hold only ciphertext on disk and in backups
+B. It compresses data on the wire so that fewer bytes are sent from each backend server to the client
+C. It stores static files in a cache so the backend servers never receive requests for them
+D. It distributes incoming requests across multiple backend servers and drops unhealthy ones from rotation
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. It distributes incoming requests across multiple backend servers and removes 
 ### Question 13
 **Scenario:** Which best describes a container image?
 
-A. A running process
-B. A virtual machine disk with its own kernel
-C. A read-only, layered package of an application and its dependencies
-D. A configuration file
+A. A running process created from the application, with its own PID namespace
+B. A virtual machine disk with its own kernel, booted by a hypervisor
+C. A read-only, layered package of an application and its dependencies, from which any number of containers can be started
+D. A configuration file that tells the runtime which ports and volumes to use
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. A configuration file
 ### Question 14
 **Scenario:** Backups exist but have never been restored. What is the risk?
 
-A. Backups will expire
-B. Backups will be too large
-C. None, backups are automatic
-D. An untested backup is an assumption, not a recovery capability, and failures typically surface only during a real incident
+A. Backups will expire after thirty days unless someone renews the retention setting in the console for each vault and region
+B. Backups will be too large to store once the data grows, so the job eventually fails to start
+C. None, because backups run automatically and a completed job is proof that the data can be restored in time, so no restore test is needed
+D. An untested backup is an assumption, not a recovery capability; failures typically surface in a real incident
 
 <details>
 <summary>Answer</summary>
@@ -268,9 +268,9 @@ D. An untested backup is an assumption, not a recovery capability, and failures 
 ### Question 15
 **Scenario:** Which principle should guide granting access to a system?
 
-A. Give broad access to reduce support tickets
-B. Share one admin account for simplicity
-C. Grant access permanently once approved
+A. Give broad access to reduce tickets, then remove it only if an audit finds a problem
+B. Share one admin account for simplicity, with the password kept in the team's wiki
+C. Grant access permanently once approved, so users never have to request it again, whatever their role later becomes
 D. Least privilege: grant the minimum permissions needed for the role, and review them periodically
 
 <details>

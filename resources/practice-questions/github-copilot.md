@@ -14,10 +14,10 @@ difficulty: beginner
 ### Question 1
 **Scenario:** What does Copilot use to generate a suggestion?
 
-A. A search of public repositories at request time
-B. A large language model given context from your open files, surrounding code, and prompt
-C. Your git history only
-D. A fixed snippet library
+A. A search of public repositories at request time, with the closest match pasted in verbatim
+B. A large language model given context from your open files and prompt
+C. Your git history and commit messages only, searched for the most similar earlier changes
+D. A fixed library of code snippets that is matched to what you type by keyword
 
 <details>
 <summary>Answer</summary>
@@ -32,7 +32,7 @@ D. A fixed snippet library
 ### Question 2
 **Scenario:** A suggestion compiles and looks correct.
 
-A. Accept it without review
+A. Accept it without review, since the model was trained on high-quality code and has already checked it for errors and unsafe patterns
 B. Trust it because it compiles
 C. Review it as you would a colleague's code: correctness, security, performance, and whether it fits the codebase
 D. Run it in production to test
@@ -50,7 +50,7 @@ D. Run it in production to test
 ### Question 3
 **Scenario:** An organization is concerned Copilot might suggest code matching public repositories.
 
-A. Manually check every suggestion
+A. Rely on the repository's LICENSE file, since Copilot reads it and never suggests code under other licenses
 B. Enable the duplication detection filter, which blocks suggestions matching public code
 C. Nothing can be done
 D. Disable Copilot
@@ -87,9 +87,9 @@ D. Copilot Business and Enterprise do not use customer code for model training, 
 **Scenario:** A developer wants Copilot to write a function matching a specific behavior.
 
 A. An empty file
-B. A specific comment or docstring stating inputs, outputs, and edge cases, plus a descriptive function name and nearby examples
-C. Random keystrokes
-D. A vague comment
+B. A specific comment stating inputs, outputs and edge cases, with a descriptive function name
+C. Random keystrokes typed into the file, so that the model has plenty of text to work from when it guesses
+D. A vague one-line comment such as 'make it work', with no names, types or examples nearby to give context
 
 <details>
 <summary>Answer</summary>
@@ -105,7 +105,7 @@ D. A vague comment
 **Scenario:** Copilot Chat is asked to explain unfamiliar code.
 
 A. Select the code and ask, using slash commands such as `/explain`, `/fix`, and `/tests` for common tasks
-B. Only inline completion exists
+B. Only inline completion exists, so unfamiliar code can be understood only by reading it line by line yourself
 C. It cannot explain code
 D. Copy the code to a web search
 
@@ -122,10 +122,10 @@ D. Copy the code to a web search
 ### Question 7
 **Scenario:** Which Copilot capability reviews a pull request?
 
-A. Copilot code review, which comments on a pull request with suggested changes
-B. Secret scanning
-C. Dependabot
-D. There is none
+A. Copilot code review, which suggests changes on a pull request
+B. Secret scanning, which flags committed credentials and token patterns in the repository and its pull requests
+C. Dependabot, which opens pull requests to update vulnerable or outdated dependencies
+D. There is none; pull requests can only be reviewed by people on the team
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Copilot cannot write tests
 ### Question 9
 **Scenario:** Copilot suggests code using a deprecated API.
 
-A. Report it as a bug
-B. Verify against current documentation, since the model's knowledge has a cutoff and may predate recent changes
+A. Report it as a bug to GitHub support and wait for the model to be corrected before using any suggestion from it
+B. Verify against current documentation, because the model's knowledge has a cutoff
 C. Use it anyway
-D. Assume it is current
+D. Assume it is current, because Copilot only ever suggests APIs that are still supported today
 
 <details>
 <summary>Answer</summary>
@@ -176,9 +176,9 @@ D. Assume it is current
 ### Question 10
 **Scenario:** An organization wants Copilot to understand its internal codebase and standards.
 
-A. Fine-tune the model yourself
-B. Paste standards into every prompt
-C. Copilot Enterprise features such as knowledge bases and repository indexing, plus repository custom instructions
+A. Fine-tune the underlying model yourself by uploading the organization's repositories to the model vendor
+B. Paste the standards into every prompt by hand, which the model remembers permanently across all later chat sessions
+C. Copilot Enterprise knowledge bases and repository indexing, plus repository custom instructions
 D. Not possible
 
 <details>
@@ -195,9 +195,9 @@ D. Not possible
 **Scenario:** Which describes a limitation developers should know?
 
 A. It cannot generate code
-B. Copilot is always correct
-C. It only works on Python
-D. It can produce code with bugs, security flaws, or licensing concerns, and it does not know your runtime state or your requirements
+B. Copilot is always correct because it checks each suggestion against the compiler, so no review or security scanning is needed by the team
+C. It only works on Python and JavaScript projects and cannot be used with any other programming language
+D. It can produce buggy, insecure or unlicensed code, and it does not know your requirements
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. It can produce code with bugs, security flaws, or licensing concerns, and it 
 ### Question 12
 **Scenario:** Copilot must be disabled for specific file types containing secrets.
 
-A. Delete the files
-B. Not configurable
-C. Content exclusions configured at repository or organization level, so Copilot ignores specified paths
-D. Disable Copilot entirely
+A. Delete the files from the repository and rewrite the git history to remove every copy of them
+B. It is not configurable, so the sensitive files have to be moved into a separate repository
+C. Content exclusions at repository or organization level, naming the paths to ignore
+D. Disable Copilot entirely for every user in the organization, accepting the loss of all completions and chat
 
 <details>
 <summary>Answer</summary>
@@ -231,7 +231,7 @@ D. Disable Copilot entirely
 **Scenario:** Where can Copilot be used?
 
 A. One IDE only
-B. Only on Windows
+B. Only on Windows desktops, because the extension depends on a Windows-only runtime and the service is hosted there too
 C. Only in the browser
 D. In IDEs (VS Code, Visual Studio, JetBrains, Neovim), on GitHub.com, in the CLI, and in mobile, depending on plan
 
@@ -266,10 +266,10 @@ D. It cannot be measured
 ### Question 15
 **Scenario:** Prompt engineering for Copilot in one principle.
 
-A. Give it context and specificity: clear names, a stated goal, relevant files open, and iterative refinement when the first suggestion misses
-B. Prompting does not matter
-C. Use single letters
-D. Write less
+A. Give it context and specificity: clear names, a stated goal, relevant open files, and iteration
+B. Prompting does not matter, because the model ignores the comments and names and reads only the file name
+C. Use single letters for variable and function names, so that the model is free to choose what they all mean
+D. Write less: keep every comment to two or three words, so the model is not distracted by extra detail
 
 <details>
 <summary>Answer</summary>

@@ -34,8 +34,8 @@ D. Use VPC Flow Logs
 ### Question 2
 **Scenario:** An Auto Scaling group must replace instances that fail an application health check, not just an EC2 status check.
 
-A. Increase the cooldown
-B. Set the health check type to ELB and attach a target group with an application-level health check
+A. Increase the cooldown to 600 seconds so instances have more time to pass the application's own checks before being replaced
+B. Set the health check type to ELB with a target group that has an application-level health check
 C. Use EC2 status checks only
 D. Terminate manually
 
@@ -52,8 +52,8 @@ D. Terminate manually
 ### Question 3
 **Scenario:** CloudTrail must record management events across all regions and all accounts in an organization, in a tamper-evident way.
 
-A. A per-account trail in one region
-B. An organization trail, multi-region, delivering to a central S3 bucket with log file validation and Object Lock
+A. A per-account trail in the home region of each account, with management events delivered to a local bucket owned by the account
+B. An organization trail, multi-region, to a central S3 bucket with log file validation
 C. CloudWatch Logs only
 D. Config rules
 
@@ -90,8 +90,8 @@ D. Delete the alarm
 
 A. SSH to each instance
 B. Systems Manager Patch Manager with patch baselines, maintenance windows, and patch groups
-C. Replace all instances weekly
-D. A user data script
+C. Replace all instances every week by relaunching them from the same original AMI and instance type
+D. A user data script that runs yum update on each instance when it boots, with results written to a local log file
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. A user data script
 ### Question 6
 **Scenario:** An RDS Multi-AZ deployment fails over. What is the effect on the application?
 
-A. No connections are interrupted
-B. The endpoint changes and clients must be reconfigured
-C. The DNS endpoint stays the same and resolves to the standby; connections drop and must be re-established
-D. Data is lost
+A. No connections are interrupted, because the standby takes over without any change to the client's session
+B. The endpoint changes to the standby's own DNS name, so clients must be reconfigured with the new endpoint and redeployed
+C. The endpoint stays the same and points to the standby; connections drop and reconnect
+D. Data is lost, because the standby replicates asynchronously and always trails the primary by minutes
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Data is lost
 ### Question 7
 **Scenario:** S3 objects must move to cheaper storage after 30 days and be deleted after 7 years, automatically.
 
-A. An S3 Lifecycle configuration with transition and expiration rules
-B. Manual review
-C. A Lambda function on a schedule
-D. S3 Versioning
+A. S3 Lifecycle rules for transition and expiration
+B. Manual review of the bucket each month by the storage team
+C. A scheduled Lambda function that copies objects older than 30 days into a second bucket in the same storage class
+D. S3 Versioning with a bucket policy that restricts old versions
 
 <details>
 <summary>Answer</summary>
@@ -143,9 +143,9 @@ D. S3 Versioning
 **Scenario:** A workload must run across three Availability Zones and survive the loss of one with no capacity reduction.
 
 A. Run everything in one AZ
-B. Use two AZs at 50% each
-C. Rely on the region
-D. Provision total capacity across three AZs sized so that two AZs can carry full load
+B. Use two AZs at 50% each, with an Auto Scaling group that adds capacity once an AZ has been lost
+C. Rely on the region to move traffic to healthy zones automatically, with no sizing or scaling configuration
+D. Provision capacity across three AZs sized so that any two AZs can carry the full load
 
 <details>
 <summary>Answer</summary>
@@ -179,9 +179,9 @@ D. AWS Config alone
 **Scenario:** EBS volumes must be backed up daily with 30-day retention across many accounts.
 
 A. S3 replication
-B. A cron job on each instance
-C. Manual snapshots
-D. AWS Backup with a backup plan, rules, and resource assignment by tag
+B. A cron job on each instance that calls the snapshot API with the instance's own role and prunes old snapshots
+C. Manual snapshots taken by each account owner every morning and deleted by hand after thirty days
+D. AWS Backup with a backup plan and rules, and resource assignment by tag
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. AWS Backup with a backup plan, rules, and resource assignment by tag
 ### Question 11
 **Scenario:** An application in a private subnet needs outbound internet access for updates.
 
-A. A NAT gateway in a public subnet, with the private subnet's route table sending 0.0.0.0/0 to it
-B. An internet gateway attached to the subnet
-C. A public IP on each instance
-D. A VPC endpoint
+A. A NAT gateway in a public subnet, routed from the private route table
+B. An internet gateway attached to the private subnet itself, with a route to it for 0.0.0.0/0 in its route table
+C. A public IP address on each instance, plus a default route to the internet gateway
+D. A VPC endpoint created for the public update servers that the instances must reach
 
 <details>
 <summary>Answer</summary>
@@ -214,7 +214,7 @@ D. A VPC endpoint
 ### Question 12
 **Scenario:** Costs must be attributed to teams across a large account.
 
-A. Trusted Advisor only
+A. Trusted Advisor only, using its cost optimization checks to attribute each team's spend from the weekly summary
 B. The bill total
 C. Cost allocation tags activated in the billing console, with Cost Explorer grouping by tag
 D. CloudWatch metrics
@@ -232,10 +232,10 @@ D. CloudWatch metrics
 ### Question 13
 **Scenario:** A CloudFormation stack update fails partway through.
 
-A. The stack must be recreated
-B. Resources are deleted
-C. CloudFormation rolls back to the previous state by default; use change sets to preview and stack policies to protect critical resources
-D. The stack is left broken
+A. The stack must be recreated from scratch because a failed update leaves it in a state that cannot be repaired
+B. All resources in the stack are deleted, including the ones created before the failure
+C. It rolls back to the last good state by default; change sets preview updates
+D. The stack is left in a broken state that only deleting the whole stack by hand can clear
 
 <details>
 <summary>Answer</summary>
@@ -251,9 +251,9 @@ D. The stack is left broken
 **Scenario:** Application logs from EC2 must be searchable centrally with retention control.
 
 A. Email the logs
-B. Local log files only
-C. S3 with no index
-D. The CloudWatch agent shipping to CloudWatch Logs, with a retention policy on the log group and Logs Insights for querying
+B. Local log files only, rotated daily on each instance and then collected by hand whenever an investigation needs them
+C. S3 with no index, queried by downloading the objects to a bastion host and searching them with grep each time
+D. The CloudWatch agent shipping to CloudWatch Logs, with retention and Logs Insights for queries
 
 <details>
 <summary>Answer</summary>
@@ -268,8 +268,8 @@ D. The CloudWatch agent shipping to CloudWatch Logs, with a retention policy on 
 ### Question 15
 **Scenario:** An EC2 instance in a public subnet cannot be reached on port 443, though the security group allows it.
 
-A. Check the network ACL, which is stateless and needs both inbound and outbound rules, plus the route table and the instance's own firewall
-B. Recreate the instance
+A. Check the network ACL, which is stateless and needs rules in each direction, then the route table and host firewall
+B. Recreate the instance from the same AMI in a different subnet and Availability Zone, then retest port 443 from the same client
 C. Add a second security group
 D. Change the instance type
 

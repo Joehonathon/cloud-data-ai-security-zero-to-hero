@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** An SLI, an SLO, and an SLA must be distinguished.
 
-A. The SLI is the measurement, the SLO is the internal target for it, and the SLA is the external contract with consequences
-B. They are the same
-C. The SLA is internal
-D. The SLO is a measurement
+A. The SLI is the measurement, the SLO the internal target, and the SLA the external contract
+B. They are the same thing under three names
+C. The SLA is the internal target, and the SLO is the customer contract
+D. The SLO is a measurement taken from monitoring, while the SLI is the target that the team agrees with its product owner
 
 <details>
 <summary>Answer</summary>
@@ -32,9 +32,9 @@ D. The SLO is a measurement
 ### Question 2
 **Scenario:** An error budget is exhausted mid-quarter.
 
-A. Raise the SLO
-B. Continue shipping features
-C. Stop measuring
+A. Raise the SLO target so the remaining budget looks larger
+B. Continue shipping features at the current pace
+C. Stop measuring until the next quarter starts, so the exhausted budget does not trigger alerts or escalations
 D. Prioritize reliability work until the budget recovers, per the agreed policy
 
 <details>
@@ -50,10 +50,10 @@ D. Prioritize reliability work until the budget recovers, per the agreed policy
 ### Question 3
 **Scenario:** A distributed request must be followed across six services.
 
-A. Logs from each service
-B. Ask each team
+A. Logs from each service, searched one at a time and lined up by timestamp to rebuild the path of the request
+B. Ask each team to report how long its service held the request
 C. Distributed tracing with context propagated across service boundaries, ideally with OpenTelemetry
-D. Metrics only
+D. Metrics only, using per-service latency histograms and error rates to infer where the request spent its time
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Metrics only
 ### Question 4
 **Scenario:** Alerts wake the on-call engineer several times a night for conditions that self-resolve.
 
-A. Alert on symptoms that affect users and are actionable, add duration conditions, and delete alerts nobody acts on
-B. Add more alerts
-C. Increase the on-call rotation
-D. Ignore the alerts
+A. Alert on user-facing, actionable symptoms with duration conditions, and delete alerts nobody acts on
+B. Add more alerts on every metric that moves, including CPU and memory on each host, so that nothing is missed
+C. Increase the size of the on-call rotation so that each engineer is woken less often, without changing any alert
+D. Ignore the alerts that resolve by themselves and mute the night channel
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Ignore the alerts
 ### Question 5
 **Scenario:** A postmortem is written after a major incident.
 
-A. Identify who made the mistake
-B. Add a dashboard
-C. Close the ticket
-D. Blameless analysis of the timeline, contributing factors, and detection and mitigation gaps, producing owned action items
+A. Identify who made the mistake and record it in their performance review so that it is not repeated
+B. Add a dashboard for the failing component and consider the incident closed once the graph looks normal
+C. Close the ticket as soon as service is restored and move the follow-up work into the next planning cycle
+D. Blameless analysis of the timeline and gaps, producing owned action items
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Blameless analysis of the timeline, contributing factors, and detection and m
 ### Question 6
 **Scenario:** Infrastructure changes must be repeatable and reviewable.
 
-A. A runbook
-B. Console changes with notes
+A. A runbook describing each manual step in detail, stored in the wiki and followed by whoever is on call
+B. Console changes with notes, written in the ticket after each change so the next person can see what was done
 C. Infrastructure as code in version control, applied through a pipeline with plan review
-D. Shell scripts run by hand
+D. Shell scripts run by hand from an engineer's laptop, with the latest version copied to a shared folder
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Shell scripts run by hand
 ### Question 7
 **Scenario:** Toil is consuming most of the team's time.
 
-A. Work longer hours
-B. Accept it
+A. Work longer hours until the backlog of manual tasks clears
+B. Accept it as the normal cost of running production
 C. Measure the toil, then automate the highest-volume repetitive tasks, capping toil as a share of time
-D. Hire more people
+D. Hire more people to share the repetitive work so that each engineer carries a smaller number of manual tasks
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Hire more people
 ### Question 8
 **Scenario:** A Kubernetes deployment must survive a node failure without dropping requests.
 
-A. A larger node
+A. A larger node with more CPU and memory, so that the pod is less likely to be evicted for lack of resources
 B. Multiple replicas spread across nodes and zones with anti-affinity, plus a PodDisruptionBudget and correct readiness probes
-C. Restart on failure
-D. One replica
+C. Restart on failure, using a restart policy so the container comes back as soon as the node returns
+D. One replica with a high resource request, which the scheduler places on the most reliable node available
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. One replica
 ### Question 9
 **Scenario:** Capacity planning is needed for a growing service.
 
-A. React when it breaks
-B. Model demand growth against measured headroom, load test to find the actual limit, and plan lead times for capacity that cannot be added instantly
-C. Autoscaling handles everything
-D. Over-provision heavily
+A. React when it breaks, then add servers during the incident and tune the settings after the outage is over
+B. Model demand growth against measured headroom, load test for the real limit, and plan lead times
+C. Autoscaling handles everything, so there is no need to know the limits of the service or its dependencies
+D. Over-provision heavily, running several times the expected peak capacity all year to avoid any shortfall
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Over-provision heavily
 ### Question 10
 **Scenario:** Chaos engineering is proposed.
 
-A. Form a hypothesis about steady state, run a small controlled experiment with a blast radius limit and an abort condition, then widen as confidence grows
-B. Only test in development
-C. It is too risky to attempt
-D. Randomly break production immediately
+A. Hypothesize about steady state, run a small experiment with a blast radius limit and abort condition
+B. Only test in development, where a failure cannot affect any user
+C. It is too risky, because injecting failure can only cause outages
+D. Randomly break production components immediately, with no hypothesis, to see what the system does under stress
 
 <details>
 <summary>Answer</summary>
@@ -195,9 +195,9 @@ D. Randomly break production immediately
 **Scenario:** A deployment must be rolled back quickly if error rates rise.
 
 A. Automated rollback triggered by SLI-based canary analysis, with the previous version still available
-B. Fix forward always
-C. Manual investigation first
-D. Wait for user reports
+B. Fix forward always, writing a patch while the faulty release stays live and the error rate keeps on rising
+C. Investigate by hand first, then decide whether to roll back
+D. Wait for user reports to confirm that the problem is real before any change is made to the deployment at all
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Wait for user reports
 ### Question 12
 **Scenario:** A dependency's failure must not cascade.
 
-A. No timeouts
-B. Fail the whole request always
-C. Retry indefinitely
-D. Timeouts, bounded retries with exponential backoff and jitter, circuit breakers, and a defined degraded behavior
+A. No timeouts, so the caller waits as long as the dependency needs and every request completes eventually
+B. Fail the whole request every time the dependency errors, so the user always sees a clear failure message
+C. Retry indefinitely and immediately until the dependency answers, so no request is ever dropped or lost
+D. Timeouts, bounded retries with backoff and jitter, circuit breakers, and a defined degraded mode
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Timeouts, bounded retries with exponential backoff and jitter, circuit breake
 ### Question 13
 **Scenario:** Logs are expensive and voluminous.
 
-A. Keep everything at debug forever
+A. Keep everything at debug level forever and store it on fast disks, so that any past event can be searched
 B. Structure logs, set levels appropriately, sample high-volume events, and tier retention so recent data is queryable and older data is archived
-C. Log only errors
-D. Stop logging
+C. Log only errors, which removes the noise and cuts the volume by the largest amount available
+D. Stop logging and rely on metrics, which are cheaper to store and still show that something went wrong
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Stop logging
 ### Question 14
 **Scenario:** Backups exist but recovery has never been tested.
 
-A. Backups are sufficient
+A. Backups are sufficient, because the job reports success every night and the data is stored in a second region too
 B. Test restores on a schedule, measure the actual recovery time against the RTO, and fix what the test reveals
-C. Increase the backup frequency
-D. Trust the backup job status
+C. Increase the backup frequency to hourly, which reduces the data lost although it does not show that the restore works at all
+D. Trust the backup job status and the storage bucket size
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Trust the backup job status
 ### Question 15
 **Scenario:** On-call must be sustainable.
 
-A. Everyone on call all the time
-B. No on-call
+A. Everyone on call all the time, so that any engineer can answer a page and no single person carries the load
+B. No on-call at all, with incidents picked up by whoever notices them first during working hours
 C. A rotation with reasonable frequency, clear escalation, current runbooks, handover, and a limit on pages per shift that triggers investigation when exceeded
-D. One person permanently
+D. One person permanently, a senior engineer who knows the systems best and answers every page in turn
 
 <details>
 <summary>Answer</summary>

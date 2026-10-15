@@ -17,9 +17,9 @@
 ### Question 1
 **Scenario:** A company is migrating a web application to AWS. The application stores sensitive customer data and must comply with PCI DSS. The security team requires that data be encrypted at rest and in transit, with the company managing its own encryption keys.
 
-A. Use S3 with SSE-S3 encryption and HTTPS
-B. Use S3 with client-side encryption only
-C. Use S3 with SSE-C and HTTP for internal traffic
+A. Use S3 with SSE-S3 encryption and HTTPS, relying on keys that AWS creates and manages for the bucket
+B. Use S3 with client-side encryption only, uploading over plain HTTP because the data is already encrypted
+C. Use S3 with SSE-C and HTTP for internal traffic, supplying the encryption key with each request
 D. Use S3 with SSE-KMS using customer-managed keys and HTTPS
 
 <details>
@@ -37,10 +37,10 @@ D. Use S3 with SSE-KMS using customer-managed keys and HTTPS
 ### Question 2
 **Scenario:** An application running on EC2 instances needs to access an S3 bucket. The security team requires that credentials should not be stored on the instances and should automatically rotate.
 
-A. Use an IAM role attached to the EC2 instances
-B. Store AWS access keys in environment variables
-C. Embed credentials in the application code
-D. Store credentials in AWS Secrets Manager and retrieve at startup
+A. Use an IAM role, attached through an instance profile
+B. Store access keys in environment variables
+C. Hard-code credentials in the code
+D. Store credentials in AWS Secrets Manager and retrieve them at instance startup with a long-lived access key
 
 <details>
 <summary>Answer</summary>
@@ -77,9 +77,9 @@ D. Create IAM users for each AD user with matching permissions
 ### Question 4
 **Scenario:** A web application receives traffic from the internet and needs protection against SQL injection and cross-site scripting attacks. The application runs on EC2 instances behind an Application Load Balancer.
 
-A. Configure Security Groups to block malicious traffic
+A. Configure Security Groups to block malicious request patterns
 B. Enable AWS Shield Standard
-C. Use Network ACLs to filter traffic
+C. Use Network ACLs with deny rules for the attack traffic across the subnets
 D. Deploy AWS WAF with ALB and configure managed rules
 
 <details>
@@ -97,10 +97,10 @@ D. Deploy AWS WAF with ALB and configure managed rules
 ### Question 5
 **Scenario:** A company needs to ensure that only EC2 instances in a private subnet can access an S3 bucket, and the traffic should not traverse the internet.
 
-A. Configure Security Groups on EC2 to allow S3 access
-B. Configure S3 bucket policy to allow only the VPC CIDR
+A. Configure Security Groups on EC2 to allow S3 access, with outbound rules limited to the S3 prefix list
+B. Configure the S3 bucket policy to allow only the VPC CIDR range of the private subnet
 C. Create a VPC Gateway Endpoint for S3 and update route tables
-D. Use NAT Gateway for S3 access
+D. Use a NAT Gateway for S3 access, with a route from the private subnet to the NAT
 
 <details>
 <summary>Answer</summary>
@@ -137,9 +137,9 @@ D. Store the password in AWS Secrets Manager with automatic rotation enabled
 ### Question 7
 **Scenario:** A company wants to enforce that all S3 buckets in their AWS accounts have encryption enabled and block public access. They need a solution that works across multiple accounts.
 
-A. Use S3 Batch Operations
-B. Use AWS Config rules with automatic remediation
-C. Manually check each bucket and enable encryption
+A. Use S3 Batch Operations to apply encryption settings to the objects already in existing buckets
+B. Use AWS Config rules that flag non-compliant buckets in each account and email the security team
+C. Manually check each bucket and enable encryption, tracked in a spreadsheet by the security team
 D. Use AWS Organizations Service Control Policies (SCPs)
 
 <details>
@@ -177,10 +177,10 @@ D. Make the API public and handle auth in Lambda
 ### Question 9
 **Scenario:** A company needs to detect when someone makes API calls from an IP address outside their approved corporate network. They need to be alerted within minutes.
 
-A. Enable VPC Flow Logs and analyze with Athena
+A. Enable VPC Flow Logs and analyze with Athena, filtering for source IPs outside the corporate range
 B. Configure CloudTrail with CloudWatch Logs and set up metric filters
-C. Enable GuardDuty for threat detection
-D. Use AWS Config to track API changes
+C. Enable GuardDuty for threat detection, and review its findings each week for unusual API callers
+D. Use AWS Config to track API changes made to resources, with a rule that checks the caller's address
 
 <details>
 <summary>Answer</summary>
@@ -198,7 +198,7 @@ D. Use AWS Config to track API changes
 **Scenario:** An application processes sensitive data and regulatory requirements mandate that encryption keys be stored in hardware security modules (HSMs) with FIPS 140-2 Level 3 validation.
 
 A. Use client-side encryption with OpenSSL
-B. Use AWS KMS with standard keys
+B. Use AWS KMS with AWS managed keys that AWS creates and controls
 C. Use AWS KMS with imported key material
 D. Use AWS CloudHSM
 
@@ -207,7 +207,7 @@ D. Use AWS CloudHSM
 
 **Correct: D**
 
-**Why:** AWS CloudHSM provides dedicated HSMs with FIPS 140-2 Level 3 validation, giving you full control over keys in tamper-resistant hardware. Standard KMS keys are Level 2 validated. Imported keys still use KMS infrastructure.
+**Why:** AWS CloudHSM provides dedicated HSMs with FIPS 140-2 Level 3 validation, giving you full control over keys in tamper-resistant hardware. KMS keys live in multi-tenant AWS-managed HSMs, while CloudHSM gives you single-tenant HSMs under your control, so it is the answer when the requirement is keys held in your own HSMs. Imported keys still use KMS infrastructure.
 
 **Key Concept:** [AWS CloudHSM](https://aws.amazon.com/cloudhsm/)
 </details>
@@ -217,8 +217,8 @@ D. Use AWS CloudHSM
 ### Question 11
 **Scenario:** A company runs an application that processes credit card data. They need to ensure EC2 instances are regularly scanned for vulnerabilities and Common Vulnerabilities and Exposures (CVEs).
 
-A. Use AWS Trusted Advisor
-B. Use Amazon Inspector
+A. Use AWS Trusted Advisor best-practice checks
+B. Use Amazon Inspector to scan EC2
 C. Use Amazon GuardDuty
 D. Use AWS Shield
 
@@ -238,16 +238,16 @@ D. Use AWS Shield
 **Scenario:** A company wants to prevent accidental deletion of an S3 bucket that contains critical compliance data. Even administrators should not be able to delete it without additional approval.
 
 A. Enable S3 versioning
-B. Enable S3 Object Lock in Governance mode
+B. Enable S3 Object Lock in Governance mode, which privileged users can bypass
 C. Enable MFA Delete on the bucket
-D. Create a bucket policy denying delete
+D. Create a bucket policy denying delete, which an administrator can edit
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** MFA Delete requires multi-factor authentication to delete the bucket or change versioning state. This adds an extra layer of protection even for administrators. Object Lock prevents object deletion but not bucket deletion. Versioning preserves data but doesn't prevent deletion.
+**Why:** MFA Delete requires multi-factor authentication to permanently delete object versions or change versioning state. This adds an extra approval factor even for administrators. Governance mode can be bypassed by privileged users, and a bucket policy can be edited by an administrator. Versioning preserves data but doesn't prevent deletion.
 
 **Key Concept:** [MFA Delete](https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiFactorAuthenticationDelete.html)
 </details>
@@ -279,10 +279,10 @@ D. Deploy EC2 in multiple Regions, RDS Cross-Region Replica, S3 for files
 ### Question 14
 **Scenario:** An application must achieve a Recovery Time Objective (RTO) of 15 minutes and Recovery Point Objective (RPO) of 1 hour for disaster recovery to another AWS Region.
 
-A. Backup and Restore strategy
-B. Multi-site Active-Active
-C. Pilot Light strategy
-D. Warm Standby strategy
+A. Backup and Restore
+B. Multi-site Active-Active strategy running full capacity in both Regions
+C. Pilot Light
+D. Warm Standby strategy in the DR Region
 
 <details>
 <summary>Answer</summary>
@@ -319,10 +319,10 @@ D. Use a Network Load Balancer
 ### Question 16
 **Scenario:** A company has a legacy application that cannot be modified to run across multiple servers. They need high availability with automatic failover.
 
-A. Use AWS Elastic Beanstalk
+A. Use AWS Elastic Beanstalk, which runs the application on several instances behind a load balancer
 B. Use EC2 Auto Recovery with CloudWatch alarms
-C. Deploy to multiple AZs with load balancer
-D. Deploy multiple instances and sync manually
+C. Deploy to multiple AZs with a load balancer, running a copy of the application in each AZ
+D. Deploy multiple instances and sync manually, copying the data to the standby after each change
 
 <details>
 <summary>Answer</summary>
@@ -340,8 +340,8 @@ D. Deploy multiple instances and sync manually
 **Scenario:** An application uses Amazon SQS to decouple components. Messages must not be lost, and duplicate processing must be prevented.
 
 A. Use Amazon SNS for message delivery
-B. Use SQS Standard queue with visibility timeout
-C. Use SQS Standard queue with dead-letter queue
+B. Use SQS Standard queue with visibility timeout set to the processing time
+C. Use SQS Standard queue with a dead-letter queue and three retries
 D. Use SQS FIFO queue with message deduplication
 
 <details>
@@ -359,7 +359,7 @@ D. Use SQS FIFO queue with message deduplication
 ### Question 18
 **Scenario:** A company needs to design a database solution that automatically replicates data synchronously across three Availability Zones and can handle 100,000 read queries per second.
 
-A. Amazon Aurora with Aurora Replicas
+A. Amazon Aurora with up to 15 Aurora Replicas sharing one storage layer
 B. Amazon DynamoDB Global Tables
 C. Amazon ElastiCache Redis cluster
 D. Amazon RDS MySQL with Read Replicas
@@ -379,10 +379,10 @@ D. Amazon RDS MySQL with Read Replicas
 ### Question 19
 **Scenario:** An e-commerce application experiences traffic spikes during flash sales. Orders must not be lost if the database becomes temporarily unavailable.
 
-A. Deploy read replicas for the database
-B. Scale up the database before sales
+A. Deploy read replicas for the database so that the order writes are spread across more nodes
+B. Scale up the database before sales to a larger instance class that can handle the peak writes
 C. Use SQS to queue orders and process asynchronously
-D. Use ElastiCache to buffer writes
+D. Use ElastiCache to buffer writes in memory and flush them to the database when it is back
 
 <details>
 <summary>Answer</summary>
@@ -399,9 +399,9 @@ D. Use ElastiCache to buffer writes
 ### Question 20
 **Scenario:** A company runs a critical workload on EC2 instances. They need to minimize data loss if an instance fails, requiring the most durable storage option.
 
-A. EBS volumes with continuous replication to S3
+A. EBS gp3 volumes in one AZ with no snapshots
 B. Instance store volumes
-C. EBS volumes with daily snapshots
+C. EBS volumes with snapshots taken every day and stored in S3
 D. EBS io2 volumes with Multi-Attach
 
 <details>
@@ -419,10 +419,10 @@ D. EBS io2 volumes with Multi-Attach
 ### Question 21
 **Scenario:** A media company needs to store video files that are frequently accessed for the first 30 days, then rarely accessed, and must be retained for 7 years for compliance.
 
-A. Store in S3 One Zone-IA
-B. Store in S3 Standard, manually move to Glacier after 30 days
-C. Store in S3 Standard with lifecycle policy to S3 Standard-IA at 30 days, Glacier at 90 days
-D. Store in S3 Intelligent-Tiering
+A. Store in S3 One Zone-IA from day one for the lowest price
+B. Store in S3 Standard and have an admin manually move files to Glacier
+C. Store in S3 Standard with a lifecycle policy: Standard-IA at 30 days, Glacier at 90 days
+D. Store in S3 Intelligent-Tiering, paying a per-object monitoring fee for an access pattern that is already known
 
 <details>
 <summary>Answer</summary>
@@ -439,17 +439,17 @@ D. Store in S3 Intelligent-Tiering
 ### Question 22
 **Scenario:** A company needs their application to fail over to a different AWS Region if the primary Region becomes unavailable. DNS-based failover is acceptable.
 
-A. Use AWS Global Accelerator
-B. Use Application Load Balancer cross-region
-C. Use Route 53 health checks with failover routing
-D. Use CloudFront with multiple origins
+A. Use Route 53 simple routing with records for both Regions and no health checks
+B. Use one ALB with targets registered from each Region's VPC
+C. Use Route 53 health checks with failover routing, with a standby endpoint in the second Region
+D. Use CloudFront with one cache behavior per Region, caching content at the edge
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Route 53 failover routing with health checks can automatically route traffic to a healthy Region if the primary Region fails. ALB doesn't work cross-region. Global Accelerator provides performance optimization but Route 53 is the standard DR solution.
+**Why:** Route 53 failover routing with health checks can automatically route traffic to a healthy Region if the primary Region fails. Simple routing without health checks (A) never removes a failed Region. An ALB cannot span Regions (B). CloudFront with a cache behavior per Region (D) only caches content and does not fail over.
 
 **Key Concept:** [Route 53 Failover](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html)
 </details>
@@ -483,7 +483,7 @@ D. Amazon ElastiCache Redis
 
 A. Migrate to Aurora
 B. Deploy ElastiCache in front of the database
-C. Add RDS Read Replicas and configure application to read from replicas
+C. Add RDS Read Replicas and send all application traffic, reads and writes, to the replica
 D. Enable RDS Multi-AZ
 
 <details>
@@ -491,7 +491,7 @@ D. Enable RDS Multi-AZ
 
 **Correct: B**
 
-**Why:** ElastiCache can cache frequently accessed data, dramatically reducing read latency with minimal code changes (cache-aside pattern). Read Replicas help but require application changes to route reads. Multi-AZ is for availability, not performance.
+**Why:** ElastiCache can cache frequently accessed data, dramatically reducing read latency with minimal code changes (cache-aside pattern). Read Replicas accept only reads, so sending writes to one (C) fails. Multi-AZ is for availability, not performance.
 
 **Key Concept:** [ElastiCache](https://aws.amazon.com/elasticache/)
 </details>
@@ -502,16 +502,16 @@ D. Enable RDS Multi-AZ
 **Scenario:** A company needs to process 10TB of data daily from S3, running complex SQL queries for business intelligence. Query results should be available within minutes.
 
 A. Use Amazon Redshift with S3 data loading
-B. Use Amazon Athena with partitioned data
-C. Use Amazon RDS to import and query data
-D. Use AWS Glue to transform data
+B. Use Amazon Athena on raw CSV files in S3, scanning the full data set for every query
+C. Use Amazon RDS to import and query the data, sizing the instance for the daily 10 TB load
+D. Use AWS Glue to transform data into Parquet and run the business intelligence queries on the job
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Redshift is designed for large-scale data warehousing and complex analytical queries. It can efficiently load and query terabytes of data. Athena is serverless but may be slower for complex queries on this scale. Glue is for ETL, not querying.
+**Why:** Redshift is designed for large-scale data warehousing and complex analytical queries. It can efficiently load and query terabytes of data. Athena over raw CSV (B) scans the whole data set for every query and is slower for complex BI queries at this scale. Glue is for ETL, not querying.
 
 **Key Concept:** [Amazon Redshift](https://aws.amazon.com/redshift/)
 </details>
@@ -524,7 +524,7 @@ D. Use AWS Glue to transform data
 A. Host on S3 with CloudFront distribution
 B. Deploy to multiple Regions with Route 53 latency-based routing
 C. Deploy EC2 instances in multiple Regions with Route 53 geolocation routing
-D. Use AWS Global Accelerator with ALB
+D. Use Global Accelerator
 
 <details>
 <summary>Answer</summary>
@@ -541,19 +541,17 @@ D. Use AWS Global Accelerator with ALB
 ### Question 27
 **Scenario:** An application needs to process messages from an SQS queue. Processing time varies from 1 second to 5 minutes. The company wants to scale processing capacity based on queue depth.
 
-A. Use AWS Step Functions
-B. Use Fargate tasks triggered by SQS
-C. Use EC2 instances polling SQS with Auto Scaling based on ApproximateNumberOfMessagesVisible
-D. Use Lambda with SQS trigger
+A. Use Step Functions to run a Lambda state for each message
+B. Use Fargate tasks triggered by SQS through an EventBridge rule that starts a task per message
+C. Use EC2 instances polling SQS with Auto Scaling on ApproximateNumberOfMessagesVisible
+D. Use Lambda with an SQS trigger, setting the function timeout to 30 seconds and a batch size of 1, so each message gets its own invocation
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Lambda has a 15-minute timeout, but message processing up to 5 minutes is within limits. However, EC2 with Auto Scaling based on queue depth provides more control for variable processing times and can scale based on backlog. For 5-minute processing, Lambda would work but EC2 gives more flexibility.
-
-Note: Lambda would also be acceptable for this scenario since 5 minutes is within the 15-minute limit. The question emphasizes scaling based on queue depth, which both solutions support.
+**Why:** EC2 workers that poll SQS can run each message for as long as it needs, and an Auto Scaling policy on ApproximateNumberOfMessagesVisible scales capacity with queue depth. Lambda with a 30-second timeout (D) cannot finish messages that take up to 5 minutes. Step Functions per message (A) and an EventBridge rule per message (B) do not scale on queue depth.
 
 **Key Concept:** [SQS-based Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-using-sqs-queue.html)
 </details>
@@ -564,9 +562,9 @@ Note: Lambda would also be acceptable for this scenario since 5 minutes is withi
 **Scenario:** A video streaming service needs to deliver live video to viewers worldwide with the lowest possible latency. Videos are encoded in real-time.
 
 A. AWS Elemental MediaLive with MediaPackage and CloudFront
-B. EC2 instances running custom streaming software
-C. Amazon Kinesis Video Streams
-D. Amazon S3 with CloudFront
+B. EC2 instances running custom streaming software, with a media server in each Region
+C. Amazon Kinesis Video Streams, which ingests live video from the cameras and serves it to viewers worldwide
+D. Amazon S3 with CloudFront, serving short segments of the stream from the bucket to viewers
 
 <details>
 <summary>Answer</summary>
@@ -583,7 +581,7 @@ D. Amazon S3 with CloudFront
 ### Question 29
 **Scenario:** A company needs to transfer 50TB of data from an on-premises data center to AWS. Their internet connection is 100 Mbps, and they need the data transferred within one week.
 
-A. Use AWS Snowball
+A. Use AWS Snowball Edge devices, shipped to the data center and back
 B. Use AWS DataSync over VPN
 C. Transfer over the internet using multiple threads
 D. Set up AWS Direct Connect
@@ -643,9 +641,9 @@ D. Run Spark on EC2 instances running 24/7
 ### Question 32
 **Scenario:** A company needs to serve API traffic to users globally. They want to improve performance by reducing connection latency, especially for users far from the AWS Region.
 
-A. Use larger EC2 instances
+A. Use bigger instances
 B. Deploy to multiple Regions with Route 53 latency routing
-C. Use CloudFront with API Gateway origin
+C. Use CloudFront with an API Gateway origin, caching API responses for 24 hours
 D. Use AWS Global Accelerator
 
 <details>
@@ -653,7 +651,7 @@ D. Use AWS Global Accelerator
 
 **Correct: D**
 
-**Why:** Global Accelerator provides static anycast IP addresses and routes traffic through AWS's global network to the optimal endpoint. It reduces latency for TCP/UDP traffic including APIs. CloudFront is primarily for cacheable content. Multi-region adds operational complexity.
+**Why:** Global Accelerator provides static anycast IP addresses and routes traffic through AWS's global network to the optimal endpoint. It reduces latency for TCP/UDP traffic including APIs. Caching API responses for 24 hours (C) serves stale data. Multi-region adds operational complexity.
 
 **Key Concept:** [AWS Global Accelerator](https://aws.amazon.com/global-accelerator/)
 </details>
@@ -665,9 +663,9 @@ D. Use AWS Global Accelerator
 ### Question 33
 **Scenario:** A company runs batch processing jobs on EC2 instances. Jobs can be interrupted and restarted without data loss. They run for 4-6 hours and execute 3 times per week.
 
-A. On-Demand Instances
-B. Dedicated Hosts
-C. Reserved Instances (1-year)
+A. On-Demand Instances, paying the standard hourly rate for only the hours that the jobs run
+B. Dedicated Hosts, reserved for the account so that no other customer shares the server
+C. Reserved Instances (1-year), paying for a full year of capacity at a discounted hourly rate
 D. Spot Instances with checkpointing
 
 <details>
@@ -685,8 +683,8 @@ D. Spot Instances with checkpointing
 ### Question 34
 **Scenario:** A company stores 100TB of data in S3. 90% of the data hasn't been accessed in over a year but must be retained for compliance. They want to reduce storage costs.
 
-A. Enable S3 Intelligent-Tiering
-B. Move all data to S3 One Zone-IA
+A. Enable S3 Intelligent-Tiering, which adds a per-object monitoring fee for data whose access pattern is already known
+B. Move all data to S3 One Zone-IA in a single AZ
 C. Delete the unused data
 D. Move infrequently accessed data to S3 Glacier Deep Archive
 
@@ -706,8 +704,8 @@ D. Move infrequently accessed data to S3 Glacier Deep Archive
 **Scenario:** A company runs multiple production workloads on EC2. They can commit to using specific instance types for 3 years. What provides the maximum cost savings?
 
 A. Spot Instances
-B. Reserved Instances (3-year, All Upfront)
-C. EC2 Instance Savings Plans
+B. Standard Reserved Instances (3-year, All Upfront)
+C. EC2 Instance Savings Plans (No Upfront)
 D. Compute Savings Plans
 
 <details>
@@ -725,17 +723,17 @@ D. Compute Savings Plans
 ### Question 36
 **Scenario:** A company wants to identify unused or underutilized EC2 instances and get recommendations to right-size them.
 
-A. AWS Cost Explorer with Resource Optimization
+A. AWS Cost Explorer with the cost forecast report
 B. AWS Compute Optimizer
 C. AWS Budgets
-D. AWS Pricing Calculator
+D. AWS Pricing Calculator for new workloads
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** AWS Compute Optimizer analyzes CloudWatch metrics and provides recommendations for right-sizing EC2 instances, EBS volumes, and Lambda functions. Cost Explorer shows costs but doesn't analyze utilization. Budgets tracks spending against thresholds.
+**Why:** AWS Compute Optimizer analyzes CloudWatch metrics and provides recommendations for right-sizing EC2 instances, EBS volumes, and Lambda functions. Cost Explorer's forecast report (A) projects spend and does not analyze utilization. Budgets tracks spending against thresholds.
 
 **Key Concept:** [AWS Compute Optimizer](https://aws.amazon.com/compute-optimizer/)
 </details>
@@ -746,9 +744,9 @@ D. AWS Pricing Calculator
 **Scenario:** A company has variable compute needs that fluctuate hourly. They want cost savings but need flexibility to change instance types and sizes as requirements evolve.
 
 A. Spot Instances
-B. Dedicated Hosts
+B. Dedicated Hosts for the fleet
 C. Compute Savings Plans
-D. Reserved Instances
+D. Standard Reserved Instances (3-year)
 
 <details>
 <summary>Answer</summary>
@@ -765,10 +763,10 @@ D. Reserved Instances
 ### Question 38
 **Scenario:** A company runs an internal application used only during business hours (8 AM - 6 PM, Monday-Friday). EC2 instances currently run 24/7.
 
-A. Move to Lambda
+A. Rewrite the application for Lambda
 B. Use AWS Instance Scheduler to stop instances outside business hours
-C. Use Spot Instances
-D. Use Reserved Instances
+C. Use Spot Instances, which can be interrupted by AWS
+D. Use Reserved Instances, which give a lower hourly rate in return for a one- or three-year commitment
 
 <details>
 <summary>Answer</summary>
@@ -806,8 +804,8 @@ D. Move all environments to a single shared instance
 **Scenario:** A company uses Amazon RDS for a production database. The database is heavily used during business hours but has minimal activity overnight and weekends.
 
 A. Use RDS Reserved Instances
-B. Stop the RDS instance during off-hours
-C. Use Aurora Serverless
+B. Stop the RDS instance every night, though overnight users need it
+C. Use Aurora Serverless v2, which scales capacity up and down with demand during the day and overnight
 D. Use smaller instance during off-hours
 
 <details>
@@ -815,7 +813,7 @@ D. Use smaller instance during off-hours
 
 **Correct: C**
 
-**Why:** Aurora Serverless automatically scales capacity based on demand and can scale to zero during periods of no activity. This is ideal for variable workloads with significant idle time. Stopping RDS loses data if not using Aurora. Manual scaling is operationally complex.
+**Why:** Aurora Serverless automatically scales capacity based on demand and can scale to zero during periods of no activity. This is ideal for variable workloads with significant idle time. Stopping RDS (B) makes the database unavailable to overnight users. Manual scaling is operationally complex.
 
 **Key Concept:** [Aurora Serverless](https://aws.amazon.com/rds/aurora/serverless/)
 </details>

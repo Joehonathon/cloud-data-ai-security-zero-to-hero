@@ -16,9 +16,9 @@ MLS-C01 has been superseded for many candidates by the Machine Learning Engineer
 ### Question 1
 **Scenario:** A binary classifier must catch as many fraudulent transactions as possible, accepting some false alarms.
 
-A. Optimize training speed
-B. Optimize precision
-C. Optimize accuracy
+A. Optimize training speed, since fraud models must be retrained often on fresh transactions
+B. Optimize precision, so that nearly every flagged transaction turns out to be real fraud
+C. Optimize accuracy, which counts every correct prediction and so reflects fraud detection well
 D. Optimize recall, and tune the decision threshold accordingly
 
 <details>
@@ -34,10 +34,10 @@ D. Optimize recall, and tune the decision threshold accordingly
 ### Question 2
 **Scenario:** Training accuracy is 99% and validation accuracy is 70%.
 
-A. Underfitting; use a larger model
+A. Underfitting; use a larger model with more layers so it can fit the validation set better
 B. Overfitting; add regularization, dropout, more data, or early stopping
-C. The learning rate is too low
-D. The data is corrupt
+C. The learning rate is too low, so training has not converged
+D. The data is corrupt, since the validation labels must have been shuffled during upload
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. The data is corrupt
 ### Question 3
 **Scenario:** A categorical feature has 10,000 distinct values.
 
-A. One-hot encode it
-B. Drop it
-C. Use target encoding, hashing, or a learned embedding, depending on the model
-D. Label encode it for a linear model
+A. One-hot encode it into 10,000 binary columns, which keeps every category separate and works for every model
+B. Drop it, since a feature with that many values cannot carry useful signal for any model
+C. Use target encoding, hashing, or a learned embedding, depending on the model and how it is trained
+D. Label encode it for a linear model, treating each integer as a magnitude
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Label encode it for a linear model
 ### Question 4
 **Scenario:** SageMaker must serve a model with variable, spiky traffic and scale to zero between bursts.
 
-A. An EC2 instance
-B. Serverless Inference
+A. An EC2 instance running the model container behind a load balancer sized for the peak
+B. Serverless Inference, which scales with traffic and down to zero
 C. A real-time endpoint with a fixed instance count
-D. Batch Transform
+D. Batch Transform, started on a schedule to process the requests that accumulated since the last run
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Batch Transform
 ### Question 5
 **Scenario:** Two model versions must be compared on live traffic without risking full exposure.
 
-A. Deploy both behind one endpoint as production variants with weighted traffic, or use a shadow variant
-B. Two separate endpoints and manual switching
-C. Offline evaluation only
-D. Deploy the new one fully
+A. Deploy the versions behind one endpoint as production variants with weighted traffic, or use a shadow variant
+B. Two separate endpoints, with manual switching of the client's URL between them during the test
+C. Offline evaluation only, using a held-out test set, since live traffic cannot be sampled safely
+D. Deploy the new one fully, then roll back if the error rate rises over the old model's baseline
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Deploy the new one fully
 ### Question 6
 **Scenario:** A dataset is highly imbalanced at 100:1.
 
-A. Combine approaches: resampling (SMOTE or undersampling), class weights, and evaluation with precision-recall rather than accuracy
-B. Do nothing
-C. Use a bigger model
-D. Collect more of the majority class
+A. Combine resampling (SMOTE or undersampling), class weights, and precision-recall evaluation rather than accuracy
+B. Do nothing, since a sufficiently large dataset lets the model learn the minority class unaided
+C. Use a bigger model, because more capacity lets it fit the rare class without any other change
+D. Collect more of the majority class, which rebalances the ratio once the data volume doubles
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Collect more of the majority class
 ### Question 7
 **Scenario:** Hyperparameter tuning must find good values efficiently on an expensive training job.
 
-A. Random guessing
-B. Manual tuning
-C. Grid search
-D. SageMaker automatic model tuning with Bayesian search and early stopping
+A. Random guessing of values within the documented ranges, repeated until the metric looks fine
+B. Manual tuning by an engineer, who edits the hyperparameters after reading each job's logs
+C. Grid search over every combination of values, which is exhaustive and so finds the best result quickly and cheaply
+D. SageMaker automatic model tuning with Bayesian search, early stopping, and a limit on parallel jobs
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. SageMaker automatic model tuning with Bayesian search and early stopping
 ### Question 8
 **Scenario:** Feature values computed at training time differ from those computed at inference time.
 
-A. Training-serving skew: use a feature store or shared transformation code so both paths compute features identically
-B. Increase model size
-C. Retrain more often
-D. Ignore it
+A. Training-serving skew: use a feature store or shared transformation code so each path computes features identically
+B. Increase model size so it can learn to compensate for the differences in feature values
+C. Retrain more often on fresher data, since every new training run will bring the two feature computations back into line and fix the gap
+D. Ignore it, because small differences in feature values average out over many predictions and rarely move the results by much
 
 <details>
 <summary>Answer</summary>
@@ -160,9 +160,9 @@ D. Ignore it
 ### Question 9
 **Scenario:** Which SageMaker capability detects data drift on a deployed endpoint?
 
-A. CloudWatch alarms on CPU
-B. Clarify only
-C. Batch Transform
+A. CloudWatch alarms on CPU and memory utilization, which rise whenever the input data distribution shifts
+B. Clarify only, run once at deployment time to compare the live feature statistics with the training set
+C. Batch Transform jobs that re-score the endpoint's recent traffic and report any change in the predictions
 D. Model Monitor with a baseline from the training data
 
 <details>
@@ -178,10 +178,10 @@ D. Model Monitor with a baseline from the training data
 ### Question 10
 **Scenario:** A time series must be split for validation.
 
-A. Chronological split, training on earlier data and validating on later, with no future information in the features
-B. Random shuffle split
-C. Stratified split
-D. K-fold with shuffling
+A. Chronological split, training on earlier data and validating on later data, or rolling-origin cross-validation
+B. Random shuffle split, so both sets contain examples from every period of the series
+C. Stratified split on the target, so that each set keeps the same share of high and low values
+D. K-fold with shuffling, repeated five times so every record is used for validation once
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. K-fold with shuffling
 ### Question 11
 **Scenario:** Large training data lives in S3 and the job spends most of its time downloading.
 
-A. Use a bigger instance
-B. Compress with gzip only
-C. Use Pipe mode or FastFile mode to stream from S3, or use FSx for Lustre for repeated access
-D. Reduce the dataset
+A. Use a bigger instance with more vCPUs, since download time scales down with compute
+B. Compress with gzip only, then keep File mode so that the job still copies every object at the start
+C. Use Pipe or FastFile mode to stream from S3, or FSx for Lustre for repeated access to the data
+D. Reduce the dataset by dropping older partitions, accepting a smaller training set
 
 <details>
 <summary>Answer</summary>
@@ -215,9 +215,9 @@ D. Reduce the dataset
 **Scenario:** A model must explain individual predictions to satisfy a regulator.
 
 A. SageMaker Clarify with SHAP values for feature attribution
-B. Model size
-C. The confusion matrix
-D. Training loss curves
+B. Model size, reported as the parameter count, which shows regulators how complex each decision was
+C. The confusion matrix on the test set, which lists the true and false predictions for each applicant
+D. Training loss curves, which show the reasons behind each prediction over the training epochs
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Training loss curves
 ### Question 13
 **Scenario:** Which algorithm suits anomaly detection on streaming numeric data?
 
-A. Linear Learner
-B. Random Cut Forest
-C. Seq2Seq
-D. XGBoost
+A. Linear Learner, a supervised algorithm for regression and classification
+B. Random Cut Forest, an unsupervised anomaly detector
+C. Seq2Seq, a sequence-to-sequence model for translation and text summarization
+D. XGBoost, a gradient boosted tree algorithm that needs labeled examples
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. XGBoost
 ### Question 14
 **Scenario:** Training must use spot capacity without losing progress on interruption.
 
-A. Restart from scratch on interruption
-B. On-demand only
+A. Restart from scratch on interruption, accepting that a long job may never finish
+B. On-demand only, at a higher price
 C. Managed spot training with checkpointing to S3
-D. Reserved instances
+D. Reserved instances, which guarantee capacity for a one-year term and so need no checkpoints
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Reserved instances
 ### Question 15
 **Scenario:** An ML pipeline must run data prep, training, evaluation, and conditional registration.
 
-A. A shell script
-B. SageMaker Pipelines with steps and a condition step gating model registration on the evaluation metric
-C. A single notebook
-D. Manual steps
+A. A shell script run by cron that calls each stage in order and emails the log to the team
+B. SageMaker Pipelines with steps and a condition step that gates model registration on the metric
+C. A single notebook with all four stages in separate cells, re-run by hand after every data update by whoever is on call
+D. Manual steps in a runbook, with a reviewer approving each stage
 
 <details>
 <summary>Answer</summary>

@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** You need current GPU utilization, memory use, temperature, and the processes using each GPU on a node.
 
-A. `nvidia-smi`
-B. `lspci`
-C. `top`
-D. `df -h`
+A. `nvidia-smi`, which reports utilization, memory, temperature, and the compute processes on each GPU
+B. `lspci -v`, which lists PCIe devices with their link speed, including each installed GPU
+C. `top` with the per-thread view enabled, which shows CPU time per process including processes driving the GPU
+D. `df -h` on the node, which shows filesystem usage and so the space left for datasets
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. `df -h`
 ### Question 2
 **Scenario:** Fleet-wide GPU health metrics must be exported to Prometheus with alerting.
 
-A. Grafana alone
-B. `nvidia-smi` in a cron job
-C. NVIDIA DCGM with the DCGM exporter
-D. Node exporter alone
+A. Grafana alone, with a dashboard at each node, since Grafana collects GPU metrics itself
+B. `nvidia-smi` in a cron job on each node writing CSV files that a central script merges
+C. NVIDIA DCGM with the DCGM exporter, which exposes GPU health and profiling metrics to Prometheus
+D. Node exporter alone, using its default collectors, which report CPU, memory, disk, and network but not GPU counters
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Node exporter alone
 ### Question 3
 **Scenario:** A container must access the host's GPUs.
 
-A. Install drivers inside the container
+A. Install the matching NVIDIA driver inside the container image so the image carries everything it needs, whatever the host runs
 B. Use the NVIDIA Container Toolkit so the runtime injects the driver libraries and devices
-C. Mount `/dev` manually
-D. Run the container as privileged with no other change
+C. Mount `/dev` manually into the container, which exposes device nodes but not the user-space driver libraries
+D. Run the container as privileged with no other change, which exposes host devices but still provides no driver libraries
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Run the container as privileged with no other change
 ### Question 4
 **Scenario:** A CUDA application fails with a driver and runtime version mismatch.
 
-A. Reboot
-B. Increase GPU memory
-C. Reinstall the application
-D. The container's CUDA runtime requires a newer driver than the host provides; upgrade the host driver or use an image built for the installed driver
+A. Reboot the node, because a mismatch is cleared once the kernel module is reloaded at start-up
+B. Increase GPU memory by moving the job to a larger card, since the error comes from a failed allocation
+C. Reinstall the application and rebuild its virtual environment, which replaces Python packages but leaves the host driver unchanged
+D. The container's CUDA runtime needs a newer driver than the host has; upgrade the host driver or use a matching image
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. The container's CUDA runtime requires a newer driver than the host provides; 
 ### Question 5
 **Scenario:** Kubernetes must schedule pods onto GPU nodes and advertise GPU resources automatically.
 
-A. The NVIDIA GPU Operator, which manages drivers, container toolkit, device plugin, and DCGM exporter
-B. A node label only
-C. A DaemonSet running `nvidia-smi`
-D. The CNI plugin
+A. The NVIDIA GPU Operator, which manages drivers, container toolkit, device plugin, and DCGM exporter on every GPU node
+B. A node label such as `gpu=true` on each GPU node, which lets selectors target nodes and also advertises GPU capacity to the scheduler
+C. A DaemonSet running `nvidia-smi` on every node, which prints utilization but registers no schedulable resource
+D. The CNI plugin, which configures pod networking but also handles discovery of GPU devices on each node
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. The CNI plugin
 ### Question 6
 **Scenario:** One A100 should be shared by several small inference workloads with hardware-level isolation.
 
-A. Running them sequentially
-B. MPS
-C. Time-slicing
-D. Multi-Instance GPU (MIG), partitioning the GPU into isolated instances
+A. Running them sequentially on the whole GPU, which avoids interference but does not share the card between workloads
+B. MPS, which lets processes share a GPU concurrently, without dedicated memory or a separate fault domain per client
+C. Time-slicing through the device plugin, which gives each workload dedicated memory and bandwidth for the whole duration of its slice
+D. MIG, partitioning the GPU into isolated instances
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Multi-Instance GPU (MIG), partitioning the GPU into isolated instances
 ### Question 7
 **Scenario:** A pod requests `nvidia.com/gpu: 1` and stays Pending.
 
-A. Rebuild the image
-B. Restart the API server
-C. Check for schedulable GPU nodes, whether the device plugin is running and advertising capacity, and whether taints or tolerations block placement
-D. Increase the pod's memory
+A. Rebuild the image with a newer CUDA base, because a Pending pod means the image failed to start on the node
+B. Restart the API server so it reloads node resources, since Pending pods usually come from stale control-plane state
+C. Check for schedulable GPU nodes, whether the device plugin is running and advertising capacity, and whether taints block placement
+D. Increase the pod's memory request, because a pod waiting on `nvidia.com/gpu` is held back by missing RAM on the node
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Increase the pod's memory
 ### Question 8
 **Scenario:** What does NVLink provide compared with PCIe?
 
-A. Network connectivity between nodes
-B. Storage access
+A. Network connectivity between nodes, so NVLink replaces InfiniBand for multi-node training across the cluster
+B. Storage access from GPUs straight to NVMe drives, bypassing the CPU and host memory on the node
 C. Higher bandwidth, lower latency GPU-to-GPU interconnect within a node
-D. Display output
+D. Display output for multi-monitor workstation setups, replacing DisplayPort on data center cards
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Display output
 ### Question 9
 **Scenario:** GPU memory is reported as full but no training job is running.
 
-A. Buy more GPUs
-B. Check for orphaned processes holding memory (`nvidia-smi` process list), and reset the GPU if needed
-C. Reinstall CUDA
-D. Reduce the batch size
+A. Buy more GPUs for the node, because memory reported full means the existing devices have too little capacity for the workload
+B. Check for orphaned processes holding memory in the `nvidia-smi` process list, and reset the GPU if needed
+C. Reinstall CUDA and the driver, because reported memory use after a job ends points to a corrupted toolkit installation
+D. Reduce the batch size in the training script, which lowers memory use of a new job but frees nothing already held
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Reduce the batch size
 ### Question 10
 **Scenario:** Which registry hosts NVIDIA's optimized containers for frameworks and models?
 
-A. PyPI
-B. Conda-forge
-C. Docker Hub only
-D. NGC (NVIDIA GPU Cloud) catalog
+A. PyPI, which hosts Python wheels but not GPU-tuned containers
+B. Conda-forge, the community channel for conda packages built by volunteers without NVIDIA-specific container images
+C. Docker Hub only, since NVIDIA publishes no images of its own and community images are the only option
+D. The NGC catalog, with containers versioned against specific CUDA and driver combinations
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. NGC (NVIDIA GPU Cloud) catalog
 ### Question 11
 **Scenario:** ECC errors are reported on a GPU.
 
-A. Distinguish correctable from uncorrectable: correctable errors are handled but should be trended, while repeated uncorrectable errors mean the GPU should be drained and the vendor engaged
-B. Disable ECC permanently
-C. Ignore them
-D. Reformat the node
+A. Distinguish correctable from uncorrectable: trend correctable ones, and drain the GPU and engage the vendor for repeated uncorrectable ones
+B. Disable ECC permanently to reclaim memory and stop the error reports, accepting the small loss of capacity on the card
+C. Ignore them, because every ECC error is corrected in hardware and none can affect the results of a running training job
+D. Reformat the node and reinstall the OS image, since ECC errors indicate corrupted filesystems on local disk
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Reformat the node
 ### Question 12
 **Scenario:** A training job needs to be scheduled with other jobs on a shared cluster, with queueing and fair share.
 
-A. NVIDIA Base Command or Slurm
-B. systemd timers
-C. `docker run`
-D. cron
+A. NVIDIA Base Command or Slurm, which provide queues, priorities, fair-share accounting, and gang scheduling for multi-node jobs
+B. systemd timers on each node, which start jobs at set times but keep no shared queue or fair-share accounting
+C. `docker run` on any free node by each user, which launches at once but gives no queueing or accounting
+D. cron entries on a shared login node, which can start containers but cannot track GPU allocation
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. cron
 ### Question 13
 **Scenario:** GPU utilization is high but the job is slow, and profiling shows most time in host-to-device copies.
 
-A. Increase the learning rate
-B. The data pipeline is the bottleneck: increase dataloader workers, prefetch, use pinned memory, and consider GPUDirect Storage
-C. Reduce model size
-D. Add more GPUs
+A. Increase the learning rate, which changes convergence behaviour but does not shorten time spent copying data
+B. The data pipeline is the bottleneck: add dataloader workers, prefetch, use pinned memory, and consider GPUDirect Storage
+C. Reduce model size to lower the compute per step, which helps arithmetic cost but not the time waiting on host-to-device copies
+D. Add more GPUs to the job, which divides the compute but leaves each GPU waiting on the same slow host-to-device transfers from the CPU
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Add more GPUs
 ### Question 14
 **Scenario:** Driver upgrades must be rolled out to a Kubernetes GPU fleet with minimal disruption.
 
-A. Upgrade only the containers
-B. Use the GPU Operator's driver upgrade support with node draining, one node pool at a time, validating before proceeding
-C. Skip upgrades entirely
-D. Upgrade all nodes at once
+A. Upgrade only the containers, since the image's CUDA version is what the host driver must match
+B. Use the GPU Operator's driver upgrade with node draining, one pool at a time, validating before proceeding
+C. Skip upgrades entirely, because a working driver never needs patching and changing it only adds risk to the fleet
+D. Upgrade all nodes at once in a maintenance window, which is fastest but removes every GPU from service together
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Upgrade all nodes at once
 ### Question 15
 **Scenario:** An escalation must include enough evidence for NVIDIA support.
 
-A. The application source code
-B. A description of the symptom only
+A. The application source code and a description of the model architecture, which NVIDIA needs to reproduce the fault on its own hardware
+B. A description of the symptom only, written in plain words with the time it started, which is enough for support to locate the cause
 C. `nvidia-bug-report.sh` output, driver and CUDA versions, `nvidia-smi -q` output, DCGM diagnostics, and the reproduction steps
-D. A screenshot
+D. A screenshot of the failing console output, which shows the error text but not the driver state or system configuration
 
 <details>
 <summary>Answer</summary>

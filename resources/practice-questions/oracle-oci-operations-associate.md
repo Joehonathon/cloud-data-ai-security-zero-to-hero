@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An alarm must notify a team and trigger an automated response.
 
-A. A Monitoring alarm publishing to a Notifications topic, with subscriptions to email and to a function that performs the remediation
-B. Manual checks
-C. Email only
-D. A log query
+A. A Monitoring alarm publishing to a Notifications topic, with email and function subscriptions
+B. An on-call engineer checking the Monitoring console dashboards every hour and running the fix by hand when a metric looks high
+C. An alarm that sends email only, so the recipient can start any remediation script later from their own laptop
+D. A saved Logging log query that the team re-runs each morning to look for the condition
 
 <details>
 <summary>Answer</summary>
@@ -32,9 +32,9 @@ D. A log query
 ### Question 2
 **Scenario:** Logs from many services and instances must be searched centrally.
 
-A. Log in to each host
-B. Screenshots
-C. Local files only
+A. Log in to each host over SSH and run grep against the local log files, repeating for every instance in the compartment
+B. Take screenshots of each service's console log viewer and attach them to the incident ticket for later comparison
+C. Leave logs in local files on each instance and rely on operating system log rotation to keep a recent history
 D. The Logging service with log groups, plus the agent configuration for custom logs, and Logging Analytics for parsing and correlation
 
 <details>
@@ -50,10 +50,10 @@ D. The Logging service with log groups, plus the agent configuration for custom 
 ### Question 3
 **Scenario:** Patching must be applied to many instances on a schedule with reporting.
 
-A. Recreate instances weekly
-B. Ignore patches
-C. OS Management Hub, with managed instance groups, scheduled jobs, and compliance reporting
-D. SSH to each instance
+A. Recreate instances by hand every week from a fresh image, with no record of which instances received which patches
+B. Ignore patches until a vulnerability is announced, because Oracle patches guest operating systems automatically
+C. OS Management Hub with managed instance groups and scheduled jobs
+D. SSH to each instance in turn and run the package manager update during a maintenance window
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. SSH to each instance
 ### Question 4
 **Scenario:** A block volume must be backed up automatically with retention.
 
-A. Manual snapshots
-B. Copy files
-C. A backup policy (bronze, silver, gold, or custom) assigned to the volume, with cross-region copy where DR requires it
-D. No backup
+A. Manual snapshots taken from the console whenever an administrator remembers, with no retention schedule applied
+B. Copy the files from the mounted volume to another directory on the same instance each night using a cron job
+C. A backup policy (bronze, silver, gold, or custom) assigned to the volume, with cross-region copy for DR
+D. No backup, because block volumes are replicated three times inside the availability domain and that protects against deletion
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. No backup
 ### Question 5
 **Scenario:** An instance must move to a larger shape with minimal disruption.
 
-A. Attach more volumes
-B. It cannot be changed
+A. Attach more block volumes to the instance, which adds CPU and memory
+B. It cannot be changed, because the shape is fixed at launch
 C. Stop the instance, change the shape (or edit a flexible shape's OCPU and memory), and start it
-D. Rebuild it
+D. Rebuild it by terminating the instance and launching a new one, then reconfiguring the application and IP addresses
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Rebuild it
 ### Question 6
 **Scenario:** Instance maintenance is announced by Oracle.
 
-A. Read the maintenance notification, and for a live-migration-ineligible instance plan the reboot within the window, or proactively reboot at a convenient time
-B. Delete the instance
-C. Open a support ticket
-D. Ignore it
+A. Read the maintenance notification, then plan a reboot within the window or reboot proactively at a convenient time
+B. Delete the instance and launch a replacement from a custom image before the maintenance window begins, whatever the notice says
+C. Open a support ticket asking Oracle to cancel the maintenance event permanently, since customers can opt out of host maintenance
+D. Ignore it, because every instance is live migrated automatically
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Ignore it
 ### Question 7
 **Scenario:** Network connectivity between two instances fails intermittently.
 
-A. Increase the shape
-B. Check security lists and NSGs, route tables, and then use the network path analyzer and VNIC metrics to localize the problem
-C. Recreate the instances
-D. Reboot everything
+A. Increase the shape of each instance to one with more network bandwidth, since intermittent drops always mean a saturated VNIC
+B. Check security lists, NSGs, and route tables, then use Network Path Analyzer and VNIC metrics to localize the problem
+C. Recreate the instances in a different subnet, then repeat until the problem stops reproducing in testing
+D. Reboot everything, including the instances and the gateways, so that stale connection tracking tables and caches are cleared first
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Reboot everything
 ### Question 8
 **Scenario:** Cloud Guard reports a problem for a publicly accessible bucket.
 
-A. Delete the bucket
-B. Disable Cloud Guard
-C. Dismiss it
-D. Investigate whether public access is intended; if not, remove it and consider a Security Zone to prevent recurrence
+A. Delete the bucket immediately, along with its stored objects, since any public bucket is a confirmed data breach
+B. Disable Cloud Guard in the compartment so the detector stops raising problems about intended public buckets
+C. Dismiss the problem as resolved, because Cloud Guard findings for Object Storage are informational and need no follow-up
+D. Investigate whether public access is intended; if not, remove it and add a Security Zone
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Investigate whether public access is intended; if not, remove it and consider
 ### Question 9
 **Scenario:** Costs are rising and the cause is unclear.
 
-A. Use Cost Analysis with grouping by compartment, service, and tag, then act on the largest contributors and set budgets with alerts
-B. Estimate
-C. Cancel the account
-D. Reduce all resources
+A. Use Cost Analysis grouped by compartment, service, and tag, act on the biggest contributors, and set budgets with alerts
+B. Estimate the spend from last month's invoice and email the team to cut the least important usage
+C. Cancel the account and recreate the workloads in a new tenancy so billing history restarts
+D. Reduce all resources by 20 percent across every compartment, then check whether the bill stops rising at the next invoice cycle
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Reduce all resources
 ### Question 10
 **Scenario:** An audit asks who terminated an instance last week.
 
-A. Nobody can tell
+A. Nobody can tell, because terminated instances remove their own records and the tenancy keeps no history of API calls
 B. The Audit service, which records API calls with the principal, action, and time
-C. Monitoring metrics
-D. Instance logs
+C. Monitoring metrics, which show a drop to zero when the instance is terminated and also name the user who did it
+D. Instance logs collected by the Logging agent, which keep the termination command in the shell history
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Instance logs
 ### Question 11
 **Scenario:** Object Storage costs are growing from data nobody reads.
 
-A. Compress only
-B. Delete everything
-C. Lifecycle policy rules moving objects to infrequent access and archive, with deletion rules where retention allows
-D. Move to block storage
+A. Compress only the largest objects with gzip before upload, leaving the stored data in the Standard tier indefinitely and untouched
+B. Delete everything older than a week, including objects regulators require to be kept for years
+C. Lifecycle policy rules that move objects to infrequent access and archive, and delete them where retention allows
+D. Move the data to block storage volumes, which cost less per gigabyte than any Object Storage tier
 
 <details>
 <summary>Answer</summary>
@@ -212,9 +212,9 @@ D. Move to block storage
 ### Question 12
 **Scenario:** An OKE cluster's nodes must be updated to a new Kubernetes version.
 
-A. Delete the cluster
-B. Update in place with no drain
-C. Update only the control plane
+A. Upgrade the worker nodes first, then the control plane afterwards, since the nodes must lead the upgrade order
+B. Update the nodes in place with no drain, letting the running pods be terminated as each node restarts
+C. Update only the control plane and leave the worker nodes on the old version, since nodes upgrade themselves later
 D. Add a new node pool on the target version, cordon and drain the old nodes to migrate workloads, then remove the old pool
 
 <details>
@@ -230,10 +230,10 @@ D. Add a new node pool on the target version, cordon and drain the old nodes to 
 ### Question 13
 **Scenario:** Operational tasks must be automated without maintaining servers.
 
-A. A spreadsheet
+A. A spreadsheet of tasks that an operator reviews each morning and runs by hand
 B. Resource Scheduler or Events triggering Functions, with Resource Manager for infrastructure changes
-C. Cron on a VM
-D. Manual runbooks
+C. A cron job on a VM that the team patches and monitors, which also needs a server maintained to run the automation
+D. Manual runbooks followed by the on-call engineer whenever an alert arrives, with the steps recorded in a wiki
 
 <details>
 <summary>Answer</summary>
@@ -249,9 +249,9 @@ D. Manual runbooks
 **Scenario:** A database's performance has degraded.
 
 A. Use Database Management and Performance Hub to find the top SQL and wait events, then address the query or index before changing capacity
-B. Add storage
-C. Resize immediately
-D. Restart it
+B. Add storage to the database system immediately, since slow queries are almost always caused by running out of space
+C. Resize the compute shape to the next size up straight away, then check whether the same queries still run slowly
+D. Restart the database during business hours to clear its caches and reset the execution plans for every session
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Restart it
 ### Question 15
 **Scenario:** Access reviews must confirm who can do what in a compartment.
 
-A. Check the console visually
-B. Review IAM policies and group memberships for the compartment, and use Audit to see what access was actually exercised
-C. Assume it is correct
-D. Ask people
+A. Check the console visually by opening each resource page
+B. Review IAM policies and group memberships for the compartment, and use Audit to see what was actually used
+C. Assume it is correct because policies were reviewed when the compartment was created and have not changed since then
+D. Ask people in each team which resources they believe they can reach
 
 <details>
 <summary>Answer</summary>

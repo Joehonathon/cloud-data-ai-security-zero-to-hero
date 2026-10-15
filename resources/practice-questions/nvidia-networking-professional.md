@@ -14,9 +14,9 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Which component assigns LIDs and computes routing tables in an InfiniBand fabric?
 
-A. The DHCP server
-B. BGP
-C. The spine switch
+A. The DHCP server, which hands out the addresses that the fabric then uses to route traffic between hosts
+B. BGP, which exchanges routes between the switches and installs them into each forwarding table
+C. The spine switch, which learns the topology from the leaf switches and assigns identifiers to them
 D. The subnet manager
 
 <details>
@@ -33,9 +33,9 @@ D. The subnet manager
 **Scenario:** What does RDMA provide that TCP/IP sockets do not?
 
 A. Direct memory-to-memory transfer with kernel bypass and near-zero CPU involvement
-B. Routing
-C. Encryption
-D. Higher MTU
+B. Reliable, ordered delivery with retransmission and congestion windows handled by the operating system kernel
+C. Encryption of every payload in flight, which sockets leave to the application layer to deal with
+D. A larger MTU of up to 9000 bytes, which sockets cannot be configured to use
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Higher MTU
 ### Question 3
 **Scenario:** RoCEv2 is deployed and throughput collapses under load with high retransmission counts.
 
-A. Increase MTU only
-B. The fabric is not lossless: verify PFC is configured on the correct priority end to end, and that ECN marking and DCQCN are tuned
-C. Replace the NICs
-D. Disable RDMA
+A. Increase the MTU only, from 1500 to 9000 bytes on the hosts
+B. The fabric is not lossless: verify PFC on the right priority end to end, and tune ECN marking and DCQCN
+C. Replace the NICs with a newer generation, since the retransmissions come from faulty adapter firmware in the current cards
+D. Disable RDMA and fall back to TCP sockets, which gives the same throughput as RoCE with no CPU cost and no tuning
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Disable RDMA
 ### Question 4
 **Scenario:** A rail-optimized topology is chosen for a GPU cluster. What does that mean?
 
-A. Each GPU is associated with its own NIC and switch plane, so same-rank traffic across nodes stays within one rail
-B. Switches are stacked physically
-C. Only one switch is used
-D. All GPUs share one NIC
+A. Each GPU has its own NIC and switch plane, so same-rank traffic across nodes stays on one rail and avoids cross-rail contention
+B. Switches are stacked physically in the same rack so that their backplanes act as one large switch
+C. Only one switch is used per row of racks, with every NIC cabled into it to keep latency uniform
+D. All GPUs in a node share one NIC, which is cabled to a single top-of-rack switch for simplicity
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. All GPUs share one NIC
 ### Question 5
 **Scenario:** Which topology provides non-blocking bandwidth between any pair of endpoints at scale?
 
-A. A single switch chain
-B. A star with oversubscription
-C. A ring
+A. A single switch chain, where each switch uplinks to the next one in a line down the row
+B. A star with oversubscription, where many leaf ports share a few uplinks into a central switch
+C. A ring, where each switch connects to two neighbors and traffic travels around the loop
 D. A fat-tree (Clos) with full bisection bandwidth
 
 <details>
@@ -104,10 +104,10 @@ D. A fat-tree (Clos) with full bisection bandwidth
 ### Question 6
 **Scenario:** GPUDirect RDMA must work between nodes.
 
-A. It works automatically over any network
+A. It works automatically over any network, because the kernel stages GPU memory through the host whenever it is needed and no drivers are involved
 B. Only a driver update is needed
-C. The NIC and GPU must share a PCIe path with peer-to-peer support, the correct drivers must be loaded, and the topology should place them under the same PCIe switch or root complex
-D. It requires Ethernet only
+C. The NIC and GPU need a peer-to-peer capable PCIe path with the right drivers loaded, ideally under one PCIe switch
+D. It requires Ethernet only, because InfiniBand adapters cannot register GPU memory for direct transfers, whatever the driver version
 
 <details>
 <summary>Answer</summary>
@@ -123,9 +123,9 @@ D. It requires Ethernet only
 **Scenario:** Which tool monitors InfiniBand fabric health, congestion, and cable errors?
 
 A. NVIDIA UFM
-B. Prometheus alone
-C. `nvidia-smi`
-D. DCGM
+B. Prometheus alone, scraping node exporters on each host to chart link errors on the switches
+C. `nvidia-smi`, which reports GPU utilization, memory, and temperature for each device on a host
+D. DCGM, which collects GPU health and telemetry across the nodes in a cluster
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. DCGM
 ### Question 8
 **Scenario:** Symbol errors are rising on one InfiniBand port.
 
-A. Ignore them if throughput looks fine
-B. Investigate the physical layer: reseat or replace the cable or transceiver, check the port counters on both ends, and isolate the link if errors persist
-C. Reboot the switch
-D. Reduce the link speed permanently
+A. Ignore them if throughput looks fine, because the link layer corrects symbol errors and they only matter if the port goes down
+B. Check the physical layer: reseat or replace the cable or optic, compare counters at each end, isolate the link
+C. Reboot the switch, because a restart clears the port counters and retrains every link in the fabric
+D. Reduce the link speed permanently on that port so the errors fall, accepting lower bandwidth in return
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Reduce the link speed permanently
 ### Question 9
 **Scenario:** SHARP is enabled on the fabric. What does it do?
 
-A. Provides routing
-B. Encrypts traffic
-C. Performs in-network aggregation of collective operations in the switches, reducing data movement and latency
-D. Compresses packets
+A. Provides routing, calculating the forwarding tables that switches use to send each packet across the fabric
+B. Encrypts traffic between the hosts at line rate, using keys held by the subnet manager
+C. In-network aggregation of collective operations in the switches, cutting data movement and latency
+D. Compresses packets in the switch hardware so that more data fits on each link
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Compresses packets
 ### Question 10
 **Scenario:** Adaptive routing is enabled in an InfiniBand fabric.
 
-A. Packets always follow the shortest static path
-B. It applies only to Ethernet
-C. Traffic is dynamically distributed across alternative paths based on congestion, improving utilization in a fat-tree
-D. It disables the subnet manager
+A. Packets always follow the shortest static path computed once by the subnet manager when the fabric starts
+B. It applies only to Ethernet fabrics running RoCE, where switches rehash flows after a link failure
+C. Traffic is spread across alternative paths based on congestion
+D. It disables the subnet manager, since the switches then compute their own routes without central input
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. It disables the subnet manager
 ### Question 11
 **Scenario:** Spectrum switches are managed with Cumulus Linux. What is the operational model?
 
-A. Windows-based management
-B. A Linux-based network operating system where standard tooling, automation, and NVUE or Linux commands configure the switch
-C. Manual cabling only
-D. A proprietary CLI only
+A. Windows-based management through a graphical console installed on an administrator workstation, with settings saved in a registry
+B. A Linux-based network OS where standard tooling, automation, and NVUE or Linux commands configure the switch
+C. Manual cabling only, because the switch ports have no software configuration of their own
+D. A proprietary CLI only, with no access to a Linux shell or to standard automation tools
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. A proprietary CLI only
 ### Question 12
 **Scenario:** A DPU (BlueField) is deployed in the cluster. What is its purpose?
 
-A. A storage array
-B. Offloading networking, storage, and security functions from the host CPU onto the network adapter, with its own cores and isolation
-C. A display adapter
-D. Additional GPU compute
+A. A storage array that exposes NVMe volumes to the cluster over the fabric
+B. Offloading networking, storage, and security functions from the host CPU onto the adapter's own isolated cores
+C. A display adapter that drives monitors and remote consoles for the compute nodes in the rack, replacing the onboard graphics chip
+D. Additional GPU compute that adds more tensor cores to each host, so it is used for training workloads
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Additional GPU compute
 ### Question 13
 **Scenario:** Congestion control must prevent one heavy flow starving others on a RoCE fabric.
 
-A. Nothing is needed
-B. ECN marking with DCQCN, tuned thresholds, and PFC as a last-resort backstop rather than the primary mechanism
-C. PFC alone
-D. Larger buffers only
+A. Nothing is needed, because the switches share bandwidth fairly between flows without any tuning
+B. ECN marking with DCQCN and tuned thresholds, with PFC kept as a last-resort backstop rather than the primary mechanism
+C. PFC alone, enabled on every priority so that no packet is ever dropped, whatever the load
+D. Larger buffers only, sized so large that the queues never fill under any traffic pattern
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Larger buffers only
 ### Question 14
 **Scenario:** A new cluster must be validated before production.
 
-A. Visual inspection
-B. Trust the installer
-C. Fabric verification: link speed and width on every port, error counter baselines, point-to-point bandwidth and latency tests, and full-scale NCCL all-reduce benchmarks
-D. Ping tests
+A. Visual inspection of every cable, transceiver, and port LED, confirming that the link lights are green on every port in the racks and that nothing is loose
+B. Trust the installer's sign-off and handover documents, and confirm the cluster simply by starting the first production training job on it
+C. Verify the fabric: link speed and width per port, error baselines, point-to-point tests, and NCCL all-reduce at full scale
+D. Ping tests between every pair of hosts, confirming that each node can reach every other node on the fabric
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Ping tests
 ### Question 15
 **Scenario:** Choosing between InfiniBand and Ethernet for a new AI fabric.
 
-A. InfiniBand offers lossless transport, adaptive routing, and SHARP natively; Ethernet with RoCE can be competitive but requires careful lossless configuration and brings existing operational familiarity
-B. InfiniBand cannot scale
-C. Ethernet is always better
-D. They are identical
+A. InfiniBand has lossless transport, adaptive routing, and SHARP natively; RoCE Ethernet can compete but needs careful lossless tuning
+B. InfiniBand cannot scale beyond a few hundred nodes because the subnet manager becomes a bottleneck
+C. Ethernet is always better because it is cheaper and every operations team already knows how to run it
+D. They are identical in behavior; the only difference is the connector and cable type used
 
 <details>
 <summary>Answer</summary>

@@ -16,10 +16,10 @@ These questions assume an authorized engagement or the PEN-200 lab. Every techni
 ### Question 1
 **Scenario:** You have just gained access to a target network range for an authorized test. What comes first?
 
-A. Run a single automated tool and trust its output
-B. Attempt privilege escalation
+A. Run a single automated vulnerability scanner across the range and treat its findings as the full picture of what is exposed
+B. Attempt privilege escalation on the first reachable host, since gaining root early gives the widest view of the network from the inside
 C. Thorough enumeration: discover live hosts, then per host enumerate open ports, services, and versions
-D. Launch exploits against every host
+D. Launch the exploits you already know against every host in range, and see which of them return a shell to your listener
 
 <details>
 <summary>Answer</summary>
@@ -34,9 +34,9 @@ D. Launch exploits against every host
 ### Question 2
 **Scenario:** An `nmap` scan shows port 80 and 443 open. What is the productive next step?
 
-A. Assume it is patched
-B. Move on; web is rarely exploitable
-C. Brute force SSH
+A. Assume it is patched, because a service on a standard web port that is reachable from the internet will have been kept up to date by the owner and then reviewed
+B. Move on, since web applications are rarely exploitable compared with the services that run on non-standard ports or the older network daemons on the host
+C. Brute force SSH on port 22 with a large password list
 D. Enumerate the web application: directory and file discovery, technology fingerprinting, and manual review of the application's functionality
 
 <details>
@@ -52,10 +52,10 @@ D. Enumerate the web application: directory and file discovery, technology finge
 ### Question 3
 **Scenario:** A web form appears to build a SQL query from user input.
 
-A. Test for SQL injection systematically, starting with error-based and boolean detection before attempting extraction, and prefer parameterized understanding over blind tool use
-B. Ignore it
-C. Only run an automated scanner
-D. Assume it is safe
+A. Test for SQL injection systematically, starting with error-based and boolean detection before attempting extraction
+B. Ignore it, because a form that only builds a query from input is a normal part of the application and will not be exploitable in practice
+C. Only run an automated scanner such as `sqlmap` with default options
+D. Assume it is safe because the page uses HTTPS
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Assume it is safe
 ### Question 4
 **Scenario:** You have a low-privilege shell on a Linux host. What is the first escalation step?
 
-A. Reboot the machine
+A. Reboot the machine so that any pending kernel or service changes apply, then reconnect and check whether the shell now has more rights
 B. Enumerate systematically: kernel and OS version, SUID binaries, sudo rights, cron jobs, writable files, and running services
-C. Delete logs
-D. Guess the root password
+C. Delete the logs first so that nothing you do afterwards can be traced
+D. Guess the root password with a short list of common passwords against `su`
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Guess the root password
 ### Question 5
 **Scenario:** A shell is unstable and dies on certain commands.
 
-A. Ignore it
-B. Give up
-C. Upgrade to a fully interactive TTY, for example spawning a PTY with Python and fixing the terminal settings, before attempting complex work
-D. Reconnect repeatedly
+A. Ignore it and keep typing, because the instability is a network quirk that goes away once enough commands have run over the connection
+B. Give up on this host and look for a different foothold, as a shell that dies cannot be made reliable enough for any escalation work
+C. Upgrade to a fully interactive TTY, for example by spawning a PTY with Python and fixing the terminal settings
+D. Reconnect repeatedly by re-running the exploit until one of the shells happens to stay alive for the whole of the task you need to do
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Reconnect repeatedly
 ### Question 6
 **Scenario:** An exploit from an online database fails against the target.
 
-A. Run it again unchanged
-B. Conclude the target is not vulnerable
-C. Read and understand the exploit: check the target version, offsets, hardcoded IPs and ports, and language or architecture assumptions, then adapt it
-D. Try a completely different host
+A. Run it again unchanged a few times, since public exploits can fail on timing
+B. Conclude the target is not vulnerable, because a failed public exploit shows it is patched
+C. Read and understand the exploit: check target version, offsets, hardcoded IPs and ports, and architecture, then adapt it
+D. Try a completely different host, because public exploit code should work as published
 
 <details>
 <summary>Answer</summary>
@@ -125,9 +125,9 @@ D. Try a completely different host
 **Scenario:** You need to reach a host that is only accessible from a machine you have already compromised.
 
 A. Pivot: use port forwarding or a tunneling tool through the compromised host to route traffic into the internal segment
-B. Attack it directly from your machine
-C. Skip it
-D. It is unreachable
+B. Attack it directly from your own machine, using the same tools and addresses that worked against the hosts you could already reach
+C. Skip it, because hosts that cannot be reached from the attacking machine are out of scope for the exam
+D. It is unreachable, since a host on an internal segment can only be contacted by machines on that segment with a physical connection
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. It is unreachable
 ### Question 8
 **Scenario:** In an Active Directory environment, you have compromised one domain user.
 
-A. Stop; you need domain admin directly
-B. Enumerate the domain: users, groups, sessions, ACLs, and attack paths, using the compromised context to map routes to higher privilege
-C. Attack the domain controller directly
-D. Brute force the domain admin password
+A. Stop and report that more access is needed, because nothing useful can be done from a standard domain user account without elevated rights
+B. Enumerate the domain: users, groups, sessions, ACLs and attack paths, using your context to map routes to higher privilege
+C. Attack the domain controller directly with whatever exploits are available, since it holds the credentials for every account in the domain
+D. Brute force the domain admin password from the user account, accepting the lockouts as the price of a fast result
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Brute force the domain admin password
 ### Question 9
 **Scenario:** You capture a user's password hash. What determines whether you can use it directly?
 
-A. The hash type and the attack: NTLM hashes can sometimes be relayed or passed without cracking, while others must be cracked offline with a wordlist and rules
-B. Hashes are always crackable instantly
-C. You must always crack it
-D. Nothing; hashes are useless
+A. The hash type and the attack: NTLM hashes can sometimes be passed or relayed without cracking, others need offline cracking
+B. Hashes are always crackable instantly with a modern GPU
+C. You must always crack it to recover the plaintext
+D. Nothing; hashes are one-way values and useless without the original password
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Nothing; hashes are useless
 ### Question 10
 **Scenario:** A file upload accepts your file but you need code execution.
 
-A. Assume it is safe
-B. Upload a text file
-C. Determine what the server executes: try language-appropriate extensions, content-type and magic byte tricks, and find where uploads are served from
-D. Give up if it renames the file
+A. Assume it is safe because the application accepted the file without an error
+B. Upload a plain text file and check that it is stored, since a stored file proves that the upload feature is working as designed and is exploitable by anyone
+C. Determine what the server executes: try language-appropriate extensions, content-type and magic byte tricks, and find where uploads are served
+D. Give up if the application renames the file, because a renamed upload can never be reached or interpreted by the server
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Give up if it renames the file
 ### Question 11
 **Scenario:** Documentation and note-taking during the exam.
 
-A. Rely on memory
-B. Document continuously: commands, outputs, and screenshots per host, since the report is graded and missing evidence loses points even for a rooted box
-C. Notes are optional
-D. Take notes only at the end
+A. Rely on memory and write the report afterwards, as the commands are easy to recall once you have rooted each machine and the notes would only slow you down
+B. Document continuously: commands, output and screenshots per host, since missing evidence loses points even for a rooted box
+C. Notes are optional, because the proctors record the whole session and the graders can review everything that was done during the exam window
+D. Take notes only at the end of the exam, once you know which machines were rooted and which steps were useful enough to include in the report
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Take notes only at the end
 ### Question 12
 **Scenario:** You are stuck on a host after hours of effort.
 
-A. Step back and re-enumerate: revisit overlooked ports and services, re-read output, and question an assumption you made early
-B. Assume it is not exploitable
-C. Keep attacking the same service indefinitely
-D. Attack a different network
+A. Step back and re-enumerate: revisit overlooked ports, re-read output, and question an assumption you made early
+B. Assume it is not exploitable and move on, because hours without progress show the host is hardened
+C. Keep attacking the same service indefinitely with new wordlists and payloads
+D. Attack a different network range, on the basis that a stuck host has no path to a foothold
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Attack a different network
 ### Question 13
 **Scenario:** Which describes the safest payload choice during an authorized test?
 
-A. A destructive payload to prove impact
-B. Ransomware to demonstrate risk
-C. A denial of service
-D. A minimal payload that establishes access without damaging data or degrading the system, respecting the rules of engagement
+A. A destructive payload that wipes a test file
+B. Ransomware-style encryption of a sample folder, to demonstrate the business risk in terms the client will easily understand and act upon
+C. A denial of service against the running service
+D. A minimal payload that gives access without damaging data or degrading the system, within the rules of engagement
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. A minimal payload that establishes access without damaging data or degrading 
 ### Question 14
 **Scenario:** Which enumeration of SMB is most useful early?
 
-A. Only check if port 445 is closed
-B. None; SMB is obsolete
-C. Brute force immediately
-D. List shares, check for null or guest access, enumerate users where possible, and check the version against known vulnerabilities
+A. Only check whether port 445 is closed, then record the host as having no SMB exposure and move on to the next one
+B. None, because SMB is obsolete and current Windows hosts have it disabled so that there is nothing to enumerate
+C. Brute force the administrator account immediately with a large wordlist, before looking at what the service exposes
+D. List shares, check null or guest access, enumerate users, and check the version against known flaws
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. List shares, check for null or guest access, enumerate users where possible, 
 ### Question 15
 **Scenario:** Time management for a 24-hour exam with multiple targets.
 
-A. Ignore easier targets
-B. Allocate time per target, move on when stuck and return later, secure the achievable points first, and reserve time for the report
-C. Attempt all boxes simultaneously
-D. Spend all time on the hardest box
+A. Ignore easier targets in favour of the highest-value ones, since the hardest machines carry the most points toward the pass mark
+B. Allocate time per target, move on when stuck, bank the achievable points first, and reserve time for the report
+C. Work on every box at the same time, switching between them every few minutes so that no machine is left idle for long
+D. Spend all the time on the hardest box
 
 <details>
 <summary>Answer</summary>

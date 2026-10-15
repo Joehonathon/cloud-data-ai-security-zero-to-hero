@@ -9,8 +9,8 @@ Per question: shuffle the 4 options so the correct letter follows a balanced,
 seeded target sequence; remap letter references in the explanation and in any
 Answer Key table. Questions it cannot remap safely are left untouched and listed.
 
-usage: balance-answer-positions.py [--write | --check] [--threshold 0.4] files...
-  --check  exit 1 if any file has one letter correct in more than the threshold share of questions
+usage: balance-answer-positions.py [--write | --check | --check-length] [--threshold 0.4] files...
+  --check         exit 1 if any file has one letter correct in more than the threshold share of questions\n  --check-length  exit 1 if, in any file, the correct option is the longest (or the shortest) option in more\n                  than 45% of questions. Length is a tell too; chance is about 25% each.
 """
 import hashlib, random, re, sys
 from collections import Counter
@@ -133,8 +133,34 @@ def process(path, write, threshold, report):
         open(path, "w", encoding="utf-8").write(result)
 
 
+def length_check(files, limit=0.45):
+    """Return [(file, longest_share, shortest_share)] for files whose length pattern is exploitable."""
+    bad = []
+    for path in files:
+        t = open(path, encoding="utf-8").read()
+        n = lo = sh = 0
+        for q in Q_SPLIT.split(t)[1:]:
+            mo, mc = OPT_BLOCK.search(q), CORRECT.search(q)
+            if not (mo and mc):
+                continue
+            lens = [len(l[3:]) for l in mo.group(1).rstrip("\n").split("\n")]
+            c = lens[LET.index(mc.group(1))]
+            n += 1
+            lo += c == max(lens)
+            sh += c == min(lens)
+        if n >= 15 and (lo / n > limit or sh / n > limit):
+            bad.append((path, lo / n, sh / n))
+    return bad
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
+    if "--check-length" in args:
+        files = [a for a in args if a.endswith(".md")]
+        bad = length_check(files)
+        for path, lo, sh in bad:
+            print("LENGTH TELL: %s (correct is longest %.0f%%, shortest %.0f%%)" % (path, lo * 100, sh * 100))
+        sys.exit(1 if bad else 0)
     write = "--write" in args
     check = "--check" in args
     thr = 0.4

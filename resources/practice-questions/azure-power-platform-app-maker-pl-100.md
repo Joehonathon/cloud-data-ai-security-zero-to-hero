@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** Requirements gathering reveals a process with several stages, approvals, and a consistent data model used by internal staff.
 
-A. A Power BI report
-B. A canvas app
-C. A model-driven app with a business process flow
-D. A Power Pages site
+A. A Power BI report with slicers and drill-through pages, shared with the staff who work on the process each day
+B. A canvas app, designed screen by screen with galleries and forms
+C. A model-driven app with a business process flow that guides users through the stages and approvals
+D. A Power Pages site, where internal staff sign in with a work account and complete the process on the web
 
 <details>
 <summary>Answer</summary>
@@ -32,9 +32,9 @@ D. A Power Pages site
 ### Question 2
 **Scenario:** A canvas app gallery should show only records assigned to the signed-in user, and the data source has 20,000 rows.
 
-A. Set the row limit to 2,000
-B. `Filter(Cases, Owner.Email = User().Email)` using a delegable source and column
-C. Load all records into a collection first
+A. Set the data row limit to 2,000, the maximum, so the gallery can see more rows than the default of 500
+B. `Filter(Cases, Owner.Email = User().Email)` using a delegable source and a delegable column
+C. Load all records into a collection first with `ClearCollect`, then filter the collection by owner in the gallery
 D. `Filter(Cases, Owner.Email = User().Email)` with a non-delegable expression
 
 <details>
@@ -50,10 +50,10 @@ D. `Filter(Cases, Owner.Email = User().Email)` with a non-delegable expression
 ### Question 3
 **Scenario:** A field must be required only when another field equals "Other".
 
-A. A DLP policy
-B. A security role
-C. A workflow
-D. A business rule in Dataverse with a condition and a set-requirement action
+A. A DLP policy that classifies the connectors in the environment and blocks the ones that are not business data
+B. A security role that removes write access to the field
+C. A classic workflow that runs after save and clears empty records
+D. A Dataverse business rule with a condition and a set-requirement action
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. A business rule in Dataverse with a condition and a set-requirement action
 ### Question 4
 **Scenario:** Data is currently in an Excel file on SharePoint and must move into Dataverse.
 
-A. Use Power BI
-B. Copy and paste rows manually
-C. Rebuild the app around Excel
-D. Dataflows to import and map columns, or the import wizard for one-off loads
+A. Use Power BI to connect to the workbook and publish the data as a dataset that the app can read from
+B. Copy and paste the rows manually into the table grid in batches, checking the columns by eye each time
+C. Rebuild the app around Excel as the data source, reading the workbook on SharePoint through a connector
+D. Dataflows to map columns, or the import wizard for one-off loads
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Dataflows to import and map columns, or the import wizard for one-off loads
 ### Question 5
 **Scenario:** A canvas app should navigate to a detail screen and pass the selected record.
 
-A. `Refresh(Gallery1)`
+A. `Refresh(Gallery1)`, which reloads the gallery's data source
 B. `Navigate(DetailScreen, ScreenTransition.Cover, {SelectedItem: Gallery1.Selected})`
-C. `Set(DetailScreen)`
-D. `Patch(DetailScreen)`
+C. `Set(DetailScreen, Gallery1.Selected)`, which stores a global variable
+D. `Patch(DetailScreen, Gallery1.Selected)`, which updates the screen
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. `Patch(DetailScreen)`
 ### Question 6
 **Scenario:** A form should save a new record and handle failure gracefully.
 
-A. `SubmitForm(Form1)` with `OnFailure` showing the error, and `OnSuccess` navigating away
-B. `Navigate()` only
-C. `Patch()` with no error handling
-D. `Reset(Form1)`
+A. `SubmitForm(Form1)` with `OnFailure` showing the error and `OnSuccess` moving on
+B. `Navigate()` only, moving to the confirmation screen right after the button is pressed, without checking the save
+C. `Patch()` with no error handling, trusting the data source to report any failure to the user itself
+D. `Reset(Form1)`, which clears the form controls so that the user can start the next record straight away
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. `Reset(Form1)`
 ### Question 7
 **Scenario:** A solution must be moved from development to production so that production components cannot be edited directly.
 
-A. Export as unmanaged
-B. Copy the app by hand
+A. Export as unmanaged, then import into production and lock the components with a security role
+B. Copy the app by hand from the development environment, re-creating each screen and connection in production
 C. Export as a managed solution and import into production
-D. Share the development environment
+D. Let users work in the dev environment
 
 <details>
 <summary>Answer</summary>
@@ -141,9 +141,9 @@ D. Share the development environment
 **Scenario:** A connection reference and an environment variable are used in a solution. Why?
 
 A. So connections and configuration values can differ per environment without editing the components
-B. To improve performance
-C. They are mandatory in canvas apps
-D. To hard-code values
+B. To improve performance, because values stored in environment variables are cached in the app after the first load
+C. They are mandatory in canvas apps, which will not open without them
+D. To hard-code URLs and keys into the components in every environment
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. To hard-code values
 ### Question 9
 **Scenario:** An app must be usable by someone relying on a screen reader.
 
-A. Add more images
+A. Add more images with decorative effects, since pictures help users who cannot read long text on the screen
 B. Set accessible labels on controls, ensure tab order and focus are logical, and check color contrast with the accessibility checker
-C. Increase the font size only
-D. Nothing, Power Apps handles it
+C. Increase the font size only, since a larger size is all that a screen reader needs to read the text
+D. Nothing, because Power Apps handles it automatically, and every control is labeled for readers by default
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Nothing, Power Apps handles it
 ### Question 10
 **Scenario:** Users report the app is slow to open.
 
-A. Disable delegation warnings
-B. Increase the license tier
-C. Reduce controls per screen, avoid heavy `OnStart` work, use concurrent loading, and delegate queries
-D. Add more screens
+A. Disable delegation warnings in the app settings, which stops the app from checking the queries it sends
+B. Increase the license tier for the users, since higher plans get more capacity for the app to run on
+C. Reduce controls per screen, avoid heavy `OnStart` work, use concurrent loading, and delegate queries so the data source does the filtering
+D. Add more screens, so that each screen holds fewer controls and users spend less time on each one
 
 <details>
 <summary>Answer</summary>
@@ -195,9 +195,9 @@ D. Add more screens
 **Scenario:** A model-driven app must show related cases on the account form.
 
 A. A one-to-many relationship with a related records subgrid on the form
-B. A Power BI tile
-C. A separate app
-D. A canvas gallery
+B. A Power BI tile embedded on the form, filtered by the account, with the case list shown in the report
+C. A separate app that lists the cases, opened from a link on the account form with the account id
+D. A canvas gallery added by hand onto the form, filtered by the account through a custom connector
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. A canvas gallery
 ### Question 12
 **Scenario:** An app must send a notification when a record's status becomes Approved.
 
-A. A scheduled flow every minute
-B. A business rule
-C. A Dataverse-triggered cloud flow filtered on the status column change
-D. Manual email
+A. A scheduled flow that runs every minute and checks all the records for any with the status Approved
+B. A business rule on the table that sends the message when the status field changes to the value Approved
+C. A Dataverse-triggered cloud flow filtered on the status column
+D. Manual email from the approver to the requester
 
 <details>
 <summary>Answer</summary>
@@ -231,9 +231,9 @@ D. Manual email
 **Scenario:** Sensitive salary data in a Dataverse table must be hidden from most users but visible to HR.
 
 A. Column-level security with a security profile granting HR read access
-B. A canvas app filter
+B. A canvas app filter that hides the salary column
 C. Hiding the column on the form
-D. A different table
+D. A different table for salary data, with the same security role as the main table, and a lookup between them
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. A different table
 ### Question 14
 **Scenario:** A maker needs to validate that a solution meets requirements before release.
 
-A. Ship and see
-B. A performance test only
-C. Peer review of screenshots
-D. User acceptance testing against the documented requirements, plus the solution checker for code and configuration issues
+A. Ship and see, then collect the feedback from users in the first week and fix what they report
+B. A performance test only, run with a load tool against the main screens, with a report of response times
+C. Peer review of screenshots, where another maker checks each screen against the requirement list
+D. User acceptance testing against the documented requirements, plus the solution checker
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. User acceptance testing against the documented requirements, plus the solutio
 ### Question 15
 **Scenario:** An app should be shared with a department of 200 users with the least ongoing administration.
 
-A. Email the app link
-B. Share with a Microsoft Entra security group rather than individual users
-C. Share with each user individually
-D. Make the environment public
+A. Email the app link to the department
+B. Share with a Microsoft Entra security group
+C. Share with each user individually, adding the 200 names in the share panel and the data permissions to match
+D. Open the app to the entire tenant
 
 <details>
 <summary>Answer</summary>

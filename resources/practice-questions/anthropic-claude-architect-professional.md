@@ -16,10 +16,10 @@ These are practice questions written for this repo, not real exam items. Verify 
 ### Question 1
 **Scenario:** A research task splits into six independent sub-questions, each requiring heavy reading.
 
-A. Delegate each sub-question to a subagent so each gets a fresh context window and only the reports return to the coordinator
-B. Increase the context window
-C. Run six separate applications
-D. One long single-threaded loop
+A. Delegate each sub-question to a subagent, so each gets a fresh context and only its report returns
+B. Increase the context window so that all six sub-questions and their source material fit in one conversation
+C. Run six separate applications, each with its own prompt and its own copy of the sources, and merge by hand
+D. One long single-threaded loop that reads the sources for each sub-question in turn and keeps every note in context
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. One long single-threaded loop
 ### Question 2
 **Scenario:** A production claims agent is pinned to a dated model snapshot. The provider announces that snapshot's deprecation with a six-month window. An engineer proposes switching to an auto-updating model alias so migrations stop being necessary.
 
-A. Move to a cloud platform where snapshots are never retired
-B. Wait until the deprecation date and let the cutover happen
-C. Keep pinning; run the full eval and red-team suite on the successor snapshot, fix prompt regressions, phase it in with the old snapshot held for rollback, and notify stakeholders of behavior changes
-D. Accept: auto-updating aliases eliminate migration work
+A. Move to a cloud platform where snapshots are never retired and keep the dated snapshot
+B. Wait until the deprecation date, then fix whatever prompts break once users report them
+C. Keep pinning; eval and red-team the successor, fix regressions, phase it in with rollback, and tell stakeholders
+D. Accept the proposal: an auto-updating alias eliminates migration work, and the team can spend the six months on features
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Accept: auto-updating aliases eliminate migration work
 ### Question 3
 **Scenario:** A healthcare enterprise requires that prompts and completions are never retained after the response is served, and that the deployment is covered for PHI under HIPAA.
 
-A. Sign a BAA, use a HIPAA-eligible endpoint, and put a contractual zero-data-retention arrangement in place; verify the posture separately for each deployment path
-B. Strip PHI client-side; then retention and BAA no longer matter
-C. Retention is already zero by default, so only the BAA is needed
-D. Set a retention flag on each API request
+A. Sign a BAA, use a HIPAA-eligible endpoint, and arrange contractual ZDR; verify each path separately
+B. Strip PHI client-side with a redaction step before each call; then retention and the BAA no longer matter for the deployment
+C. Retention is already zero by default on every endpoint, so only a BAA is needed
+D. Set a retention flag on each API request so that the prompt and completion are discarded as soon as the response has been served to the user
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Set a retention flag on each API request
 ### Question 4
 **Scenario:** Prompt caching is designed for an agent whose model must change mid-session for a cheap sub-task.
 
-A. Add a breakpoint before the switch
-B. Caches are model-scoped, so switching invalidates everything; spawn a subagent on the cheaper model and keep the main loop on one model
-C. Switch the model on the same conversation
-D. Use a longer TTL
+A. Add a cache breakpoint before the switch, so the cached prefix is reused by the cheaper model for the sub-task
+B. Caches are model-scoped, so a switch invalidates them; use a subagent on the cheaper model
+C. Switch the model on the same conversation and rely on the cache to carry the cached prefix across to the new model for the sub-task and back again
+D. Use a longer cache TTL, so the cached prefix is still available when the cheaper model takes over the sub-task
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Use a longer TTL
 ### Question 5
 **Scenario:** An agent has 200 tools available but only a few are relevant per request.
 
-A. Load every schema on every request
-B. Tool search with deferred loading, so only relevant schemas enter context and discovered tools are appended rather than swapped
-C. Shorten the descriptions
-D. Split into 200 agents
+A. Load every schema on every request, which keeps the tool array stable but puts all 200 definitions into context each time
+B. Tool search with deferred loading, so only relevant schemas enter context and are appended rather than swapped
+C. Shorten the descriptions of all 200 tools to save room
+D. Split the tools into 200 agents, one per tool, with a router
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Split into 200 agents
 ### Question 6
 **Scenario:** Claude chains five tool calls, each returning a large payload that is filtered and discarded.
 
-A. Batch the calls
-B. Programmatic tool calling: Claude writes a script in the code execution container that invokes the tools, processes results with normal control flow, and returns only the final output to context
-C. Accept the token cost
-D. Use a bigger context window
+A. Batch the calls into one request, so the five payloads are returned together and all stay in context for later turns
+B. Programmatic tool calling: Claude scripts the tool calls in the code execution container and returns only the final output
+C. Accept the token cost, since each intermediate payload is needed in context so that the model can reason about the next call in the chain
+D. Use a bigger context window, so that the five large payloads fit without any change to how the tools are called
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Use a bigger context window
 ### Question 7
 **Scenario:** An indirect prompt injection arrives in a document the agent retrieved.
 
-A. Assume it may succeed: scope each tool's credential narrowly, check authorization against the calling user in code at the tool boundary, require confirmation for irreversible actions, and treat model output as untrusted downstream
-B. Filter the input for suspicious phrases
-C. Use a larger model
-D. Instruct the model to ignore instructions in documents
+A. Assume it may succeed: scope each credential narrowly, check authorization in code at the tool boundary, confirm irreversible actions, and treat output as untrusted
+B. Filter the retrieved input for suspicious phrases such as 'ignore previous instructions' before it reaches the model's context
+C. Use a larger model, since larger models are better at telling an instruction from the data that surrounds it
+D. Instruct the model in the system prompt to ignore any instructions that appear inside retrieved documents
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Instruct the model to ignore instructions in documents
 ### Question 8
 **Scenario:** An agent's behavior must be debuggable three days after a bad run.
 
-A. Application logs only
-B. Ask the model to explain what happened
-C. The final output
-D. Full tracing: every prompt, tool call with arguments, observation, and decision, correlated by a trace ID
+A. Application logs only, with request IDs and status codes, which show that each call finished but not what it contained
+B. Ask the model to explain what happened, then store its explanation with the run
+C. The final output, saved with a timestamp for each run, which the reviewers can compare with the expected answer later
+D. Full tracing: each prompt, tool call with arguments, observation, and decision, tied together by a trace ID
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Full tracing: every prompt, tool call with arguments, observation, and decisi
 ### Question 9
 **Scenario:** An agent must be evaluated before production.
 
-A. Final-answer accuracy
-B. Published benchmark scores
-C. Trajectory-level evaluation: task success, tool-call correctness, steps to completion, and cost, plus adversarial and injection cases, run on every prompt or model change
-D. Latency only
+A. Final-answer accuracy measured on a held-out set of questions, reported as the percentage of answers that match the reference
+B. Published benchmark scores for the model, since a strong result on public tasks predicts behavior in production
+C. Trajectory-level evaluation (task success, tool calls, steps, cost) plus adversarial cases, rerun often
+D. Latency only, measured at the 95th percentile, since fast agents keep users
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Latency only
 ### Question 10
 **Scenario:** A pilot's exit gate requires a 90% task-success score before general rollout. The pilot lands at 84%, and the executive sponsor pushes to launch anyway because a competitor just shipped.
 
-A. Lower the gate to 84% so the pilot passes
-B. Hold the pre-agreed gate: present the evidence, diagnose the top failure categories, propose a bounded remediation phase with a re-test date, and offer a narrower interim launch only if a segment already clears the gate
-C. Launch; the gate was only a guideline
-D. Escalate to the sponsor's manager
+A. Lower the gate to 84% so that the pilot passes, and record the new threshold as the standard for later launches
+B. Hold the pre-agreed gate: show the evidence, diagnose top failures, propose bounded remediation with a re-test date, and allow a narrow interim launch only for a segment that clears it
+C. Launch, because the gate was only a guideline and the competitor's release changes the value of waiting
+D. Escalate to the sponsor's manager, asking them to rule on whether the launch can go ahead on the 84% result
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Escalate to the sponsor's manager
 ### Question 11
 **Scenario:** A long conversation approaches the context window limit.
 
-A. Increase `max_tokens`
-B. Truncate the oldest messages
-C. Server-side compaction, appending the full response content back on every turn so the compaction blocks are preserved
-D. Start a new conversation
+A. Increase `max_tokens`, which raises the limit on the length of the reply and so leaves more room for history
+B. Truncate the oldest messages until the conversation fits, keeping the most recent turns and the system prompt
+C. Server-side compaction, appending the full response content each turn so compaction blocks are kept
+D. Start a new conversation and paste a short summary of the old one in as the first user message
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Start a new conversation
 ### Question 12
 **Scenario:** An enterprise requires that model inference run on their cloud provider's infrastructure.
 
-A. All platforms are identical
-B. Only the first-party API is available
-C. Only Bedrock exists
-D. Claude is available on Amazon Bedrock, Google Vertex AI, and Microsoft Foundry, each with its own client class and its own feature availability
+A. All platforms are identical, so any client class and any model ID works the same way on every one of them
+B. Only the first-party API is available, so inference cannot run on the enterprise's own cloud provider's infrastructure at all
+C. Only Bedrock exists as a third-party platform, so the design must be built on Amazon's infrastructure
+D. Claude is on Amazon Bedrock, Google Vertex AI, and Microsoft Foundry, each with its own client class and feature set
 
 <details>
 <summary>Answer</summary>
@@ -233,9 +233,9 @@ D. Claude is available on Amazon Bedrock, Google Vertex AI, and Microsoft Foundr
 **Scenario:** An agent should persist learnings across sessions.
 
 A. A memory surface it can read and write, with guidance on what to record and what not to duplicate
-B. Longer context windows
-C. Compaction
-D. A larger system prompt
+B. Longer context windows, so that everything learned in one session is still in context when the next one begins
+C. Compaction, which summarizes earlier turns in a session so the agent keeps its learnings as the conversation grows
+D. A larger system prompt that the team edits after each session to add the notes that the agent should keep
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. A larger system prompt
 ### Question 14
 **Scenario:** The team wants Anthropic to run the agent loop and host the tool-execution sandbox.
 
-A. That is not offered
-B. The Agent SDK does this
-C. Managed Agents: a persisted, versioned agent config plus sessions that each get a container, with an event stream you drive
-D. The Tool Runner does this
+A. That is not offered, so the team must run the loop and the sandbox on its own infrastructure
+B. The Agent SDK does this, hosting the loop and the sandbox on Anthropic's servers
+C. Managed Agents: a versioned agent config plus sessions that each get a container, driven through an event stream
+D. The Tool Runner does this, running the loop and executing tools in an Anthropic-hosted sandbox
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. The Tool Runner does this
 ### Question 15
 **Scenario:** A safety layer must constrain what the agent will do.
 
-A. A word blocklist
-B. Layered controls with measurement of both violation rate and false refusal rate
-C. Lower temperature
-D. Shorter responses
+A. A word blocklist covering the terms and phrases that the agent must never produce or act on
+B. Layered controls, measuring violation rate and also false refusal rate
+C. Lower temperature, so the agent's outputs are more predictable and less likely to drift into unsafe territory
+D. Shorter responses, since a brief reply gives the agent less room to produce anything that breaks the policy
 
 <details>
 <summary>Answer</summary>

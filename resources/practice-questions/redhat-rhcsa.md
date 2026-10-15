@@ -27,10 +27,10 @@ D. Edit /etc/shadow from rescue ISO
 ### Question 2
 **Scenario:** A new mount must persist across reboots. Where do you configure it?
 
-A. /etc/mtab
+A. /etc/mtab, where the system keeps its list of mounted filesystems for the next boot
 B. ~/.bashrc
 C. /etc/fstab (UUID or LABEL preferred over device names)
-D. /etc/init.d/mount
+D. /etc/init.d/mount, a script that the init system runs at boot to mount all listed filesystems
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. /etc/init.d/mount
 ### Question 3
 **Scenario:** XFS supports growing online but not shrinking. Which filesystem supports both?
 
-A. ext4
-B. NFS
-C. swap
-D. XFS
+A. ext4 (shrinks offline with resize2fs)
+B. NFS, which lets clients grow and shrink the share from the server side
+C. swap, which can be resized by turning it off and recreating it
+D. XFS with the `xfs_growfs -s` option, which shrinks the filesystem offline
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. XFS
 ### Question 4
 **Scenario:** Add user `alice` to the `wheel` group so she has sudo access?
 
-A. `usermod -G wheel alice`
-B. `usermod -aG wheel alice` (the -a is critical)
-C. `gpasswd -a alice wheel`
-D. Both B and C work; A removes alice from other groups
+A. `usermod -G wheel alice`, which sets wheel as her only secondary group and drops all the others, so she loses access to shared project directories she had before
+B. `useradd -G wheel alice`, which tries to create the account again, fails because alice already exists, and so changes no group memberships
+C. `chgrp wheel alice`, which changes the group of a file named alice
+D. `usermod -aG wheel alice` (or `gpasswd -a alice wheel`), which appends wheel and keeps her other groups
 
 <details>
 <summary>Answer</summary>
@@ -81,7 +81,7 @@ D. Both B and C work; A removes alice from other groups
 ### Question 5
 **Scenario:** SELinux is enforcing. A web app's files at `/srv/web/index.html` won't serve - HTTP 403. What's the fix?
 
-A. chmod 777
+A. `chmod -R 777 /srv/web` and `chown -R apache:apache /srv/web`, so that every process can read the files
 B. Disable SELinux
 C. Reboot
 D. `semanage fcontext -a -t httpd_sys_content_t '/srv/web(/.*)?'` then `restorecon -Rv /srv/web`
@@ -99,10 +99,10 @@ D. `semanage fcontext -a -t httpd_sys_content_t '/srv/web(/.*)?'` then `restorec
 ### Question 6
 **Scenario:** Open ports 80 and 443 in firewalld permanently?
 
-A. `firewall-cmd --permanent --add-service=http --add-service=https && firewall-cmd --reload`
-B. `iptables -A INPUT ...`
-C. Edit /etc/firewalld/firewalld.conf
-D. `firewall-cmd --add-service=http --add-service=https`
+A. `firewall-cmd --permanent --add-service={http,https}`, then `--reload`
+B. `iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT` and save the rules
+C. Edit /etc/firewalld/firewalld.conf and add the ports to its DefaultZone entry
+D. `firewall-cmd --add-service=http --add-service=https`, which opens the ports immediately in the runtime configuration only
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. `systemctl enable --now servicename`
 ### Question 8
 **Scenario:** Schedule a script to run daily at 2:30 AM?
 
-A. cron entry: `30 2 * * * /path/script.sh`
-B. systemd timer with `OnCalendar=*-*-* 02:30:00`
-C. Both work
-D. Neither - use Anacron only
+A. An `at 2:30 AM` job, which runs the script once and must be scheduled again each day
+B. A crontab line `@reboot /path/script.sh`, which runs the script at every boot
+C. A `30 2 * * *` crontab entry or a systemd timer set to OnCalendar 02:30
+D. Anacron only, with a `1 5 daily.job` entry in /etc/anacrontab that guarantees exactly 02:30
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. Neither - use Anacron only
 ### Question 9
 **Scenario:** Permanently set SELinux to permissive mode?
 
-A. `setenforce permissive`
+A. `setenforce permissive`, which switches the mode now and writes the setting to /etc/selinux/config for the next boot
 B. Reboot only
-C. Edit /etc/selinux/config and set `SELINUX=permissive`, then reboot (or `setenforce 0` for immediate effect)
-D. `setenforce 0` only
+C. Set `SELINUX=permissive` in /etc/selinux/config and reboot or run `setenforce 0`
+D. `setenforce 0` only, which changes the running mode but is lost when the system reboots
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. `setenforce 0` only
 ### Question 10
 **Scenario:** Configure NTP/Chrony to sync from `time.example.com`?
 
-A. Edit /etc/ntp.conf
-B. `ntpdate time.example.com`
-C. timesyncd
-D. Edit /etc/chrony.conf, replace `pool ...` lines with `server time.example.com iburst`, then `systemctl restart chronyd`
+A. Edit /etc/ntp.conf, replace the pool lines with `server time.example.com iburst`, then restart ntpd
+B. `ntpdate time.example.com` run from a cron job every hour, which sets the clock without any daemon configuration
+C. Enable systemd-timesyncd, then set NTP=time.example.com in /etc/systemd/timesyncd.conf and restart it
+D. Edit /etc/chrony.conf to add `server time.example.com iburst`, then restart chronyd
 
 <details>
 <summary>Answer</summary>
@@ -190,9 +190,9 @@ D. Edit /etc/chrony.conf, replace `pool ...` lines with `server time.example.com
 **Scenario:** Default policy on systemd boot target after install (server, no GUI)?
 
 A. multi-user.target
-B. rescue.target
-C. graphical.target
-D. emergency.target
+B. rescue.target, a single-user mode that needs the root password
+C. graphical.target, which RHEL sets by default after every installation including minimal ones
+D. emergency.target, a minimal shell with the root filesystem mounted read-only
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. emergency.target
 ### Question 12
 **Scenario:** Container best-practice on RHEL 9?
 
-A. Run as root only
-B. Install Docker
-C. LXC
-D. Use Podman (RHEL's daemonless, rootless-capable container runtime); persist via `podman generate systemd --new` or Quadlet
+A. Run every container as root only, so that each one can bind to low ports and mount any host path it needs
+B. Install Docker from the docker-ce repository, since it is the engine RHEL 9 documents for running containers, and run the daemon as root
+C. LXC containers created with lxc-create and managed through the lxc service on every host
+D. Use Podman (daemonless, rootless-capable) and persist it with Quadlet
 
 <details>
 <summary>Answer</summary>
@@ -243,9 +243,9 @@ D. resize2fs
 ### Question 14
 **Scenario:** A user can't write to `/srv/web` despite Linux permissions allowing it. SELinux is enforcing. What's the diagnostic step?
 
-A. Disable SELinux permanently
+A. Disable SELinux permanently by setting `SELINUX=disabled` in /etc/selinux/config and rebooting, since the denial shows the policy is too strict for the application's workload
 B. chmod 777
-C. Check `audit2allow -a` or `journalctl _AUDIT_TYPE_NAME=AVC` for AVC denials, identify the expected context with `matchpathcon`, and apply the right context with `chcon` (test) or `semanage fcontext` + `restorecon` (persist)
+C. Check `ausearch -m avc` or the journal for AVC denials, find the expected context with `matchpathcon`, and apply it with `semanage fcontext` + `restorecon`
 D. Reboot
 
 <details>
@@ -261,10 +261,10 @@ D. Reboot
 ### Question 15
 **Scenario:** A non-privileged user needs to run only `systemctl restart nginx` as root. Best approach?
 
-A. Share root password
+A. Share the root password with the user, who then uses `su -` and `systemctl restart nginx` when needed, and records each use in the team's change log
 B. setuid the binary
 C. Add to wheel
-D. `sudo` rule in `/etc/sudoers.d/nginx-restart` granting just that command, no password prompt if needed: `user ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
+D. `sudo` rule in `/etc/sudoers.d/nginx-restart`: `user ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`
 
 <details>
 <summary>Answer</summary>
@@ -279,10 +279,10 @@ D. `sudo` rule in `/etc/sudoers.d/nginx-restart` granting just that command, no 
 ### Question 16
 **Scenario:** Setting a cron job to run a script every weekday at 9 AM?
 
-A. systemd reload
-B. `* * * * * script`
-C. /etc/anacrontab
-D. `0 9 * * 1-5 /path/to/script` in user's crontab (`crontab -e`) or in `/etc/cron.d/myjob` for system jobs
+A. A systemd timer with `OnCalendar=daily` and the unit enabled
+B. `0 9 1-5 * * /path/to/script` in a user's crontab (`crontab -e`)
+C. /etc/anacrontab with `1 9 weekday.job script`, which anacron runs at exactly 09:00 on weekdays only
+D. `0 9 * * 1-5 /path/to/script` in a user's crontab
 
 <details>
 <summary>Answer</summary>
@@ -298,9 +298,9 @@ D. `0 9 * * 1-5 /path/to/script` in user's crontab (`crontab -e`) or in `/etc/cr
 **Scenario:** Mounting a remote NFS share at `/mnt/nfs` persistently?
 
 A. SMB mount
-B. Add to `/etc/fstab`: `server:/path /mnt/nfs nfs defaults,_netdev 0 0` and run `systemctl daemon-reload && mount -a`
+B. Add to `/etc/fstab`: `server:/path /mnt/nfs nfs defaults,_netdev 0 0`, then `mount -a`
 C. autofs only
-D. mount command at boot
+D. Run the mount command from a script in /etc/profile.d so it runs at each login after the network is up
 
 <details>
 <summary>Answer</summary>
@@ -316,7 +316,7 @@ D. mount command at boot
 **Scenario:** A service must start after another (e.g., `myapp.service` after `network-online.target`). Where does that go?
 
 A. /etc/rc.local
-B. In the unit file's `[Unit]` section: `After=network-online.target` and `Wants=network-online.target` (and enable network-online if needed)
+B. In the unit file's `[Unit]` section: `After=network-online.target` and `Wants=network-online.target`
 C. Comment in script
 D. Cron
 
@@ -334,9 +334,9 @@ D. Cron
 **Scenario:** Resetting the root password on a system you can reboot?
 
 A. Reinstall
-B. Boot to single-user / emergency shell, edit kernel command line in GRUB to add `rd.break`, mount /sysroot rw, chroot, `passwd`, `touch /.autorelabel`, exit, reboot
-C. dnf install
-D. Use systemd-cat
+B. Add `rd.break` to the kernel command line in GRUB, mount /sysroot rw, chroot, run `passwd`, `touch /.autorelabel`, reboot
+C. Boot with `init=/bin/bash`, leave the root filesystem mounted read-only, run `passwd root`, then reboot normally with no relabel step needed
+D. Use systemd-cat to pipe the new root password into the journal, which systemd then applies as the account password at the next boot
 
 <details>
 <summary>Answer</summary>
@@ -351,10 +351,10 @@ D. Use systemd-cat
 ### Question 20
 **Scenario:** Container management on RHEL 9 - which is native?
 
-A. Docker
-B. Podman - daemonless, rootless, drop-in compatible with `docker` CLI; preferred on RHEL 9. Also: `podman generate systemd` or Quadlets to run containers as systemd services
+A. Docker, which RHEL 9 ships in the default AppStream repository and manages through a root dockerd daemon with its own systemd unit
+B. Podman - daemonless, rootless, CLI-compatible with docker; run as services with Quadlets
 C. Vagrant
-D. LXC
+D. LXC, which RHEL 9 includes in the base repository and manages with lxc-create and lxc-start through its own service
 
 <details>
 <summary>Answer</summary>
@@ -369,7 +369,7 @@ D. LXC
 ### Question 21
 **Scenario:** Locking down SSH: which combination hardens the service most reliably?
 
-A. Disable root login (`PermitRootLogin no`), disable password auth (`PasswordAuthentication no`) and use key auth, restrict via firewalld + fail2ban for brute-force, log via journald
+A. Disable root login (`PermitRootLogin no`), disable password auth and use keys, limit exposure with firewalld, and add fail2ban
 B. Change port only
 C. Disable SSH entirely
 D. Open port 22 to all
@@ -405,10 +405,10 @@ D. ifconfig
 ### Question 23
 **Scenario:** Auditing user activity - "who ran what when"?
 
-A. Combine: `last` for login history, `journalctl _UID=N` per user, `aureport -au` from auditd, plus `~/.bash_history` (untrusted - users can modify); for compliance, configure auditd rules on syscalls of interest
+A. Combine `last` for login history, `journalctl _UID=N` per user, `aureport -au` from auditd, and auditd rules for compliance
 B. dmesg
 C. ps only
-D. tail /var/log/messages
+D. tail /var/log/messages, then search it for the user's name, since it records every command each user ran along with the time it ran and the working directory
 
 <details>
 <summary>Answer</summary>
@@ -423,8 +423,8 @@ D. tail /var/log/messages
 ### Question 24
 **Scenario:** Setting an ACL so a specific user has read+write on a file beyond standard Unix perms?
 
-A. chown alice
-B. `setfacl -m u:alice:rw filename`; verify with `getfacl filename`. Default ACLs on directories propagate to new files: `setfacl -m d:u:alice:rw /path`
+A. chown alice on the file, which makes alice the owner and keeps the previous owner's access through the group
+B. `setfacl -m u:alice:rw filename`; verify with `getfacl filename`
 C. SELinux booleans
 D. chmod 777
 

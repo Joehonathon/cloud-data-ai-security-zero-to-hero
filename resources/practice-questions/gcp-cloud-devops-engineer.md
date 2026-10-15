@@ -21,9 +21,9 @@
 **Scenario:** A company is setting up their Google Cloud organization for the first time. They need to implement a folder structure that supports separation between production and non-production workloads, allows different teams to manage their own projects, and enforces consistent security policies across all projects. What structure should they implement?
 
 A. Single folder with all projects
-B. Hierarchical folder structure with org policies inherited: Organization → Environment folders (prod/non-prod) → Team folders → Projects
-C. Projects without folders at organization level
-D. Separate Google Cloud organizations for each team
+B. Hierarchical folders with inherited org policies: Organization → Environment folders → Team folders → Projects
+C. Projects placed directly under the organization with no folders, using IAM conditions and labels to separate prod from non-prod
+D. Separate Google Cloud organizations for each team, each with its own policies, admins and billing, joined by VPC peering where needed
 
 <details>
 <summary>Answer</summary>
@@ -38,10 +38,10 @@ D. Separate Google Cloud organizations for each team
 ### Question 2
 **Scenario:** A DevOps team needs to ensure that all projects in the organization have certain security configurations: VMs cannot have external IPs, Cloud Storage buckets must not be public, and only approved regions can be used. How should these restrictions be enforced?
 
-A. Post-deployment scanning and remediation
+A. Post-deployment scanning and remediation with Security Command Center findings that trigger a fix-up Cloud Function
 B. Organization policies applied at the organization or folder level
-C. Manual review of all resource creation
-D. Document requirements and train teams
+C. Manual review of every resource creation request by a central cloud team before it is approved
+D. Document the requirements in a wiki and train teams on the approved regions and settings
 
 <details>
 <summary>Answer</summary>
@@ -56,10 +56,10 @@ D. Document requirements and train teams
 ### Question 3
 **Scenario:** A company wants to automate the provisioning of new projects for development teams. Each project should have standardized IAM bindings, enabled APIs, and configured logging. The process should be triggered by an approved request system. What approach provides this?
 
-A. Pre-create projects for anticipated needs
-B. Manual project creation by admins
+A. Pre-create projects for anticipated needs in a pool, and hand each one to a team when they ask for it
+B. Manual project creation by admins, who copy the settings from a checklist each time a request arrives
 C. Terraform with a project factory module triggered by CI/CD upon approved merge requests
-D. Give all developers project creator permissions
+D. Give all developers project creator permissions and ask them to follow the naming and logging standards
 
 <details>
 <summary>Answer</summary>
@@ -74,9 +74,9 @@ D. Give all developers project creator permissions
 ### Question 4
 **Scenario:** An organization needs to ensure that all resource changes across all projects are logged for compliance and that logs cannot be modified or deleted by project owners. How should this be configured?
 
-A. Export logs to Cloud Storage in each project
-B. Create an organization-level log sink to a separate logging project with locked log bucket and org policy preventing sink deletion
-C. Enable data access logs in each project
+A. Export logs to Cloud Storage in each project, with a retention policy set by the project owner on every bucket, and versioning enabled
+B. Org-level aggregated sink to a separate logging project with a locked log bucket
+C. Enable data access logs in each project and let each project owner manage the log buckets
 D. Trust project owners to maintain logs
 
 <details>
@@ -84,7 +84,7 @@ D. Trust project owners to maintain logs
 
 **Correct: B**
 
-**Why:** Organization-level aggregated sinks capture logs from all projects. Routing to a dedicated logging project with restricted access ensures project owners can't delete logs. Locked log buckets prevent modification for the retention period. Org policies can prevent deletion of the sink. Per-project logging (C, A) can be modified by project owners. Trust (D) doesn't meet compliance requirements.
+**Why:** Organization-level aggregated sinks capture logs from all projects. Routing to a dedicated logging project with restricted access ensures project owners can't delete logs. Locked log buckets prevent modification for the retention period. Restrictive IAM on the logging project keeps owners from deleting the sink. Per-project logging (C, A) can be modified by project owners. Trust (D) doesn't meet compliance requirements.
 
 **Key Concept:** [Aggregated Sinks](https://cloud.google.com/logging/docs/export/aggregated_sinks)
 </details>
@@ -97,7 +97,7 @@ D. Trust project owners to maintain logs
 **Scenario:** A development team needs a CI/CD pipeline that builds container images, runs tests, scans for vulnerabilities, and deploys to GKE. Only images that pass vulnerability scanning should be deployed to production. What GCP services provide this pipeline?
 
 A. Cloud Build with Container Analysis → Artifact Registry → Binary Authorization → Cloud Deploy to GKE
-B. Jenkins on Compute Engine → Docker Hub → GKE
+B. Jenkins on Compute Engine with a vulnerability scanning plugin → Docker Hub → GKE with a deployment approval step
 C. Cloud Build → Artifact Registry → kubectl apply
 D. Manual builds and deployments
 
@@ -115,8 +115,8 @@ D. Manual builds and deployments
 **Scenario:** A team uses a monorepo containing multiple microservices. They want Cloud Build to only build and deploy services that have changed, not the entire repository on every commit. How can this be achieved?
 
 A. Manually select which services to build
-B. Build everything on every commit
-C. Use Cloud Build triggers with included files filters matching each service's directory
+B. Build everything on every commit and rely on the build cache
+C. Use Cloud Build triggers with included files filters matching each service's directory, one trigger per service
 D. Split into separate repositories
 
 <details>
@@ -152,8 +152,8 @@ D. Configure Cloud Build private pools in a peered VPC with no external IP
 
 A. Scheduled kubectl apply jobs
 B. Config Sync with a Git repository as source of truth
-C. Manual deployment approval for each change
-D. Cloud Build triggers deploying on every commit
+C. Manual deployment approval followed by a kubectl apply for each change
+D. Cloud Build triggers that run kubectl apply on every commit, with nothing that checks the live cluster state afterwards
 
 <details>
 <summary>Answer</summary>
@@ -186,10 +186,10 @@ D. Cloud Deploy with delivery pipeline defining targets, approval requirements, 
 ### Question 10
 **Scenario:** A team needs to ensure that code changes are reviewed before being deployed. They want to enforce that all deployments originate from pull requests that have been approved by at least two reviewers. How can this be enforced technically?
 
-A. Document the process and trust developers
-B. Verbal approval before deployments
-C. GitHub branch protection rules requiring 2 approvals + Cloud Build triggers only on merges to protected branches
-D. Post-deployment code review
+A. Document the process and have developers record two approvals in the ticket before they merge into main, then trust them to follow it
+B. Verbal approval from the team lead in the stand-up before each deployment, recorded in the meeting notes by the scrum master
+C. GitHub branch protection requiring 2 approvals, plus Cloud Build triggers only on protected-branch merges
+D. Post-deployment code review by two reviewers within a week of release, with follow-up tickets for any issues found
 
 <details>
 <summary>Answer</summary>
@@ -204,9 +204,9 @@ D. Post-deployment code review
 ### Question 11
 **Scenario:** A company wants to implement canary deployments for their Cloud Run services. Traffic should gradually shift from 0% → 5% → 25% → 100% to new revisions, with automatic rollback if error rate exceeds 1%. What approach enables this?
 
-A. Cloud Deploy with Cloud Run targets using automated canary strategy with Cloud Monitoring metrics for verification
-B. Blue-green deployment only
-C. All-at-once deployment with monitoring
+A. Cloud Deploy canary strategy for Cloud Run with Cloud Monitoring metric verification
+B. Blue-green deployment only, switching all traffic from the old revision to the new one in a single step
+C. All-at-once deployment, with Cloud Monitoring alerts to notify the team afterwards if errors spike
 D. Manual traffic splitting in Cloud Run
 
 <details>
@@ -222,10 +222,10 @@ D. Manual traffic splitting in Cloud Run
 ### Question 12
 **Scenario:** A CI pipeline runs integration tests that require a Cloud SQL database. Tests should run in parallel for speed, but each test run needs isolated database state. Creating a new Cloud SQL instance per test is too slow. What approach provides isolation with speed?
 
-A. Use a persistent test Cloud SQL instance with separate databases/schemas per test run, or transaction rollback isolation
-B. Skip integration tests
-C. Share a single test database across all tests
-D. Run tests sequentially
+A. A persistent test Cloud SQL instance with a separate database per test run, or transaction rollback
+B. Skip integration tests and rely on unit tests plus manual testing in staging before each release to the production environment
+C. Share a single test database across all parallel tests and reset its tables with a cleanup script after every run
+D. Run the tests one after another against a single shared Cloud SQL instance, accepting a much longer pipeline for every build
 
 <details>
 <summary>Answer</summary>
@@ -240,9 +240,9 @@ D. Run tests sequentially
 ### Question 13
 **Scenario:** A team maintains a shared Terraform module used by multiple application teams. They need to version the module, run automated tests when changes are made, and publish tested versions for consumption. How should this be managed?
 
-A. No versioning - always use latest
+A. No versioning - always use the latest, so every team gets the newest fixes
 B. Copy module code into each consuming repository
-C. Store module in a Git repository with tagged versions, CI testing on changes, and consumption via versioned Git references or Artifact Registry
+C. A Git repository with tagged versions, CI tests on changes, and consumption through versioned Git references
 D. Single shared folder accessed by all projects
 
 <details>
@@ -259,16 +259,16 @@ D. Single shared folder accessed by all projects
 **Scenario:** A Cloud Build pipeline builds container images and pushes to Artifact Registry. The team needs to automatically clean up old images to control storage costs while retaining the latest 10 versions and any images currently deployed. How should this be implemented?
 
 A. Manual cleanup periodically
-B. Delete all images after 30 days
-C. Artifact Registry cleanup policies retaining recent versions, with GKE integration to protect deployed images
-D. Unlimited retention
+B. Delete all images after 30 days, except those with a tag matching the production release naming convention or a recent pull
+C. Artifact Registry cleanup policies keeping the 10 most recent versions, plus a keep rule for tags used in deployments
+D. Keep unlimited retention of every image and tag in the repository, and accept the growing storage bill as a cost of rollback safety
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Artifact Registry supports cleanup policies that delete old images while retaining a specified number of recent versions. Integration with GKE prevents deletion of images currently deployed to clusters. This automates cost management while ensuring availability. Manual cleanup (A) is error-prone and forgotten. Time-based deletion (B) might delete actively used images. Unlimited retention (D) increases costs.
+**Why:** Artifact Registry supports cleanup policies that delete old images while retaining a specified number of recent versions. A keep rule for tags used by deployed releases protects images in use. This automates cost management while ensuring availability. Manual cleanup (A) is error-prone and forgotten. Time-based deletion (B) might delete actively used images. Unlimited retention (D) increases costs.
 
 **Key Concept:** [Artifact Registry Cleanup Policies](https://cloud.google.com/artifact-registry/docs/repositories/cleanup-policy)
 </details>
@@ -278,7 +278,7 @@ D. Unlimited retention
 
 A. Encrypted files in Git repository
 B. Secrets in application code
-C. Environment variables in Cloud Build configs
+C. Environment variables in Cloud Build configs, set per trigger as substitutions and stored in the build file
 D. Secret Manager with IAM access control, versioning, and rotation schedules
 
 <details>
@@ -298,8 +298,8 @@ D. Secret Manager with IAM access control, versioning, and rotation schedules
 ### Question 16
 **Scenario:** A service team needs to define reliability targets for their customer-facing API. The API handles payment processing, so reliability is critical, but the team also needs to ship features. How should they balance reliability and velocity?
 
-A. Define SLOs (e.g., 99.9% availability), track error budget, and use error budget policy to balance velocity with reliability work
-B. Freeze all feature development until perfect reliability
+A. Define SLOs (e.g., 99.9%), track the error budget, and use an error budget policy to balance velocity
+B. Freeze all feature development until perfect reliability is reached, then resume shipping at a much slower pace
 C. Target 100% availability
 D. No reliability targets - fix issues as they arise
 
@@ -336,8 +336,8 @@ D. Conduct a blameless postmortem documenting timeline, root cause, contributing
 
 A. Manual user surveys
 B. Whether the server process is running
-C. Server uptime percentage
-D. Successful requests / total requests, measured at the load balancer with separate SLIs for interactive (latency-sensitive) and batch (throughput-sensitive) workloads
+C. Server uptime percentage, calculated from VM health checks every minute, averaged over a rolling 30-day window, and reported on a monthly dashboard
+D. Successful requests / total requests at the load balancer, with separate SLIs for interactive and batch workloads
 
 <details>
 <summary>Answer</summary>
@@ -352,10 +352,10 @@ D. Successful requests / total requests, measured at the load balancer with sepa
 ### Question 19
 **Scenario:** A company wants to reduce the toil involved in their operations. Currently, operators manually check system health dashboards, restart failed services, and scale resources based on load. What SRE practice addresses this?
 
-A. Reduce service offerings to simplify operations
-B. Hire more operators
-C. Automate repetitive tasks: health checks via synthetic monitoring, auto-restart via GKE liveness probes, autoscaling via HPA/VPA
-D. Accept manual operations as necessary
+A. Reduce the number of services offered and the number of regions they run in, so there is less to operate by hand
+B. Hire more operators and rotate them across shifts so that every dashboard is checked continuously and every failed service is restarted within minutes
+C. Automate toil: synthetic checks for health, liveness probes for restarts, HPA/VPA for scaling
+D. Accept manual operations as a necessary cost of running production, and keep each step documented in a shared team runbook
 
 <details>
 <summary>Answer</summary>
@@ -370,10 +370,10 @@ D. Accept manual operations as necessary
 ### Question 20
 **Scenario:** A team manages a critical service with 99.99% SLO (52 minutes downtime/year). They want to validate their incident response procedures and failover mechanisms before actual incidents. How should they test these?
 
-A. Wait for real incidents to test procedures
-B. Conduct regular game days/chaos engineering exercises simulating failures in production or staging
-C. Read the runbooks without practicing
-D. Assume procedures will work when needed
+A. Wait for real incidents to test procedures, because only live traffic reveals the genuine failure modes
+B. Run regular game days or chaos exercises that simulate failures in staging or production
+C. Have each engineer read through the runbooks every quarter and sign off, without practicing the steps
+D. Assume the procedures and failover mechanisms will work when needed, since they were tested at design time
 
 <details>
 <summary>Answer</summary>
@@ -388,10 +388,10 @@ D. Assume procedures will work when needed
 ### Question 21
 **Scenario:** An on-call engineer receives alerts throughout the night, but investigation shows most alerts don't require action - they're transient issues that self-resolve. This causes alert fatigue. How should this be addressed?
 
-A. Review and tune alert thresholds, implement burn rate alerts instead of instantaneous alerts, suppress transient issues
-B. Disable all alerting to let engineers sleep
-C. Add more on-call engineers to distribute fatigue
-D. Ignore alerts and wait for customer reports
+A. Tune thresholds and use burn rate alerts instead of instantaneous ones
+B. Disable all alerting at night so engineers can sleep, and review dashboards in the morning
+C. Add more on-call engineers to rotate the pager more often so that fatigue is spread across a larger team
+D. Ignore the alerts and wait for customer reports to show which problems actually matter
 
 <details>
 <summary>Answer</summary>
@@ -424,8 +424,8 @@ D. Retry infinitely until downstream recovers
 ### Question 23
 **Scenario:** A team needs to safely roll out a significant infrastructure change (migrating from regional to multi-regional database). The change carries risk of data inconsistency or service disruption. What approach minimizes risk?
 
-A. Announce planned downtime and migrate
-B. Incremental rollout: shadow traffic to new infrastructure, gradual traffic shifting, feature flags for rollback capability
+A. Announce planned downtime and migrate during the lowest-traffic window with a full backup taken beforehand
+B. Incremental rollout with shadow traffic, gradual shifting, and feature flags for rollback
 C. Big bang migration over a weekend
 D. No testing - deploy directly to production
 
@@ -442,7 +442,7 @@ D. No testing - deploy directly to production
 ### Question 24
 **Scenario:** A team's service receives traffic from multiple customers. One customer's usage pattern (burst of requests) is impacting other customers' experience. How should this be handled?
 
-A. Rate limit all customers equally
+A. Rate limit all customers equally with one global cap per API key, so that no customer can use more than another
 B. Ask the problematic customer to reduce usage
 C. Scale infinitely to handle all traffic
 D. Implement per-customer rate limiting and quota management with prioritization for critical customers
@@ -461,9 +461,9 @@ D. Implement per-customer rate limiting and quota management with prioritization
 **Scenario:** During an incident, multiple teams need to coordinate response. Communication is chaotic - people are talking over each other, status updates are unclear, and decisions are delayed. What SRE practice improves incident coordination?
 
 A. No coordination - each team works independently
-B. Implement incident command system with defined roles (Incident Commander, Communications Lead, Operations Lead)
+B. Incident command system with defined roles (Commander, Communications Lead, Operations Lead)
 C. Let everyone contribute equally without structure
-D. Single person handles everything
+D. Single senior engineer handles everything, so decisions come from one voice and no handoffs are needed
 
 <details>
 <summary>Answer</summary>
@@ -500,10 +500,10 @@ D. Assess: dependency's reliability (does it have SLOs?), failure modes, fallbac
 ### Question 27
 **Scenario:** A team needs to monitor their GKE application's health. They want to know when pods are unhealthy, when resource utilization is high, and when error rates increase. What monitoring configuration provides this visibility?
 
-A. Manual health checks
+A. Manual health checks, with an engineer opening each pod's status page and logs after every release and again each night
 B. Only check if nodes are running
-C. GKE dashboard with pod health, Cloud Monitoring with resource metrics (CPU, memory), custom metrics for error rates, and alerts on thresholds
-D. Application logs only
+C. GKE dashboard for pod health, Cloud Monitoring CPU and memory metrics, custom error-rate metrics, and alerts
+D. Application logs only, searched in Logs Explorer by an engineer each morning to spot errors and unhealthy pods in the cluster
 
 <details>
 <summary>Answer</summary>
@@ -518,9 +518,9 @@ D. Application logs only
 ### Question 28
 **Scenario:** A service has defined an SLO of 99.9% availability measured by successful HTTP responses. The team wants alerts that fire when they're in danger of missing the SLO, not on every error. What alerting approach provides this?
 
-A. Alert on every 5xx error
+A. Alert on every 5xx error, with a notification channel that pages the on-call engineer immediately each time
 B. Multi-window, multi-burn-rate alerts based on error budget consumption rate
-C. Alert when availability drops below 99.9%
+C. Alert when availability falls under 99.9%
 D. No alerting - check dashboards manually
 
 <details>
@@ -536,10 +536,10 @@ D. No alerting - check dashboards manually
 ### Question 29
 **Scenario:** A team needs to understand the latency distribution of their API, not just the average. Some requests are much slower than others, affecting user experience. What metrics approach captures this?
 
-A. Monitor average latency only
+A. Monitor average latency only, since the mean summarizes the typical experience of all requests in one number
 B. Count total requests
 C. Capture latency percentiles (p50, p90, p95, p99) using Cloud Monitoring distribution metrics
-D. Monitor maximum latency only
+D. Monitor maximum latency only, since the slowest request shows the worst user experience in the system
 
 <details>
 <summary>Answer</summary>
@@ -555,9 +555,9 @@ D. Monitor maximum latency only
 **Scenario:** A microservices application has requests flowing through multiple services. When a request is slow, the team needs to identify which service is the bottleneck. What observability tool provides this insight?
 
 A. Cloud Trace providing distributed tracing showing latency breakdown across service calls
-B. CPU utilization per service
+B. CPU utilization per service, compared across services during the slow period to find the busiest one
 C. Log timestamps
-D. Aggregate latency metrics per service
+D. Aggregate latency metrics per service, broken down by endpoint and compared against each service's SLO over the last week
 
 <details>
 <summary>Answer</summary>
@@ -574,8 +574,8 @@ D. Aggregate latency metrics per service
 
 A. Use Cloud Monitoring anomaly detection / ML-based alerting policies
 B. No anomaly detection - rely on manual observation
-C. Only alert on absolute values
-D. Set static thresholds for all metrics
+C. Only alert on absolute values, using one fixed number per metric that never changes
+D. Set static thresholds for all metrics, reviewed and adjusted by the on-call team every quarter
 
 <details>
 <summary>Answer</summary>
@@ -608,10 +608,10 @@ D. Synthetic monitoring / uptime checks for critical user flows with Cloud Monit
 ### Question 33
 **Scenario:** A team operates multiple services across multiple projects. They need a unified view of health across all services with the ability to drill down into specific issues. How should they organize their monitoring?
 
-A. Separate dashboards per project with no aggregation
+A. Separate dashboards per project with no aggregation, each owned by that project's team and tuned to its needs
 B. No dashboards - use alerting only
 C. Cloud Monitoring workspace scoping multiple projects with service-level dashboards and aggregate views
-D. Single giant dashboard with all metrics
+D. One giant dashboard containing every metric from every service and project, shared across all teams on a single screen
 
 <details>
 <summary>Answer</summary>
@@ -667,9 +667,9 @@ D. Implement shared SLOs with dependency teams visible in shared dashboards, wit
 **Scenario:** A web application has slow page load times. Analysis shows that the backend API is fast, but there's significant latency for users far from the servers. Most content is static. How can performance be improved for global users?
 
 A. Deploy Cloud CDN to cache static content at edge locations globally
-B. Increase server CPU
-C. Add more servers in the same region
-D. Optimize database queries
+B. Increase server CPU on the API tier so that responses are generated faster for distant users
+C. Add more servers in the same region as the existing API tier to spread the request load
+D. Optimize database queries and add indexes so the data tier returns results faster
 
 <details>
 <summary>Answer</summary>
@@ -687,7 +687,7 @@ D. Optimize database queries
 A. Configure minimum instances > 0 to keep warm instances ready
 B. Reduce service traffic
 C. Accept cold start latency
-D. Migrate to Compute Engine
+D. Migrate to Compute Engine, where VMs stay running and so never have a cold start under load
 
 <details>
 <summary>Answer</summary>
@@ -702,10 +702,10 @@ D. Migrate to Compute Engine
 ### Question 38
 **Scenario:** A GKE application is experiencing memory pressure on nodes, leading to pod evictions and service disruption. Memory usage varies significantly between pods of the same deployment. How can resource allocation be optimized?
 
-A. Increase memory for all pods uniformly
-B. Remove memory limits
-C. Implement Vertical Pod Autoscaler (VPA) to right-size pod resource requests based on actual usage
-D. Add more nodes
+A. Increase memory for all pods uniformly, using the highest observed usage as the new request for every pod
+B. Remove memory limits from the pods so that none of them is ever killed for exceeding its allocation
+C. Implement Vertical Pod Autoscaler (VPA) to right-size pod resource requests from actual usage
+D. Add more nodes to the cluster so that every pod has more free memory on the node where it is scheduled
 
 <details>
 <summary>Answer</summary>
@@ -720,8 +720,8 @@ D. Add more nodes
 ### Question 39
 **Scenario:** A team's application makes frequent calls to Cloud Storage to retrieve configuration files. Each request has latency overhead even though the files rarely change. How can this be optimized?
 
-A. Implement caching using Memorystore for Redis with TTL-based invalidation
-B. Store configuration in application code
+A. Cache with Memorystore for Redis using TTL-based invalidation
+B. Store the configuration in application code and redeploy the service each time a file changes
 C. Accept the latency as necessary
 D. Read configuration only at startup
 
@@ -738,17 +738,17 @@ D. Read configuration only at startup
 ### Question 40
 **Scenario:** Cloud Profiler shows that a production application spends significant CPU time in JSON serialization. The application processes millions of requests daily on Cloud Run. How can this performance bottleneck be addressed?
 
-A. Reduce traffic
-B. Switch to a more efficient serialization format (Protocol Buffers, MessagePack) for internal service communication
-C. Cache serialized responses
-D. Increase CPU allocation
+A. Reduce traffic by throttling or rejecting a share of requests until the load falls
+B. Switch internal calls to Protocol Buffers or MessagePack instead of JSON
+C. Enable gzip compression on every response so that the payloads sent to the client are smaller
+D. Increase CPU allocation on the Cloud Run service so each request has more compute for serialization
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Binary serialization formats like Protocol Buffers or MessagePack are significantly faster than JSON and produce smaller payloads. For internal service communication (not user-facing APIs), this reduces CPU time and network transfer. Caching (C) helps for repeated responses. More CPU (D) addresses symptom not cause. Reducing traffic (A) isn't practical. Caching serialized responses (C) works but requires cache management.
+**Why:** Binary serialization formats like Protocol Buffers or MessagePack are significantly faster than JSON and produce smaller payloads. For internal service communication (not user-facing APIs), this reduces CPU time and network transfer. Compression (C) shrinks payloads but adds CPU work and does not speed up serialization. More CPU (D) addresses symptom not cause. Reducing traffic (A) isn't practical.
 
 **Key Concept:** [Cloud Profiler](https://cloud.google.com/profiler/docs/about-profiler)
 </details>

@@ -32,10 +32,10 @@ D. An odd number, typically 3 or 5, to form a Raft quorum
 ### Question 2
 **Scenario:** What protocol does Consul use for membership and failure detection?
 
-A. DNS
+A. DNS, which resolves service names and also tracks which nodes are still alive in the datacenter
 B. BGP
 C. Gossip, based on SWIM, over the LAN and WAN pools
-D. Raft
+D. Raft consensus, run among the servers to replicate state
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Raft
 ### Question 3
 **Scenario:** A service must be discoverable by name from any host in the datacenter.
 
-A. Use a load balancer only
-B. Register it with a Consul agent and query `<service>.service.consul` via DNS or the HTTP API
-C. Update `/etc/hosts`
-D. Hard-code IP addresses
+A. Put the service behind a load balancer and share the balancer's IP address in the documentation
+B. Register with a Consul agent; query `<service>.service.consul` via DNS
+C. Publish the service name in `/etc/hosts` on every host and refresh the file with a nightly configuration-management run
+D. Hard-code the IP addresses in each client's application configuration and redeploy on change
 
 <details>
 <summary>Answer</summary>
@@ -69,9 +69,9 @@ D. Hard-code IP addresses
 **Scenario:** A registered service's health check fails.
 
 A. Nothing changes
-B. The instance stops being returned by service discovery queries while remaining registered
+B. The instance stops being returned by discovery queries while remaining registered
 C. Consul restarts the service
-D. The service is deregistered permanently
+D. The instance is deregistered automatically the moment the check fails, and an operator must register it again
 
 <details>
 <summary>Answer</summary>
@@ -86,7 +86,7 @@ D. The service is deregistered permanently
 ### Question 5
 **Scenario:** Service-to-service traffic must be encrypted and authorized by service identity.
 
-A. TLS on the API only
+A. TLS on the Consul HTTP API and RPC ports only, with an ACL token required on every request
 B. Consul service mesh (Connect) with sidecar proxies, mTLS, and intentions
 C. Firewall rules
 D. Gossip encryption
@@ -104,8 +104,8 @@ D. Gossip encryption
 ### Question 6
 **Scenario:** A default-deny posture is wanted for the service mesh.
 
-A. Set the default intention to deny and add explicit allow intentions per source and destination
-B. Rely on network segmentation
+A. Set the default intention to deny, then add explicit allow intentions per service pair
+B. Rely on network segmentation and security groups between subnets, with each team owning its own allow rules
 C. Disable Connect
 D. Set default allow
 
@@ -122,10 +122,10 @@ D. Set default allow
 ### Question 7
 **Scenario:** ACLs are enabled and an agent cannot register services.
 
-A. Restart Consul
+A. Restart the Consul agent and all servers, which clears the cached ACL decisions and lets registration succeed
 B. Disable ACLs
-C. The agent needs a token with `service:write` for the service name; check the agent token and the ACL policy
-D. ACLs do not affect registration
+C. The agent needs a token granting `service:write` for that service name, so check its ACL policy
+D. ACLs apply only to reads from the KV store and do not affect registration, so the failure is a network problem
 
 <details>
 <summary>Answer</summary>
@@ -141,8 +141,8 @@ D. ACLs do not affect registration
 **Scenario:** Configuration values must be shared across services and rendered into config files as they change.
 
 A. The Consul KV store with consul-template watching the keys
-B. The catalog
-C. Environment variables
+B. The catalog, which stores the list of nodes and services and pushes updates into config files
+C. Environment variables baked into each container image at build time
 D. A shared NFS mount
 
 <details>
@@ -158,10 +158,10 @@ D. A shared NFS mount
 ### Question 9
 **Scenario:** Consul state must be backed up before an upgrade.
 
-A. No backup is needed
-B. Copy the data directory while running
-C. `consul snapshot save` to capture the Raft state, restorable with `consul snapshot restore`
-D. Export the KV store only
+A. No backup is needed, because Raft replication already keeps a full copy on every server
+B. Copy the data directory from the leader while Consul is still running, then restore it by file copy
+C. `consul snapshot save`, restored later with `consul snapshot restore`
+D. Export the KV store only with `consul kv export` and keep the JSON file in version control
 
 <details>
 <summary>Answer</summary>
@@ -195,9 +195,9 @@ D. A single stretched LAN gossip pool
 **Scenario:** Which gateway lets mesh services reach services in another datacenter or outside the mesh?
 
 A. A NAT gateway
-B. Mesh gateway for cross-datacenter, terminating gateway for external services, ingress gateway for inbound
-C. An API gateway only
-D. Only the ingress gateway
+B. Mesh gateway between datacenters, terminating gateway for external services, ingress gateway for inbound
+C. An API gateway only, which proxies external requests to the services but does not carry mTLS between datacenters
+D. Only the ingress gateway, which handles inbound traffic and also forwards mTLS traffic out to other datacenters and external services
 
 <details>
 <summary>Answer</summary>
@@ -212,7 +212,7 @@ D. Only the ingress gateway
 ### Question 12
 **Scenario:** Gossip traffic must be encrypted.
 
-A. Use IPsec
+A. Enable mTLS in the service mesh
 B. Enable TLS on the HTTP API only
 C. It is encrypted by default
 D. Set a `encrypt` key in the agent configuration, shared by all agents in the pool
@@ -231,9 +231,9 @@ D. Set a `encrypt` key in the agent configuration, shared by all agents in the p
 **Scenario:** Consul is installed on Kubernetes.
 
 A. Only by manual manifests
-B. It does not run on Kubernetes
+B. It does not run on Kubernetes, because it needs a stable host IP per agent that pods cannot provide
 C. As a DaemonSet only
-D. With the official Helm chart or the Consul K8s CLI, which wire up sidecar injection and sync with Kubernetes services
+D. With the official Helm chart or the Consul K8s CLI, which wire up sidecar injection
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. With the official Helm chart or the Consul K8s CLI, which wire up sidecar inj
 ### Question 14
 **Scenario:** A Consul server loses quorum after two of three servers fail.
 
-A. The remaining server cannot elect a leader, so writes fail while stale reads may still be served; recover by restoring servers or performing an outage recovery
-B. The cluster continues normally
-C. Clients take over
-D. Data is lost immediately
+A. The remaining server cannot elect a leader, so writes fail; restore servers or run outage recovery
+B. The cluster continues normally, because the one remaining server is promoted to leader and keeps accepting writes
+C. Clients take over as servers automatically after a timeout, promoting the healthiest client agent into the Raft quorum
+D. Data is lost immediately, because a server that loses quorum wipes its Raft log, state store and snapshots
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Data is lost immediately
 ### Question 15
 **Scenario:** Traffic must be split 80/20 between two versions of a service in the mesh.
 
-A. A service splitter configuration entry, with service resolver subsets defining the versions
-B. DNS round robin
-C. An external load balancer
-D. Two service names
+A. A service splitter config entry, with resolver subsets defining the versions
+B. DNS round robin with a weighted record set pointing at the instances of both versions
+C. An external load balancer in front of the mesh, with weighted target groups for each version
+D. Two separate service names, with callers updated to choose between them by percentage
 
 <details>
 <summary>Answer</summary>

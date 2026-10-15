@@ -20,10 +20,10 @@
 ### Question 1
 **Scenario:** A startup is building a social media application expecting rapid growth from 10,000 to 10 million users. They need a database solution that can handle high read/write throughput, scale horizontally without downtime, and support complex queries for user feeds. Cost optimization is important in early stages. Which database solution is BEST?
 
-A. Cloud Spanner with regional configuration
-B. Bigtable for all data storage
-C. Firestore in Native mode with composite indexes
-D. Cloud SQL with read replicas
+A. Cloud Spanner with regional configuration, provisioned with enough nodes for the full 10 million users from day one
+B. Bigtable for all data storage, with row keys designed around user IDs and timestamps for each feed
+C. Firestore in Native mode with composite indexes for the feed queries, which scales automatically and has a free tier for early costs
+D. Cloud SQL with read replicas, moving to larger machine types as the read and write load grows
 
 <details>
 <summary>Answer</summary>
@@ -38,10 +38,10 @@ D. Cloud SQL with read replicas
 ### Question 2
 **Scenario:** An e-commerce application needs to process orders with guaranteed exactly-once delivery. Orders must be processed in the sequence received from each customer, but orders from different customers can be processed in parallel. What messaging architecture supports this?
 
-A. Pub/Sub with pull subscriptions and manual acknowledgment
-B. Direct HTTP calls with retry logic
-C. Pub/Sub with ordering keys set to customer ID and exactly-once delivery enabled
-D. Cloud Tasks with named tasks per order
+A. Pub/Sub with pull subscriptions, where each worker acknowledges a message after it has processed it
+B. Direct HTTP calls from the order service to the processor, with retry logic and exponential backoff
+C. Pub/Sub with ordering keys set to the customer ID and exactly-once delivery enabled on a pull subscription
+D. Cloud Tasks with named tasks per order, so that a task name deduplicates repeated submissions
 
 <details>
 <summary>Answer</summary>
@@ -56,10 +56,10 @@ D. Cloud Tasks with named tasks per order
 ### Question 3
 **Scenario:** A gaming company needs to store player session data that must persist across server restarts, be accessible globally with low latency, and automatically expire after 24 hours of inactivity. What storage solution meets these requirements?
 
-A. Memorystore for Redis with TTL and replication
-B. Firestore with TTL policies
-C. Cloud SQL with scheduled cleanup jobs
-D. Cloud Storage with lifecycle policies
+A. Memorystore for Redis with TTL and replication, using a Standard tier instance in the main region
+B. Firestore in a multi-region location with a TTL policy on an expiry timestamp field that the app resets on activity
+C. Cloud SQL with scheduled cleanup jobs that delete the expired sessions every night
+D. Cloud Storage with lifecycle policies that delete session objects after a set number of days
 
 <details>
 <summary>Answer</summary>
@@ -74,10 +74,10 @@ D. Cloud Storage with lifecycle policies
 ### Question 4
 **Scenario:** A financial application needs to ensure that a money transfer operation (debit from one account, credit to another) either completes fully or not at all, even across service boundaries in a microservices architecture. How should this be implemented?
 
-A. Implement optimistic locking with retry logic
-B. Use a single Cloud SQL database for all services to enable transactions
-C. Implement the Saga pattern with compensating transactions using Cloud Tasks or Workflows
-D. Use distributed transactions with two-phase commit across services
+A. Implement optimistic locking with retry logic on each account row, using a version column to detect conflicts
+B. Use a single Cloud SQL database for all services so that one ACID transaction covers the debit and the credit
+C. Implement the Saga pattern with compensating transactions, orchestrated by Cloud Workflows or Cloud Tasks across the services
+D. Use distributed transactions with two-phase commit across the services, with a coordinator that holds locks
 
 <details>
 <summary>Answer</summary>
@@ -92,10 +92,10 @@ D. Use distributed transactions with two-phase commit across services
 ### Question 5
 **Scenario:** An IoT platform receives millions of sensor readings per second from devices worldwide. Data must be ingested, processed for anomalies in real-time, stored for analysis, and made available for dashboards with sub-second latency. What architecture supports these requirements?
 
-A. Devices → Pub/Sub → Dataflow (streaming) → BigQuery + Bigtable → Looker
-B. Devices → IoT Core → Cloud Storage → BigQuery
-C. Devices → Compute Engine → Cloud SQL → custom dashboard
-D. Devices → Cloud Functions → Cloud SQL → Data Studio
+A. Devices → Pub/Sub → Dataflow (streaming) → BigQuery + Bigtable → Looker, scaling with the load
+B. Devices → Pub/Sub → Cloud Storage → BigQuery, loading the stored files in hourly batches
+C. Devices → Compute Engine → Cloud SQL → custom dashboard, with an instance group that autoscales on CPU
+D. Devices → Cloud Functions → Cloud SQL → Looker Studio, one invocation per sensor reading
 
 <details>
 <summary>Answer</summary>
@@ -110,10 +110,10 @@ D. Devices → Cloud Functions → Cloud SQL → Data Studio
 ### Question 6
 **Scenario:** A media company's video processing pipeline occasionally fails midway through processing. They need to ensure that failed jobs can be retried from where they left off rather than restarting from the beginning. What design pattern addresses this?
 
-A. Complete transaction rollback on failure
-B. Synchronous processing with immediate retry
-C. Processing without state management
-D. Idempotent operations with checkpointing
+A. Full transaction rollback on failure, so the job restarts at its first step
+B. Synchronous processing with immediate retry, repeating the failed step until it works
+C. Processing without state management, so that any worker can pick up a failed job and start it again from step one
+D. Idempotent operations with checkpointing, saving progress to Cloud Storage or Firestore at intervals
 
 <details>
 <summary>Answer</summary>
@@ -128,10 +128,10 @@ D. Idempotent operations with checkpointing
 ### Question 7
 **Scenario:** A ride-sharing application needs to match riders with nearby drivers in real-time. The system must handle 100,000 concurrent location updates per minute and return matches within 100ms. What architecture supports this?
 
-A. Use Cloud Functions with in-memory caching
+A. Use Cloud Functions with in-memory caching of the latest driver positions inside each function instance
 B. Use Memorystore for Redis with geospatial commands (GEOADD, GEORADIUS)
-C. Store locations in BigQuery and use UDFs for distance calculation
-D. Store locations in Cloud SQL with spatial queries
+C. Store locations in BigQuery and compute distances with UDFs
+D. Store locations in Cloud SQL with spatial queries on an indexed geometry column in the database
 
 <details>
 <summary>Answer</summary>
@@ -146,10 +146,10 @@ D. Store locations in Cloud SQL with spatial queries
 ### Question 8
 **Scenario:** An application needs to call multiple independent external APIs to assemble a response. Each API has variable latency (50-500ms). The application should return as quickly as possible while being resilient to individual API failures. How should this be designed?
 
-A. Call APIs in parallel using async/await with timeouts and fallback values for failures
-B. Call APIs sequentially and aggregate results
-C. Use a single API gateway that aggregates all external APIs
-D. Cache all API responses indefinitely
+A. Call the APIs in parallel with async/await, using timeouts and fallback values for failures
+B. Call the APIs one after another and aggregate the results at the end
+C. Use a single API gateway that aggregates all external APIs behind one endpoint and returns their responses
+D. Cache all API responses indefinitely so requests never wait on an external call
 
 <details>
 <summary>Answer</summary>
@@ -164,17 +164,17 @@ D. Cache all API responses indefinitely
 ### Question 9
 **Scenario:** A batch processing system runs nightly jobs that vary dramatically in resource needs - some jobs need 2 CPUs for 10 minutes, others need 64 CPUs for 2 hours. The company wants to minimize costs while ensuring jobs complete on time. What compute solution is BEST?
 
-A. Cloud Run jobs with appropriate CPU/memory configuration per job
-B. Dataflow with autoscaling for batch jobs
-C. Dedicated Compute Engine VMs sized for the largest job
-D. GKE Autopilot with job-specific resource requests
+A. Cloud Run jobs with CPU and memory set per job type, scaling to zero and billing only while a job is running
+B. Dataflow with autoscaling, running each nightly job as a pipeline with workers sized per stage
+C. Dedicated Compute Engine VMs sized for the largest job, left running so each job starts at once
+D. GKE Standard with a fixed node pool sized for the largest job, running the nightly jobs as Jobs
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Cloud Run jobs allow specifying CPU and memory per job type, scale to zero when not running, and bill only for actual execution time. Different job configurations can have different resource allocations. This minimizes costs for variable workloads. Dedicated VMs (C) waste resources during light jobs. GKE Autopilot (D) works but has more overhead than Cloud Run for simple batch jobs. Dataflow (B) is for data processing pipelines, not general batch jobs.
+**Why:** Cloud Run jobs allow specifying CPU and memory per job type, scale to zero when not running, and bill only for actual execution time. Different job configurations can have different resource allocations. This minimizes costs for variable workloads. Dedicated VMs (C) waste resources during light jobs. A fixed GKE node pool (D) pays for idle nodes between jobs. Dataflow (B) is for data processing pipelines, not general batch jobs.
 
 **Key Concept:** [Cloud Run Jobs](https://cloud.google.com/run/docs/create-jobs)
 </details>
@@ -182,9 +182,9 @@ D. GKE Autopilot with job-specific resource requests
 ### Question 10
 **Scenario:** A content platform serves static assets (images, videos) to users globally. They need to minimize latency for users worldwide, handle traffic spikes during viral content, and reduce origin server load. What configuration provides this?
 
-A. Cloud Storage with signed URLs only
-B. Cloud Storage with multi-regional bucket
-C. Compute Engine instances in each region serving content
+A. Cloud Storage with signed URLs only, issued by the application to each user for every asset
+B. Cloud Storage with a multi-region bucket, which replicates objects across regions inside one large geographic area
+C. Compute Engine instances in each region serving content from local disks behind a load balancer
 D. Cloud Storage with Cloud CDN enabled
 
 <details>
@@ -204,10 +204,10 @@ D. Cloud Storage with Cloud CDN enabled
 ### Question 11
 **Scenario:** A development team wants to run integration tests that require a Cloud SQL database. Tests should be isolated, run in CI/CD, and not affect production data. The database schema is complex with many tables. What is the BEST approach?
 
-A. Use Cloud SQL Auth Proxy with a dedicated test instance and transaction rollback after each test
-B. Use the production database with test data prefixes
-C. Mock all database interactions in tests
-D. Create a Cloud SQL instance per test run and delete after
+A. Use the Auth Proxy with a dedicated test instance, rolling back the transaction after each test
+B. Use the production database, with test data prefixes to find and delete test rows
+C. Mock all database interactions in tests, replacing the Cloud SQL client with in-memory stubs everywhere in the codebase
+D. Create a new Cloud SQL instance for every test run and delete it as soon as the pipeline finishes the run
 
 <details>
 <summary>Answer</summary>
@@ -222,10 +222,10 @@ D. Create a Cloud SQL instance per test run and delete after
 ### Question 12
 **Scenario:** A team needs to test their Cloud Functions locally before deployment. The functions interact with Pub/Sub, Firestore, and Cloud Storage. How can they set up a local development environment that mimics production?
 
-A. Deploy to a development project and test there
-B. Write unit tests that mock all GCP services
-C. Use the Functions Framework locally with Firebase Emulator Suite for Firestore and local Pub/Sub emulator
-D. Use production services with test data
+A. Deploy to a development project and test there after every code change
+B. Write unit tests that mock all GCP services, replacing each client library call with a stub response
+C. Run the Functions Framework locally, pointed at the Firestore and Pub/Sub emulators
+D. Use production services with test data in a separate bucket
 
 <details>
 <summary>Answer</summary>
@@ -240,10 +240,10 @@ D. Use production services with test data
 ### Question 13
 **Scenario:** A company wants to ensure their container images don't contain known vulnerabilities before deployment to GKE. They also want to block deployment of images that haven't been scanned. How should this be implemented?
 
-A. Use only official base images
-B. Scan images after deployment and fix issues
-C. Manual security review before deployment
-D. Enable Container Analysis for vulnerability scanning and Binary Authorization with attestation requirements
+A. Use only official base images from Docker Hub, which are guaranteed to contain no known vulnerabilities
+B. Scan images after deployment and fix the issues in the next release, with an alert to the team
+C. Manual security review before deployment, with an engineer checking each image against a vulnerability list
+D. Enable Container Analysis scanning and Binary Authorization with attestation requirements
 
 <details>
 <summary>Answer</summary>
@@ -258,10 +258,10 @@ D. Enable Container Analysis for vulnerability scanning and Binary Authorization
 ### Question 14
 **Scenario:** A development team needs to manage application configuration that varies between development, staging, and production environments. Configuration includes feature flags, API endpoints, and database connection strings. What is the BEST approach?
 
-A. Use environment variables injected at deployment time, with secrets in Secret Manager
-B. Hard-code configuration with if/else for each environment
-C. Use a single configuration for all environments
-D. Store all configuration in the application repository
+A. Use environment variables injected at deployment time for each environment, with secrets kept in Secret Manager
+B. Hard-code the configuration, with if/else branches that choose the values for each environment
+C. Use a single configuration file for all environments and edit it by hand before each deployment
+D. Store all configuration, including the secrets, in the application repository next to the code
 
 <details>
 <summary>Answer</summary>
@@ -276,10 +276,10 @@ D. Store all configuration in the application repository
 ### Question 15
 **Scenario:** A team is developing a machine learning model training pipeline. They need to track experiments, compare model versions, and reproduce results. The pipeline uses Vertex AI for training. How should they manage this?
 
-A. Use Git branches for each experiment
-B. Save model files to Cloud Storage with manual versioning
-C. Use Vertex AI Experiments for tracking with Vertex AI Pipelines for reproducibility
-D. Store experiment results in spreadsheets
+A. Use Git branches for each experiment, committing the parameters and metrics to a text file in the branch
+B. Save model files to Cloud Storage with manual versioning, using a folder name with the date for each run
+C. Use Vertex AI Experiments to track runs and compare model versions, with Vertex AI Pipelines to make each run reproducible
+D. Store experiment results in spreadsheets that the team updates by hand after each training run finishes
 
 <details>
 <summary>Answer</summary>
@@ -294,10 +294,10 @@ D. Store experiment results in spreadsheets
 ### Question 16
 **Scenario:** A microservices application has intermittent failures that are difficult to reproduce. The team needs to understand the flow of requests across services and identify where latency or errors occur. What observability solution helps with this?
 
-A. Application logs in Cloud Logging
-B. Cloud Monitoring metrics only
-C. Cloud Trace for distributed tracing combined with Cloud Profiler for performance
-D. Custom logging in each service
+A. Application logs in Cloud Logging, searched by timestamp across the services to rebuild each request path
+B. Cloud Monitoring metrics only, with dashboards of the request rate and error rate for each service
+C. Use Cloud Trace for distributed tracing across the services, combined with Cloud Profiler for code-level performance
+D. Custom logging in each service, writing a request ID into a different log format in every team
 
 <details>
 <summary>Answer</summary>
@@ -312,10 +312,10 @@ D. Custom logging in each service
 ### Question 17
 **Scenario:** A developer needs to test error handling code paths, including simulating network failures, service unavailability, and timeout scenarios. The application uses gRPC for service communication. How can they reliably test these scenarios?
 
-A. Use fault injection with Istio service mesh or test doubles that simulate failures
-B. Disable network connectivity during tests
-C. Wait for random production failures
-D. Hope error handling code is correct
+A. Use fault injection with Istio or test doubles that simulate failures
+B. Disable network connectivity during tests, so that every outbound call fails the same way each time
+C. Wait for random production failures and record how the application behaves when they occur
+D. Hope the error handling code is correct, and review it once during the next scheduled code audit
 
 <details>
 <summary>Answer</summary>
@@ -330,10 +330,10 @@ D. Hope error handling code is correct
 ### Question 18
 **Scenario:** A team wants to automate code review checks including linting, security scanning, and test coverage requirements. Pull requests should not be mergeable until all checks pass. They use GitHub for source control. How should this be implemented?
 
-A. Trust developers to run checks locally
-B. Run checks only after merging
-C. Manual code review only
-D. Cloud Build triggers on pull requests running checks, with GitHub branch protection requiring status checks
+A. Trust developers to run linting, scans, and tests locally before they push, and note the results in the PR description
+B. Run checks only after merging, with a nightly job that reverts failing commits
+C. Manual code review only, with a senior engineer checking style, security, and coverage
+D. Cloud Build triggers on pull requests, with GitHub branch protection requiring the status checks
 
 <details>
 <summary>Answer</summary>
@@ -352,10 +352,10 @@ D. Cloud Build triggers on pull requests running checks, with GitHub branch prot
 ### Question 19
 **Scenario:** A web application needs to be deployed with zero downtime. The team wants to gradually shift traffic to new versions and automatically roll back if error rates increase. The application runs on GKE. What deployment strategy supports this?
 
-A. Recreate deployment - stop old, start new
+A. Recreate deployment - stop old, start new, accepting a short outage while the new pods start
 B. Canary deployment with GKE Gateway and Cloud Deploy
-C. Blue-green deployment with manual DNS switching
-D. Deploy directly to production nodes
+C. Blue-green deployment with manual DNS switching, moving all traffic once the green side looks healthy
+D. Deploy directly to production nodes by copying the new build onto each node one at a time
 
 <details>
 <summary>Answer</summary>
@@ -370,10 +370,10 @@ D. Deploy directly to production nodes
 ### Question 20
 **Scenario:** A company has multiple microservices that need to be deployed together as they have interdependencies. Some services need database migrations to run before deployment. How should this deployment be orchestrated?
 
-A. Use cron jobs to coordinate deployments
+A. Use cron jobs to coordinate deployments, scheduling each service a few minutes after the one before
 B. Use Cloud Deploy with a delivery pipeline defining stages and dependencies
-C. Deploy services manually in the correct order
-D. Deploy all services simultaneously
+C. Deploy services manually in the correct order, following the written runbook for each release
+D. Deploy all services simultaneously, and let each one retry its connections until its dependencies are up
 
 <details>
 <summary>Answer</summary>
@@ -388,10 +388,10 @@ D. Deploy all services simultaneously
 ### Question 21
 **Scenario:** A stateless API application needs to scale from 0 to handle sporadic traffic patterns with unpredictable bursts. Cold start time should be minimal. The application is containerized. Which compute option is BEST?
 
-A. GKE Autopilot with HPA
-B. Cloud Functions for containers
-C. Compute Engine with managed instance groups
-D. Cloud Run with minimum instances set to 0 and concurrency tuning
+A. GKE Autopilot with HPA and baseline pods
+B. Cloud Functions for containers, running the image per request
+C. Compute Engine with managed instance groups, autoscaling on CPU and keeping at least one VM running at all times
+D. Cloud Run with minimum instances set to 0, scaling on demand, and concurrency tuned per instance
 
 <details>
 <summary>Answer</summary>
@@ -406,10 +406,10 @@ D. Cloud Run with minimum instances set to 0 and concurrency tuning
 ### Question 22
 **Scenario:** A team needs to deploy infrastructure and applications together in a repeatable way. They want to define both GKE clusters and the applications running on them as code. What approach provides this?
 
-A. Separate teams managing infrastructure and applications
+A. Separate teams managing infrastructure and applications, each using its own tools and release schedule
 B. Terraform for infrastructure with Config Connector for Kubernetes resources
-C. Manual deployment through Cloud Console
-D. gcloud commands in shell scripts
+C. Manual deployment through Cloud Console, following a wiki checklist
+D. gcloud commands in shell scripts kept in the repository
 
 <details>
 <summary>Answer</summary>
@@ -424,10 +424,10 @@ D. gcloud commands in shell scripts
 ### Question 23
 **Scenario:** An application deployed on Cloud Run needs to access a Cloud SQL database. The connection should be secure without exposing the database to the public internet. How should this be configured?
 
-A. Whitelist Cloud Run's IP range in Cloud SQL firewall
-B. Store database credentials in environment variables
+A. Whitelist Cloud Run's IP range in the Cloud SQL firewall so that only those addresses can connect
+B. Store credentials in environment variables
 C. Use Cloud SQL Auth Proxy as a sidecar with private IP and VPC connector
-D. Enable public IP on Cloud SQL and use SSL
+D. Enable public IP on Cloud SQL and use SSL, with authorized networks limited to the service's address range
 
 <details>
 <summary>Answer</summary>
@@ -442,10 +442,10 @@ D. Enable public IP on Cloud SQL and use SSL
 ### Question 24
 **Scenario:** A company requires that all deployments to production are approved by a security team and have passed all tests. They want an audit trail of who approved each deployment. How should this be implemented?
 
-A. Email approval threads
+A. Email approval threads from the security team, archived in a shared mailbox for the auditors
 B. Cloud Deploy with approval requirements for production target and IAM logging
-C. Shared production credentials for approved deployers
-D. Verbal approval before deployment
+C. Shared production credentials for approved deployers, rotated quarterly by the platform team
+D. Verbal approval before deployment, confirmed in the team chat by the engineer who runs it
 
 <details>
 <summary>Answer</summary>
@@ -460,10 +460,10 @@ D. Verbal approval before deployment
 ### Question 25
 **Scenario:** An organization uses GitOps for deployments - all changes go through Git pull requests. They need the actual state of their GKE clusters to match the desired state in Git automatically. What tool provides this?
 
-A. Helm charts stored in Git
+A. Helm charts stored in Git, installed by an engineer with helm upgrade whenever a chart changes
 B. Config Sync with a Git repository as source of truth
-C. kubectl apply from CI/CD
-D. Cloud Deploy with manual promotion
+C. kubectl apply from CI/CD after each merge, using a service account with cluster-admin access
+D. Cloud Deploy with manual promotion, where an approver moves each release between the targets
 
 <details>
 <summary>Answer</summary>
@@ -482,10 +482,10 @@ D. Cloud Deploy with manual promotion
 ### Question 26
 **Scenario:** An application needs to generate PDF reports from templates with customer data. Report generation can take 30-60 seconds. Users should be able to request a report and receive it via email without waiting. What architecture supports this?
 
-A. Client-side PDF generation
-B. Cron job generating all reports nightly
-C. Synchronous Cloud Function that generates and returns the PDF
-D. Cloud Tasks triggering a Cloud Run job for PDF generation, storing result in Cloud Storage, sending email via SendGrid
+A. Client-side PDF generation in the browser
+B. Cron job generating all reports nightly, so that users download yesterday's version in the morning
+C. Synchronous Cloud Function that generates and returns the PDF in the HTTP response to the user's request
+D. Cloud Tasks starting a Cloud Run job, which saves the PDF and emails a link via SendGrid
 
 <details>
 <summary>Answer</summary>
@@ -500,9 +500,9 @@ D. Cloud Tasks triggering a Cloud Run job for PDF generation, storing result in 
 ### Question 27
 **Scenario:** A company needs to build a chatbot that can answer questions about their product catalog stored in Firestore. The bot should understand natural language and provide relevant responses. What GCP services support this?
 
-A. Cloud Functions responding to keyword matching
-B. BigQuery for natural language queries
-C. Build custom NLP models from scratch
+A. Cloud Functions matching keywords in each message
+B. BigQuery loaded with the catalog
+C. Build custom NLP models from scratch, training intent and entity classifiers on the team's own data
 D. Dialogflow CX with Firestore integration for fulfillment
 
 <details>
@@ -518,10 +518,10 @@ D. Dialogflow CX with Firestore integration for fulfillment
 ### Question 28
 **Scenario:** An application needs to process uploaded images by: detecting objects in the image, extracting any text, and storing the results. This should happen automatically when images are uploaded to Cloud Storage. What architecture implements this?
 
-A. Cloud Storage trigger → Cloud Function → Vision AI (object detection, OCR) → results to Firestore
-B. Scheduled batch processing of all images
+A. Cloud Storage trigger → Cloud Function → Vision AI (objects, OCR) → results in Firestore
+B. Scheduled batch processing of all images, run every hour by Cloud Scheduler against the bucket
 C. Client-side image processing before upload
-D. Manual processing through Cloud Console
+D. Manual processing through Cloud Console, with an analyst opening each new image and typing the results
 
 <details>
 <summary>Answer</summary>
@@ -536,10 +536,10 @@ D. Manual processing through Cloud Console
 ### Question 29
 **Scenario:** A retail application needs to provide real-time inventory updates to web and mobile clients. When inventory changes, all connected clients should see the update within 1 second. What approach provides this real-time capability?
 
-A. Server-sent events from Cloud Functions
+A. Server-sent events from Cloud Functions, holding an open HTTP response for each connected client
 B. Firestore real-time listeners with client SDKs
-C. WebSocket server on Compute Engine
-D. Clients poll the API every second
+C. WebSocket server on Compute Engine, with a managed instance group behind a load balancer
+D. Clients poll the API every second and update the screen when the response differs
 
 <details>
 <summary>Answer</summary>
@@ -554,10 +554,10 @@ D. Clients poll the API every second
 ### Question 30
 **Scenario:** A data processing pipeline needs to read from Pub/Sub, transform records, aggregate by key over time windows, and write to BigQuery. Transformations include calling an external API for enrichment. What service is BEST for this?
 
-A. Cloud Functions triggered by Pub/Sub
+A. Cloud Functions triggered by Pub/Sub, keeping a running total per key in a global variable
 B. Dataflow with Apache Beam SDK
-C. Cloud Run processing Pub/Sub messages
-D. BigQuery scheduled queries
+C. Cloud Run processing Pub/Sub messages, with a database table holding the window totals
+D. BigQuery scheduled queries that read the raw table and aggregate it on a fixed interval
 
 <details>
 <summary>Answer</summary>
@@ -572,10 +572,10 @@ D. BigQuery scheduled queries
 ### Question 31
 **Scenario:** An application needs to schedule a task to run at a specific time in the future (e.g., send a reminder email 24 hours before an appointment). The scheduled time is determined at runtime for each task. What service handles this?
 
-A. Cloud Scheduler with dynamic cron expressions
-B. Store tasks in database and poll
+A. Cloud Scheduler with dynamic cron expressions, creating a new job for each appointment
+B. Store tasks in a database and poll it from a worker that runs every minute
 C. Cloud Tasks with scheduled delivery time
-D. Cloud Functions with setTimeout
+D. Cloud Functions with setTimeout that waits inside the function for 24 hours
 
 <details>
 <summary>Answer</summary>
@@ -590,10 +590,10 @@ D. Cloud Functions with setTimeout
 ### Question 32
 **Scenario:** A healthcare application needs to redact PII (names, phone numbers, medical record numbers) from clinical notes before storing them for research. The redaction should be automated and comprehensive. What GCP service provides this?
 
-A. Encrypt documents instead of redaction
-B. Regular expressions in application code
+A. Encrypt documents instead of redaction, using customer-managed keys on the storage bucket
+B. Regular expressions in code, one for each identifier type
 C. Cloud Data Loss Prevention (DLP) API with de-identification transforms
-D. Manual review of all documents
+D. Manual review of all documents by a trained compliance team before they are stored
 
 <details>
 <summary>Answer</summary>
@@ -608,10 +608,10 @@ D. Manual review of all documents
 ### Question 33
 **Scenario:** An e-commerce application needs to send transactional emails (order confirmations, shipping updates) reliably. The system should handle high volumes during sales events and provide delivery tracking. How should this be implemented?
 
-A. Cloud Tasks queuing email requests to a Cloud Run service using SendGrid API with delivery webhooks to Pub/Sub
-B. Client-side email sending
-C. Direct SMTP from application servers
-D. Store emails in database for batch sending
+A. Cloud Tasks queue feeding a Cloud Run service that calls SendGrid, with delivery-status webhooks sent to Pub/Sub
+B. Client-side email sending from the customer's browser, using an email API key bundled in the app
+C. Direct SMTP from application servers, connecting to each recipient's mail server from the VM
+D. Store emails in a database for batch sending, with a scheduled job that sends them each hour
 
 <details>
 <summary>Answer</summary>
@@ -626,10 +626,10 @@ D. Store emails in database for batch sending
 ### Question 34
 **Scenario:** An application needs to generate custom product recommendations for users based on their browsing history and purchase patterns. The recommendation model should be trained on historical data and serve predictions with low latency. What approach is recommended?
 
-A. Pre-compute all recommendations nightly
-B. Rule-based recommendations with hard-coded logic
-C. Third-party recommendation SaaS only
-D. Vertex AI Recommendations AI or custom model on Vertex AI with online prediction endpoints
+A. Pre-compute all recommendations nightly and store the lists by user in a table for the application
+B. Rule-based recommendations with hard-coded logic, such as showing the best sellers in the category
+C. Third-party recommendation SaaS only, with the browsing data exported to the vendor each day
+D. Vertex AI Recommendations AI, or a custom model trained on Vertex AI and served from an online prediction endpoint
 
 <details>
 <summary>Answer</summary>
@@ -649,9 +649,9 @@ D. Vertex AI Recommendations AI or custom model on Vertex AI with online predict
 **Scenario:** A production application is experiencing intermittent latency spikes. The team needs to identify which service and code path is causing the slowdowns. Standard metrics show overall latency but not the root cause. What tool helps diagnose this?
 
 A. Cloud Monitoring dashboards only
-B. Application logs searching for slow operations
-C. User feedback surveys
-D. Cloud Trace to analyze individual request latency with Cloud Profiler for code-level analysis
+B. Application logs searched for slow operations, comparing the timestamps by hand across services
+C. User feedback surveys sent to customers who reported slow pages, ranked by how many complaints each page received
+D. Cloud Trace for individual request latency, with Cloud Profiler for code-level analysis
 
 <details>
 <summary>Answer</summary>
@@ -666,10 +666,10 @@ D. Cloud Trace to analyze individual request latency with Cloud Profiler for cod
 ### Question 36
 **Scenario:** A team needs to ensure their API maintains backward compatibility as it evolves. They want to detect breaking changes before deployment. What practice helps ensure API stability?
 
-A. Allow any changes with client notification
-B. No API documentation
-C. API versioning with automated contract testing using tools like Protolock for gRPC or OpenAPI diff
-D. Never change the API
+A. Allow any changes, notifying clients by email
+B. No API documentation, because it drifts and the code is the source of truth
+C. API versioning with automated contract tests, such as Protolock for gRPC or OpenAPI diff
+D. Never change the API, freezing the interface so that every client keeps working exactly as today
 
 <details>
 <summary>Answer</summary>
@@ -685,9 +685,9 @@ D. Never change the API
 **Scenario:** An application running on Cloud Run needs to gracefully handle instance termination during scale-down. In-flight requests should complete, and cleanup tasks should run before shutdown. How is this achieved?
 
 A. Use synchronous processing only
-B. Handle SIGTERM signal with graceful shutdown logic and configure appropriate request timeout
-C. Ignore termination signals
-D. Disable autoscaling
+B. Handle SIGTERM with graceful shutdown logic and set an appropriate request timeout
+C. Ignore termination signals, because Cloud Run always waits for all in-flight work to finish
+D. Disable autoscaling by pinning min and max instances to the same value, so scale-down never occurs
 
 <details>
 <summary>Answer</summary>
@@ -702,9 +702,9 @@ D. Disable autoscaling
 ### Question 38
 **Scenario:** A team manages multiple microservices across development, staging, and production environments. They need to track which version of each service is deployed in each environment and quickly identify configuration differences. How should this be managed?
 
-A. Check each service individually
-B. Spreadsheet tracking deployments
-C. Memory and tribal knowledge
+A. Check each service individually in the console of each environment, one project at a time
+B. Spreadsheet tracking deployments, updated by the engineer who runs each release
+C. Memory and tribal knowledge, with the longest-serving engineer answering questions in chat
 D. Cloud Deploy release inventory with Cloud Asset Inventory for resource configuration
 
 <details>
@@ -720,10 +720,10 @@ D. Cloud Deploy release inventory with Cloud Asset Inventory for resource config
 ### Question 39
 **Scenario:** An application's error rate suddenly increased after a deployment. The team needs to quickly identify which errors are new (introduced by the deployment) versus existing errors. They use Cloud Error Reporting. How can they make this determination?
 
-A. Use Error Reporting's "first seen" and "last seen" timestamps, filter by service version
-B. Wait for user reports
-C. Read all error logs manually
-D. Assume all errors are from the new deployment
+A. Use Error Reporting's first-seen timestamps and filter the errors by service version
+B. Wait for user reports and compare their timestamps
+C. Read all error logs manually, scrolling back to the time of the deployment
+D. Assume all errors come from the new deployment, since the rate rose right after it went live
 
 <details>
 <summary>Answer</summary>
@@ -739,9 +739,9 @@ D. Assume all errors are from the new deployment
 **Scenario:** A production system needs to maintain 99.9% availability SLO. The team needs to track error budget consumption, get alerts when approaching budget exhaustion, and make data-driven decisions about deployments vs. reliability work. What should they implement?
 
 A. Cloud Monitoring SLOs with error budget alerts and burn rate policies
-B. Manual availability tracking in spreadsheets
-C. Ignore SLOs and deploy whenever
-D. Monitor uptime only
+B. Manual availability tracking in spreadsheets, updated by the on-call engineer each week
+C. Ignore SLOs and deploy whenever the team is ready, relying on customer complaints
+D. Monitor uptime only, with a ping check
 
 <details>
 <summary>Answer</summary>

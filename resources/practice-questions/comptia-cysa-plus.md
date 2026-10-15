@@ -16,8 +16,8 @@ CySA+ is analyst-level and behavioral: it tests what you do with the data, not j
 ### Question 1
 **Scenario:** A vulnerability scan returns 4,000 findings. What drives remediation order?
 
-A. Risk in context: exploitability and known exploitation in the wild, asset criticality, exposure, and compensating controls, alongside the CVSS score
-B. CVSS base score alone
+A. Risk in context: known exploitation, asset criticality, exposure, compensating controls, and CVSS
+B. CVSS base score alone, since it is the only vendor-neutral number and context scoring adds subjective bias
 C. Alphabetical by host
 D. Oldest first
 
@@ -34,9 +34,9 @@ D. Oldest first
 ### Question 2
 **Scenario:** A scanner reports a vulnerability the analyst confirms is not present.
 
-A. Report it anyway
+A. Report it anyway, since the scanner's database is maintained by the vendor and the analyst should not second-guess it
 B. Ignore all scanner output
-C. A false positive: validate, document the finding as such with evidence, and tune the scanner or add an exception so it does not recur
+C. A false positive: validate, document it with evidence, and tune the scanner or add an exception
 D. Disable the scanner
 
 <details>
@@ -52,9 +52,9 @@ D. Disable the scanner
 ### Question 3
 **Scenario:** A SIEM rule fires 300 times a day for benign administrative activity.
 
-A. Increase the alert threshold arbitrarily
+A. Raise the alert threshold from one event to a few thousand so that only large bursts of activity still create alerts
 B. Disable the rule
-C. Tune it: add exclusions for the known-good identity or process, and consider grouping alerts into one incident
+C. Tune it: exclude the known-good identity or process, and consider grouping alerts
 D. Ignore the alerts
 
 <details>
@@ -70,9 +70,9 @@ D. Ignore the alerts
 ### Question 4
 **Scenario:** Which describes threat hunting?
 
-A. Reading vendor advisories
-B. Hypothesis-driven proactive searching for adversary activity that existing detections have not caught
-C. Responding to alerts
+A. Reading vendor advisories and threat feeds each morning to see whether new indicators match anything in the environment
+B. Hypothesis-driven proactive searching for adversary activity that existing detections have not caught, starting from a theory
+C. Responding to alerts raised by the SIEM, working the queue in order of severity until each one is closed
 D. Running vulnerability scans
 
 <details>
@@ -89,9 +89,9 @@ D. Running vulnerability scans
 **Scenario:** An analyst maps observed attacker behavior to a common framework.
 
 A. OWASP Top 10
-B. NIST CSF
+B. NIST CSF, which catalogs the tactics and techniques adversaries use and is the usual basis for detection coverage maps
 C. MITRE ATT&CK, mapping tactics and techniques
-D. CVSS
+D. CVSS, which scores each technique by the attacker's tactics and is used to map observed behavior to a shared vocabulary
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. CVSS
 ### Question 6
 **Scenario:** Indicators of compromise versus indicators of attack.
 
-A. IOCs are behavioral
+A. IOCs are behavioral, describing what an attacker does as it runs, while IOAs are static file hashes from prior incidents
 B. They are identical
-C. IOAs are historical
-D. IOCs are artifacts of activity that already happened (hashes, IPs, domains); IOAs describe behavior in progress and generalize better across variants
+C. IOAs are historical records of past breaches kept for reporting, while IOCs show activity that is currently in progress
+D. IOCs are artifacts of past activity (hashes, IPs, domains); IOAs describe behavior in progress
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. IOCs are artifacts of activity that already happened (hashes, IPs, domains); 
 ### Question 7
 **Scenario:** A host is confirmed compromised. What comes first?
 
-A. Run antivirus
-B. Containment that preserves evidence: isolate the host from the network while keeping it running, and capture volatile data before shutdown
-C. Shut it down
-D. Reimage immediately
+A. Run antivirus on the host and clean what it finds, then return it to service once the scan comes back clear
+B. Isolate the host from the network but keep it running, and capture volatile data first
+C. Shut it down at the power button so the attacker loses access, then image the disk before anything else is touched
+D. Reimage immediately so the malware is removed and the business impact is as short as possible, then investigate from logs
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Reimage immediately
 ### Question 8
 **Scenario:** Evidence must hold up in a legal proceeding.
 
-A. Analyze the original disk
-B. Screenshot everything
-C. Copy the files to a share
-D. Maintain chain of custody, take forensically sound images with hash verification, and work from copies
+A. Analyze the original disk directly, since making a verified copy would take too long
+B. Screenshot every screen the analyst looks at, as a dated and signed record of what the original evidence contained
+C. Copy the relevant files to a shared drive where the legal team can open them without special tools
+D. Keep chain of custody, take hashed forensic images, and work from copies
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Maintain chain of custody, take forensically sound images with hash verificat
 ### Question 9
 **Scenario:** Network traffic shows periodic outbound connections to an unknown domain at exact intervals.
 
-A. Possible command-and-control beaconing: investigate the destination reputation, the process making the connection, and the payload
-B. A backup job by definition
+A. Possible beaconing: check the destination's reputation, the process behind it, and the payload
+B. A backup job by definition, since only scheduled tasks connect at exact intervals
 C. Normal traffic
-D. A DNS issue
+D. A DNS issue, since resolvers retrying a failing lookup produce regular outbound traffic to the domain
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. A DNS issue
 ### Question 10
 **Scenario:** A web server log shows requests containing `' OR '1'='1`.
 
-A. An SQL injection attempt: check whether it succeeded, review the application's parameterization, and assess data exposure
-B. A malformed request
+A. SQL injection attempt: check if it succeeded, review parameterization, and assess data exposure
+B. A malformed request from a broken client library, which the web server logs whenever quotes are not escaped
 C. A scanner artifact to ignore
-D. A DDoS attack
+D. A DDoS attack, because repeated single-purpose requests of this form are meant to exhaust the server's connection pool
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. A DDoS attack
 ### Question 11
 **Scenario:** Which log source best answers "which process opened this network connection"?
 
-A. Endpoint detection and response or host process telemetry, correlated with the network connection
-B. DNS logs
-C. Firewall logs
-D. Web server logs
+A. EDR or host process telemetry, correlated with the network connection
+B. DNS logs, which record the process name and process ID of the application that asked for each lookup
+C. Firewall logs, which record the source process because the firewall inspects the application layer of each session
+D. Web server logs, which store the originating process of each client request alongside the user agent and URL
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Web server logs
 ### Question 12
 **Scenario:** A patch cannot be applied to a critical production system.
 
-A. Accept the risk silently
+A. Accept the risk silently and note it in the next quarterly report so that business owners are not alarmed
 B. Patch anyway during business hours
-C. Apply compensating controls (segmentation, virtual patching at the IPS or WAF, tightened monitoring), document the exception with an owner and a review date
-D. Take the system offline permanently
+C. Apply compensating controls (segmentation, virtual patching, tighter monitoring) and document the exception with owner and review date
+D. Take the system offline permanently, since a vulnerable production system cannot be protected by other controls
 
 <details>
 <summary>Answer</summary>
@@ -232,8 +232,8 @@ D. Take the system offline permanently
 ### Question 13
 **Scenario:** A report is being written for executives after an incident.
 
-A. Full packet captures and log excerpts
-B. Business impact, what was affected, actions taken, current status, and specific recommendations with owners, keeping technical detail in an appendix
+A. Full packet captures and log excerpts, so the executives can verify events for themselves
+B. Business impact, what was affected, actions taken, status, and recommendations with owners; detail in an appendix
 C. Technical detail only
 D. A single sentence
 
@@ -250,10 +250,10 @@ D. A single sentence
 ### Question 14
 **Scenario:** Which metric best shows whether the SOC is improving?
 
-A. Number of alerts
+A. Number of alerts, since a higher count proves the detection coverage has widened and the SOC is seeing more attacks
 B. Number of rules
-C. Number of tools deployed
-D. Mean time to detect and mean time to respond, trended over time
+C. Number of tools deployed, since each added platform expands visibility and so shows the SOC's capability growing
+D. Mean time to detect and respond, trended over time
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Mean time to detect and mean time to respond, trended over time
 ### Question 15
 **Scenario:** A phishing email reached 200 users and 12 clicked.
 
-A. Block the sender domain and close
-B. Scope it: identify who clicked and who entered credentials, remove the message from all mailboxes, reset affected credentials, hunt for follow-on activity, and feed the indicators into detection
-C. Notify users only
-D. Reset all passwords and close
+A. Block the sender domain at the gateway and close the ticket, since the campaign cannot continue once the source is gone
+B. Scope it: find who clicked or gave credentials, purge the email, reset those accounts, hunt for follow-on activity
+C. Send all 200 users a reminder email about reporting phishing, and take no further technical action on the affected mailboxes or accounts
+D. Reset every user's password across the company and close the ticket, since this removes any credentials that were taken
 
 <details>
 <summary>Answer</summary>

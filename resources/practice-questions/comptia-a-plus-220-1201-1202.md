@@ -14,10 +14,10 @@ difficulty: beginner
 ### Question 1
 **Scenario:** A user replaced their laptop's display assembly at a repair shop. Since then, Wi-Fi signal is very weak even next to the access point, but a USB Wi-Fi adapter works fine.
 
-A. Change the router to 2.4 GHz
-B. Replace the wireless card
-C. Update the wireless driver
-D. Check that the Wi-Fi antenna leads in the display lid were reconnected to the wireless card
+A. Switch the router to 2.4 GHz only, because the lower band penetrates walls better and so improves a weak signal
+B. Replace the wireless card with a new one, since weak reception next to the access point means the card has failed
+C. Update the wireless driver to the latest version from the manufacturer, in case the repair left an older driver loaded
+D. Check that the Wi-Fi antenna leads in the display lid were reconnected to the card
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Check that the Wi-Fi antenna leads in the display lid were reconnected to the
 ### Question 2
 **Scenario:** A company lets staff read work email on personal phones. When someone leaves, IT must remove company data without touching personal photos.
 
-A. MDM with a work profile or container and a selective wipe
-B. Full remote wipe through MDM
-C. Ask the employee to delete the mail app
-D. Disable the user's cellular data
+A. MDM with a work profile or container and a selective wipe that removes only company data
+B. A full remote wipe through MDM, which removes company data quickly but also erases the employee's personal photos
+C. Ask the employee to delete the mail app and sign out of the work account
+D. Disable the user's cellular data in the carrier portal, which blocks mail sync but leaves the company data on the phone
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Disable the user's cellular data
 ### Question 3
 **Scenario:** A user wants to read the same mailbox on a phone, a laptop, and a tablet, with read status and folders staying in sync.
 
-A. POP3 on port 110
-B. IMAP on port 143 (or IMAPS on 993)
-C. SMTP on port 25
-D. LDAP on port 389
+A. POP3 on port 110, which downloads mail to one client and usually removes it from the server
+B. IMAP on port 143 (or IMAPS on 993), which keeps mail on the server and syncs state to every device
+C. SMTP on port 25, which relays outgoing mail between servers, not a synced mailbox view
+D. LDAP on port 389, which looks up directory entries such as contacts but does not store or synchronize mail messages
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. The DNS server is down
 ### Question 5
 **Scenario:** A new access point must be mounted on a warehouse ceiling 60 m from the network closet. There is no power outlet at the mounting point, and the cable will run through an air-handling space.
 
-A. Plenum-rated Cat 6 with PoE from the switch or an injector
-B. Direct burial Cat 6a
-C. Multimode fiber with a power adapter
-D. Cat 5 UTP and an extension cord
+A. Plenum-rated Cat 6 with PoE from the switch or an injector, rated for air-handling spaces
+B. Direct burial Cat 6a with a power injector, which suits underground runs but is not rated for air-handling spaces
+C. Multimode fiber with a local power adapter, but the ceiling has no outlet
+D. Cat 5 UTP with an extension cord run along the cable, which supplies power but ignores fire code and the speed the access point needs
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Cat 5 UTP and an extension cord
 ### Question 6
 **Scenario:** A small office wants a NAS with four drives. It must keep working if any two drives fail at the same time.
 
-A. RAID 0
-B. RAID 6
-C. RAID 1
-D. RAID 5
+A. RAID 0 across four drives, which stripes data for speed and capacity but loses everything when any one drive fails
+B. RAID 6, which uses double parity across the four drives
+C. RAID 1 with four drives in mirrored pairs, which survives some failures but loses data if the two drives of one pair fail
+D. RAID 5 with four drives, which stripes data with single parity and so survives one drive failure but not two
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. RAID 5
 ### Question 7
 **Scenario:** A technician tries to create a 64-bit virtual machine in a Type 2 hypervisor on a new desktop. The hypervisor reports that hardware virtualization is unavailable.
 
-A. Install more RAM
-B. Enable Intel VT-x or AMD-V in the UEFI settings
-C. Switch to a Type 1 hypervisor
-D. Convert the disk from MBR to GPT
+A. Install more RAM, because the hypervisor needs memory for a 64-bit guest and reports unavailable hardware when it is short on the host
+B. Enable Intel VT-x or AMD-V in the UEFI settings, since hardware virtualization is often switched off by default in firmware
+C. Switch to a Type 1 hypervisor, which runs directly on the hardware and so does not need CPU virtualization features, at the cost of reinstalling the host
+D. Convert the disk from MBR to GPT, since 64-bit guests need GPT partitioning on the host to be created
 
 <details>
 <summary>Answer</summary>
@@ -140,7 +140,7 @@ D. Convert the disk from MBR to GPT
 ### Question 8
 **Scenario:** A startup wants to deploy its web application without managing operating systems, patches, or runtime versions. It only wants to upload code.
 
-A. PaaS
+A. PaaS, where the platform runs the OS and runtime and the customer uploads only code
 B. IaaS
 C. Private cloud
 D. SaaS
@@ -158,9 +158,9 @@ D. SaaS
 ### Question 9
 **Scenario:** An office desktop loses the correct date and time whenever it is unplugged overnight. Several websites then show certificate warnings.
 
-A. Reinstall Windows
-B. Replace the power supply
-C. Replace the network card
+A. Reinstall Windows to rebuild the system clock service, since the OS is keeping the time wrongly after each shutdown
+B. Replace the power supply, because a weak supply fails to keep the clock powered while the computer is unplugged
+C. Replace the network card, since time synchronization through NTP fails and so the clock drifts after each restart
 D. Replace the CMOS battery
 
 <details>
@@ -176,10 +176,10 @@ D. Replace the CMOS battery
 ### Question 10
 **Scenario:** Pages from a laser printer show toner that smears and rubs off when touched.
 
-A. Low toner
-B. Wrong printer driver
-C. A worn pickup roller
-D. A failing fuser assembly
+A. Low toner, which would show as faded or streaked prints, not toner that rubs off
+B. A wrong printer driver, which usually produces garbled text, not smeared toner
+C. A worn pickup roller, which causes misfeeds and jams but does not affect toner adhesion
+D. A failing fuser assembly, which no longer bonds the toner to the paper using heat and pressure
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. A failing fuser assembly
 ### Question 11
 **Scenario:** A technician needs to copy a 7 GB video file to a USB flash drive that must work on both Windows and macOS. The copy fails with "file too large."
 
-A. Reformat the drive as APFS
-B. Reformat the drive as NTFS
-C. Reformat the drive as exFAT
-D. Compress the file
+A. Reformat the drive as APFS, Apple's native format, with no file size limit on macOS
+B. Reformat the drive as NTFS, which handles large files and is read-write on Windows but only read-only by default on macOS
+C. Reformat the drive as exFAT, which has no 4 GB file limit and is read-write on both systems
+D. Compress the file with a zip tool until it is under 4 GB, if the video shrinks enough
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Compress the file
 ### Question 12
 **Scenario:** A domain user's newly assigned drive mappings and desktop settings have not appeared, although other users in the same OU have them. The technician wants to apply the policy immediately and then confirm which policies applied.
 
-A. `net user`, then `whoami`
-B. `gpupdate /force`, then `gpresult /r`
-C. `ipconfig /renew`, then `nslookup`
-D. `sfc /scannow`, then `chkdsk`
+A. `net user`, then `whoami`, which list account details and the signed-in identity but do not refresh or report Group Policy settings
+B. `gpupdate /force` to reapply policy now, then `gpresult /r` to confirm which policies applied to the user and computer
+C. `ipconfig /renew`, then `nslookup`, which refresh the IP lease and test name resolution, not Group Policy
+D. `sfc /scannow`, then `chkdsk`, which check system files and the disk but do not apply Group Policy
 
 <details>
 <summary>Answer</summary>
@@ -230,9 +230,9 @@ D. `sfc /scannow`, then `chkdsk`
 ### Question 13
 **Scenario:** A Linux administrator must let the owner read, write, and execute a script, while the group and everyone else can only read and execute it.
 
-A. `chmod 777 script.sh`
-B. `chown 755 script.sh`
-C. `chmod 644 script.sh`
+A. `chmod 777 script.sh`, which gives the owner what is needed but also gives group and others write permission
+B. `chown 755 script.sh`, which looks like the correct mode but `chown` sets file ownership rather than permissions
+C. `chmod 644 script.sh`, which lets the owner read and write and everyone else read, but nobody can run the script
 D. `chmod 755 script.sh`
 
 <details>
@@ -248,10 +248,10 @@ D. `chmod 755 script.sh`
 ### Question 14
 **Scenario:** A shared folder grants Everyone "Full Control" at the share level. The NTFS permissions give the Sales group "Read." A Sales user tries to save a file to the share over the network.
 
-A. The save succeeds because share permissions allow Full Control
-B. The save fails because the most restrictive permission applies
-C. The save succeeds because NTFS permissions only apply locally
-D. The save fails because Everyone overrides group permissions
+A. The save succeeds because share permissions allow Full Control to Everyone, so NTFS Read is not consulted
+B. The save fails because the most restrictive of the share and NTFS permissions applies, leaving the user with Read only
+C. The save succeeds because NTFS permissions apply only to users signed in at the machine
+D. The save fails because the Everyone entry overrides the Sales group and removes all write access
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. The save fails because Everyone overrides group permissions
 ### Question 15
 **Scenario:** A technician has confirmed that a home user's PC shows malware symptoms and has disconnected it from the network. What should happen next in CompTIA's malware removal procedure?
 
-A. Reimage the PC
-B. Educate the end user
-C. Schedule scans and run updates
-D. Disable System Restore in Windows
+A. Reimage the PC from a clean image right away, because a confirmed infection cannot be trusted
+B. Educate the end user about safe browsing and email habits, so the infection is not repeated
+C. Schedule scans and run updates, so definitions are current and later scans find leftover traces
+D. Disable System Restore in Windows so that infected restore points cannot bring the malware back after cleanup
 
 <details>
 <summary>Answer</summary>
@@ -284,10 +284,10 @@ D. Disable System Restore in Windows
 ### Question 16
 **Scenario:** A clinic is retiring laptops with SSDs that held patient data. It needs a method that makes the data unrecoverable and gives auditors proof.
 
-A. Delete the patient folders and empty the Recycle Bin
-B. Degauss the SSDs
-C. Use a certified vendor to shred the drives and issue a certificate of destruction
-D. Standard format each drive
+A. Delete the patient folders and empty the Recycle Bin, which removes file entries but leaves the data recoverable with common tools
+B. Degauss the SSDs with a strong magnet, which erases magnetic platters but has no effect on flash memory
+C. Use a certified vendor to physically shred the drives and issue a certificate of destruction as audit evidence
+D. Run a standard format on each drive, which rebuilds the file system but leaves the data recoverable with freely available tools
 
 <details>
 <summary>Answer</summary>
@@ -302,10 +302,10 @@ D. Standard format each drive
 ### Question 17
 **Scenario:** Right after a graphics driver update, a Windows PC shows a blue screen during every normal startup. It starts normally in Safe Mode.
 
-A. Reinstall Windows
-B. Run `chkdsk /r`
-C. Boot into Safe Mode and roll back the driver in Device Manager
-D. Replace the graphics card
+A. Reinstall Windows from scratch, which would remove the faulty driver but also erases installed applications and settings
+B. Run `chkdsk /r` to scan the disk for bad sectors, which would help if the cause were disk damage rather than the driver
+C. Boot into Safe Mode and roll back the graphics driver, the least disruptive fix for the cause
+D. Replace the graphics card, though the timing points to the driver
 
 <details>
 <summary>Answer</summary>
@@ -320,10 +320,10 @@ D. Replace the graphics card
 ### Question 18
 **Scenario:** A user's phone suddenly shows many full-screen ads, uses far more mobile data than usual, and the battery drains quickly. The user recently installed a flashlight app from a website link rather than the official store.
 
-A. Remove the sideloaded app, scan the device, and factory reset if the symptoms continue
-B. Reset network settings
-C. Turn off location services
-D. Replace the battery
+A. Remove the sideloaded app, scan the device, and factory reset if symptoms continue
+B. Reset network settings, which clears saved Wi-Fi and cellular configuration but leaves the offending app installed
+C. Turn off location services for all apps, which reduces some tracking but does not stop ads or background data use
+D. Replace the battery, since fast drain is a hardware fault and ads and data use are separate matters
 
 <details>
 <summary>Answer</summary>
@@ -338,7 +338,7 @@ D. Replace the battery
 ### Question 19
 **Scenario:** A company runs a full backup on Sunday and differential backups Monday through Saturday. The server fails on Thursday morning.
 
-A. Sunday's full plus Monday, Tuesday, and Wednesday differentials
+A. Sunday's full plus Monday's differential, which holds only the first day of changes
 B. Sunday's full only
 C. Sunday's full plus Wednesday's differential
 D. Wednesday's differential only
@@ -356,10 +356,10 @@ D. Wednesday's differential only
 ### Question 20
 **Scenario:** A help desk technician wants to paste a user's error log, which includes the user's name, email, and an internal server password, into a free public AI chatbot to get help diagnosing it.
 
-A. Do not paste sensitive data into a public AI tool. Remove the personal and secret data or use an approved private AI tool, and verify any answer before acting
-B. Paste it, but ask the chatbot not to store it
-C. Email the log to a personal account and use the chatbot from home
-D. Paste it, because AI tools are accurate
+A. Do not paste sensitive data into a public AI tool; remove personal and secret data or use an approved private tool, and verify any answer
+B. Paste it, but add a request in the prompt asking the chatbot not to store or learn from the content that is entered
+C. Email the log to a personal account and use the chatbot from a home computer, so the company network is not involved
+D. Paste it as written, because AI tools give accurate results and so the full log is needed to get a correct diagnosis
 
 <details>
 <summary>Answer</summary>

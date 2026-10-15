@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A warehouse's credit consumption must be capped for a business unit.
 
-A. A budget alert only
-B. Suspend the warehouse manually
-C. A resource monitor assigned to the warehouse or account, with notify, suspend, and suspend-immediately triggers
-D. A smaller warehouse size
+A. A budget alert only, which emails the finance team when spending crosses a threshold but cannot suspend the warehouse
+B. Suspend the warehouse by hand whenever the business unit gets close to its monthly credit budget
+C. A resource monitor with notify, suspend and suspend-immediately triggers
+D. Switch the warehouse to a smaller size and hope the business unit's credit use falls enough
 
 <details>
 <summary>Answer</summary>
@@ -33,7 +33,7 @@ D. A smaller warehouse size
 **Scenario:** Which role can create other roles and manage account-level objects but should not be used day to day?
 
 A. PUBLIC
-B. SYSADMIN
+B. SYSADMIN, which owns warehouses and databases and is the role that should create all roles and users
 C. USERADMIN
 D. ACCOUNTADMIN, which should be limited to a small number of users with MFA enforced
 
@@ -53,7 +53,7 @@ D. ACCOUNTADMIN, which should be limited to a small number of users with MFA enf
 A. `RESULT_SCAN` against the query ID, within the 24-hour result cache retention
 B. Not possible
 C. Fail-safe
-D. Time Travel
+D. Query the QUERY_HISTORY view, which stores the rows returned by each statement for 14 days
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Time Travel
 ### Question 4
 **Scenario:** A table was dropped an hour ago and must be recovered.
 
-A. `UNDROP TABLE`, using Time Travel within the retention period
-B. Recreate it
-C. Restore from backup
-D. Contact support for Fail-safe
+A. `UNDROP TABLE`, within the Time Travel retention period
+B. Recreate the table from the original DDL and reload the data from the source system
+C. Restore the table from the nightly backup that Snowflake takes of every database
+D. Contact support for Fail-safe recovery, since dropped tables are only recoverable by Snowflake staff
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Contact support for Fail-safe
 ### Question 5
 **Scenario:** Users must not be able to see sensitive column values unless they hold a specific role.
 
-A. A separate table
-B. A view for each role
-C. Revoke SELECT
-D. A dynamic data masking policy on the column, branching on `CURRENT_ROLE` or `IS_ROLE_IN_SESSION`
+A. Move the sensitive columns into a separate table and rely on the schema name to hide it
+B. A view for each role that selects only the permitted columns, with direct SELECT on the base table kept open
+C. Revoke SELECT on the table from every role except the account administrators
+D. A dynamic data masking policy on the column, keyed on CURRENT_ROLE
 
 <details>
 <summary>Answer</summary>
@@ -122,7 +122,7 @@ D. It behaves like a larger warehouse
 ### Question 7
 **Scenario:** Access to Snowflake must be restricted to a corporate network.
 
-A. Private connectivity only
+A. Private connectivity only, such as AWS PrivateLink, which does not by itself block logins from other public IP addresses
 B. A network policy with allowed IP ranges, applied at account or user level, plus network rules for finer control
 C. A firewall
 D. MFA only
@@ -159,9 +159,9 @@ D. Export to S3
 **Scenario:** A query is slow and the Query Profile shows a high percentage of bytes spilled to remote storage.
 
 A. Add a materialized view
-B. The warehouse is too small for the operation's memory needs; increase the size or reduce the data volume being processed
-C. Add clustering
-D. Increase the query timeout
+B. The warehouse is too small for the operation's memory; increase its size or process less data
+C. Add a clustering key on the join columns, then wait for automatic clustering to reorganize the micro-partitions
+D. Increase the query timeout so the statement is allowed to run longer before Snowflake cancels it at the configured limit for the warehouse
 
 <details>
 <summary>Answer</summary>
@@ -177,7 +177,7 @@ D. Increase the query timeout
 **Scenario:** A large table's queries filter on a date column that does not match the natural load order.
 
 A. An index
-B. A materialized view
+B. A materialized view over the whole table with no clustering key, refreshed in the background by Snowflake
 C. A clustering key on the date column, letting automatic clustering reorganize micro-partitions
 D. A larger warehouse
 
@@ -212,10 +212,10 @@ D. Warehouse logs
 ### Question 12
 **Scenario:** A database must be available in a second region for disaster recovery.
 
-A. Database or account replication to a secondary region, with failover configured for business continuity
+A. Database replication to a second region, with failover configured
 B. A share
-C. Manual export and import
-D. Time Travel
+C. Manual export of the data to files, then import into an account in the second region
+D. Time Travel, with the retention period extended to 90 days on important tables
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Time Travel
 ### Question 13
 **Scenario:** Credit consumption must be attributed to teams.
 
-A. Query counts
-B. Estimation
-C. A single warehouse for everyone
-D. Warehouses per team or workload plus object tagging, reported through `WAREHOUSE_METERING_HISTORY` and tag-based views
+A. Count the queries each team runs and split the monthly credit bill in proportion to those counts
+B. Estimate each team's share from its headcount and divide the credit bill in proportion to team size
+C. A single warehouse for everyone, with each team asked to report its own query usage in a shared spreadsheet at month end
+D. Warehouses per team plus object tagging, reported through WAREHOUSE_METERING_HISTORY
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Warehouses per team or workload plus object tagging, reported through `WAREHO
 ### Question 14
 **Scenario:** A user's password authentication must be replaced with key-based authentication for a service account.
 
-A. Rotate the password more often
-B. Key pair authentication with an RSA public key on the user, supporting a second key for rotation without downtime
+A. Rotate the password more often, using a scheduled ALTER USER statement to set a new password every thirty days across environments
+B. Key pair authentication, with an RSA public key on the user and a second key slot for rotation
 C. OAuth only
-D. SSO
+D. SSO through the corporate identity provider, with the service account signing in through the browser flow
 
 <details>
 <summary>Answer</summary>
@@ -266,9 +266,9 @@ D. SSO
 ### Question 15
 **Scenario:** Storage costs are rising faster than data volume.
 
-A. Compress the data
-B. Delete data
-C. Investigate Time Travel retention, Fail-safe on permanent objects, and cloned and stale objects, since retained versions and clones with diverged data all consume storage
+A. Run a manual compression job on the largest tables each weekend to shrink their micro-partitions
+B. Delete the oldest data from every table, whatever the retention policy says, and then recheck costs
+C. Investigate Time Travel retention, Fail-safe, and cloned or stale objects
 D. Move to a smaller warehouse
 
 <details>

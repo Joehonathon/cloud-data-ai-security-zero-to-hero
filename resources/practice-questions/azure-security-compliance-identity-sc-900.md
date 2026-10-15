@@ -17,9 +17,9 @@ SC-900 tests whether you can name the right capability for a requirement, not wh
 **Scenario:** Which principle states that no request is trusted based on network location alone?
 
 A. Least privilege
-B. Zero trust
-C. Defense in depth
-D. Separation of duties
+B. Zero trust, verify explicitly
+C. Defense in depth, using layered controls
+D. Separation of duties across teams and roles
 
 <details>
 <summary>Answer</summary>
@@ -34,8 +34,8 @@ D. Separation of duties
 ### Question 2
 **Scenario:** A user proves identity with a password plus a code from an authenticator app.
 
-A. Single sign-on
-B. Conditional Access
+A. Single sign-on, where one authentication lets the user reach several applications without signing in to each again
+B. Conditional Access, the policy engine that evaluates sign-in signals and decides whether to grant, block, or challenge
 C. Multi-factor authentication
 D. Federation
 
@@ -52,10 +52,10 @@ D. Federation
 ### Question 3
 **Scenario:** Access to a finance app should require MFA only when the sign-in comes from outside the corporate network.
 
-A. A Conditional Access policy with a location condition and an MFA grant control
-B. Privileged Identity Management
-C. A sensitivity label
-D. Turning on per-user MFA for everyone
+A. A Conditional Access policy targeting the finance app, with a location condition for sign-ins outside the corporate network and an MFA grant control
+B. Privileged Identity Management, which can require MFA at role activation but does not evaluate the network location of a sign-in
+C. A sensitivity label on the finance documents, which classifies and protects content but does not control how users sign in
+D. Turning on per-user MFA for every account, which prompts every user at each sign-in whatever the network location
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Turning on per-user MFA for everyone
 ### Question 4
 **Scenario:** An administrator should hold the Global Administrator role only for approved windows, with justification and approval.
 
-A. Entitlement management
-B. Conditional Access
-C. Microsoft Entra Privileged Identity Management with just-in-time activation
-D. Access reviews
+A. Entitlement management, which bundles resources into access packages that users request, but does not time-limit a single admin role
+B. Conditional Access, which applies controls at sign-in but does not make a role assignment eligible or time-limited
+C. Microsoft Entra PIM with just-in-time activation
+D. Access reviews, which let owners periodically confirm whether existing access is still needed but do not grant timed elevation
 
 <details>
 <summary>Answer</summary>
@@ -89,7 +89,7 @@ D. Access reviews
 **Scenario:** Which service is Microsoft's cloud identity provider?
 
 A. Active Directory Domain Services
-B. Microsoft Entra ID
+B. Microsoft Entra ID service
 C. Microsoft Defender for Identity
 D. Microsoft Purview
 
@@ -106,10 +106,10 @@ D. Microsoft Purview
 ### Question 6
 **Scenario:** Which capability lets an external partner sign in to your resources using their own organization's credentials?
 
-A. Managed identities
+A. Managed identities, which let Azure resources authenticate to other Azure services without credentials in code
 B. Entra External ID (B2B collaboration)
-C. Passwordless sign-in
-D. Service principals
+C. Passwordless sign-in with FIDO2 keys or the authenticator app, which removes passwords for your own users but does not federate partners
+D. Service principals, which represent applications in a tenant and let them authenticate to resources with a secret or certificate
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Service principals
 ### Question 7
 **Scenario:** A workload in Azure must call Azure Storage without any stored credential.
 
-A. A managed identity granted an RBAC role on the storage account
-B. A user account with a password
-C. The storage account key
-D. A shared access signature in the app config
+A. A managed identity granted an RBAC role on the storage account, with the app requesting short-lived tokens from Microsoft Entra ID at run time
+B. A user account with a password, created for the application and kept in a key vault that the app reads at start-up
+C. The storage account key, kept in the application's configuration and rotated by the team on a regular schedule
+D. A shared access signature stored in the app configuration, with an expiry set to limit the time a leaked token stays usable
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. A shared access signature in the app config
 ### Question 8
 **Scenario:** Which service provides cloud security posture management and workload protection across Azure, AWS, and GCP?
 
-A. Microsoft Sentinel
-B. Microsoft Purview
-C. Azure Monitor
-D. Microsoft Defender for Cloud
+A. Microsoft Sentinel, the SIEM and SOAR that correlates logs and runs response playbooks
+B. Microsoft Purview, which governs data and compliance across Microsoft 365 and Azure but does not assess workload security posture
+C. Azure Monitor, which collects metrics and logs for performance and availability monitoring
+D. Defender for Cloud, which combines posture management with workload protection across Azure, AWS and GCP
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Microsoft Defender for Cloud
 ### Question 9
 **Scenario:** A security team needs to collect logs from many sources, correlate them, and run automated response playbooks.
 
-A. Microsoft Sentinel
+A. Microsoft Sentinel, a cloud-native SIEM
 B. Entra ID Protection
 C. Defender for Cloud
-D. Compliance Manager
+D. Compliance Manager, which tracks regulatory improvement actions
 
 <details>
 <summary>Answer</summary>
@@ -178,9 +178,9 @@ D. Compliance Manager
 ### Question 10
 **Scenario:** Which Microsoft 365 capability classifies a document as Confidential and encrypts it so protection travels with the file?
 
-A. Data loss prevention
+A. Data loss prevention policies that block sharing
 B. eDiscovery
-C. Sensitivity labels
+C. Sensitivity labels with encryption
 D. Retention policies
 
 <details>
@@ -196,10 +196,10 @@ D. Retention policies
 ### Question 11
 **Scenario:** An organization must stop credit card numbers from being emailed externally.
 
-A. Insider Risk Management
-B. A retention label
-C. A DLP policy with the credit card sensitive information type, blocking external sharing
-D. A sensitivity label
+A. Insider Risk Management, which spots patterns of risky user behavior over time but does not block an email as it is sent
+B. A retention label, which keeps or deletes content for a set period but does not inspect messages for card numbers
+C. A DLP policy with the credit card sensitive information type that detects card numbers in outgoing mail and blocks external sharing
+D. A sensitivity label applied to every message, which classifies the content and can encrypt it but does not block a send itself
 
 <details>
 <summary>Answer</summary>
@@ -216,8 +216,8 @@ D. A sensitivity label
 
 A. Compliance Manager
 B. Secure Score
-C. Azure Advisor
-D. Service Trust Portal
+C. Azure Advisor recommendations
+D. Service Trust Portal documents
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Service Trust Portal
 ### Question 13
 **Scenario:** Under the shared responsibility model in SaaS, who is responsible for the data and for identity management?
 
-A. Microsoft entirely
-B. The customer, always, for data and for identities and accounts
-C. Neither party
-D. It varies by month
+A. Microsoft entirely, because in a SaaS service the provider runs everything, including data
+B. The customer, always, for data and for identities and accounts, in every service model including SaaS
+C. Responsibility passes to the identity provider that signs users in, so the customer has no duties once single sign-on is turned on
+D. It varies by month, depending on which updates Microsoft has applied to the service
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. It varies by month
 ### Question 14
 **Scenario:** Sign-ins from an anonymous IP address should be flagged as risky and challenged automatically.
 
-A. A retention policy
-B. A firewall rule
-C. Purview auditing
-D. Microsoft Entra ID Protection risk policies, combined with Conditional Access
+A. A retention policy, which controls how long content is kept or when it is deleted but does not evaluate sign-in risk
+B. A firewall rule that blocks known anonymous proxy ranges at the network edge, which cannot challenge users as they sign in
+C. Purview auditing, which records sign-in and activity events for later investigation but does not act on them
+D. Entra ID Protection risk policies, combined with Conditional Access
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Microsoft Entra ID Protection risk policies, combined with Conditional Access
 ### Question 15
 **Scenario:** Which describes the difference between authentication and authorization?
 
-A. They are the same
+A. They are the same thing, since proving who you are always includes checking what you are allowed to do
 B. Authentication proves who you are; authorization decides what you may do
-C. Authentication applies only to administrators
-D. Authorization happens first
+C. Authentication applies only to administrator accounts, while ordinary users are authorized by their group membership alone
+D. Authorization happens first, because a system must know what a user may do before it can check who the user is
 
 <details>
 <summary>Answer</summary>

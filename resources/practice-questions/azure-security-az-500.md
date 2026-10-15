@@ -19,7 +19,7 @@
 ### Question 1
 **Scenario:** A company wants to ensure that all administrative access to Azure resources requires multi-factor authentication, even for Global Administrators. They also need just-in-time access that requires approval for privileged roles. Which combination of Azure AD features provides this?
 
-A. Azure AD Identity Protection and access reviews
+A. Azure AD Identity Protection with risk-based policies and access reviews, to detect risky sign-ins and periodically recertify privileged access
 B. Azure AD Conditional Access with MFA requirement and Azure AD Privileged Identity Management (PIM)
 C. Azure AD security defaults and role-based access control
 D. Azure AD B2C with MFA policies
@@ -37,9 +37,9 @@ D. Azure AD B2C with MFA policies
 ### Question 2
 **Scenario:** An organization needs to grant a third-party vendor temporary access to a specific Azure subscription for a security audit. The vendor should have read-only access for 30 days, after which access should automatically expire. How should this be configured?
 
-A. Share subscription credentials with the vendor
+A. Share the subscription credentials with the vendor through the password manager
 B. Create a guest user account with Reader role assigned at subscription scope
-C. Use Azure AD B2B with PIM eligible assignment of Reader role with 30-day duration
+C. Invite as a B2B guest with a 30-day PIM eligible Reader role
 D. Create a service principal with Reader role and rotate credentials after 30 days
 
 <details>
@@ -55,10 +55,10 @@ D. Create a service principal with Reader role and rotate credentials after 30 d
 ### Question 3
 **Scenario:** A company's security policy requires that users can only authenticate from corporate-managed devices. They use a mix of Windows, macOS, and iOS devices managed through Microsoft Intune. How should they enforce this requirement?
 
-A. Use IP-based access restrictions for corporate networks only
-B. Require hardware tokens for all authentication
-C. Configure Conditional Access requiring compliant device or Hybrid Azure AD joined device
-D. Block all mobile device access in Azure AD settings
+A. Use IP-based access restrictions so that sign-ins are only accepted from the corporate network ranges and the egress addresses of branch offices
+B. Require hardware security tokens for every user and every authentication attempt
+C. Conditional Access requiring a compliant or hybrid-joined device
+D. Block all mobile and tablet device access using the Azure AD settings
 
 <details>
 <summary>Answer</summary>
@@ -74,9 +74,9 @@ D. Block all mobile device access in Azure AD settings
 **Scenario:** An application needs to access Azure Key Vault to retrieve secrets. The application runs on an Azure VM. Security requires that no credentials are stored in the application code or configuration. What is the BEST approach?
 
 A. Store Key Vault access keys in application settings
-B. Configure Key Vault firewall to allow the VM's IP address
+B. Configure the Key Vault firewall to allow only the VM's IP address, with no further authentication from the application
 C. Use system-assigned managed identity for the VM, grant the identity access to Key Vault
-D. Use Azure AD application registration with client secret stored in environment variables
+D. Use Azure AD application registration with client secret stored in environment variables on the VM
 
 <details>
 <summary>Answer</summary>
@@ -91,17 +91,17 @@ D. Use Azure AD application registration with client secret stored in environmen
 ### Question 5
 **Scenario:** A company discovered that user accounts are being compromised through password spray attacks. They need to detect and block these attacks automatically while minimizing impact on legitimate users. Which Azure AD feature addresses this?
 
-A. Azure AD Identity Protection with sign-in risk policies
+A. Azure AD Identity Protection user risk policy that forces a password change for users who have been flagged as high risk
 B. Azure AD smart lockout combined with Identity Protection
 C. Azure AD Conditional Access with named locations
-D. Azure AD Password Protection with custom banned passwords
+D. Azure AD Password Protection with a custom banned password list, applied to the cloud and on-premises directories
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Smart lockout protects against brute-force and password spray attacks by locking out attackers while allowing legitimate users to continue signing in. It learns user patterns. Identity Protection detects risky sign-ins (including password spray patterns) and can require MFA or block access based on risk level. Password Protection (D) prevents weak passwords but doesn't detect attacks. Named locations (C) don't detect attack patterns.
+**Why:** Smart lockout protects against brute-force and password spray attacks by locking out attackers while allowing legitimate users to continue signing in. It learns user patterns. Identity Protection detects risky sign-ins (including password spray patterns) and can require MFA or block access based on risk level. A user risk policy alone (A) only reacts once an account is already flagged, and does not lock out the spray attempts. Password Protection (D) prevents weak passwords but doesn't detect attacks. Named locations (C) don't detect attack patterns.
 
 **Key Concept:** [Azure AD Smart Lockout](https://docs.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
 </details>
@@ -163,8 +163,8 @@ D. Configure Continuous Access Evaluation (CAE) with Conditional Access session 
 ### Question 9
 **Scenario:** An organization needs to ensure that service principals used by CI/CD pipelines have the minimum required permissions and their credentials are rotated regularly. They also need to audit all actions performed by these service principals. What combination of practices should they implement?
 
-A. Use service principals with secrets, assign built-in Contributor role, review logs monthly
-B. Use managed identities where possible, use certificates instead of secrets for service principals, assign custom roles with minimum permissions, enable Azure AD audit logs
+A. Use service principals with secrets, assign the built-in Contributor role at subscription scope for simplicity, and review the audit and sign-in logs once a month for unusual activity
+B. Use managed identities where possible, certificates for other service principals, custom least-privilege roles, and Azure AD audit logs
 C. Create one shared service principal for all pipelines with Owner role
 D. Use personal accounts for CI/CD pipelines with MFA
 
@@ -181,9 +181,9 @@ D. Use personal accounts for CI/CD pipelines with MFA
 ### Question 10
 **Scenario:** A company wants to prevent users from accidentally granting third-party applications excessive permissions through OAuth consent. They want to allow only pre-approved applications and require admin approval for others. How should this be configured?
 
-A. Disable all app registrations in Azure AD
+A. Disable all app registrations in Azure AD so that users cannot create applications and no application from any publisher can request consent
 B. Allow user consent for all permissions
-C. Configure user consent settings to allow consent only for apps from verified publishers for low-risk permissions, require admin consent for all others
+C. Allow user consent only for apps from verified publishers with low-risk permissions, and require admin consent for all others
 D. Block all third-party applications
 
 <details>
@@ -222,16 +222,16 @@ D. Disable the user account
 **Scenario:** A company needs to allow Azure App Service to access a SQL database and Storage account in a VNet while preventing the App Service from accessing the public internet. The App Service is on a Premium plan. What architecture should be implemented?
 
 A. Configure VNet integration for App Service with private endpoints for SQL and Storage, and route all traffic through a NAT Gateway
-B. Configure VNet integration for App Service with service endpoints for SQL and Storage
-C. Use App Service Environment in an isolated VNet
-D. Configure VNet integration with regional VNet integration, private endpoints for PaaS services, and a route table forcing all traffic through Azure Firewall with no public routes
+B. Configure VNet integration for App Service with service endpoints for SQL and Storage, and enable the Route All setting so that outbound traffic uses the VNet
+C. Use App Service Environment in an isolated VNet, leaving its default outbound internet route in place and using private endpoints for SQL and Storage
+D. Regional VNet integration, private endpoints for SQL and Storage, and a route table sending 0.0.0.0/0 to Azure Firewall with no public route
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Regional VNet integration allows App Service to access resources in the VNet. Private endpoints provide private connectivity to SQL and Storage. A route table with 0.0.0.0/0 pointing to Azure Firewall (with no default internet route) forces all egress through the firewall where internet access can be blocked. Service endpoints (B) still allow internet egress. Option A with NAT Gateway still allows internet access. ASE (C) is more expensive than needed.
+**Why:** Regional VNet integration allows App Service to access resources in the VNet. Private endpoints provide private connectivity to SQL and Storage. A route table with 0.0.0.0/0 pointing to Azure Firewall (with no default internet route) forces all egress through the firewall where internet access can be blocked. Service endpoints (B) still allow internet egress. Option A with NAT Gateway still allows internet access. ASE (C) keeps its default internet route, so the outbound path is still open, and it costs more than the Premium plan needs.
 
 **Key Concept:** [App Service VNet Integration](https://docs.microsoft.com/azure/app-service/overview-vnet-integration)
 </details>
@@ -239,8 +239,8 @@ D. Configure VNet integration with regional VNet integration, private endpoints 
 ### Question 13
 **Scenario:** An organization wants to inspect all traffic between VNets in their hub-and-spoke topology, including traffic from spokes to shared services in the hub. They also need URL filtering and threat intelligence-based filtering. What Azure service provides these capabilities?
 
-A. Network Virtual Appliance with custom rules
-B. Azure Web Application Firewall
+A. A third-party Network Virtual Appliance with custom rules
+B. Azure Web Application Firewall with the OWASP managed rule set
 C. Network Security Groups with application security groups
 D. Azure Firewall Premium with TLS inspection and IDPS
 
@@ -257,10 +257,10 @@ D. Azure Firewall Premium with TLS inspection and IDPS
 ### Question 14
 **Scenario:** A web application behind Azure Application Gateway needs protection against SQL injection, XSS, and OWASP Top 10 vulnerabilities. Security also requires logging of all blocked requests for forensic analysis. What configuration is needed?
 
-A. Configure Application Gateway health probes
-B. Use Network Security Groups with deny rules
-C. Enable Azure DDoS Protection Standard
-D. Configure Web Application Firewall (WAF) policy with OWASP rule sets in Prevention mode, enable diagnostic logging
+A. Configure Application Gateway health probes and custom error pages for the backend pool
+B. Use Network Security Groups with deny rules for known attacker IP ranges and application ports
+C. Enable Azure DDoS Protection Standard on the virtual network, with alerts and attack analytics sent to Log Analytics for forensic review
+D. Use a WAF policy with OWASP rule sets in Prevention mode and diagnostic logging
 
 <details>
 <summary>Answer</summary>
@@ -293,10 +293,10 @@ D. Configure public IPs on VMs with Just-in-Time VM access
 ### Question 16
 **Scenario:** An organization has multiple VNets across regions that need to communicate securely. They also have ExpressRoute connectivity to on-premises. Traffic between regions should be encrypted. What architecture provides this?
 
-A. ExpressRoute Global Reach only
-B. Azure Virtual WAN with encrypted VNet connections and ExpressRoute integration
-C. Site-to-site VPN between each VNet pair
-D. VNet peering between all VNets with ExpressRoute circuits
+A. ExpressRoute Global Reach between the circuits in each region only
+B. Azure Virtual WAN with encrypted connections
+C. Site-to-site VPN tunnels between each pair of VNets
+D. VNet peering between all VNets, with ExpressRoute circuits connecting each region, relying on the peering to encrypt the cross-region traffic
 
 <details>
 <summary>Answer</summary>
@@ -347,17 +347,17 @@ D. Azure DDoS Infrastructure Protection (Basic)
 ### Question 19
 **Scenario:** An organization needs to ensure that only traffic from their corporate IP ranges can access Azure Storage accounts, but they also need Azure Data Factory (running in an Azure VNet) to access the same storage. How should network access be configured?
 
-A. Storage firewall allowing corporate IP ranges and VNet service endpoint from Data Factory's subnet
-B. Private endpoint for Data Factory and public access for corporate IPs
+A. Storage firewall allowing corporate IP ranges and a VNet service endpoint for Data Factory's subnet
+B. Private endpoint for Data Factory only, with public network access disabled for every other client, including corporate users
 C. No network restrictions with SAS tokens for all access
-D. Storage firewall with corporate IP ranges only
+D. Storage firewall with corporate IP ranges only, treating Data Factory as an internet client
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Storage firewall can combine IP-based rules (for corporate access) with VNet service endpoints (for Azure service access). Add corporate IP ranges to the firewall and enable service endpoint for the Data Factory subnet, then allow that subnet in storage firewall. Data Factory traffic goes through the service endpoint, not public internet. Private endpoints (B) would work but service endpoints are simpler here. No restrictions (C) violates security requirements.
+**Why:** Storage firewall can combine IP-based rules (for corporate access) with VNet service endpoints (for Azure service access). Add corporate IP ranges to the firewall and enable service endpoint for the Data Factory subnet, then allow that subnet in storage firewall. Data Factory traffic goes through the service endpoint, not public internet. Disabling public access for a private endpoint (B) would lock out the corporate IP ranges. No restrictions (C) violates security requirements.
 
 **Key Concept:** [Azure Storage Firewalls](https://docs.microsoft.com/azure/storage/common/storage-network-security)
 </details>
@@ -367,7 +367,7 @@ D. Storage firewall with corporate IP ranges only
 
 A. Deploy App Service in a VNet with NSG rules
 B. Use App Service access restrictions with the Front Door service tag and header-based filtering for X-Azure-FDID
-C. Configure App Service IP restrictions for Front Door's IP ranges
+C. Configure App Service IP restrictions for the published Front Door IP ranges, refreshed from the Microsoft download file each month
 D. Use client certificates from Front Door to App Service
 
 <details>
@@ -387,17 +387,17 @@ D. Use client certificates from Front Door to App Service
 ### Question 21
 **Scenario:** A company stores sensitive customer data in Azure Blob Storage. Compliance requires that data be encrypted with customer-managed keys, keys must be stored in a FIPS 140-2 Level 3 validated HSM, and key operations must be logged. What configuration meets these requirements?
 
-A. Storage Service Encryption with customer-managed keys in Azure Key Vault Managed HSM
-B. Client-side encryption with application-managed keys
-C. Storage Service Encryption with customer-managed keys in Azure Key Vault (Premium tier with HSM-backed keys)
-D. Storage Service Encryption with Microsoft-managed keys
+A. Storage encryption with customer-managed keys in Azure Key Vault Managed HSM
+B. Client-side encryption with application-managed keys held in the application's own configuration store
+C. Storage Service Encryption with customer-managed keys in Azure Key Vault Standard tier (software-protected keys)
+D. Storage Service Encryption with Microsoft-managed keys, the default for all new storage accounts
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Azure Key Vault Managed HSM provides dedicated, FIPS 140-2 Level 3 validated HSMs under customer control. Storage encryption with CMK stored in Managed HSM meets the HSM validation requirement. All key operations are logged. Key Vault Premium (C) uses multi-tenant HSMs which are Level 2, not Level 3. Microsoft-managed keys (D) don't provide customer control. Client-side (B) adds complexity and doesn't integrate with managed HSM automatically.
+**Why:** Azure Key Vault Managed HSM provides dedicated, FIPS 140-2 Level 3 validated HSMs under customer control. Storage encryption with CMK stored in Managed HSM meets the HSM validation requirement. All key operations are logged. Key Vault Standard (C) keeps keys in software, not in an HSM. Microsoft-managed keys (D) don't provide customer control. Client-side (B) adds complexity and doesn't integrate with managed HSM automatically.
 
 **Key Concept:** [Azure Key Vault Managed HSM](https://docs.microsoft.com/azure/key-vault/managed-hsm/overview)
 </details>
@@ -405,10 +405,10 @@ D. Storage Service Encryption with Microsoft-managed keys
 ### Question 22
 **Scenario:** An organization needs to ensure that Azure SQL Database connections are always encrypted in transit, use the strongest available TLS version, and reject connections from applications using older TLS versions. How should this be configured?
 
-A. Configure minimum TLS version to 1.2 on the SQL Server, which is enforced for all connections
-B. Configure SQL firewall rules
-C. Use Always Encrypted for sensitive columns
-D. Enable Transparent Data Encryption (TDE) on the database
+A. Set the minimum TLS version to 1.2 on the SQL server
+B. Configure SQL firewall rules to allow only the application servers' IP addresses
+C. Use Always Encrypted for sensitive columns so that data stays encrypted in transit and at rest between the client driver and the database
+D. Enable Transparent Data Encryption (TDE) on the database and its backups
 
 <details>
 <summary>Answer</summary>
@@ -423,10 +423,10 @@ D. Enable Transparent Data Encryption (TDE) on the database
 ### Question 23
 **Scenario:** A healthcare application needs to store patient data in Azure SQL Database. Developers should not be able to see patient names and SSNs even when querying the database directly for troubleshooting. The application should transparently encrypt and decrypt this data. What feature provides this?
 
-A. Transparent Data Encryption (TDE)
+A. Transparent Data Encryption (TDE) on the database
 B. Always Encrypted with secure enclaves
 C. Dynamic Data Masking
-D. Row-Level Security
+D. Row-Level Security, which hides rows from developers with a security predicate so they never see patient records
 
 <details>
 <summary>Answer</summary>
@@ -478,8 +478,8 @@ D. Document the requirements and train developers
 **Scenario:** An organization wants to protect Azure VM disks with customer-managed encryption keys and ensure the encryption keys are automatically rotated. They also need to ensure VMs cannot be started without access to the encryption key. What configuration provides this?
 
 A. Confidential VMs with confidential OS disk encryption
-B. Server-Side Encryption (SSE) with customer-managed keys in Key Vault with automatic key rotation
-C. Azure Disk Encryption (ADE) with BitLocker/DM-Crypt
+B. Server-side encryption with customer-managed keys in Key Vault, with automatic key rotation
+C. Azure Disk Encryption (ADE) with BitLocker or DM-Crypt, using a key encryption key in Key Vault that rotates automatically
 D. Storage Service Encryption with Microsoft-managed keys
 
 <details>
@@ -513,10 +513,10 @@ D. Use Key Vault RBAC with Key Vault Secrets User role scoped to specific secret
 ### Question 28
 **Scenario:** An organization uses Azure Container Registry for storing container images. They need to ensure only approved, vulnerability-scanned images can be deployed to production AKS clusters. How should this be implemented?
 
-A. Enable Microsoft Defender for Containers for vulnerability scanning and use Azure Policy to allow only signed images from the registry
-B. Use only public images from Docker Hub
-C. Manually review images before deployment
-D. Disable image scanning to reduce deployment time
+A. Enable Defender for Containers and use Azure Policy to allow only signed images
+B. Use only public images from Docker Hub, since their popularity means they have been reviewed and scanned by many users
+C. Manually review images before deployment and have the platform team sign off each image tag in a change ticket
+D. Disable image scanning in the registry to reduce deployment time for the production clusters
 
 <details>
 <summary>Answer</summary>
@@ -531,17 +531,17 @@ D. Disable image scanning to reduce deployment time
 ### Question 29
 **Scenario:** A database administrator needs temporary elevated access to an Azure SQL Database to troubleshoot a production issue. Normal operations should not have this level of access. Access should be time-limited and fully audited. How should this be managed?
 
-A. Create a temporary SQL login and delete after use
-B. Share the SQL admin password for emergency access
-C. Grant the DBA permanent db_owner access
-D. Use Azure AD PIM with eligible assignment for SQL db_owner role, requiring activation and approval
+A. Create a temporary SQL login with db_owner rights for the DBA and delete it after the troubleshooting is finished
+B. Share the SQL server admin password with the DBA during the incident and change it afterwards, logging who asked for it
+C. Grant the DBA permanent db_owner access, with audit logs turned on
+D. Use PIM for Groups: the DBA is eligible for a group mapped to db_owner, with approval on activation
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** PIM for Azure resources can manage database access through Azure AD authentication. The DBA has an eligible assignment that requires activation, can include approval workflow, is time-limited, and is fully logged in Azure AD audit logs. Permanent access (C) violates least privilege. Shared passwords (B) lack accountability. Temporary logins (A) require manual cleanup and may not be audited as completely.
+**Why:** PIM cannot assign SQL database roles directly, but PIM for Groups can: the group is created as an Azure AD user in the database and added to db_owner. The DBA is an eligible member of that group, so the DBA must activate the membership, can include approval workflow, is time-limited, and is fully logged in Azure AD audit logs. Permanent access (C) violates least privilege. Shared passwords (B) lack accountability. Temporary logins (A) require manual cleanup and may not be audited as completely.
 
 **Key Concept:** [PIM for Azure AD Roles](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-how-to-add-role-to-user)
 </details>
@@ -554,8 +554,8 @@ D. Use Azure AD PIM with eligible assignment for SQL db_owner role, requiring ac
 **Scenario:** An organization wants to centralize security alerts from Azure resources, third-party security solutions, and custom log sources. They need correlation, automated investigation, and playbook-based response. What Azure solution provides this SIEM/SOAR capability?
 
 A. Microsoft Sentinel with data connectors, analytics rules, and playbooks
-B. Azure Log Analytics with custom queries
-C. Azure Monitor with action groups
+B. Azure Log Analytics with custom queries, saved searches and alert rules that notify the team when a query returns results
+C. Azure Monitor alert rules with action groups that email the SOC and post to a Teams channel
 D. Microsoft Defender for Cloud only
 
 <details>
@@ -592,7 +592,7 @@ D. Workbooks for visualization
 A. Use scheduled queries to check for alerts hourly
 B. Manually review each alert and take action
 C. Create automation rules that trigger a playbook (Logic App) performing isolation, notification, and ServiceNow integration
-D. Export alerts to a SIEM and respond from there
+D. Export alerts to a separate SIEM after the nightly export finishes and respond from there, using that platform's own rules to isolate VMs and raise tickets
 
 <details>
 <summary>Answer</summary>
@@ -608,8 +608,8 @@ D. Export alerts to a SIEM and respond from there
 **Scenario:** A company needs to monitor for signs of compromise across their Azure AD tenant, including impossible travel, leaked credentials, and atypical behavior. Detections should feed into their Sentinel workspace. What should be configured?
 
 A. Azure AD audit logs only
-B. Microsoft Defender for Identity
-C. Azure AD sign-in logs with custom analytics rules
+B. Microsoft Defender for Identity, which monitors domain controllers for on-premises attacks and credential theft
+C. Azure AD sign-in logs with custom analytics rules in Sentinel
 D. Azure AD Identity Protection with Sentinel connector
 
 <details>
@@ -646,7 +646,7 @@ D. Hunting queries with bookmarks and promotion to analytics rules
 A. Build custom integrations between each product
 B. Use only one Defender product
 C. Use Microsoft 365 Defender portal for integrated XDR experience across Microsoft Defender products
-D. Configure each product to send alerts to separate Sentinel workspaces
+D. Configure each product to send its alerts to a separate Sentinel workspace, one each for endpoint, email, identity and apps
 
 <details>
 <summary>Answer</summary>
@@ -663,7 +663,7 @@ D. Configure each product to send alerts to separate Sentinel workspaces
 
 A. NSG flow logs for the Storage account's network
 B. Azure Storage diagnostic logs (StorageRead, StorageWrite) combined with Azure AD sign-in logs
-C. Azure Activity logs for the Storage account
+C. Azure Activity logs for the Storage account, which record who created, changed or deleted the account and its settings
 D. Azure Monitor metrics for Storage throughput
 
 <details>
@@ -681,7 +681,7 @@ D. Azure Monitor metrics for Storage throughput
 
 A. Microsoft Defender for Cloud with security policies, secure score, and auto-remediation
 B. Azure Resource Graph
-C. Azure Blueprints
+C. Azure Blueprints to define and deploy a repeatable set of policies, role assignments and templates to each subscription
 D. Azure Advisor
 
 <details>
@@ -697,10 +697,10 @@ D. Azure Advisor
 ### Question 38
 **Scenario:** A security team needs to detect unusual user behavior that might indicate compromised accounts, such as a user suddenly accessing resources they've never accessed before or working at unusual hours. What Sentinel capability provides this detection?
 
-A. Fusion advanced multistage attack detection
-B. Threat Intelligence matching
-C. User and Entity Behavior Analytics (UEBA)
-D. Scheduled analytics rules with custom queries
+A. Fusion multistage attack detection across alerts
+B. Threat Intelligence matching against known indicators
+C. User and Entity Behavior Analytics
+D. Scheduled analytics rules with custom queries written for each behavior, such as a threshold on out-of-hours sign-ins
 
 <details>
 <summary>Answer</summary>
@@ -715,10 +715,10 @@ D. Scheduled analytics rules with custom queries
 ### Question 39
 **Scenario:** During a security incident, a SOC analyst needs to understand all resources a specific user account has accessed in the last 30 days, including Azure resources, Microsoft 365 applications, and any lateral movement attempts. What is the MOST efficient way to get this information?
 
-A. Export all logs to Excel for manual analysis
-B. Query Azure AD sign-in logs, Azure Activity logs, and Microsoft 365 audit logs separately
-C. Interview the user about their activities
-D. Use Sentinel Entity pages which aggregate activity across connected data sources for a user entity
+A. Export all of the logs for the whole 30 day period to Excel and analyse them manually, one table at a time
+B. Query Azure AD sign-in logs, Azure Activity logs, and Microsoft 365 audit logs separately, then join the results by hand in a workbook
+C. Interview the user and their manager about what the account did over the last 30 days, then rely on their answers
+D. Use Sentinel Entity pages, which aggregate activity across connected sources for a user
 
 <details>
 <summary>Answer</summary>
@@ -734,9 +734,9 @@ D. Use Sentinel Entity pages which aggregate activity across connected data sour
 **Scenario:** An organization wants to block known malicious IP addresses and domains across their Azure environment including Azure Firewall, NSGs, and Sentinel for detection. They need this threat intelligence updated automatically from multiple sources. How should this be implemented?
 
 A. Configure Threat Intelligence Platform data connector in Sentinel with automated indicator import to Azure Firewall
-B. Subscribe to threat feeds via RSS
+B. Subscribe to the threat feeds over RSS and have an analyst copy each new indicator into the firewall and the NSGs by hand
 C. Use only the built-in Microsoft threat intelligence
-D. Manually update block lists weekly
+D. Manually update the block lists in Azure Firewall and the NSGs every week from the threat feeds the team follows and track the changes in a ticket
 
 <details>
 <summary>Answer</summary>

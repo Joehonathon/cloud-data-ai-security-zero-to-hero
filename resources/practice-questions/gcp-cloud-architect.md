@@ -25,8 +25,8 @@ Weights are from the current exam guide (checked 2026-10-14). Questions 1-40 fol
 **Scenario:** A global e-commerce company needs to design a solution that provides consistent low latency for users worldwide. Their application requires a relational database that supports strong consistency across regions and automatic failover. Which database solution should they choose?
 
 A. Cloud Spanner with multi-region configuration
-B. Cloud Firestore in multi-region mode
-C. Cloud SQL with cross-region read replicas
+B. Cloud Firestore in multi-region mode, a NoSQL document database with strong consistency but no relational schema or SQL joins
+C. Cloud SQL with cross-region read replicas and automatic failover
 D. BigQuery with regional datasets
 
 <details>
@@ -43,9 +43,9 @@ D. BigQuery with regional datasets
 **Scenario:** A media company needs to process video uploads. Videos should be transcoded to multiple formats, thumbnails should be generated, and metadata should be stored. The workload is unpredictable with peaks during events. What architecture should they design?
 
 A. Single large Compute Engine instance
-B. App Engine standard environment
-C. Event-driven architecture with Cloud Storage triggers, Cloud Functions/Cloud Run for processing, and Firestore for metadata
-D. VM instances with manual scaling
+B. App Engine standard environment, with one service that handles uploads, transcoding, and thumbnails for all videos
+C. Event-driven design: Cloud Storage triggers, Cloud Functions or Cloud Run, and Firestore for metadata
+D. VM instances in a managed instance group with manual scaling, resized ahead of each expected event to cover the peak load
 
 <details>
 <summary>Answer</summary>
@@ -60,10 +60,10 @@ D. VM instances with manual scaling
 ### Question 3
 **Scenario:** A company wants to migrate their monolithic application to GCP. They want to minimize changes initially but position for future modernization. What migration strategy should they use?
 
-A. Immediately containerize everything
-B. Rewrite the application from scratch
+A. Immediately containerize everything and deploy it to GKE, splitting the monolith into services before any workload moves
+B. Rewrite the application from scratch as microservices on Cloud Run before moving any workload to GCP
 C. Lift and shift to Compute Engine, then incrementally modernize using Strangler Fig pattern
-D. Use Cloud Functions for the entire application
+D. Use Cloud Functions for the entire application, wrapping each existing module in its own function
 
 <details>
 <summary>Answer</summary>
@@ -78,7 +78,7 @@ D. Use Cloud Functions for the entire application
 ### Question 4
 **Scenario:** A healthcare company needs to store and analyze patient data. Data must be encrypted, access must be audited, and the solution must comply with HIPAA. They need to run complex analytics queries. What storage and analytics solution should they use?
 
-A. Cloud Bigtable for analytics
+A. Cloud Bigtable for analytics, with column-level encryption in the application and Cloud Audit Logs on admin activity
 B. BigQuery with customer-managed encryption keys (CMEK), IAM, and Cloud Audit Logs
 C. Compute Engine with local storage
 D. Cloud Storage with default encryption
@@ -97,9 +97,9 @@ D. Cloud Storage with default encryption
 **Scenario:** A company has a high-traffic website with static content (images, CSS, JS) and dynamic API calls. They want to optimize performance and reduce origin server load. What architecture should they implement?
 
 A. Single Compute Engine instance for all traffic
-B. Cloud Storage for static content without CDN
+B. Cloud Storage for static content without a CDN, and a managed instance group behind a load balancer for the API calls
 C. Cloud CDN for static content, Cloud Load Balancing with Cloud Run backend for dynamic APIs
-D. All content served from Cloud Functions
+D. All content, static and dynamic, served from Cloud Functions behind a single HTTPS endpoint with no caching layer
 
 <details>
 <summary>Answer</summary>
@@ -116,7 +116,7 @@ D. All content served from Cloud Functions
 
 A. Single VM with in-memory data
 B. Cloud Memorystore (Redis) for game state, Cloud Firestore for player data, and Cloud Run with WebSockets or Agones on GKE
-C. BigQuery for real-time updates
+C. BigQuery for real-time updates, streaming each game-state change into tables and reading them back per player
 D. Cloud SQL for all data
 
 <details>
@@ -134,7 +134,7 @@ D. Cloud SQL for all data
 
 A. Pub/Sub for ingestion, Dataflow for stream processing and fraud detection, BigQuery for storage and analytics
 B. Batch processing only
-C. Direct writes to BigQuery
+C. Direct writes to BigQuery from the payment application, with scheduled queries run every few minutes to flag fraud
 D. Cloud SQL for all processing
 
 <details>
@@ -151,9 +151,9 @@ D. Cloud SQL for all processing
 **Scenario:** A company has development, staging, and production environments. They want environment isolation, consistent deployments, and the ability to share common resources (like container images). How should they structure their GCP organization?
 
 A. Single project for all environments
-B. Separate projects per environment (dev, staging, prod) with shared services project, managed through folders
-C. Different regions for each environment
-D. Separate GCP accounts
+B. Separate dev, staging, and prod projects plus a shared services project, grouped in folders
+C. Different regions for each environment, all kept inside a single shared project in the organization
+D. Separate GCP accounts for each environment, with a copy of the container images pushed into each one by hand
 
 <details>
 <summary>Answer</summary>
@@ -168,7 +168,7 @@ D. Separate GCP accounts
 ### Question 9
 **Scenario:** A machine learning team needs to train models on large datasets. Training jobs run for hours and require GPUs. They want to minimize cost while maintaining performance. What compute solution should they use?
 
-A. Persistent GPU VMs running continuously
+A. Persistent GPU VMs running continuously on on-demand pricing, so training jobs never wait for capacity
 B. Vertex AI Training with preemptible/spot VMs, or GKE with spot node pools
 C. Cloud Functions for ML training
 D. Standard VMs without GPUs
@@ -188,10 +188,10 @@ D. Standard VMs without GPUs
 ### Question 10
 **Scenario:** A company wants to implement a data lake on GCP. They have structured data from databases, semi-structured logs, and unstructured documents. All data should be queryable and governed. What architecture should they implement?
 
-A. Cloud SQL for all data types
-B. Cloud Storage as data lake with BigQuery for analytics, Data Catalog for governance, and Dataproc for processing
-C. Separate systems for each data type
-D. BigQuery only
+A. Cloud SQL for all data types, with documents and logs loaded into relational tables and indexed
+B. Cloud Storage lake, BigQuery analytics, Data Catalog governance, and Dataproc processing
+C. Separate systems for each data type, each with its own storage, tooling, and access controls to maintain
+D. BigQuery only, loading every structured, log, and document file into tables and governing them with dataset IAM
 
 <details>
 <summary>Answer</summary>
@@ -208,8 +208,8 @@ D. BigQuery only
 
 A. Terraform with remote state in Cloud Storage, infrastructure as code in Git with Cloud Build
 B. Manual console deployment
-C. Scripts without version control
-D. Deployment Manager only
+C. Scripts without version control, run by hand from an administrator's laptop against each environment
+D. Deployment Manager only, with templates kept in the console and previews reviewed by the team before each update
 
 <details>
 <summary>Answer</summary>
@@ -227,14 +227,14 @@ D. Deployment Manager only
 A. Compute Engine with Docker
 B. Cloud Run with Cloud SQL connector
 C. Cloud Functions
-D. App Engine Flex
+D. GKE Standard with node auto-provisioning, which scales automatically but leaves the team to upgrade and manage the cluster
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Cloud Run is serverless containers - no cluster management. It auto-scales to zero, provides HTTPS endpoints automatically, and has native Cloud SQL connector support for secure database connections. CE with Docker (A) requires VM management. App Engine Flex (D) is similar but less flexible. Functions (C) aren't containers.
+**Why:** Cloud Run is serverless containers - no cluster management. It auto-scales to zero, provides HTTPS endpoints automatically, and has native Cloud SQL connector support for secure database connections. CE with Docker (A) requires VM management. GKE Standard (D) still leaves the team operating a cluster. Functions (C) aren't containers.
 
 **Key Concept:** [Cloud Run](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
 </details>
@@ -243,16 +243,16 @@ D. App Engine Flex
 **Scenario:** A company's application requires instances in multiple zones for high availability. If one zone fails, traffic should automatically route to healthy instances. What configuration is needed?
 
 A. Managed instance group (MIG) with regional configuration and Cloud Load Balancing
-B. Single zone deployment
-C. Zone-specific DNS records
-D. Multiple unmanaged instances
+B. A single zone deployment with a large instance group and a load balancer in front of it
+C. Zone-specific DNS records for each instance, updated by the on-call engineer after a failure
+D. Multiple unmanaged instances in one zone, with a load balancer health check routing around any failed one
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Regional MIGs distribute instances across multiple zones with automatic healing. Cloud Load Balancing detects unhealthy instances and routes traffic to healthy ones. Automatic failover between zones. Single zone (B) isn't HA. Unmanaged instances (D) don't auto-heal. DNS records (C) require manual failover.
+**Why:** Regional MIGs distribute instances across multiple zones with automatic healing. Cloud Load Balancing detects unhealthy instances and routes traffic to healthy ones. Automatic failover between zones. Single zone (B) isn't HA. Unmanaged instances in one zone (D) don't auto-heal and don't survive a zone failure. DNS records (C) require manual failover.
 
 **Key Concept:** [Regional MIGs](https://cloud.google.com/compute/docs/instance-groups/distributing-instances-with-regional-instance-groups)
 </details>
@@ -260,10 +260,10 @@ D. Multiple unmanaged instances
 ### Question 14
 **Scenario:** A GKE cluster needs to be updated to a new Kubernetes version. The update should cause no downtime, and the team wants to test the new version before full rollout. What strategy should they use?
 
-A. In-place upgrade of all nodes immediately
+A. In-place upgrade of all nodes immediately, relying on the release channel's maintenance window to avoid downtime
 B. Blue-green node pool upgrade with surge upgrades
-C. Never upgrade
-D. Delete and recreate the cluster
+C. Never upgrade, and stay on the current version for as long as it keeps working
+D. Delete and recreate the cluster on the new version, then redeploy every workload
 
 <details>
 <summary>Answer</summary>
@@ -278,9 +278,9 @@ D. Delete and recreate the cluster
 ### Question 15
 **Scenario:** A company needs to provide developers self-service access to create GCP resources within budget limits and approved configurations. What should they implement?
 
-A. No restrictions
-B. Manual approval for each request
-C. Give developers project owner access
+A. No restrictions on what developers can create, with a monthly review of the bill
+B. Manual approval for each request by a central cloud team before anything is created
+C. Give developers project owner access, with billing budget alerts that email the team when spend reaches 90%
 D. Service Catalog with approved Terraform modules and Budget alerts
 
 <details>
@@ -301,7 +301,7 @@ D. Service Catalog with approved Terraform modules and Budget alerts
 A. Manage each cluster independently
 B. GKE Fleet with Config Sync for policy management
 C. Different GCP accounts per cluster
-D. Single cluster for everything
+D. A single large cluster for everything, with namespaces and Config Sync used to separate each environment and region
 
 <details>
 <summary>Answer</summary>
@@ -317,7 +317,7 @@ D. Single cluster for everything
 **Scenario:** A company needs to ensure that all data in Cloud Storage is encrypted with keys they control. They need to rotate keys annually and audit all key usage. What should they configure?
 
 A. No encryption
-B. Client-side encryption only
+B. Client-side encryption only, using keys held by the application, with the audit trail kept in the application's logs
 C. Default Google-managed encryption
 D. Customer-managed encryption keys (CMEK) with Cloud KMS and key rotation policy
 
@@ -334,10 +334,10 @@ D. Customer-managed encryption keys (CMEK) with Cloud KMS and key rotation polic
 ### Question 18
 **Scenario:** A company's applications running on GCP need to access Cloud APIs without storing service account keys. Applications run on Compute Engine, GKE, and Cloud Run. What should they use?
 
-A. Store service account keys in the application
-B. API keys
-C. User credentials
-D. Workload Identity (GKE), attached service accounts (Compute Engine), and default service account (Cloud Run)
+A. Store service account keys in the application, in a secrets file that is rotated every 90 days by the build pipeline
+B. API keys embedded in each application's configuration file, restricted to the Cloud APIs that the application calls
+C. An administrator's user credentials, copied onto each server and refreshed with gcloud whenever they expire
+D. Workload Identity (GKE), attached service accounts (Compute Engine), and Cloud Run's service account
 
 <details>
 <summary>Answer</summary>
@@ -353,7 +353,7 @@ D. Workload Identity (GKE), attached service accounts (Compute Engine), and defa
 **Scenario:** A company needs to restrict which services can be used in their GCP organization. They want to prevent anyone from creating Compute Engine instances in certain projects while allowing Cloud Run. What should they configure?
 
 A. Delete unwanted services
-B. Firewall rules
+B. Firewall rules that block the Compute Engine API ports in selected projects while leaving Cloud Run traffic untouched
 C. Remove all IAM permissions
 D. Organization Policy with resource location constraint and service restriction policies
 
@@ -371,9 +371,9 @@ D. Organization Policy with resource location constraint and service restriction
 **Scenario:** A company needs to implement zero-trust security for their GKE workloads. Services should only communicate with explicitly allowed services, and all traffic should be encrypted. What should they implement?
 
 A. No security controls
-B. Network policies only
+B. Network policies only, with mTLS added by each application itself
 C. VPC firewall only
-D. Istio service mesh with mutual TLS (mTLS) and authorization policies
+D. Istio service mesh with mutual TLS (mTLS) and authorization policies for each service
 
 <details>
 <summary>Answer</summary>
@@ -389,8 +389,8 @@ D. Istio service mesh with mutual TLS (mTLS) and authorization policies
 **Scenario:** A company needs to detect threats and vulnerabilities across their GCP environment, including compromised credentials, cryptomining, and data exfiltration. What should they enable?
 
 A. Cloud Monitoring only
-B. Manual log review
-C. Third-party SIEM only
+B. Manual log review by the security team, who search the exported audit logs for suspicious entries each week
+C. A third-party SIEM only, fed by exported audit logs, with no container runtime or credential-compromise detection
 D. Security Command Center Premium with Event Threat Detection and Container Threat Detection
 
 <details>
@@ -406,9 +406,9 @@ D. Security Command Center Premium with Event Threat Detection and Container Thr
 ### Question 22
 **Scenario:** A development team needs access to production data for debugging but shouldn't see actual customer PII (names, emails, phone numbers). What should be implemented?
 
-A. Full production access
+A. Full production access, with query audit logs and a signed policy that forbids reading the PII columns during debugging
 B. No debugging access
-C. Honor system
+C. An honor system, with developers trusted not to open the PII columns while they debug production
 D. Cloud DLP to de-identify PII in a sanitized dataset or use DLP for on-the-fly redaction
 
 <details>
@@ -428,7 +428,7 @@ D. Cloud DLP to de-identify PII in a sanitized dataset or use DLP for on-the-fly
 
 A. Public IP addresses
 B. SSH tunnels
-C. Cloud VPN
+C. Cloud VPN, which uses IPsec tunnels with private IP routing and can be scaled by adding tunnels for more bandwidth
 D. Dedicated Interconnect with Cloud Router
 
 <details>
@@ -446,8 +446,8 @@ D. Dedicated Interconnect with Cloud Router
 
 A. Cloud Billing reports with cost breakdown, Recommender for optimization suggestions, and budget alerts
 B. Ignore costs
-C. Manual calculation
-D. Third-party cost tool only
+C. Manual calculation in a spreadsheet, built by hand from each monthly invoice PDF and sent to the team leads
+D. A third-party cost tool only, fed by billing export data and tagged by team, with budget alerts left to the vendor
 
 <details>
 <summary>Answer</summary>
@@ -464,8 +464,8 @@ D. Third-party cost tool only
 
 A. Use free tier only
 B. Use Spot VMs (preemptible) with checkpointing and automatic restart
-C. Run fewer jobs
-D. Use larger instances to finish faster
+C. Run fewer jobs by merging several batches into one large run every night
+D. Use larger instances to finish faster, since the shorter runtime cuts the hours billed even at the same hourly rate
 
 <details>
 <summary>Answer</summary>
@@ -481,9 +481,9 @@ D. Use larger instances to finish faster
 **Scenario:** A company has identified that their Cloud SQL instance is oversized. The instance has 32 vCPUs but CPU utilization averages 10%. What should they do?
 
 A. Add more connections
-B. Delete the instance
+B. Delete the instance, then create a smaller one and reload the data from the original source
 C. Use Active Assist Recommender suggestions to rightsize to appropriate instance size
-D. Keep the same size for future growth
+D. Keep the same size for future growth, because resizing a Cloud SQL instance requires a migration to a new instance
 
 <details>
 <summary>Answer</summary>
@@ -498,10 +498,10 @@ D. Keep the same size for future growth
 ### Question 27
 **Scenario:** A company's application has variable traffic - high during business hours, low at night. They want to scale down at night to save costs. What should they configure?
 
-A. Fixed capacity 24/7
-B. Manual scaling daily
+A. Fixed capacity 24/7, sized for the daytime peak so that the application never runs short
+B. Manual scaling every day by an on-call engineer, who lowers the instance count each evening and raises it again each morning
 C. Scheduled scaling or autoscaling based on metrics with scale-down policies
-D. Turn off the application at night
+D. Turn off the application every night and start it again when staff arrive in the morning
 
 <details>
 <summary>Answer</summary>
@@ -517,9 +517,9 @@ D. Turn off the application at night
 **Scenario:** A company needs to choose between Cloud Run and GKE for a new microservices application. The team has limited Kubernetes experience, services are HTTP-based, and they want minimal operational overhead. Which should they choose?
 
 A. Cloud Functions
-B. Cloud Run for this use case
+B. Cloud Run, because it runs HTTP containers serverlessly with no clusters or nodes to manage
 C. Compute Engine
-D. GKE Autopilot for all workloads
+D. GKE Autopilot for all workloads, since it manages nodes and runs HTTP services
 
 <details>
 <summary>Answer</summary>
@@ -536,8 +536,8 @@ D. GKE Autopilot for all workloads
 
 A. Implement table partitioning by date and clustering on frequently filtered columns
 B. Use smaller tables
-C. Export to CSV and re-import
-D. Add more slots
+C. Export the tables to CSV in Cloud Storage and re-import them under a different table definition
+D. Add more slots by buying a reservation, since the queries are slow because the scan work is limited by compute capacity
 
 <details>
 <summary>Answer</summary>
@@ -556,7 +556,7 @@ D. Add more slots
 
 A. No SLOs
 B. Cloud Monitoring SLOs with alerting on burn rate and error budget dashboards
-C. Alert on every error
+C. Alert on every logged error and page the on-call engineer each time
 D. Manual tracking in spreadsheets
 
 <details>
@@ -574,7 +574,7 @@ D. Manual tracking in spreadsheets
 
 A. Migration Center (formerly Migrate for Compute Engine assessment) for discovery, dependency mapping, and TCO analysis
 B. Migrate everything at once
-C. Guess the requirements
+C. Guess the requirements from the on-premises hypervisor's allocated sizes and migrate in waves, adjusting later
 D. Manual inventory
 
 <details>
@@ -590,10 +590,10 @@ D. Manual inventory
 ### Question 32
 **Scenario:** A company is migrating their database from on-premises MySQL to Cloud SQL. They need minimal downtime during cutover. What migration approach should they use?
 
-A. Recreate schema and start fresh
+A. Recreate the schema on Cloud SQL and start fresh, leaving the old data behind in the source
 B. Database Migration Service with continuous replication and minimal-downtime cutover
-C. Export, transfer, import (extended downtime)
-D. Keep on-premises
+C. Export, transfer, import, accepting extended downtime while the dump loads, which preserves exactly the data at export time
+D. Keep the database on-premises and connect to it from Google Cloud applications over a VPN
 
 <details>
 <summary>Answer</summary>
@@ -609,7 +609,7 @@ D. Keep on-premises
 **Scenario:** A development team wants to adopt CI/CD for their GCP deployments. They use GitHub for source control and want to deploy to Cloud Run on every push to main. What should they configure?
 
 A. FTP uploads
-B. GitHub Actions only
+B. GitHub Actions only, deploying with a JSON service account key committed to the repository so that no GCP-side trigger is needed
 C. Manual deployments
 D. Cloud Build triggered by GitHub, with cloudbuild.yaml defining build and deploy steps
 
@@ -618,7 +618,7 @@ D. Cloud Build triggered by GitHub, with cloudbuild.yaml defining build and depl
 
 **Correct: D**
 
-**Why:** Cloud Build integrates with GitHub via triggers. Push to main triggers a build defined in cloudbuild.yaml. Steps can build container, push to Artifact Registry, and deploy to Cloud Run. Native GCP integration with IAM. GitHub Actions (B) works but requires managing GCP credentials. Manual (C) isn't CI/CD.
+**Why:** Cloud Build integrates with GitHub via triggers. Push to main triggers a build defined in cloudbuild.yaml. Steps can build container, push to Artifact Registry, and deploy to Cloud Run. Native GCP integration with IAM. GitHub Actions (B) can work with Workload Identity Federation, but committing a long-lived service account key to the repository is a security failure. Manual (C) isn't CI/CD.
 
 **Key Concept:** [Cloud Build](https://cloud.google.com/build/docs/overview)
 </details>
@@ -628,9 +628,9 @@ D. Cloud Build triggered by GitHub, with cloudbuild.yaml defining build and depl
 ### Question 34
 **Scenario:** A company has a tight deadline for GCP migration. They need to accelerate the project without sacrificing quality. What should they do?
 
-A. Delay the deadline
-B. Skip testing
-C. Work overtime indefinitely
+A. Delay the deadline by one quarter, and use the extra time to run the migration at the original pace with the same team
+B. Skip testing so that the migration reaches production sooner, and fix any defects afterward
+C. Work overtime indefinitely until the migration is done, with the same team and the same plan
 D. Engage Google Cloud consulting or a certified partner with migration experience
 
 <details>
@@ -648,7 +648,7 @@ D. Engage Google Cloud consulting or a certified partner with migration experien
 
 A. Backup and restore only
 B. Multi-region architecture with Cloud Spanner (or Cloud SQL cross-region replicas), regional load balancing, and Cloud DNS failover
-C. On-premises DR site
+C. An on-premises DR site, with replicated data over Interconnect and servers kept powered on to meet a 30-minute RTO
 D. Single region with multiple zones
 
 <details>
@@ -666,15 +666,15 @@ D. Single region with multiple zones
 
 A. Punish the responsible team
 B. Document timeline, root cause analysis, action items for prevention, and update runbooks
-C. Find who to blame
-D. Ignore and move on
+C. Find the individual whose change started the outage so that they can be coached before the next release cycle
+D. Ignore the outage and move on to the next project, since the service is back up and the users are calm
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Blameless postmortems focus on systemic improvements, not individual blame. Document what happened (timeline), why it happened (root cause analysis), and how to prevent it (action items). Update runbooks for future incidents. Blame (A, D) discourages reporting. Ignoring (D) leads to repeat incidents.
+**Why:** Blameless postmortems focus on systemic improvements, not individual blame. Document what happened (timeline), why it happened (root cause analysis), and how to prevent it (action items). Update runbooks for future incidents. Blame (A, C) discourages reporting. Ignoring (D) leads to repeat incidents.
 
 **Key Concept:** [Postmortem Culture](https://sre.google/sre-book/postmortem-culture/)
 </details>
@@ -684,7 +684,7 @@ D. Ignore and move on
 
 A. Manual intervention for all issues
 B. Cloud Monitoring alerting policies with notification channels that trigger Cloud Functions for automated remediation
-C. Reboot servers daily
+C. Reboot servers daily on a schedule so that memory leaks and full disks are cleared before they cause an outage
 D. Ignore alerts
 
 <details>
@@ -701,7 +701,7 @@ D. Ignore alerts
 **Scenario:** A company wants to implement chaos engineering to test the resilience of their GKE-based application. They want to randomly terminate pods and observe system behavior. What should they use?
 
 A. Chaos engineering tools like Chaos Mesh or LitmusChaos with controlled experiments
-B. Production experiments without safeguards
+B. Production experiments without safeguards, killing pods at random during peak hours so engineers see the true impact
 C. Never test failure scenarios
 D. Delete production pods manually
 
@@ -710,7 +710,7 @@ D. Delete production pods manually
 
 **Correct: A**
 
-**Why:** Chaos Mesh and LitmusChaos provide controlled chaos experiments with safeguards. They can terminate pods, inject network latency, and more. Experiments are time-bounded with abort conditions. Results improve resilience. Production without safeguards (A, C) risks uncontrolled outages. Never testing (C) means unknown failure modes.
+**Why:** Chaos Mesh and LitmusChaos provide controlled chaos experiments with safeguards. They can terminate pods, inject network latency, and more. Experiments are time-bounded with abort conditions. Results improve resilience. Production without safeguards (B, D) risks uncontrolled outages. Never testing (C) means unknown failure modes.
 
 **Key Concept:** [Chaos Engineering](https://docs.cloud.google.com/architecture/framework/reliability/perform-testing-for-recovery-from-failures)
 </details>
@@ -718,7 +718,7 @@ D. Delete production pods manually
 ### Question 39
 **Scenario:** A Cloud Run service is experiencing intermittent 503 errors during traffic spikes. Logs show "instance scaling" messages. What should they investigate and configure?
 
-A. Switch to a VM
+A. Switch to a VM, since Cloud Run instances cannot scale quickly enough to handle sudden bursts of traffic
 B. Reduce traffic
 C. Ignore the errors
 D. Configure minimum instances to reduce cold starts, review concurrency settings, and optimize container startup time
@@ -737,7 +737,7 @@ D. Configure minimum instances to reduce cold starts, review concurrency setting
 **Scenario:** A company needs to create comprehensive documentation for their GCP architecture, including disaster recovery procedures, runbooks, and architectural diagrams. What format and tools should they use?
 
 A. Email chains
-B. Paper documents
+B. Paper documents stored in a locked cabinet at each office, with copies of the runbooks printed whenever they change
 C. Undocumented knowledge in engineers' heads
 D. Version-controlled documentation (Markdown in Git), architecture diagrams (draw.io or Lucidchart), and automated runbooks (Cloud Workflows or Terraform)
 
@@ -759,7 +759,7 @@ D. Version-controlled documentation (Markdown in Git), architecture diagrams (dr
 A. Active-active clusters in three regions with global database replication
 B. Self-managed Kubernetes on Compute Engine in one zone
 C. One zonal GKE cluster with nightly snapshots
-D. Regional GKE clusters spread across zones, a global load balancer, and a highly available managed database
+D. Regional GKE clusters across zones, a global load balancer, and a highly available managed database
 
 <details>
 <summary>Answer</summary>
@@ -773,9 +773,9 @@ D. Regional GKE clusters spread across zones, a global load balancer, and a high
 **Scenario:** EHR Healthcare's legacy insurer interfaces must stay on-premises but connect securely and with high performance to Google Cloud.
 
 A. Redundant Dedicated or Partner Interconnect with HA VPN as backup
-B. Public internet with TLS only
-C. Move the insurer systems to Compute Engine first
-D. A single Cloud VPN tunnel
+B. Public internet with TLS only, using a different certificate for each insurer interface
+C. Move the insurer systems to Compute Engine first, then connect to them with VPC peering once the cutover completes
+D. A single Cloud VPN tunnel over the public internet to the insurer's data center
 
 <details>
 <summary>Answer</summary>
@@ -791,7 +791,7 @@ D. A single Cloud VPN tunnel
 A. SLO-based alerting policies with severity routing to paging and ticketing in Cloud Monitoring
 B. Disable alerts and review dashboards weekly
 C. Increase log retention
-D. Send more alert emails to a larger group
+D. Send more alert emails to a larger group, with a rota so that someone reads each one
 
 <details>
 <summary>Answer</summary>
@@ -807,7 +807,7 @@ D. Send more alert emails to a larger group
 A. Use API keys for people
 B. Federate with Cloud Identity (or Workforce Identity Federation) and sync users and groups from AD
 C. Share one service account key
-D. Create separate Google accounts and passwords for each user
+D. Create separate Google accounts and passwords for each user, and ask staff to keep them in step with their AD accounts
 
 <details>
 <summary>Answer</summary>
@@ -822,7 +822,7 @@ D. Create separate Google accounts and passwords for each user
 
 A. Export logs to a developer laptop monthly
 B. Aggregated log sinks at the organization or folder to a log bucket or Cloud Storage with a locked retention policy
-C. Each team configures logs in its own project
+C. Each team configures logging and retention in its own project, following a written standard that auditors review yearly
 D. Rely on the default retention
 
 <details>
@@ -838,7 +838,7 @@ D. Rely on the default retention
 
 A. Generate attributes in the browser on each page view
 B. Use a multimodal Gemini model to propose attributes and add a human review step that approves before writing to the catalog
-C. Let the model write directly to the catalog and fix errors later
+C. Let the model write straight to the catalog and have a nightly job correct any errors that customers report
 D. Train a custom model from scratch on supplier data
 
 <details>
@@ -853,9 +853,9 @@ D. Train a custom model from scratch on supplier data
 **Scenario:** Cymbal Retail customers should find products by describing them in natural language, and the team wants a managed solution.
 
 A. Vertex AI Search for commerce (Discovery AI) behind a conversational agent
-B. A custom ranking model on GPUs
-C. A custom keyword query against the relational database
-D. A Cloud Storage bucket of product pages
+B. A custom ranking model on GPUs, trained on click data and served from a self-managed endpoint behind the storefront
+C. A custom keyword query against the relational database, with a synonym table kept by hand
+D. A Cloud Storage bucket of static product pages that customers browse by category and brand
 
 <details>
 <summary>Answer</summary>
@@ -869,9 +869,9 @@ D. A Cloud Storage bucket of product pages
 **Scenario:** Cymbal Retail wants to replace its IVR menus and reduce call-center cost, but customers must still reach a person when needed.
 
 A. Conversational agents for voice and chat with handoff to a human agent
-B. Remove the phone line
-C. A bigger IVR menu tree
-D. An FAQ web page
+B. Remove the phone line and move every customer to the web chat page without a human option
+C. A bigger IVR menu tree, with more levels and spoken options so callers reach the right queue without an agent
+D. An FAQ web page that answers the most common questions from callers, with no agent
 
 <details>
 <summary>Answer</summary>
@@ -885,9 +885,9 @@ D. An FAQ web page
 **Scenario:** Cymbal Retail must move a production MySQL database to Cloud SQL with minimal downtime.
 
 A. Database Migration Service with continuous replication, then a short cutover
-B. Rewrite the application for Spanner first
-C. Copy files with Storage Transfer Service
-D. Export a dump nightly and import it over a weekend
+B. Rewrite the application for Spanner first, then move the data across into the new schema
+C. Copy the database files to Cloud Storage with Storage Transfer Service, then mount them
+D. Export a dump nightly and import it over a weekend, with the application stopped while the final import runs
 
 <details>
 <summary>Answer</summary>
@@ -902,7 +902,7 @@ D. Export a dump nightly and import it over a weekend
 
 A. Cloud Storage with Autoclass
 B. Move all files to Persistent Disk
-C. Keep everything in Standard
+C. Keep everything in Standard, since retrieval fees in colder classes make unpredictable access cost more overall
 D. Delete older assets
 
 <details>
@@ -916,9 +916,9 @@ D. Delete older assets
 ### Question 51
 **Scenario:** Altostrat Media must show that its AI decisions are auditable and can be explained.
 
-A. Use the largest model available
-B. Rely on the model's own explanation only
-C. Log prompts, responses and model versions, keep audit logs, evaluate models, and keep human review for sensitive outputs
+A. Use the largest model available, since a bigger model gives answers that are more accurate and so need less auditing
+B. Rely on the model's own written explanation of each answer as the only audit record, with no other logs kept
+C. Log prompts, responses and model versions, keep audit logs, evaluate models, and keep human review
 D. Disable logging to protect privacy
 
 <details>
@@ -932,10 +932,10 @@ D. Disable logging to protect privacy
 ### Question 52
 **Scenario:** Altostrat Media needs Kubernetes both on-premises and in Google Cloud, managed centrally with the same policies.
 
-A. One VM per service
+A. One VM per service in each location, with the same policy files copied across by hand
 B. GKE Enterprise fleets with Config Sync and Policy Controller
-C. Separate manually managed clusters
-D. Cloud Functions everywhere
+C. Separate manually managed clusters in each location, with the same YAML policies applied by hand after each change
+D. Cloud Functions everywhere, with no Kubernetes on the on-premises sites
 
 <details>
 <summary>Answer</summary>
@@ -948,9 +948,9 @@ D. Cloud Functions everywhere
 ### Question 53
 **Scenario:** KnightMotives must meet EU data protection rules and keep control of encryption keys for vehicle data.
 
-A. A US multi-region bucket with default encryption
+A. A US multi-region bucket with default encryption, since Google-managed keys satisfy EU data protection rules for all vehicle data
 B. Any region, with encryption in the application only
-C. Global Spanner with default settings
+C. Global Spanner with default settings, replicating the vehicle data automatically to every region it serves worldwide
 D. EU regions, Assured Workloads for the EU, a resource-location org policy, and CMEK or External Key Manager
 
 <details>
@@ -964,10 +964,10 @@ D. EU regions, Assured Workloads for the EU, a resource-location org policy, and
 ### Question 54
 **Scenario:** KnightMotives wants to monetize data by sharing curated datasets with partners without copying them.
 
-A. Email CSV exports
+A. Email CSV exports to partners each month, protected with a password sent separately, so every partner gets a copy
 B. BigQuery with Analytics Hub listings
-C. Public Cloud Storage buckets
-D. Give partners project owner access
+C. Public Cloud Storage buckets of CSV exports
+D. Give partners project owner access on the data project
 
 <details>
 <summary>Answer</summary>
@@ -983,7 +983,7 @@ D. Give partners project owner access
 A. Browser-based applications with federated sign-in
 B. Custom hardware kiosks
 C. A native app that needs dedicated devices
-D. On-premises servers at each dealership
+D. On-premises servers at each dealership, installed once and managed centrally by the manufacturer's IT team
 
 <details>
 <summary>Answer</summary>
@@ -999,7 +999,7 @@ D. On-premises servers at each dealership
 A. A single large VM with local SSD
 B. Small general-purpose VMs
 C. Cloud Functions
-D. GKE or batch on AI Hypercomputer, using reservations or Dynamic Workload Scheduler to secure capacity
+D. GKE or batch on AI Hypercomputer, with reservations or Dynamic Workload Scheduler
 
 <details>
 <summary>Answer</summary>
@@ -1014,7 +1014,7 @@ D. GKE or batch on AI Hypercomputer, using reservations or Dynamic Workload Sche
 
 A. Longer prompts
 B. Model Armor on prompts and responses, with Sensitive Data Protection detection
-C. Disable the assistant at night
+C. Disable the assistant at night and during maintenance windows, when fewer staff are present to notice abuse
 D. A firewall rule
 
 <details>
@@ -1028,10 +1028,10 @@ D. A firewall rule
 ### Question 58
 **Scenario:** A company wants to extract fields from scanned invoices quickly with no ML team.
 
-A. Document AI
+A. Document AI processors for invoices
 B. BigQuery ML
-C. Cloud Natural Language
-D. Train a custom image model
+C. Cloud Natural Language entity analysis on the scanned images
+D. Train a custom image model on the company's own invoices, which needs labelled data and an ML team to maintain it
 
 <details>
 <summary>Answer</summary>
@@ -1046,7 +1046,7 @@ D. Train a custom image model
 
 A. Use a larger model with no data
 B. Hard-code answers in the prompt
-C. Fine-tune the model weekly
+C. Fine-tune the model weekly on the new documents, so the weights reflect the latest company text and its sources
 D. Grounding or RAG over an index of the documents
 
 <details>
@@ -1060,10 +1060,10 @@ D. Grounding or RAG over an index of the documents
 ### Question 60
 **Scenario:** A fault-tolerant ML training job should cost as little as possible.
 
-A. A three-year commitment for an occasional job
+A. A three-year commitment for an occasional job, which gives a discount only if the capacity is used continuously
 B. Sole-tenant nodes
 C. Spot capacity with regular checkpoints
-D. On-demand VMs only
+D. On-demand VMs only, started on request and deleted when the training job ends
 
 <details>
 <summary>Answer</summary>
@@ -1077,9 +1077,9 @@ D. On-demand VMs only
 **Scenario:** An alert fires and the team wants help finding the root cause across logs, metrics and configuration.
 
 A. Delete the alert policy
-B. Gemini Cloud Assist Investigations
+B. Gemini Cloud Assist Investigations, which analyzes logs, metrics, and configuration to rank likely causes
 C. Increase the alert threshold
-D. Export logs to a spreadsheet
+D. Export logs to a spreadsheet and have an engineer search them by hand
 
 <details>
 <summary>Answer</summary>
@@ -1092,9 +1092,9 @@ D. Export logs to a spreadsheet
 ### Question 62
 **Scenario:** A data center lease ends soon and the estate is mostly VMware VMs. The team wants minimal change first.
 
-A. Buy new hardware
-B. Rewrite everything as microservices on GKE
-C. Move to Cloud Run functions
+A. Buy new hardware and renew the data center lease
+B. Rewrite everything as microservices on GKE, which removes the VMware dependency but needs large application changes first
+C. Move every workload to Cloud Run functions
 D. Google Cloud VMware Engine
 
 <details>
@@ -1108,7 +1108,7 @@ D. Google Cloud VMware Engine
 ### Question 63
 **Scenario:** Before a migration the team needs inventory, dependency mapping and a cost comparison.
 
-A. Compute Engine rightsizing recommendations
+A. Compute Engine rightsizing recommendations, which advise on machine types for VMs already running in Google Cloud
 B. Cloud Billing reports
 C. Transfer Appliance
 D. Migration Center discovery, assessment and TCO reports
@@ -1127,7 +1127,7 @@ D. Migration Center discovery, assessment and TCO reports
 A. Wait for a real outage
 B. Run a controlled failure-injection (chaos) test, starting in staging with a small blast radius
 C. Disable health checks
-D. Add more alerts
+D. Add more zone health alerts so the team hears quickly when a real zone failure occurs
 
 <details>
 <summary>Answer</summary>
@@ -1141,9 +1141,9 @@ D. Add more alerts
 **Scenario:** Developers need to test Pub/Sub and Spanner code locally and in CI without cloud cost.
 
 A. Test directly in production
-B. Cloud emulators for Pub/Sub and Spanner
+B. Cloud emulators for Pub/Sub and Spanner, run locally and in CI so that tests cost nothing and touch no cloud project
 C. Mock nothing
-D. Use the BigQuery sandbox
+D. Use the BigQuery sandbox, a free project for running queries with no Pub/Sub or Spanner emulation
 
 <details>
 <summary>Answer</summary>
@@ -1156,17 +1156,17 @@ D. Use the BigQuery sandbox
 ### Question 66
 **Scenario:** A business needs recovery in about 15 minutes with minimal data loss, but cannot afford active-active.
 
-A. Backup and restore from archives
+A. Backup and restore from archives kept in a second region and loaded onto new servers after a failure
 B. Warm standby with replicated data and scaled-down compute that scales up on failover
-C. Do nothing until an incident
-D. Pilot light with no running compute
+C. Do nothing until an incident happens, then decide on the recovery plan with the team on the day
+D. Pilot light with core data replicated but no compute provisioned, so servers are built from images after failover begins
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Warm standby meets a minutes-level RTO at moderate cost. Backup and restore is too slow, and active-active costs more than the stated budget.
+**Why:** Warm standby meets a minutes-level RTO at moderate cost. Backup and restore is too slow, a pilot light must build compute after failover so it misses 15 minutes, and active-active costs more than the stated budget.
 </details>
 
 ## Answer Key

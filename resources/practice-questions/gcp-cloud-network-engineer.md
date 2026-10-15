@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** How does a Google Cloud VPC differ from a typical cloud VPC?
 
-A. It is regional only
-B. It cannot have subnets
-C. It is a global resource, with subnets scoped to regions, so one VPC spans regions without peering
-D. It is zonal
+A. It is regional only, so instances in different regions need VPC peering to talk over internal IPs
+B. It cannot have subnets, so every instance receives an address from a single flat range for the whole project
+C. It is global, with regional subnets, so one VPC spans regions without peering
+D. It is zonal, so each zone has its own VPC and traffic between zones has to cross a gateway
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. It is zonal
 ### Question 2
 **Scenario:** Several projects must share one network administered centrally.
 
-A. VPC Network Peering between all projects
-B. Shared VPC, with a host project owning the network and service projects attaching to it
-C. A VPN mesh
-D. One project for everything
+A. VPC Network Peering between every project's network
+B. Shared VPC, with a host project owning the network and service projects attached
+C. A VPN mesh between per-project networks and gateways
+D. One project for everything, so every team holds roles in a single project and ownership is not separated
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. One project for everything
 ### Question 3
 **Scenario:** Firewall rules must allow SSH only to instances with a specific role.
 
-A. Rely on the OS firewall
-B. Allow from 0.0.0.0/0
-C. A rule targeting a network tag or service account, sourced from Identity-Aware Proxy's range for tunneled SSH
-D. Allow all internal traffic
+A. Rely on the OS firewall alone and skip VPC firewall rules
+B. Allow from 0.0.0.0/0 on port 22, and depend on SSH key authentication alone to keep unauthorized users out of every instance
+C. A rule targeting a service account or network tag, with the source set to IAP's range for tunneled SSH
+D. Allow all internal traffic in the VPC, so any instance can SSH to any other regardless of its role or purpose
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Allow all internal traffic
 ### Question 4
 **Scenario:** Instances in a private subnet need outbound internet access without public IPs.
 
-A. A public IP per instance
-B. Private Google Access
-C. A proxy VM
-D. Cloud NAT configured on the region's router
+A. A public IP per instance, removed once the download finishes
+B. Private Google Access, which lets instances without external IPs reach any internet destination
+C. An internal passthrough Network Load Balancer for the subnet
+D. Cloud NAT configured on a Cloud Router in the region, so no VM needs an external IP
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Cloud NAT configured on the region's router
 ### Question 5
 **Scenario:** An instance must reach Cloud Storage without traversing the internet and without a public IP.
 
-A. Cloud VPN
+A. Cloud VPN between the subnet and Google, which is designed for hybrid links to on-premises networks
 B. Private Google Access on the subnet, or Private Service Connect for a private endpoint
-C. A public IP
-D. Cloud NAT
+C. A public IP on the instance, restricted by firewall rules to Google's published address ranges
+D. Cloud NAT, which translates private addresses so the instance reaches Cloud Storage on its public endpoint over the internet
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Cloud NAT
 ### Question 6
 **Scenario:** Hybrid connectivity must be resilient with a 99.99% availability SLA.
 
-A. Four Dedicated Interconnect connections across two metropolitan areas and two zones, per Google's topology requirements
-B. Two connections in one location
-C. HA VPN alone
-D. A single Dedicated Interconnect
+A. Four Dedicated Interconnect connections across two metros and two zones, per Google's topology requirements
+B. Two connections in one location on separate devices, which Google's topologies rate at 99.9 percent at best because one site is a shared failure domain
+C. HA VPN with the two tunnels ending on a single on-premises peer device and gateway interface
+D. A single Dedicated Interconnect connection with a redundant cross connect inside the same facility, leaving one site as a shared failure point
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A single Dedicated Interconnect
 ### Question 7
 **Scenario:** A Cloud Router must advertise only specific subnets to on-premises.
 
-A. Change the subnet range
-B. Configure custom route advertisements on the BGP session, listing the prefixes
-C. Use static routes only
-D. It always advertises everything
+A. Change the subnet range so that only the intended prefixes fall inside the VPC address space
+B. Switch the Cloud Router to custom route advertisement mode on the BGP session and list only the prefixes to advertise
+C. Use static routes only and remove the BGP session, which stops Cloud Router advertising anything
+D. It always advertises everything, because the advertisement mode on a Cloud Router cannot be changed
 
 <details>
 <summary>Answer</summary>
@@ -140,9 +140,9 @@ D. It always advertises everything
 ### Question 8
 **Scenario:** A global HTTPS application needs one anycast IP and routing to the closest healthy backend.
 
-A. Network Load Balancer
-B. Internal load balancer
-C. Cloud DNS round robin
+A. Network Load Balancer, a regional pass-through balancer that preserves the client IP
+B. Internal load balancer, which uses a private address reachable only inside the VPC
+C. Cloud DNS round robin, returning several regional IP addresses in rotation
 D. Global external Application Load Balancer
 
 <details>
@@ -158,10 +158,10 @@ D. Global external Application Load Balancer
 ### Question 9
 **Scenario:** Layer 7 protection against SQL injection and volumetric attacks is required.
 
-A. Cloud Armor security policies with preconfigured WAF rules and rate limiting, attached to the load balancer backend
-B. Firewall rules
-C. Cloud NAT
-D. VPC Service Controls
+A. Cloud Armor security policies with preconfigured WAF rules and rate limiting on the backend service
+B. VPC firewall rules that deny the SQL injection signatures and cap new connections per source address on the backend VMs
+C. Cloud NAT, which hides backend addresses so injection requests cannot reach them
+D. VPC Service Controls, with a perimeter that blocks malicious HTTP requests before they reach the load balancer
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. VPC Service Controls
 ### Question 10
 **Scenario:** Data exfiltration from BigQuery to a personal project must be prevented.
 
-A. IAM alone
-B. Firewall rules
-C. VPC Service Controls creating a service perimeter around the projects
-D. Cloud Armor
+A. IAM alone, granting BigQuery roles only to approved users
+B. Firewall rules that block egress from the project's VMs to the personal project's address ranges
+C. VPC Service Controls creating a service perimeter around the BigQuery projects
+D. Cloud Armor policies on the BigQuery endpoint
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Cloud Armor
 ### Question 11
 **Scenario:** Two VPCs have overlapping IP ranges but one service must be shared.
 
-A. Shared VPC
-B. VPC Peering
-C. A VPN
-D. Private Service Connect, which publishes a service reachable via an endpoint in the consumer's address space
+A. Shared VPC, which puts the two projects' workloads in one network and so cannot join overlapping ranges together
+B. VPC Peering, which exchanges routes between the two networks and works whatever their address ranges are, with no overlap check
+C. A VPN between the two networks, with Cloud Router advertising the ranges to each side
+D. Private Service Connect, publishing the service through an endpoint in the consumer's address space
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Private Service Connect, which publishes a service reachable via an endpoint 
 ### Question 12
 **Scenario:** DNS names in a VPC must resolve from on-premises.
 
-A. Public DNS zones
-B. A public IP
-C. Cloud DNS private zones with inbound and outbound server policies (DNS forwarding) between on-premises and the VPC
-D. Host files
+A. Public DNS zones containing the private records, so on-premises resolvers can find them over the internet instead
+B. A public IP on each instance, so clients reach them by address
+C. Cloud DNS private zones with an inbound server policy and outbound forwarding to on-premises resolvers
+D. Host files copied to every on-premises machine
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Host files
 ### Question 13
 **Scenario:** Packet-level visibility is needed for traffic between two instances.
 
-A. Packet Mirroring to a collector instance group
-B. VPC Flow Logs
-C. Cloud Monitoring
-D. Cloud Audit Logs
+A. Packet Mirroring to a collector instance group behind an internal load balancer
+B. VPC Flow Logs, which sample connections and record metadata such as addresses, ports, and bytes
+C. Cloud Monitoring, which charts metrics such as CPU use and network bytes for each instance
+D. Cloud Audit Logs, which record administrative API calls and data access to Google Cloud services
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Cloud Audit Logs
 ### Question 14
 **Scenario:** Connectivity between two instances fails and the cause is unclear.
 
-A. Connectivity Tests in Network Intelligence Center, which simulates the path against the configuration and names the blocking rule or missing route
-B. Ping only
-C. Recreate the instances
-D. Restart the VPC
+A. Connectivity Tests in Network Intelligence Center, which simulates the path and names the blocking rule or missing route
+B. Ping only, repeated from each instance until the pattern of drops makes the failing hop obvious
+C. Recreate the instances in a new subnet, in case the original network interface is corrupted
+D. Restart the VPC from the console, which reloads every firewall rule and route in the network
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Restart the VPC
 ### Question 15
 **Scenario:** A GKE cluster must not expose its control plane to the internet.
 
-A. Cloud Armor
-B. A private cluster, with private endpoint access and authorized networks for administrative access
-C. A public cluster with authorized networks
-D. Firewall rules on nodes
+A. Cloud Armor, which filters web requests but does not change where the control plane endpoint is reachable
+B. A private cluster with the control plane on a private endpoint, plus authorized networks for administration from known ranges
+C. A public cluster with authorized networks, which narrows access but leaves the endpoint reachable from the internet
+D. Firewall rules on nodes, which cannot change who can reach the managed control plane endpoint
 
 <details>
 <summary>Answer</summary>

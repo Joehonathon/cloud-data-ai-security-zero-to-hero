@@ -9,17 +9,17 @@
 ### Question 1
 **Scenario:** A developer adds OpenTelemetry API calls throughout a service, deploys it, and sees no telemetry and no errors. What is the most likely cause?
 
-A. The sampler is set to always-off
+A. The Collector's batch processor timeout is set too high, so the backend receives data only after a long delay
 B. The exporter endpoint is wrong
 C. No SDK is configured, so the API calls are no-ops
-D. The backend is rejecting the data
+D. The backend is rejecting the data with an authentication or schema error, which would show up as export failures in the SDK logs
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** The OpenTelemetry API is deliberately a no-op without an SDK, which is why nothing errors. This design lets libraries ship instrumentation without imposing a pipeline on their users. A wrong endpoint or a rejecting backend would usually produce export errors, and an always-off sampler is possible but less common than simply never wiring up the SDK.
+**Why:** The OpenTelemetry API is deliberately a no-op without an SDK, which is why nothing errors. This design lets libraries ship instrumentation without imposing a pipeline on their users. A wrong endpoint or a rejecting backend would usually produce export errors, and a long batch timeout only delays data rather than hiding it completely.
 </details>
 
 ---
@@ -27,17 +27,17 @@ D. The backend is rejecting the data
 ### Question 2
 **Scenario:** Which instrument should record the number of items currently in a work queue?
 
-A. Histogram
-B. Asynchronous gauge
-C. Up-down counter
-D. Counter
+A. Histogram, which records the distribution of measured values such as durations and sizes into buckets rather than a current level
+B. Asynchronous gauge, for non-additive readings
+C. Up-down counter, because the depth rises and falls as items are added and removed
+D. Counter, which only increases monotonically, so it can record items added to the queue but cannot go down when they are removed
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Queue depth rises and falls and the change happens at a known event, so a synchronous up-down counter fits. A counter is monotonic and cannot decrease. A histogram records distributions. An asynchronous gauge suits values you sample on demand rather than record at an event.
+**Why:** Queue depth rises and falls and the change happens at a known event, so a synchronous up-down counter fits. A counter is monotonic and cannot decrease. A histogram records distributions. An asynchronous gauge suits non-additive values you sample on demand, such as a temperature, rather than counts recorded at an event.
 </details>
 
 ---
@@ -45,10 +45,10 @@ D. Counter
 ### Question 3
 **Scenario:** Service A calls service B. Both are instrumented and export to the same backend, but B's spans appear as separate root spans.
 
-A. Increase the sampling rate
-B. Context is not propagating: check propagator configuration on both sides, outbound instrumentation on A, and header-stripping intermediaries
-C. Change the exporter protocol
-D. Add more span attributes
+A. Increase the sampling rate so that more spans are kept, which raises the volume exported but does not link a child span to its parent
+B. Context is not propagating: check the propagator configuration on service A and service B, outbound instrumentation on A, and header-stripping intermediaries
+C. Change the exporter protocol from gRPC to HTTP, which alters the transport to the backend but not how trace context moves between services
+D. Add more span attributes on service B, which adds detail to each span but does not set the parent span identity
 
 <details>
 <summary>Answer</summary>
@@ -63,9 +63,9 @@ D. Add more span attributes
 ### Question 4
 **Scenario:** A Collector pipeline declares processors in the order `batch`, `attributes`, `memory_limiter`, and is repeatedly OOM-killed under load.
 
-A. Reduce the batch size
-B. Increase the container memory limit
-C. Remove the attributes processor
+A. Reduce the batch size so that each batch holds fewer spans, which lowers the size of one batch but leaves nothing guarding memory ahead of it
+B. Increase the container memory limit, which delays the OOM kill under load but does not stop the pipeline from accepting more data than it can hold
+C. Remove the attributes processor, since attribute edits copy data and add memory pressure, even though the missing guard is the actual problem
 D. Reorder to `memory_limiter`, `attributes`, `batch`
 
 <details>
@@ -81,10 +81,10 @@ D. Reorder to `memory_limiter`, `attributes`, `batch`
 ### Question 5
 **Scenario:** After adding the raw request path as an attribute on an HTTP counter, backend costs triple. Paths look like `/orders/8815/items/44`.
 
-A. Switch to a different backend
-B. Use the templated route (`http.route`) instead of the raw target, or drop the attribute in a view or the Collector
-C. Reduce the metric export interval
-D. Sample the metrics
+A. Switch to a different backend that has cheaper storage per series, which hides the cardinality growth rather than removing it from the data
+B. Use the templated route (`http.route`), such as /orders/{id}/items/{itemId}, instead of the raw target, or drop the attribute with a metrics view or in the Collector before export
+C. Reduce the metric export interval to five seconds, which makes the backend receive more points per series and does not reduce series count
+D. Sample the metrics at 10% in the SDK, which drops data points but does not change how many unique path values create new series
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Sample the metrics
 ### Question 6
 **Scenario:** A platform generates 500,000 spans per second. Cost allows keeping about 1%, but every trace containing an error or exceeding two seconds must be retained in full.
 
-A. Tail sampling in a Collector gateway, with a load-balancing exporter routing by trace ID
-B. Trace ID ratio head sampling at 1%
-C. Parent-based sampling
-D. Sampling in the backend
+A. Tail sampling in a Collector gateway, with a load-balancing exporter routing by trace ID so that every span of a trace reaches one instance, using error and latency policies
+B. Trace ID ratio head sampling at 1%, which decides at the root before the outcome is known, so most error and slow traces are dropped
+C. Parent-based sampling with a fixed ratio on the root, which makes children follow the root decision and also cannot see errors or latency
+D. Sampling in the backend after ingestion, which saves storage but still pays to send and receive all 500,000 spans per second
 
 <details>
 <summary>Answer</summary>
@@ -118,9 +118,9 @@ D. Sampling in the backend
 **Scenario:** Which Collector component enriches telemetry with pod, namespace, and node metadata, and where must it run?
 
 A. The `k8sattributes` processor, in an agent close to the workload
-B. The `transform` processor, in a gateway
-C. The `attributes` processor, anywhere in the pipeline
-D. The `resource` processor, in a gateway
+B. The `transform` processor in a gateway, which rewrites telemetry with OTTL statements but does not query the Kubernetes API for pod metadata
+C. The `attributes` processor anywhere in the pipeline, which sets or edits attributes you specify but does not look up pod metadata by itself
+D. The `resource` processor in a gateway, which sets resource attributes to fixed values you configure and does not look up pod metadata
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. The `resource` processor, in a gateway
 ### Question 8
 **Scenario:** What does the sampled flag in a `traceparent` header do?
 
-A. Indicates whether the span has finished
-B. Marks the span as an error
-C. Identifies the exporter used
-D. Tells downstream services that the trace was already sampled in, so they honor the decision
+A. Indicates whether the span has finished and is ready to export
+B. Marks the span as an error for the backend so that error-rate dashboards include it in their calculations
+C. Identifies the exporter used by the sender
+D. Tells downstream services that the trace was already sampled in, so they should honor the decision
 
 <details>
 <summary>Answer</summary>
@@ -153,9 +153,9 @@ D. Tells downstream services that the trace was already sampled in, so they hono
 ### Question 9
 **Scenario:** A team needs percentiles for request duration. Which instrument is required?
 
-A. Up-down counter
-B. Counter
-C. Gauge
+A. Up-down counter, which records a value that moves up and down such as queue depth but keeps no distribution of observed values
+B. Counter, which only increases and sums to a total, so it can give a request rate but cannot produce a percentile of durations
+C. Gauge, which captures the latest observed value at each collection and does not keep the spread of individual measurements
 D. Histogram
 
 <details>
@@ -171,10 +171,10 @@ D. Histogram
 ### Question 10
 **Scenario:** Which statement about baggage is correct?
 
-A. It is encrypted in transit by the SDK
+A. It is encrypted in transit by the SDK, so sensitive values such as customer identifiers can be carried safely between services in headers
 B. It propagates key-value pairs across service boundaries in headers and must not carry secrets
-C. It replaces span attributes
-D. It is stored only within a single process
+C. It replaces span attributes, so values set as baggage are automatically recorded on every span in the trace without further code
+D. It is stored only within a single process and never leaves it
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. It is stored only within a single process
 ### Question 11
 **Scenario:** A short-lived batch job is instrumented correctly but its spans never appear in the backend.
 
-A. The batch span processor never flushed before the process exited
-B. The sampler is dropping them
-C. Batch jobs cannot be traced
-D. The exporter protocol is wrong
+A. The batch span processor never flushed its buffered spans before the short-lived process exited
+B. The sampler is dropping them because the job runs briefly
+C. Batch jobs cannot be traced because tracing needs a long-running process
+D. The exporter protocol is wrong, so the SDK logs repeated connection errors during the run and the spans never leave the process
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. The exporter protocol is wrong
 ### Question 12
 **Scenario:** Which Collector metric indicates that the memory limiter is shedding load?
 
-A. `otelcol_exporter_queue_size`
+A. `otelcol_exporter_queue_size`, which shows how full the exporter's sending queue is and points at a slow backend, not a memory limiter
 B. `otelcol_receiver_refused_spans`
-C. `otelcol_exporter_send_failed_spans`
-D. `otelcol_processor_dropped_spans`
+C. `otelcol_exporter_send_failed_spans`, which counts spans that an exporter tried to send and failed, a symptom of the backend side
+D. `otelcol_processor_dropped_spans`, which counts spans a processor discarded, such as through a filter rule, and not refusals at the receiver
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. `otelcol_processor_dropped_spans`
 ### Question 13
 **Scenario:** What is the purpose of the `spanmetrics` connector?
 
-A. Batching spans before export
+A. Batching spans before export so the exporter sends fewer, larger requests
 B. Deriving rate, error, and duration metrics from spans, so spans can then be sampled more aggressively
-C. Converting metrics into spans
-D. Enriching spans with metric values
+C. Converting existing metrics into spans for search in the tracing backend
+D. Enriching spans with metric values from the host, such as CPU and memory, so that slow spans can be correlated with load
 
 <details>
 <summary>Answer</summary>
@@ -243,10 +243,10 @@ D. Enriching spans with metric values
 ### Question 14
 **Scenario:** Which resource attribute is effectively mandatory, and what happens without it?
 
-A. `service.name`; backends group telemetry as unknown
-B. `host.name`; telemetry is dropped
-C. `telemetry.sdk.language`; the exporter errors
-D. `deployment.environment`; sampling fails
+A. `service.name`; backends group telemetry under an unknown service
+B. `host.name`; the Collector drops the telemetry
+C. `telemetry.sdk.language`; the exporter errors when it is missing because the backend needs to know which SDK produced the data
+D. `deployment.environment`; sampling fails without it because the sampler uses the environment to choose a ratio per tier
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. `deployment.environment`; sampling fails
 ### Question 15
 **Scenario:** Which statement correctly distinguishes delta from cumulative temporality?
 
-A. Delta reports the running total; cumulative reports the change since last export
-B. They are the same, with different names per backend
+A. Delta reports the running total since process start; cumulative reports the change since the last export
+B. They are the same thing with different names per backend
 C. Cumulative reports the running total since start; delta reports the change since the last export
-D. Delta applies only to histograms
+D. Delta applies only to histograms and cumulative only to counters
 
 <details>
 <summary>Answer</summary>

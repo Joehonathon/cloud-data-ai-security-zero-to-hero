@@ -16,10 +16,10 @@ CISM is a management exam. When two answers are both technically defensible, the
 ### Question 1
 **Scenario:** What most influences the design of an information security strategy?
 
-A. Available security products
-B. Peer organizations' programs
+A. Available security products, since the capabilities of the tools the organization can buy set what the strategy can achieve
+B. Peer organizations' programs, adopting the controls and structure that comparable firms in the same sector already use
 C. The organization's business objectives and risk appetite
-D. The latest threat intelligence
+D. The latest threat intelligence, so the strategy changes direction each time a new adversary technique is reported
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. The latest threat intelligence
 ### Question 2
 **Scenario:** Senior management does not support a proposed security investment.
 
-A. Reduce the scope silently
-B. Escalate to the board
-C. Implement it anyway
-D. Present a business case quantifying risk reduction in business terms, with options and their residual risk
+A. Reduce the scope silently to fit the approved budget, and drop the controls that management is unlikely to fund
+B. Escalate to the board at once, bypassing senior management, because the security manager's view should prevail
+C. Implement it anyway under the manager's own authority, because the risk justifies acting without agreement
+D. Present a business case quantifying risk reduction in business terms, with options, costs, and the residual risk of each
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Present a business case quantifying risk reduction in business terms, with op
 ### Question 3
 **Scenario:** Who should own the risk acceptance decision for a residual risk?
 
-A. The business owner accountable for the affected process, at a level of authority matching the risk
-B. The security manager
-C. The IT department
-D. The auditor
+A. The business owner accountable for the affected process, at a level matching the risk
+B. The security manager, who understands the technical exposure best and is therefore the right person to accept it on behalf of the business
+C. The IT department, because it operates the systems and applications where the residual risk actually sits
+D. The auditor, whose independent view of the control weaknesses makes the sign-off on acceptance more objective
 
 <details>
 <summary>Answer</summary>
@@ -71,9 +71,9 @@ D. The auditor
 **Scenario:** Which best demonstrates the value of the security program to the board?
 
 A. Metrics tied to business outcomes: risk reduction against appetite, control coverage of critical assets, and incident impact trends
-B. Patch counts
-C. The number of blocked attacks
-D. Tool inventory
+B. Patch counts per month, showing how many systems were updated and how quickly, as a measure of how well the program is run
+C. The number of attacks blocked by the perimeter tools each quarter, trended to show that the controls are working
+D. A full tool inventory with licence counts and coverage per business unit, which shows the investment the program has made
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Tool inventory
 ### Question 5
 **Scenario:** A risk assessment identifies a high risk with an expensive control.
 
-A. Evaluate the treatment options - mitigate, transfer, avoid, or accept - against cost and business impact, and recommend accordingly
-B. Always implement the control
-C. Transfer it via insurance always
-D. Accept the risk
+A. Evaluate the treatment options - mitigate, transfer, avoid, or accept - against cost and business impact, and recommend
+B. Always implement the control, because a high-rated risk must be reduced whatever the cost of the control
+C. Transfer it through insurance in every case, since that removes the financial, regulatory, and reputational consequences of any breach
+D. Accept the risk and record it in the register without review, since the control is too expensive to justify
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Accept the risk
 ### Question 6
 **Scenario:** What is the primary purpose of information security governance?
 
-A. To pass audits
-B. To implement controls
-C. To ensure security supports and is aligned with business strategy, with clear accountability and measurable outcomes
-D. To manage the security team
+A. To pass audits and certifications, so the organization can show external parties that its controls meet the stated standard
+B. To implement and operate controls day to day, so that the technical measures are installed and kept working correctly
+C. To ensure security supports and aligns with business strategy, with clear accountability and measurable outcomes
+D. To manage the security team's staffing, budget, and daily tasks so work is assigned on time
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. To manage the security team
 ### Question 7
 **Scenario:** A new regulation applies to the organization.
 
-A. Buy a compliance tool
-B. Wait for enforcement
-C. Perform a gap analysis against current controls, assess risk and effort, and build a prioritized remediation plan with business input
-D. Implement every requirement immediately
+A. Buy a compliance tool that maps controls to the regulation, and rely on its dashboard to show where the organization stands
+B. Wait for enforcement action to show how the regulator reads the rules, then change controls to match that interpretation
+C. Perform a gap analysis against current controls, assess risk and effort, and build a prioritized remediation plan
+D. Implement every requirement immediately, whether or not an existing control already meets it
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Implement every requirement immediately
 ### Question 8
 **Scenario:** During an incident, who decides whether to shut down a critical production system?
 
-A. The security analyst
-B. The system administrator
-C. The CISO alone
-D. Business management, informed by security's assessment, following the escalation path defined in the incident response plan
+A. The security analyst on duty, who has the most detailed view of the compromise and the technical risk of leaving it running
+B. The system administrator, who owns the platform and can judge the effect of a shutdown on the application
+C. The CISO alone, because the security function owns incident response and should not wait for other approval
+D. Business management, informed by security's assessment, following the escalation path in the incident response plan
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Business management, informed by security's assessment, following the escalat
 ### Question 9
 **Scenario:** What is the first phase of incident response?
 
-A. Eradication
-B. Preparation, which includes the plan, roles, tooling, and training that make every later phase possible
-C. Detection
-D. Containment
+A. Eradication, which removes the cause of the incident from the environment before anything else can be done
+B. Preparation, including the plan, roles, tooling, and training
+C. Detection, because response cannot begin until an event is spotted and confirmed as a security incident
+D. Containment, because limiting the spread of the incident is the most urgent action once it is known
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Containment
 ### Question 10
 **Scenario:** Post-incident review identifies the same root cause as three previous incidents.
 
-A. Retrain the team
-B. Escalate it as a systemic issue requiring a governance-level decision on remediation and resourcing
-C. Add monitoring
-D. Close the incident
+A. Retrain the team on the procedure that failed, because repeats point to a knowledge gap
+B. Escalate it as a systemic issue requiring a governance-level decision on remediation and resourcing, with an owner
+C. Add monitoring for that cause so the next occurrence is spotted sooner, leaving the fault in place
+D. Close the incident as resolved, since it was handled in line with the response plan on each earlier occasion, with nothing more to do
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Close the incident
 ### Question 11
 **Scenario:** A third-party vendor will process sensitive data.
 
-A. Prohibit third parties
-B. Require an on-site audit always
-C. Perform due diligence proportionate to the risk, set security requirements in the contract with a right to audit, and monitor throughout the relationship
-D. Rely on their certifications
+A. Prohibit third parties from handling sensitive data, so the organization carries no supplier risk at all
+B. Require an on-site audit of every vendor before any contract, whatever the sensitivity of the data they will process
+C. Do due diligence proportionate to the risk, set security terms with a right to audit in the contract, and monitor throughout
+D. Rely on their certifications, such as an ISO 27001 certificate, as proof that the service in scope is adequately controlled, with no further testing
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Rely on their certifications
 ### Question 12
 **Scenario:** Security policies exist but staff do not follow them.
 
-A. Remove the policies
-B. Discipline offenders
-C. Add more policies
-D. Investigate why: unclear, impractical, unenforced, or poorly communicated, then address the cause with awareness, process change, or enforcement
+A. Remove the policies, since rules that staff do not follow create a false record of control and expose the company to audit findings
+B. Discipline offenders under the HR process, so that the cost of ignoring the policies is clear to everyone else
+C. Add more policies covering each behaviour seen, so that the gaps staff are using are closed with explicit rules
+D. Investigate why: unclear, impractical, unenforced, or poorly communicated, then fix the cause
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Investigate why: unclear, impractical, unenforced, or poorly communicated, th
 ### Question 13
 **Scenario:** Which is the best indicator that a security awareness program is effective?
 
-A. Behavioral change: fewer phishing simulation clicks, more reported suspicious emails, and fewer policy violations
-B. Training hours
-C. Completion rates
-D. Satisfaction scores
+A. Behavioral change: fewer phishing simulation clicks, more reports of suspicious email, and fewer policy violations
+B. Total training hours delivered per employee over the year, compared with the target in the awareness plan
+C. Completion rates for the mandatory course, showing that nearly every employee finished the content on time, in every department
+D. Satisfaction scores from post-course surveys, showing that staff found the sessions clear, useful, engaging, and well presented
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Satisfaction scores
 ### Question 14
 **Scenario:** A business unit deploys a cloud service without security review.
 
-A. Report the unit
-B. Assess the risk, work with the unit to bring it into compliance, and address the process gap that let it happen unnoticed
-C. Ignore it
-D. Shut it down immediately
+A. Report the business unit to internal audit and senior management, so the breach of process is on record
+B. Assess the risk, work with the unit to bring the service into compliance, and address the process gap that let it skip security review
+C. Ignore it for now, since the service is already running and the unit has taken on the business risk of the cloud service
+D. Shut it down immediately and block the vendor's domain, whatever the business impact on the unit's operations
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. Shut it down immediately
 ### Question 15
 **Scenario:** How should the security program's risk register be maintained?
 
-A. Annually
-B. Continuously, with risks owned by named business owners, rated consistently, tracked to treatment decisions, and reviewed on a defined cadence
-C. Only after incidents
-D. By the security team alone
+A. Annually, in time for the board's yearly review, which keeps the register stable and comparable from one year to the next for trend reporting
+B. Continuously, with named business owners, consistent ratings, tracked treatment decisions, and review on a defined cadence
+C. Only after incidents, when real events show which risks were underrated and which scenarios should be added to it
+D. By the security team alone, so ratings are consistent and the register is not skewed by business unit interests or internal lobbying
 
 <details>
 <summary>Answer</summary>

@@ -14,9 +14,9 @@ difficulty: advanced
 ### Question 1
 **Scenario:** Inference throughput is low because requests wait for the longest sequence in each batch to finish.
 
-A. Reduce the context window
-B. Use a smaller GPU
-C. Increase the batch size
+A. Reduce the context window so that each request is shorter, on the assumption that fewer tokens per sequence removes the wait for the longest one
+B. Use a smaller GPU, because a lower-memory device forces smaller batches and therefore shorter waits per batch
+C. Increase the batch size so that more requests are processed together, which amortizes the cost of each forward pass
 D. Enable in-flight (continuous) batching so finished sequences are evicted and new ones join mid-batch
 
 <details>
@@ -33,9 +33,9 @@ D. Enable in-flight (continuous) batching so finished sequences are evicted and 
 **Scenario:** KV cache memory dominates GPU usage at long context lengths.
 
 A. Paged attention style KV cache management, plus KV cache quantization or grouped-query attention
-B. Disable the cache entirely
-C. Increase max_tokens
-D. Add more layers
+B. Disable the cache entirely so no key-value memory is held, accepting that every step recomputes attention over the whole sequence
+C. Increase max_tokens so the server reserves a larger output budget up front and avoids reallocating cache blocks during generation
+D. Add more layers so the work is spread thinner per layer, which lowers the per-layer share of KV cache memory
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Add more layers
 ### Question 3
 **Scenario:** A 70B parameter model does not fit on a single GPU.
 
-A. Gradient accumulation
+A. Gradient accumulation, which simulates a larger batch by summing gradients over steps but still needs the full model on every device
 B. A larger batch size
 C. Tensor parallelism to shard each layer across GPUs, optionally with pipeline parallelism across nodes
-D. Data parallelism
+D. Data parallelism, which replicates the full 70B model on each GPU and splits only the batches, so each device still needs all the weights
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Data parallelism
 ### Question 4
 **Scenario:** A fine-tuning run must minimize GPU memory while keeping most of the quality of full fine-tuning.
 
-A. Prompt tuning only
+A. Prompt tuning only, which trains a few virtual token embeddings and always matches the quality of full fine-tuning on new tasks
 B. Full fine-tuning at FP32
 C. LoRA or QLoRA with a frozen base model
-D. Training from scratch
+D. Training from scratch, which gives the model maximum freedom to learn the target behavior and so the best quality for the memory spent
 
 <details>
 <summary>Answer</summary>
@@ -87,8 +87,8 @@ D. Training from scratch
 **Scenario:** Which technique reduces the latency of generating tokens by proposing several tokens ahead and verifying them in one pass?
 
 A. Speculative decoding with a smaller draft model
-B. Top-k sampling
-C. Beam search
+B. Top-k sampling, which restricts each step to the k most likely tokens to shape diversity but still generates one token per forward pass
+C. Beam search, which keeps several candidate sequences alive to improve output quality but multiplies compute rather than cutting latency
 D. Gradient checkpointing
 
 <details>
@@ -105,9 +105,9 @@ D. Gradient checkpointing
 **Scenario:** Multi-node training slows down disproportionately as node count rises.
 
 A. The interconnect is the bottleneck: check NCCL collectives, topology, and whether InfiniBand with GPUDirect RDMA is being used
-B. The GPUs are faulty
-C. The dataset is too small
-D. The learning rate is wrong
+B. The GPUs are faulty, so some devices run slower and the whole job waits at every synchronization step as node count rises
+C. The dataset is too small to keep many workers busy, so extra nodes sit idle
+D. The learning rate is wrong for the larger global batch, so each node count needs retuning before throughput can scale cleanly again
 
 <details>
 <summary>Answer</summary>
@@ -122,9 +122,9 @@ D. The learning rate is wrong
 ### Question 7
 **Scenario:** A production serving stack needs multiple models, multiple frameworks, dynamic batching, and model versioning.
 
-A. NeMo Curator
-B. cuDF
-C. NVIDIA Triton Inference Server
+A. NeMo Curator, which cleans, deduplicates and filters training data at scale but does not serve models to clients
+B. cuDF, the GPU DataFrame library that accelerates pandas-style data processing but is not an inference server with model versioning
+C. NVIDIA Triton Inference Server, with dynamic batching, a versioned model repository and concurrent multi-framework backends
 D. A single Flask app
 
 <details>
@@ -140,10 +140,10 @@ D. A single Flask app
 ### Question 8
 **Scenario:** FP8 quantization is applied and quality drops noticeably on a reasoning benchmark.
 
-A. Increase temperature
-B. Investigate calibration data and per-layer sensitivity, and consider keeping sensitive layers at higher precision (mixed precision)
-C. Revert to FP32 everywhere
-D. Accept the loss
+A. Increase temperature, which adds randomness to sampling and so recovers reasoning steps lost to the lower numeric precision
+B. Check calibration data and per-layer sensitivity, and keep sensitive layers at higher precision (mixed precision)
+C. Revert to FP32 everywhere, which restores quality but gives up the memory and throughput gains that were the reason for quantizing
+D. Accept the loss, because a drop on a reasoning benchmark is an expected cost of lower precision and cannot be tuned back
 
 <details>
 <summary>Answer</summary>
@@ -158,8 +158,8 @@ D. Accept the loss
 ### Question 9
 **Scenario:** A RAG system must handle queries that mix an exact product code with a natural-language description.
 
-A. Pure vector search
-B. Increase the embedding dimension
+A. Pure vector search, which embeds the whole query and matches semantically, so an exact code is found as reliably as the description
+B. Increase the embedding dimension so the vectors encode more detail, which makes rare exact tokens easier to match
 C. Keyword search only
 D. Hybrid search combining sparse (BM25 or keyword) and dense retrieval, then rerank
 
@@ -176,10 +176,10 @@ D. Hybrid search combining sparse (BM25 or keyword) and dense retrieval, then re
 ### Question 10
 **Scenario:** Which describes the NeMo framework's role?
 
-A. A vector database
+A. A vector database that stores embeddings and serves similarity search for retrieval pipelines
 B. An end-to-end framework for building, customizing, and deploying generative models, including data curation, training, PEFT, alignment, and export
-C. A container registry
-D. A GPU monitoring tool
+C. A container registry that stores and distributes the images used to package training and serving workloads on GPU clusters
+D. A GPU monitoring tool that reports utilization, temperature and memory per device across a cluster
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. A GPU monitoring tool
 ### Question 11
 **Scenario:** Time to first token is acceptable but inter-token latency is poor under load.
 
-A. The decode phase is memory-bandwidth bound; consider larger batches, better KV cache handling, quantization, or a GPU with higher bandwidth
-B. The prefill phase is the bottleneck
-C. Network latency
-D. The tokenizer is slow
+A. The decode phase is memory-bandwidth bound; consider larger batches, better KV cache handling, quantization, or faster memory
+B. The prefill phase is the bottleneck, because a long prompt processed in one pass delays every later token
+C. Network latency between client and server under load, which would also delay the first token rather than only the gaps between later tokens
+D. The tokenizer is slow, since converting text to token IDs on the CPU stalls each generated token
 
 <details>
 <summary>Answer</summary>
@@ -212,9 +212,9 @@ D. The tokenizer is slow
 ### Question 12
 **Scenario:** Several fine-tuned variants of one base model must be served cost-effectively.
 
-A. Deploy each as a separate full model
-B. Retrain a single model on everything
-C. Merge them all into one model
+A. Deploy each as a separate full model so every variant has its own isolated weights, accepting a full set of GPUs per variant
+B. Retrain a single model on everything so one deployment covers all tasks, even though the variants can interfere with each other
+C. Merge them all into one model by averaging their weights, which gives every variant's behavior at once with no per-request selection
 D. Serve one base model with multiple LoRA adapters loaded and selected per request
 
 <details>
@@ -230,10 +230,10 @@ D. Serve one base model with multiple LoRA adapters loaded and selected per requ
 ### Question 13
 **Scenario:** A model upgrade must be validated against the incumbent before rollout.
 
-A. Ship and monitor
-B. Run the evaluation suite (task accuracy, groundedness, safety, latency, cost) against both, then canary a small traffic share
-C. Compare parameter counts
-D. Compare benchmark scores published by the vendor
+A. Ship and monitor, relying on production dashboards and user feedback to reveal regressions after the new model is live
+B. Run the evaluation suite (task accuracy, groundedness, safety, latency, cost) on the incumbent and the candidate, then canary a small traffic share
+C. Compare parameter counts, since a model with more parameters is expected to match or beat the incumbent on every task
+D. Compare the benchmark scores published by the vendor, which show how the new model ranks on standard public tasks
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Compare benchmark scores published by the vendor
 ### Question 14
 **Scenario:** GPU utilization sits at 40% during inference despite queued requests.
 
-A. Increase the model size
-B. Profile with Nsight or Triton metrics to find the actual bottleneck: tokenization, host-device transfer, small batches, or CPU-side preprocessing
-C. Reduce the context window
-D. Add more GPUs
+A. Increase the model size so each request keeps the GPU busy for longer, which raises utilization on the same hardware
+B. Profile with Nsight or Triton metrics to find the bottleneck: tokenization, host-device transfer, small batches, or CPU work
+C. Reduce the context window so each request needs less KV cache memory and finishes sooner, which keeps the GPU busy with queued work
+D. Add more GPUs so the queue drains in parallel across devices, which spreads the waiting requests over more capacity
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Add more GPUs
 ### Question 15
 **Scenario:** Guardrails must block a class of unsafe requests without harming legitimate use.
 
-A. A blocklist of words
-B. Layered controls: input classification, topical rails, output moderation, plus measurement of both violation rate and false refusal rate
-C. Lower temperature
-D. Shorter responses
+A. A blocklist of words that rejects any prompt containing a flagged term, which is simple to maintain and cheap to run
+B. Layered controls: input classification, topical rails, output moderation, and tracking the violation rate alongside the false refusal rate
+C. Lower temperature, which makes responses more deterministic and therefore less likely to contain unsafe content
+D. Shorter responses, which limit how much unsafe text can appear in each reply
 
 <details>
 <summary>Answer</summary>

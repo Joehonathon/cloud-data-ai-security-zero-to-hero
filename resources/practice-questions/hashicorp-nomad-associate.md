@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What is the hierarchy of objects in a Nomad job specification?
 
-A. Task contains jobs
-B. Job contains groups, groups contain tasks
-C. Job contains tasks directly only
-D. Group contains jobs
+A. A task contains jobs, because the task is the unit users submit and the job is a step within it
+B. Job contains groups; groups contain tasks
+C. A job contains tasks directly, with groups used only to label tasks and having no placement meaning
+D. A group contains jobs, each job holding the tasks that share one node and its network namespace
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Group contains jobs
 ### Question 2
 **Scenario:** A job must run one instance on every eligible client node.
 
-A. `type = "system"`
-B. `type = "sysbatch"` with a schedule
+A. `type = "system"`, no count set
+B. `type = "sysbatch"` with a periodic schedule, which keeps one allocation permanently on each node, restarting it as needed
 C. `type = "batch"`
-D. `type = "service"` with high count
+D. `type = "service"` with a very high count
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. `type = "service"` with high count
 ### Question 3
 **Scenario:** Nomad must run a task that is not a container.
 
-A. Task drivers include Docker, exec, raw_exec, Java, QEMU, and others, so binaries and VMs run alongside containers
-B. Only Docker is supported
-C. Convert everything to containers
-D. Use a wrapper container
+A. Task drivers include Docker, exec, raw_exec, Java, and QEMU
+B. Only Docker is supported, since Nomad has no other task drivers built in
+C. Convert every workload to a container image first, because the scheduler can only place container-based tasks
+D. Use a wrapper container that launches the binary inside a Docker image
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Use a wrapper container
 ### Question 4
 **Scenario:** An allocation stays pending with a placement failure message.
 
-A. Increase the count
-B. Delete the job
-C. Read `nomad job status` and the evaluation's placement failures, which name the constraint, resource, or class exhausted
-D. Restart the client
+A. Increase the count, so the scheduler has more chances to place the job on a node
+B. Delete the job and submit it again from the original spec file, in case it is stale
+C. Read `nomad job status` and the evaluation's placement failures
+D. Restart the client agent on the busiest node so that it re-registers its resources and the scheduler retries
 
 <details>
 <summary>Answer</summary>
@@ -88,7 +88,7 @@ D. Restart the client
 
 A. Stop the job and start it again
 B. An `update` block with `max_parallel`, `min_healthy_time`, `healthy_deadline`, and `auto_revert = true`
-C. A batch job
+C. A batch job type, which replaces allocations one at a time and stops itself when a run fails, with the old version kept in place
 D. `count = 1`
 
 <details>
@@ -104,10 +104,10 @@ D. `count = 1`
 ### Question 6
 **Scenario:** A task needs a database password from Vault.
 
-A. Store it in the job spec
+A. Store it in the job spec as a variable default, since job files are only readable by administrators of the cluster
 B. Hard-code it
 C. Fetch it manually
-D. A `vault` block giving the task a Vault policy, with a `template` block rendering the secret into a file or environment variable
+D. A `vault` block with a policy, and a `template` block rendering the secret to a file or env var
 
 <details>
 <summary>Answer</summary>
@@ -122,8 +122,8 @@ D. A `vault` block giving the task a Vault policy, with a `template` block rende
 ### Question 7
 **Scenario:** A service registered by Nomad should be discoverable and health-checked.
 
-A. A `service` block with health checks, registered into Consul or Nomad's native service discovery
-B. A load balancer only
+A. A `service` block with health checks, registered into Consul or Nomad's native discovery
+B. A load balancer only, configured with the allocation's address once, since Nomad does not publish service addresses itself
 C. Manual registration
 D. DNS entries
 
@@ -141,9 +141,9 @@ D. DNS entries
 **Scenario:** How does Nomad decide which node gets an allocation?
 
 A. Alphabetically
-B. Filtering by constraints and resources, then scoring by the configured algorithm (binpack or spread)
-C. Random selection
-D. Round robin
+B. Filter by constraints and resources, then score by the configured algorithm (binpack or spread)
+C. Random selection among nodes that have free memory, with no scoring step applied to the shortlist of nodes
+D. Round robin across all client nodes in turn, skipping nodes only when their agent has stopped responding
 
 <details>
 <summary>Answer</summary>
@@ -159,8 +159,8 @@ D. Round robin
 **Scenario:** A job must only run on nodes with SSD storage.
 
 A. A comment in the job file
-B. A `spread` block
-C. A `constraint` block matching a node attribute or metadata value
+B. A `spread` block over the storage attribute, forcing every allocation onto SSD nodes
+C. A `constraint` block matching a node attribute or metadata value, which hard-filters nodes before placement
 D. Hope for the best
 
 <details>
@@ -176,10 +176,10 @@ D. Hope for the best
 ### Question 10
 **Scenario:** Servers and clients in a Nomad cluster.
 
-A. All agents are identical
+A. All agents are identical and each holds cluster state and runs allocations in the same process
 B. There is only one agent type
-C. Servers hold state with Raft consensus and make scheduling decisions; clients run allocations and report resources
-D. Clients hold state
+C. Servers hold state via Raft and schedule; clients run allocations and report resources
+D. Clients hold state in Raft and make the scheduling decisions, while servers only run the allocations and report usage
 
 <details>
 <summary>Answer</summary>
@@ -195,8 +195,8 @@ D. Clients hold state
 **Scenario:** A batch job must run on a schedule.
 
 A. An external cron calling `nomad job run`
-B. A service job with sleep
-C. A `periodic` block on a batch job with a cron specification
+B. A service job whose task sleeps between runs, restarted by its restart block
+C. A `periodic` block on a batch job with a cron spec, so Nomad launches every run itself without outside help
 D. It is not supported
 
 <details>
@@ -213,8 +213,8 @@ D. It is not supported
 **Scenario:** A task must not exceed its memory allocation.
 
 A. Memory is unlimited
-B. Set `resources { memory = 512 }`, which is enforced by the driver and results in an OOM kill if exceeded
-C. Rely on the operating system
+B. Set `resources { memory = 512 }`, enforced by the driver with an OOM kill if exceeded
+C. Rely on the operating system, whose cgroup defaults will stop any task using more memory than the host has free
 D. Set CPU only
 
 <details>
@@ -230,10 +230,10 @@ D. Set CPU only
 ### Question 13
 **Scenario:** ACLs are enabled and a user cannot submit jobs.
 
-A. Disable ACLs
-B. Restart the servers
-C. Use the UI instead
-D. They need a token with a policy granting `submit-job` on the relevant namespace
+A. Disable ACLs on the client agents only, since only the clients enforce job submission permissions
+B. Restart the servers, since a restart re-reads the policies and clears the denial
+C. Use the web UI instead, since the UI skips ACL checks for signed-in users
+D. A token with a policy granting `submit-job` on the target namespace
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. They need a token with a policy granting `submit-job` on the relevant namespa
 ### Question 14
 **Scenario:** A node must be taken out of service for maintenance without killing running work abruptly.
 
-A. Reboot it
+A. Reboot it and let allocations be rescheduled after the client agent re-registers
 B. Stop the client agent
 C. Delete the node
-D. `nomad node drain` with a deadline, which migrates allocations away before the node is removed
+D. `nomad node drain` with a deadline, migrating allocations away before the node is taken out
 
 <details>
 <summary>Answer</summary>
@@ -267,9 +267,9 @@ D. `nomad node drain` with a deadline, which migrates allocations away before th
 **Scenario:** Autoscaling is required for a service job based on load.
 
 A. Nomad Autoscaler with a scaling policy referencing a metrics source
-B. Nomad scales automatically by default
+B. Nomad scales service jobs automatically by default, adjusting `count` whenever CPU on the clients passes a threshold
 C. Manual count changes
-D. Only cluster autoscaling exists
+D. Only cluster autoscaling exists, so the number of allocations stays fixed while client nodes are added and removed
 
 <details>
 <summary>Answer</summary>

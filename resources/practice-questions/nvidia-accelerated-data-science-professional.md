@@ -15,9 +15,9 @@ difficulty: advanced
 **Scenario:** Which RAPIDS library provides a pandas-like DataFrame API on the GPU?
 
 A. cuDF
-B. cuML
-C. cuGraph
-D. cuSpatial
+B. cuML, the GPU library that mirrors scikit-learn estimators such as random forests and k-means
+C. cuGraph, the GPU library for graph analytics such as PageRank
+D. cuSpatial, the GPU library for geospatial and trajectory computations
 
 <details>
 <summary>Answer</summary>
@@ -50,7 +50,7 @@ D. Increase the CPU count
 ### Question 3
 **Scenario:** A dataset is larger than a single GPU's memory.
 
-A. Downsample the data
+A. Downsample the data to a random 10 percent sample so that it fits in one GPU's memory, then treat the result as final
 B. Switch to pandas
 C. It cannot be processed
 D. Use Dask-cuDF to partition across multiple GPUs or process in chunks, with out-of-core spilling where supported
@@ -86,7 +86,7 @@ D. The GPU is faulty
 ### Question 5
 **Scenario:** Which format should be read for the fastest GPU ingestion of columnar data?
 
-A. JSON
+A. JSON, since it is human-readable and parses quickly because every record is self-describing
 B. CSV
 C. Parquet, read with cuDF (optionally via GPUDirect Storage)
 D. XML
@@ -104,10 +104,10 @@ D. XML
 ### Question 6
 **Scenario:** cuML's `RandomForestClassifier` results differ slightly from scikit-learn's.
 
-A. cuML is incorrect
+A. cuML is incorrect and should not be used for any model until it matches scikit-learn exactly on every run
 B. Use CPU only
-C. Implementation and floating-point ordering differences on GPU cause small variation; validate on metrics rather than exact equality
-D. The data is corrupt
+C. Implementation and floating-point ordering differences cause small variation; compare metrics
+D. The data was corrupted when it was copied to the GPU, so the dataset has to be reloaded and retrained
 
 <details>
 <summary>Answer</summary>
@@ -122,7 +122,7 @@ D. The data is corrupt
 ### Question 7
 **Scenario:** Apache Spark jobs should use GPUs for SQL and dataframe operations.
 
-A. Rewrite everything in cuDF
+A. Rewrite everything in cuDF so that Spark is no longer needed, then run the job as a plain Python script
 B. The RAPIDS Accelerator for Apache Spark, which offloads supported operations to the GPU
 C. Use Spark Streaming
 D. Increase executor memory
@@ -142,8 +142,8 @@ D. Increase executor memory
 
 A. A SQL query
 B. cuGraph, optionally multi-GPU, using its GPU PageRank implementation
-C. NetworkX on CPU
-D. Manual iteration in Python
+C. NetworkX on CPU, which handles graphs of this size well because its PageRank is multithreaded
+D. Manual iteration in Python, one vertex at a time, over an adjacency list in memory
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Manual iteration in Python
 ### Question 9
 **Scenario:** A cuML model trained on GPU must be served in a CPU-only environment.
 
-A. Export to a portable format such as ONNX or a Treelite-compatible model, or use a compatible CPU inference library
-B. Retrain on CPU
-C. It is impossible
-D. Ship the GPU
+A. Export to ONNX or a Treelite model, or use a CPU inference library
+B. Pickle the cuML model and load it in plain scikit-learn on the CPU host, which reads cuML pickles natively
+C. It is impossible because GPU-trained cuML models use a binary format that no CPU-side library can read, so GPU hosts are required
+D. Ship a GPU workstation to the site and run the model there instead of on CPUs
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Ship the GPU
 ### Question 10
 **Scenario:** GPU memory fills during a long chain of cuDF operations.
 
-A. Use smaller data types only
-B. Manage the memory pool (RMM), delete intermediate frames, and avoid retaining references to intermediates
+A. Use smaller data types only, converting every column to int8 or float16 and leaving the memory pool settings and cached intermediates alone
+B. Manage the RMM memory pool, delete intermediate frames, and drop references to intermediates
 C. Add more CPUs
-D. Restart the kernel each time
+D. Restart the kernel after every single step, then reload all of the data from disk before the next operation
 
 <details>
 <summary>Answer</summary>
@@ -194,7 +194,7 @@ D. Restart the kernel each time
 ### Question 11
 **Scenario:** A feature engineering step uses a Python UDF applied row by row and is slow.
 
-A. Keep the loop
+A. Keep the loop, because Python UDFs on cuDF automatically compile to GPU kernels with no performance penalty at any scale
 B. Use pandas instead
 C. Add more GPUs
 D. Vectorize with cuDF column operations, or write a numba CUDA kernel if the logic cannot be expressed with them
@@ -212,10 +212,10 @@ D. Vectorize with cuDF column operations, or write a numba CUDA kernel if the lo
 ### Question 12
 **Scenario:** Which cuML algorithm family benefits most dramatically from GPU acceleration?
 
-A. Compute-heavy algorithms over large data: k-nearest neighbors, DBSCAN, UMAP, t-SNE, and large random forests
+A. Compute-heavy algorithms over large data: k-nearest neighbors, DBSCAN, UMAP and t-SNE
 B. String concatenation
-C. Simple counting
-D. Single small decision tree
+C. Simple counting of rows in a table, which a single CPU thread already finishes in milliseconds
+D. A single small decision tree trained on a few thousand rows, where kernel launch and transfer overhead dominate the run
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Reproducibility is impossible on GPU
 ### Question 14
 **Scenario:** A profiling exercise must show where a RAPIDS pipeline spends its time.
 
-A. Count the lines of code
-B. GPU temperature
-C. NVTX annotations with Nsight Systems, plus per-stage timing, to separate transfer, compute, and CPU-side work
-D. Wall-clock timing of the whole script
+A. Count the lines of code in each stage and assume that the stage with the most code is the slowest one
+B. Read the GPU temperature and fan speed from nvidia-smi while the full script runs, then compare runs
+C. NVTX ranges in Nsight Systems plus per-stage timing, separating transfer, compute and CPU work
+D. Wall-clock timing of the whole script with time.time(), which shows the total runtime but not which stage is slow
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Wall-clock timing of the whole script
 ### Question 15
 **Scenario:** Which describes the ideal RAPIDS pipeline shape?
 
-A. Move data between host and device at every step
-B. Convert to pandas between steps
-C. Use the GPU only for training
-D. Read directly into GPU memory, keep it resident through ETL, feature engineering, and training, and transfer out only the final result
+A. Move data between host and device at every step, so that each stage can use whichever library it prefers
+B. Convert the frames to pandas between steps so that each stage can use the CPU libraries the team knows
+C. Use the GPU only for the model training step, and run all of the ETL and feature engineering on the CPU
+D. Read straight into GPU memory, keep data resident through all stages, and copy out the result
 
 <details>
 <summary>Answer</summary>

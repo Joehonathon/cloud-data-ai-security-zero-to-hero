@@ -16,7 +16,7 @@ KCNA is multiple choice and knowledge-based, so this format matches the real thi
 ### Question 1
 **Scenario:** Which control plane component decides which node a new pod runs on?
 
-A. kube-proxy
+A. kube-proxy on each node
 B. kubelet
 C. kube-controller-manager
 D. kube-scheduler
@@ -34,10 +34,10 @@ D. kube-scheduler
 ### Question 2
 **Scenario:** A team wants the smallest deployable unit in Kubernetes described accurately.
 
-A. A node
-B. A container
-C. A pod, which holds one or more containers sharing network and storage
-D. A Deployment
+A. A node, which is the machine that runs the container runtime and hosts the pods assigned to it
+B. A container, which Kubernetes schedules and restarts directly without any wrapper object around it
+C. A pod, which holds one or more containers that share a network namespace and can share storage volumes between them
+D. A Deployment, which declares the replica count and rolling update strategy for a set of identical workloads
 
 <details>
 <summary>Answer</summary>
@@ -52,9 +52,9 @@ D. A Deployment
 ### Question 3
 **Scenario:** Which object guarantees a copy of a pod runs on every node, including nodes added later?
 
-A. DaemonSet
-B. StatefulSet
-C. Deployment
+A. DaemonSet, one pod per node
+B. StatefulSet, ordered pods with stable names
+C. Deployment, a set of identical replicas
 D. ReplicaSet
 
 <details>
@@ -70,10 +70,10 @@ D. ReplicaSet
 ### Question 4
 **Scenario:** What does the Kubernetes control loop actually do?
 
-A. Schedules cron jobs
-B. Continuously compares desired state in the API to observed state and acts to close the gap
-C. Executes commands in the order an operator typed them
-D. Runs a fixed installation script
+A. Schedules cron jobs at the times listed in the CronJob objects and records the result of each run
+B. Continuously compares desired state in the API to observed state and acts to close the gap between the two
+C. Executes commands in the exact order an operator typed them, replaying the whole history if a node restarts later on
+D. Runs a fixed installation script when the cluster is created and never looks at the cluster state again after that
 
 <details>
 <summary>Answer</summary>
@@ -89,9 +89,9 @@ D. Runs a fixed installation script
 **Scenario:** Which of these is the container runtime interface Kubernetes uses to talk to runtimes such as containerd?
 
 A. CRI
-B. CSI
-C. CNI
-D. OCI
+B. CSI, the container storage interface that lets the kubelet attach volumes from storage vendor drivers
+C. CNI, the container network interface that sets up pod networking through plugins such as Calico or Cilium
+D. OCI, the open container initiative image and runtime specification that containerd and runc implement
 
 <details>
 <summary>Answer</summary>
@@ -108,8 +108,8 @@ D. OCI
 
 A. PostgreSQL
 B. Redis
-C. etcd
-D. The kubelet's local disk
+C. etcd, a key-value store
+D. The kubelet's local disk on each node
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. The kubelet's local disk
 ### Question 7
 **Scenario:** What is the purpose of a namespace?
 
-A. A separate control plane
-B. A logical grouping for names, RBAC scope, and resource quotas within one cluster
-C. Network encryption between pods
-D. Physical isolation across nodes
+A. A separate control plane with its own API server
+B. A logical grouping for names, RBAC scope, and resource quotas
+C. Network encryption between the pods in the group
+D. Physical isolation across nodes, so the pods of one namespace never share a machine with another namespace
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Physical isolation across nodes
 ### Question 8
 **Scenario:** Which project provides the packaging and templating format most commonly used to install applications on Kubernetes?
 
-A. Helm
+A. Helm, with versioned charts
 B. Envoy
 C. Fluentd
-D. Prometheus
+D. Prometheus, a time series monitoring server
 
 <details>
 <summary>Answer</summary>
@@ -160,7 +160,7 @@ D. Prometheus
 ### Question 9
 **Scenario:** The three pillars of observability, as the cloud native community usually states them.
 
-A. CPU, memory, disk
+A. CPU, RAM, disk
 B. Logs, metrics, traces
 C. Alerts, dashboards, runbooks
 D. Availability, latency, throughput
@@ -178,10 +178,10 @@ D. Availability, latency, throughput
 ### Question 10
 **Scenario:** Which statement about containers versus virtual machines is correct?
 
-A. Containers include their own kernel
-B. Containers share the host kernel and isolate using namespaces and cgroups
-C. Containers cannot limit memory
-D. VMs start faster than containers
+A. Containers include their own kernel, packaged in the image alongside the application and its libraries
+B. Containers share the host kernel, isolated by namespaces and cgroups
+C. Containers cannot limit memory, because only a hypervisor can enforce resource caps on a workload
+D. VMs start faster than containers, since a hypervisor boots from a small image and skips image pulls
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. VMs start faster than containers
 ### Question 11
 **Scenario:** An application should scale up when average CPU utilization exceeds 70%.
 
-A. Cluster Autoscaler
-B. Vertical Pod Autoscaler
-C. PodDisruptionBudget
-D. Horizontal Pod Autoscaler
+A. Cluster Autoscaler, which adds nodes when pods cannot be scheduled and removes nodes that sit mostly empty
+B. Vertical Pod Autoscaler, which raises pod requests
+C. PodDisruptionBudget, which limits evictions
+D. Horizontal Pod Autoscaler, which adds replicas to hit a target
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Horizontal Pod Autoscaler
 ### Question 12
 **Scenario:** What does GitOps mean in one sentence?
 
-A. Hosting your code on GitHub
-B. Running CI pipelines
-C. Using git tags for releases
-D. Declaring desired state in a git repository and having an agent continuously reconcile the cluster to match
+A. Hosting your code on GitHub, with pull requests as the way that changes reach the main branch
+B. Running CI pipelines for every commit, with the build and test results reported back to the pull request
+C. Using git tags for releases, so every release has a version number that can be traced to a commit
+D. Declaring desired state in git, with an agent that reconciles the cluster to match
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Declaring desired state in a git repository and having an agent continuously 
 ### Question 13
 **Scenario:** Which best describes a service mesh?
 
-A. A container registry
-B. A CNI plugin
-C. An infrastructure layer, usually sidecar or node proxies, handling service-to-service traffic management, mTLS, and telemetry
-D. A storage backend
+A. A container registry that stores, scans, and signs images
+B. A CNI plugin that gives each pod an IP address
+C. A layer of sidecar or node proxies for traffic management, mTLS, and telemetry
+D. A storage backend offering replicated block volumes
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. A storage backend
 ### Question 14
 **Scenario:** What is the CNCF's role in the projects it hosts?
 
-A. It provides vendor-neutral governance, hosting projects at sandbox, incubating, and graduated maturity levels
-B. It sells the software
-C. It certifies cloud providers only
-D. It writes all the code
+A. It provides vendor-neutral governance, hosting projects at sandbox, incubating, and graduated maturity levels, under the Linux Foundation
+B. It sells the software under a commercial licence and provides paid support for each project it hosts
+C. It certifies cloud providers only, checking that their managed services follow the Kubernetes conformance tests
+D. It writes all the code, with a staff of engineers employed by the foundation to maintain every project
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. It writes all the code
 ### Question 15
 **Scenario:** A container image should be identified in a way that cannot change under you.
 
-A. The `latest` tag
-B. The image name alone
+A. The `latest` tag, which always points to the newest build and so keeps the deployment up to date
+B. The image name alone, which is enough because registries keep one image per repository name
 C. A digest, such as `image@sha256:...`
-D. A semantic version tag
+D. A semantic version tag such as `v1.4.2`, which is readable but which maintainers can move to a different build
 
 <details>
 <summary>Answer</summary>

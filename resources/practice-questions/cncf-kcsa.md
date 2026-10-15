@@ -16,9 +16,9 @@ KCSA is knowledge-based multiple choice. It tests whether you can reason about K
 ### Question 1
 **Scenario:** The 4Cs of cloud native security, from outermost to innermost.
 
-A. Compute, Cluster, Container, Code
-B. Cloud, Cluster, Container, Code
-C. Cloud, Compliance, Container, Code
+A. Compute, Cluster, Container, then Code, listed from outermost to innermost
+B. Cloud, Cluster, Container, then Code
+C. Cloud, Compliance, Container, then Code, listed from outermost to innermost
 D. Code, Container, Cluster, Cloud
 
 <details>
@@ -52,7 +52,7 @@ D. A single application pod
 ### Question 3
 **Scenario:** etcd is exposed on the network without client certificate authentication. What is the impact?
 
-A. Only metrics are exposed
+A. Only metrics are exposed, since etcd serves read-only health and monitoring endpoints without client certificates
 B. Slower API responses
 C. Pods cannot schedule
 D. Full read and write access to all cluster state, including secrets
@@ -70,7 +70,7 @@ D. Full read and write access to all cluster state, including secrets
 ### Question 4
 **Scenario:** In the order the API server processes a request, what comes after authentication?
 
-A. Admission control, then authorization
+A. Admission control, then authorization, with mutating webhooks running before the access decision
 B. Audit, then authorization
 C. Validation, then authentication
 D. Authorization, then admission control
@@ -106,10 +106,10 @@ D. RBAC supports deny rules that override allows
 ### Question 6
 **Scenario:** Which Pod Security Standard forbids running as root, requires seccomp `RuntimeDefault`, and drops all capabilities except `NET_BIND_SERVICE`?
 
-A. Privileged
+A. Privileged - the fully unrestricted policy that allows known privilege escalations and host namespaces
 B. Restricted
-C. Baseline
-D. Default
+C. Baseline - a minimally restrictive policy that blocks known privilege escalations but still allows running as root
+D. Default - not one of the three Pod Security Standards, though many clusters apply a similar default seccomp profile
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Default
 ### Question 7
 **Scenario:** A pod runs with `hostPID: true`. What does that enable?
 
-A. Access to host storage
-B. Faster networking
-C. A shared IP with the node
-D. Visibility of, and potential interaction with, all processes on the node
+A. Access to the host's file system through a mount of the node's root directory
+B. Faster networking, because the pod skips the overlay network and talks to the NIC directly
+C. A shared IP with the node, so the pod's traffic leaves with the node's address and bypasses network policy
+D. Visibility of, and interaction with, every process on the node
 
 <details>
 <summary>Answer</summary>
@@ -143,7 +143,7 @@ D. Visibility of, and potential interaction with, all processes on the node
 **Scenario:** Which threat does image signing and verification primarily address?
 
 A. Running an artifact that is not the one your build produced
-B. Excessive resource consumption
+B. Excessive resource consumption, which resource quotas and limit ranges address by capping CPU and memory
 C. Denial of service
 D. Weak passwords
 
@@ -161,9 +161,9 @@ D. Weak passwords
 **Scenario:** Where does a NetworkPolicy sit in the threat model?
 
 A. It authenticates services
-B. It encrypts pod traffic
+B. It encrypts the traffic between pods using certificates that it issues
 C. It limits lateral movement after a pod is compromised
-D. It prevents an attacker gaining code execution in a pod
+D. It prevents an attacker from gaining code execution inside a running pod
 
 <details>
 <summary>Answer</summary>
@@ -196,7 +196,7 @@ D. A node running out of memory
 ### Question 11
 **Scenario:** A cluster must satisfy an external benchmark of hardening settings.
 
-A. The OWASP Top 10
+A. The OWASP Top 10, a ranking of web application risks rather than a cluster hardening benchmark
 B. CIS Kubernetes Benchmark, checked with a tool such as kube-bench
 C. PCI DSS
 D. SOC 2 Type I
@@ -214,10 +214,10 @@ D. SOC 2 Type I
 ### Question 12
 **Scenario:** What does a "confused deputy" look like in a Kubernetes context?
 
-A. A workload using a highly privileged service account to perform an action on behalf of a less privileged caller
-B. A duplicate DNS record
-C. A pod with no resource limits
-D. Two controllers fighting over an object
+A. A workload using a privileged service account to act for a less privileged caller
+B. A duplicate DNS record that sends in-cluster service traffic to the wrong cluster IP address
+C. A pod with no resource limits, which can then use up all of the CPU and memory on its node
+D. Two controllers that keep overwriting each other's changes to the same object during reconciliation
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Two controllers fighting over an object
 ### Question 13
 **Scenario:** Which is the best description of defense in depth applied to a cluster?
 
-A. Blocking all inbound traffic
+A. Blocking all inbound traffic at the cluster edge, so that nothing inside needs any further protection
 B. Encrypting everything
 C. Layering independent controls so that failure of one does not grant full access
-D. Choosing the single strongest control and relying on it
+D. Choosing the single strongest control, such as a hardened API server, and relying on it alone
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Choosing the single strongest control and relying on it
 ### Question 14
 **Scenario:** An organization wants to isolate tenants but keep one cluster. What is the honest assessment?
 
-A. Namespaces plus RBAC, network policy, quotas, and Pod Security Standards give soft multi-tenancy; hard isolation needs separate clusters or sandboxed runtimes
-B. Namespaces alone provide strong tenant isolation
-C. Separate clusters offer no benefit
-D. Isolation is a networking problem only
+A. Namespaces with RBAC give soft isolation; hard isolation needs separate clusters
+B. Namespaces alone provide strong isolation between tenants, even when the tenants do not trust each other
+C. Separate clusters offer no benefit over namespaces, because each namespace gets its own isolated kernel
+D. Isolation is a networking problem only, so one default-deny network policy per namespace is all that is needed
 
 <details>
 <summary>Answer</summary>

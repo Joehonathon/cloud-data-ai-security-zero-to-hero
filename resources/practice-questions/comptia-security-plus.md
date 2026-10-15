@@ -15,7 +15,7 @@ difficulty: beginner
 **Scenario:** The CIA triad's three components.
 
 A. Control, Integrity, Access
-B. Compliance, Identity, Authorization
+B. Confidentiality, Integrity, Authentication, a variant often mistaken for the triad
 C. Confidentiality, Integrity, Availability
 D. Cryptography, Isolation, Auditing
 
@@ -32,9 +32,9 @@ D. Cryptography, Isolation, Auditing
 ### Question 2
 **Scenario:** A control category question: a security guard, a firewall, and a policy document.
 
-A. All technical
-B. All administrative
-C. All operational
+A. All technical, because each one enforces a rule on people or on systems
+B. All administrative, since each is defined by the organization and applied to staff
+C. All operational, because each is carried out day to day by security staff
 D. Physical, technical, and managerial respectively
 
 <details>
@@ -52,7 +52,7 @@ D. Physical, technical, and managerial respectively
 
 A. Vishing
 B. Smishing
-C. Phishing
+C. Phishing sent as a mass mailing to a broad list with no attempt to target one person
 D. Business email compromise, a form of spear phishing known as whaling when it targets executives
 
 <details>
@@ -68,9 +68,9 @@ D. Business email compromise, a form of spear phishing known as whaling when it 
 ### Question 4
 **Scenario:** A user's password is stolen but the attacker still cannot log in.
 
-A. Encryption
-B. Antivirus
-C. A firewall
+A. Encryption of the password database at rest, which protects storage but not a stolen password
+B. Antivirus on the endpoint, which detects malware but does not verify a login
+C. A firewall at the network edge, which filters traffic but cannot check who is logging in
 D. Multi-factor authentication requiring a second factor
 
 <details>
@@ -86,9 +86,9 @@ D. Multi-factor authentication requiring a second factor
 ### Question 5
 **Scenario:** Which cryptographic property does a hash provide?
 
-A. Confidentiality
-B. Integrity, by producing a fixed-length digest that changes if the input changes
-C. Availability
+A. Confidentiality, because the digest scrambles the original data so unauthorized readers cannot see it
+B. Integrity, via a fixed-length digest that changes when the input changes
+C. Availability, because a hash lets the system recover a damaged file
 D. Non-repudiation on its own
 
 <details>
@@ -104,9 +104,9 @@ D. Non-repudiation on its own
 ### Question 6
 **Scenario:** Symmetric versus asymmetric encryption.
 
-A. Symmetric uses one shared key and is fast; asymmetric uses a public and private key pair, solving key distribution at higher computational cost
-B. Asymmetric is always faster
-C. Symmetric cannot encrypt bulk data
+A. Symmetric: one shared key, fast. Asymmetric: a key pair, easier key distribution, higher compute cost
+B. Asymmetric is always faster, which is why it is preferred for encrypting large volumes of data such as full disk images
+C. Symmetric cannot encrypt bulk data, because one shared key is only safe for messages of a few kilobytes at a time
 D. They are the same
 
 <details>
@@ -122,10 +122,10 @@ D. They are the same
 ### Question 7
 **Scenario:** A certificate is presented and the client must verify it is not revoked.
 
-A. Trust the certificate
-B. Check the hostname only
-C. Check a certificate revocation list or use OCSP, ideally with stapling
-D. Check the expiry date only
+A. Trust the certificate because it was signed by a CA that the browser already ships in its trust store
+B. Check the hostname only, confirming the name in the certificate matches the site being visited
+C. Check a certificate revocation list or use OCSP, ideally with stapling so the server supplies a signed status
+D. Check the expiry date only, since an expired certificate is the only sign of a bad one
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Check the expiry date only
 ### Question 8
 **Scenario:** Which describes a zero-day vulnerability?
 
-A. A vulnerability disclosed a year ago
-B. Any unpatched system
+A. A vulnerability disclosed publicly a year ago, for which patches exist but have not been applied
+B. Any unpatched system exposed to the internet, regardless of whether a fix exists
 C. A vulnerability with no vendor patch available at the time of exploitation
-D. A misconfiguration
+D. A misconfiguration, such as a default password or an open port, that attackers find on their own
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. A misconfiguration
 ### Question 9
 **Scenario:** A network is divided so that a compromised workstation cannot reach the database tier directly.
 
-A. Load balancing
-B. Segmentation, limiting lateral movement
-C. Redundancy
-D. Encryption
+A. Load balancing, which spreads requests across servers for performance and availability
+B. Network segmentation, limiting lateral movement by restricting which zones a compromised host can reach
+C. Redundancy, which duplicates components so a single failure does not take the service down
+D. Encryption, which protects data in transit but does not stop a workstation reaching the tier
 
 <details>
 <summary>Answer</summary>
@@ -176,9 +176,9 @@ D. Encryption
 ### Question 10
 **Scenario:** An organization must decide how to handle a risk it cannot cost-effectively mitigate.
 
-A. Choose among the responses: accept, avoid, transfer (for example insurance), or mitigate, and document the decision
-B. Always mitigate
-C. Always transfer
+A. Choose a response (accept, avoid, transfer, or mitigate) and document the decision
+B. Always mitigate, even when the control costs more than the loss it would prevent, to keep the register clean
+C. Always transfer the risk to an insurer or vendor, since the risk can then be ignored by the business owner
 D. Ignore it
 
 <details>
@@ -195,7 +195,7 @@ D. Ignore it
 **Scenario:** The incident response lifecycle order.
 
 A. Preparation, detection and analysis, containment, eradication, recovery, lessons learned
-B. Containment first, always
+B. Containment first, always, because stopping the spread must happen before anyone analyzes the incident
 C. Detection, preparation, recovery, containment
 D. Recovery, then detection
 
@@ -212,9 +212,9 @@ D. Recovery, then detection
 ### Question 12
 **Scenario:** RPO and RTO must be distinguished.
 
-A. RPO is how much data loss is acceptable, driving backup frequency; RTO is how long recovery may take, driving the recovery architecture
-B. RPO measures downtime
-C. RTO measures data loss
+A. RPO is acceptable data loss and sets backup frequency; RTO is acceptable downtime and sets recovery design
+B. RPO measures downtime, meaning how long systems may stay unavailable before the business suffers serious and lasting harm
+C. RTO measures data loss, meaning how many hours of transactions can be lost
 D. They are the same
 
 <details>
@@ -230,10 +230,10 @@ D. They are the same
 ### Question 13
 **Scenario:** Logs from many systems must be correlated to detect an attack pattern.
 
-A. A firewall
-B. A SIEM, aggregating and correlating log data with alerting
-C. A vulnerability scanner
-D. An IPS
+A. A firewall, which filters traffic by rule at a network boundary but does not correlate logs
+B. A SIEM, correlating log data from many sources and alerting on attack patterns
+C. A vulnerability scanner, which finds known weaknesses on hosts but does not watch for attacks
+D. An IPS, which blocks matching traffic inline but does not correlate
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. An IPS
 ### Question 14
 **Scenario:** A penetration test where the tester has no prior knowledge of the environment.
 
-A. Partially known (grey box)
+A. Partially known (grey box), where the tester is given some credentials or diagrams
 B. Unknown environment (black box)
-C. A vulnerability scan
-D. White box
+C. A vulnerability scan, which is automated and only lists potential weaknesses
+D. White box, where the tester is given full documentation and source access
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. White box
 ### Question 15
 **Scenario:** Sensitive data must be replaced with a non-sensitive equivalent that can be reversed by an authorized system.
 
-A. Hashing
-B. Encryption with a lost key
-C. Tokenization, where the token maps back to the original in a secure vault
-D. Masking
+A. Hashing, which produces a fixed-length digest that cannot be reversed by any system
+B. Encryption with a lost key, so nobody can recover it
+C. Tokenization, with the token mapped back to the original in a secure vault
+D. Masking, which hides part of a value such as the first digits of a card number, usually irreversibly
 
 <details>
 <summary>Answer</summary>

@@ -39,8 +39,8 @@ D. AI is best suited for tasks involving prediction, classification, pattern rec
 **Scenario:** A healthcare organization wants to use AI to assist with medical diagnoses. A team member raises concerns about the AI making unfair decisions. What AI principle addresses this concern?
 
 A. Fairness - ensuring AI systems treat all people equitably and don't discriminate
-B. Speed
-C. Cost reduction
+B. Speed - ensuring the diagnostic system returns results quickly enough for busy clinics to use it
+C. Cost reduction - lowering the price of each diagnosis for the clinic and for its patients
 D. Performance
 
 <details>
@@ -59,7 +59,7 @@ D. Performance
 A. Transparency and Explainability - being able to understand and explain AI decisions
 B. Performance
 C. Privacy
-D. Security
+D. Security - protecting the model and its data from unauthorized access, tampering, and adversarial attacks
 
 <details>
 <summary>Answer</summary>
@@ -74,10 +74,10 @@ D. Security
 ### Question 4
 **Scenario:** A company is considering AI to automate a task currently done by employees. Management wants to ensure humans remain in control of important decisions. Which responsible AI principle requires this?
 
-A. Accountability and Human oversight - ensuring humans can monitor and control AI systems
-B. Fairness
-C. Privacy
-D. Reliability
+A. Accountability and human oversight - humans can monitor and control AI
+B. Fairness - treating every group of people equitably in the decisions the system makes
+C. Privacy - protecting the personal data that is used to train and run the system
+D. Reliability - ensuring the system performs consistently and recovers gracefully when conditions change
 
 <details>
 <summary>Answer</summary>
@@ -110,10 +110,10 @@ D. Speed of recommendations
 ### Question 6
 **Scenario:** An AI system for detecting manufacturing defects occasionally misses defective products, and sometimes incorrectly flags good products as defective. Which responsible AI principle requires the system to perform consistently and handle these situations predictably?
 
-A. Transparency
-B. Fairness
-C. Reliability and Safety - ensuring AI systems work dependably and don't cause harm
-D. Inclusiveness
+A. Transparency - being able to explain why the system flagged or missed a specific product to plant engineers
+B. Fairness - treating all groups of people equitably in what the system decides
+C. Reliability and Safety - systems work dependably and do no harm
+D. Inclusiveness - designing the system so that people of all abilities can use it
 
 <details>
 <summary>Answer</summary>
@@ -130,7 +130,7 @@ D. Inclusiveness
 
 A. Inclusiveness - designing AI to work for people with diverse abilities, languages, and backgrounds
 B. Security
-C. Transparency
+C. Transparency - publishing documentation that explains how the chatbot language model was trained and tested
 D. Reliability
 
 <details>
@@ -151,9 +151,9 @@ D. Reliability
 **Scenario:** A real estate company wants to predict house prices based on features like size, location, and number of bedrooms. The price is a continuous numeric value. What type of machine learning task is this?
 
 A. Regression - predicting a continuous numeric value
-B. Reinforcement learning
+B. Reinforcement learning - an agent learns by trial and error from rewards
 C. Classification
-D. Clustering
+D. Clustering - grouping similar houses together without using labels
 
 <details>
 <summary>Answer</summary>
@@ -187,7 +187,7 @@ D. Clustering
 **Scenario:** A marketing team has customer data but doesn't know how many customer segments exist or what defines them. They want the model to find natural groupings in the data. What type of machine learning task is this?
 
 A. Regression
-B. Classification
+B. Classification - assigning each customer to a predefined, labeled category
 C. Clustering - finding natural groupings in unlabeled data
 D. Object detection
 
@@ -204,10 +204,10 @@ D. Object detection
 ### Question 11
 **Scenario:** A data scientist is building a machine learning model. They split their data into training data (to train the model) and test data (to evaluate it). Why is this split important?
 
-A. To evaluate model performance on data it hasn't seen during training, measuring generalization ability
+A. To evaluate performance on data the model has not seen, measuring how well it generalizes
 B. To speed up training
-C. The split is not important
-D. To reduce storage costs
+C. The split is not important because the model learns the same patterns whichever rows are used for training
+D. To reduce storage costs by keeping only a small sample of the data in the workspace after training
 
 <details>
 <summary>Answer</summary>
@@ -241,7 +241,7 @@ D. Precision
 **Scenario:** A company wants to build machine learning models but doesn't have data scientists who can write code. They want a visual interface to create models. What Azure service provides this capability?
 
 A. Azure Machine Learning Designer - a visual drag-and-drop interface for building ML models
-B. Azure Virtual Machines
+B. Azure Virtual Machines - rent compute where data scientists install and run ML frameworks themselves
 C. Azure SQL Database
 D. Azure Blob Storage
 
@@ -259,8 +259,8 @@ D. Azure Blob Storage
 **Scenario:** A company has domain experts who understand their business data well but aren't machine learning experts. They want to build a model where the system automatically selects the best algorithm and parameters. What Azure capability helps with this?
 
 A. No automation available
-B. Manual hyperparameter tuning
-C. Write custom algorithms
+B. Manual hyperparameter tuning - experts run repeated training jobs and adjust every setting by hand in notebooks
+C. Write your own custom algorithms from scratch in Python and compare their results against each other by hand
 D. Automated Machine Learning (AutoML) that automatically tests algorithms and optimizes performance
 
 <details>
@@ -294,8 +294,8 @@ D. Feature engineering
 ### Question 16
 **Scenario:** A data scientist notices their model performs perfectly on training data but poorly on test data. What problem does this indicate?
 
-A. Insufficient training data
-B. Good generalization
+A. Insufficient training data - the model has too few rows to learn any pattern, so it fails on training data too
+B. Good generalization - the model scores about as well on unseen data as it does on its training data, as expected
 C. Overfitting - the model memorized training data patterns instead of learning generalizable patterns
 D. Underfitting
 
@@ -336,8 +336,8 @@ D. Image classification
 
 A. Face detection
 B. Optical Character Recognition (OCR) - extracting text from images
-C. Image classification
-D. Image segmentation
+C. Image classification - assigning one category label to the entire image rather than reading text
+D. Image segmentation - labeling every pixel to outline each region of the picture
 
 <details>
 <summary>Answer</summary>
@@ -352,7 +352,7 @@ D. Image segmentation
 ### Question 19
 **Scenario:** A medical imaging company wants to categorize X-ray images as "normal" or "showing pneumonia" to assist radiologists. Each image receives a single overall label. What computer vision task is this?
 
-A. Image segmentation
+A. Image segmentation - labeling each pixel of the image to outline regions such as organs
 B. Object detection
 C. OCR
 D. Image Classification - assigning a category label to an entire image
@@ -370,10 +370,10 @@ D. Image Classification - assigning a category label to an entire image
 ### Question 20
 **Scenario:** A retail company wants to implement a checkout system that recognizes when known employees approach. The system should identify individuals based on their faces. What Azure service provides this capability?
 
-A. Form Recognizer
-B. Azure AI Face - for face detection, recognition, and identification
-C. Computer Vision image analysis
-D. Custom Vision
+A. Form Recognizer - extracting fields and tables from invoices and receipts
+B. Azure AI Face - face detection, recognition and identification
+C. Computer Vision image analysis - tagging and describing generic objects in photos without identity matching
+D. Custom Vision - training your own image classifier from labeled images
 
 <details>
 <summary>Answer</summary>
@@ -406,7 +406,7 @@ D. Form Recognizer
 ### Question 22
 **Scenario:** A company receives thousands of scanned invoices daily. They need to automatically extract vendor name, invoice number, total amount, and line items from these invoices. What Azure service specializes in this document extraction?
 
-A. Computer Vision OCR only
+A. Computer Vision OCR only - reads the raw text lines but does not return labeled invoice fields such as vendor or total
 B. Translator
 C. Text Analytics
 D. Azure AI Document Intelligence (Form Recognizer) - for extracting structured data from documents
@@ -424,10 +424,10 @@ D. Azure AI Document Intelligence (Form Recognizer) - for extracting structured 
 ### Question 23
 **Scenario:** A content platform wants to automatically moderate user-uploaded images, detecting adult content, violence, or other inappropriate material. What Azure AI capability addresses this?
 
-A. Face detection
-B. Azure AI Content Safety / Vision content moderation - detecting inappropriate content in images
-C. Custom Vision
-D. OCR
+A. Face detection - finding human faces and returning their positions in each image
+B. Azure AI Content Safety - detecting inappropriate content in images
+C. Custom Vision - training your own image classifier from labeled examples of the company's products and logos
+D. OCR - reading printed and handwritten text out of the images that users upload
 
 <details>
 <summary>Answer</summary>
@@ -464,10 +464,10 @@ D. Speech recognition
 ### Question 25
 **Scenario:** A legal firm wants to automatically identify and extract names of people, organizations, dates, and locations mentioned in contracts. What NLP capability extracts these specific pieces of information?
 
-A. Text summarization
-B. Sentiment analysis
+A. Text summarization - producing a short abstract of the contract instead of pulling out individual named items
+B. Sentiment analysis - scoring whether each clause reads as positive, negative or neutral
 C. Translation
-D. Named Entity Recognition (NER) - identifying and classifying entities like people, places, organizations
+D. Named Entity Recognition (NER) - finding people, places and organizations
 
 <details>
 <summary>Answer</summary>
@@ -482,10 +482,10 @@ D. Named Entity Recognition (NER) - identifying and classifying entities like pe
 ### Question 26
 **Scenario:** A global company wants to automatically translate their product documentation from English to Spanish, French, and German. What Azure service provides this translation capability?
 
-A. Speech service
-B. Azure AI Translator - for translating text between languages
-C. Content Moderator
-D. Language Understanding
+A. Speech service - converting spoken audio to text and back into synthesized speech
+B. Azure AI Translator - translates text between languages
+C. Content Moderator - flagging offensive text and images in uploaded content
+D. Language Understanding - interpreting user intent and entities in a spoken or typed request
 
 <details>
 <summary>Answer</summary>
@@ -500,10 +500,10 @@ D. Language Understanding
 ### Question 27
 **Scenario:** A company wants to build a chatbot that understands user requests in natural language. For example, "Book a meeting room for tomorrow at 2pm" should be interpreted as a room booking intent with specific time entities. What Azure capability enables this understanding?
 
-A. Speech synthesis
-B. Text translation
-C. Conversational Language Understanding (CLU) - interpreting user intent and extracting entities from natural language
-D. OCR
+A. Speech synthesis - turning the chatbot's response text into natural-sounding spoken audio for the user
+B. Text translation - converting the user's request from one language into another before processing it elsewhere in the app
+C. Conversational Language Understanding (CLU) - finding intent and entities in requests
+D. OCR - extracting the printed text from scanned documents and photographs before processing them
 
 <details>
 <summary>Answer</summary>
@@ -536,8 +536,8 @@ D. Azure AI Speech (Speech-to-Text) - converting spoken audio to text
 ### Question 29
 **Scenario:** An accessibility application needs to read text content aloud to visually impaired users. The system should convert written text into natural-sounding speech. What capability is this?
 
-A. Speech-to-text
-B. Sentiment analysis
+A. Speech-to-text - transcribing spoken audio into written text for captions and meeting notes
+B. Sentiment analysis - scoring whether the text reads as positive, negative or neutral
 C. Text-to-Speech (Speech Synthesis) - converting text to spoken audio
 D. Translation
 
@@ -554,7 +554,7 @@ D. Translation
 ### Question 30
 **Scenario:** A company wants to build a Q&A system where users ask questions and get answers from their product documentation. Users should be able to ask questions in natural language and receive relevant answers. What Azure service enables this?
 
-A. Speech service
+A. Speech service - converting spoken questions to text and reading answers back as synthesized audio output to the caller
 B. Computer Vision
 C. Translator
 D. Azure AI Language Question Answering (Custom Question Answering) - building knowledge bases from documents for Q&A
@@ -594,10 +594,10 @@ D. Object detection
 ### Question 32
 **Scenario:** A company wants to deploy OpenAI's GPT models within their Azure environment, ensuring enterprise security, compliance, and integration with their existing Azure services. What Azure service provides this?
 
-A. Azure Cognitive Services only
-B. Azure Functions
-C. Azure OpenAI Service - providing access to OpenAI models (GPT, DALL-E) within Azure
-D. Azure Machine Learning only
+A. Azure AI services only - prebuilt vision and language APIs that do not host GPT models
+B. Azure Functions - serverless code that runs small event-driven tasks and does not host models
+C. Azure OpenAI Service - GPT and DALL-E models within Azure
+D. Azure Blob Storage - object storage that holds files and has no model hosting features
 
 <details>
 <summary>Answer</summary>
@@ -615,7 +615,7 @@ D. Azure Machine Learning only
 A. Embedding
 B. A Prompt (specifically a system prompt/message) - instructions given to guide the model's behavior
 C. Training data
-D. Fine-tuning
+D. Fine-tuning - retraining the model weights on a labeled dataset so that it permanently changes its style
 
 <details>
 <summary>Answer</summary>
@@ -630,10 +630,10 @@ D. Fine-tuning
 ### Question 34
 **Scenario:** A company wants their generative AI chatbot to answer questions using only their internal company documentation, not general internet knowledge. The AI should cite sources from company documents. What capability enables this?
 
-A. Use the model without any context
-B. Use a larger model
-C. Fine-tuning only
-D. Retrieval Augmented Generation (RAG) - combining AI with search over company data to ground responses in specific sources
+A. Use the model without any context from the company documents, relying only on what it learned in training
+B. Use a larger model with more parameters, which still would have no access to the internal documentation
+C. Fine-tuning only - retraining the model on the documents once, which cannot cite sources or reflect any later changes to the documents
+D. Retrieval Augmented Generation (RAG) - search over company data grounds the answers in sources
 
 <details>
 <summary>Answer</summary>
@@ -650,7 +650,7 @@ D. Retrieval Augmented Generation (RAG) - combining AI with search over company 
 
 A. Overfitting
 B. Hallucination - when AI generates plausible but factually incorrect content
-C. Classification error
+C. Classification error - the model assigns an input to the wrong category in a supervised task
 D. Underfitting
 
 <details>
@@ -666,10 +666,10 @@ D. Underfitting
 ### Question 36
 **Scenario:** A company using Azure OpenAI wants to prevent their AI from generating harmful, offensive, or inappropriate content. What Azure OpenAI feature helps with this?
 
-A. Manual review of all outputs
+A. Manual review of all outputs - staff read every response before it is shown to the end user in a queue
 B. Use the model without restrictions
-C. No safety features available
-D. Content Filtering - built-in filters that detect and block harmful content in prompts and responses
+C. No safety features exist for Azure OpenAI, so the application team must build every filter itself
+D. Content Filtering - built-in filters that detect and block harmful prompts and responses
 
 <details>
 <summary>Answer</summary>
@@ -684,10 +684,10 @@ D. Content Filtering - built-in filters that detect and block harmful content in
 ### Question 37
 **Scenario:** A software company wants to use AI to help developers write code. The AI should suggest code completions, explain code, and help with debugging. What Microsoft product provides this AI coding assistance?
 
-A. Microsoft Word
-B. Azure DevOps
-C. GitHub Copilot - AI pair programmer that suggests code and helps with programming tasks
-D. Visual Studio without AI
+A. Microsoft Word - a word processor for writing, formatting and sharing documents
+B. Azure DevOps - boards, repos and pipelines for planning and shipping software
+C. GitHub Copilot - AI pair programmer for code suggestions and debugging
+D. Visual Studio without AI - a code editor and debugger that offers no generative suggestions
 
 <details>
 <summary>Answer</summary>
@@ -702,10 +702,10 @@ D. Visual Studio without AI
 ### Question 38
 **Scenario:** A company wants to create an AI assistant that can search their SharePoint documents, answer questions about company policies, and help employees find information. What Microsoft product enables this enterprise AI assistant?
 
-A. Microsoft Paint
+A. Microsoft Paint - a simple drawing tool for editing pictures and screenshots on Windows
 B. Microsoft Word
-C. Microsoft Excel only
-D. Microsoft Copilot for Microsoft 365 - AI assistant integrated with Microsoft 365 apps and company data
+C. Microsoft Excel only - a spreadsheet for calculations that cannot search SharePoint documents or summarize them
+D. Microsoft Copilot for Microsoft 365 - AI assistant built into Microsoft 365 apps
 
 <details>
 <summary>Answer</summary>
@@ -720,17 +720,17 @@ D. Microsoft Copilot for Microsoft 365 - AI assistant integrated with Microsoft 
 ### Question 39
 **Scenario:** When using a generative AI model, a user notices that setting "temperature" higher produces more creative but less predictable outputs, while lower temperature produces more focused and deterministic outputs. What does temperature control?
 
-A. The cost of the API call
-B. The randomness/creativity in the model's output - higher temperature means more varied responses
-C. How fast the model runs
-D. The size of the model
+A. The cost of the API call - higher temperature makes each request more expensive to bill and process per token
+B. The randomness and creativity of the output - higher means more varied responses
+C. How fast the model runs, since higher values make the model generate tokens more quickly
+D. The size of the model, since higher values load a larger set of parameters into memory
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Temperature is a parameter that controls randomness in generative AI outputs. Low temperature (0-0.3) produces more deterministic, focused responses - good for factual Q&C. High temperature (0.7-1.0) produces more creative, varied responses - good for creative writing. It affects the probability distribution of token selection.
+**Why:** Temperature is a parameter that controls randomness in generative AI outputs. Low temperature (0-0.3) produces more deterministic, focused responses - good for factual Q&A. High temperature (0.7-1.0) produces more creative, varied responses - good for creative writing. It affects the probability distribution of token selection.
 
 **Key Concept:** [Model Parameters](https://docs.microsoft.com/azure/cognitive-services/openai/concepts/advanced-prompt-engineering)
 </details>
@@ -738,7 +738,7 @@ D. The size of the model
 ### Question 40
 **Scenario:** A company wants to use AI to generate images from text descriptions for their marketing campaigns. They describe a scene in words and want the AI to create a corresponding image. What type of generative AI model does this?
 
-A. Language model for text only
+A. Language model for text only - a model that outputs written descriptions and cannot produce pictures
 B. Image Generation model (like DALL-E) - creating images from text descriptions
 C. Sentiment analysis
 D. Speech recognition

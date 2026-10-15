@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A container stores telemetry for 10,000 devices. Queries are almost always for one device over a time range.
 
-A. Partition key `/date`
-B. No partition key
-C. Partition key `/id`
-D. Partition key `/deviceId`
+A. Partition key `/date`, so time range queries stay in one partition
+B. No partition key, so one partition holds all 10,000 devices
+C. Partition key `/id`, since each item has a unique value and the writes are spread evenly across the partitions
+D. Partition key `/deviceId`, a high-cardinality value that matches the dominant query filter
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Partition key `/deviceId`
 ### Question 2
 **Scenario:** A query returns the right data but consumes 500 RUs instead of the expected 3.
 
-A. The consistency level is too weak
+A. The consistency level is too weak, so the query is retried at the server until it returns a current result
 B. The query is cross-partition; add the partition key to the filter or reshape the model
-C. The container is under-provisioned
-D. The SDK version is old
+C. The container is under-provisioned, so each request is charged extra RUs for the time it waits in the queue
+D. The SDK version is old and sends the request to every region
 
 <details>
 <summary>Answer</summary>
@@ -51,9 +51,9 @@ D. The SDK version is old
 **Scenario:** Which consistency level guarantees monotonic reads within a session and is the default?
 
 A. Session
-B. Eventual
-C. Strong
-D. Bounded staleness
+B. Eventual, which guarantees monotonic reads within a session and is the default for new accounts
+C. Strong, which guarantees monotonic reads and is the default for new accounts at the lowest RU cost
+D. Bounded staleness, which guarantees monotonic reads and is the default for accounts with more than one region
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Bounded staleness
 ### Question 4
 **Scenario:** An account has multiple write regions and two users update the same document in different regions simultaneously.
 
-A. Conflict resolution applies: last-writer-wins by a defined property, or a custom stored procedure resolves it
-B. One write fails
-C. The document is deleted
-D. The account goes read-only
+A. Conflict resolution applies: last-writer-wins on a chosen property, or a custom merge procedure
+B. One write fails with a 409 error and the client must retry it
+C. The document is deleted in each region until an administrator restores it
+D. The account goes read-only in the secondary region until reconciled by hand
 
 <details>
 <summary>Answer</summary>
@@ -87,9 +87,9 @@ D. The account goes read-only
 **Scenario:** Documents contain a large `attachments` array that is rarely read but always retrieved with the item.
 
 A. Reference the attachments as separate items in the same logical partition
-B. Move to a different database
-C. Increase the RU budget
-D. Keep it embedded for atomicity
+B. Move to a different database in the account
+C. Increase the RU budget on the container
+D. Keep it embedded for atomicity, because one item per parent is cheaper to read than any number of referenced items
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Keep it embedded for atomicity
 ### Question 6
 **Scenario:** Only three properties are ever filtered on, but writes cost far more than expected.
 
-A. Lower the consistency level
-B. Add a composite index for every path
+A. Lower the consistency level to Eventual, which reduces the RU charge of each write at every replica
+B. Add a composite index for every path, so that the writes only touch the paths that matter to the queries
 C. Customize the indexing policy to exclude paths that are never queried
-D. Increase throughput
+D. Increase throughput to cover the higher cost of writes, since the indexing overhead cannot be changed
 
 <details>
 <summary>Answer</summary>
@@ -122,9 +122,9 @@ D. Increase throughput
 ### Question 7
 **Scenario:** A query does `ORDER BY category ASC, price DESC` and fails or is slow.
 
-A. Increase MaxItemCount
-B. Add a range index on `price`
-C. Use a spatial index
+A. Increase MaxItemCount so that the page size is larger and the sort is performed on the client instead
+B. Add a range index on `price`, since the default policy has none and the range index serves the sort
+C. Use a spatial index on those paths, which orders the results by their distance from a point
 D. Add a composite index on those two paths in that order and direction
 
 <details>
@@ -140,10 +140,10 @@ D. Add a composite index on those two paths in that order and direction
 ### Question 8
 **Scenario:** Downstream systems must react to every item change in a container, in order, per partition.
 
-A. Enable analytical store
-B. Change feed, consumed via the change feed processor or an Azure Functions trigger
-C. Poll the container on a timer
-D. A stored procedure
+A. Enable analytical store, which keeps an ordered log of every change that downstream systems can read
+B. Change feed, read with the change feed processor or an Azure Functions trigger
+C. Poll the container on a timer with a query on `_ts`, which returns every change in order for each partition
+D. A stored procedure that runs on each write and calls the downstream systems before the item is committed
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. A stored procedure
 ### Question 9
 **Scenario:** Analytics teams want to run large aggregations without affecting the transactional workload's RUs.
 
-A. Run the queries at night
-B. Add a read region
+A. Run the queries at night, when the transactional workload is lowest, so that the aggregations use spare RUs
+B. Add a read region and run the queries there, which keeps the work away from the write region's throughput
 C. Enable the analytical store and query it with Azure Synapse Link or Fabric
-D. Provision more RUs
+D. Provision more RUs on the container
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Provision more RUs
 ### Question 10
 **Scenario:** Old telemetry should be removed automatically after 90 days.
 
-A. Drop and recreate the container
+A. Drop and recreate the container every 90 days
 B. Set container TTL to 7,776,000 seconds, optionally overriding per item
-C. Use the change feed
-D. A scheduled delete job
+C. Use the change feed to find old items and delete them
+D. A scheduled delete job, such as an Azure Function with a timer trigger that runs a DELETE query every night
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. A scheduled delete job
 ### Question 11
 **Scenario:** A transactional batch must update three documents atomically.
 
-A. They must be in different containers
-B. They can be in any partition
+A. They must be in different containers, because a batch can only write one item to each container
+B. They can be in any partition, as long as the account has multi-region writes enabled
 C. They must share the same logical partition key
-D. Use a distributed transaction coordinator
+D. Use MSDTC across partitions
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. Use a distributed transaction coordinator
 **Scenario:** A workload is spiky, with 10x bursts a few times a day and near-zero baseline.
 
 A. Provisioned throughput sized for the peak
-B. Manual scaling scripts
+B. A fixed 400 RU/s container
 C. Autoscale throughput, which scales between 10% and 100% of the maximum
-D. Serverless for a high-volume production workload
+D. Serverless, which bills per request and has no limit on RU/s
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Serverless for a high-volume production workload
 ### Question 13
 **Scenario:** The SDK reports HTTP 429 responses under load.
 
-A. Consistency conflict
-B. The request was unauthorized
-C. The item was not found
-D. Rate limiting: requests exceeded provisioned RU/s, so honor the retry-after header, tune the query, or raise throughput
+A. A write conflict between two regions
+B. The request was unauthorized because the key or token has expired, so a new key must be generated
+C. The item was not found, so the partition key value sent with the request does not match the stored item
+D. Rate limiting: requests exceeded provisioned RU/s, so honor retry-after
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Rate limiting: requests exceeded provisioned RU/s, so honor the retry-after h
 ### Question 14
 **Scenario:** A globally distributed app must read with the lowest latency from each region.
 
-A. Add read regions and configure the client's preferred regions list
-B. Use Strong consistency everywhere
-C. Use a single region with a CDN
-D. Increase RU/s
+A. Add read regions and set the client's preferred regions list
+B. Use Strong consistency everywhere, so that every region returns the latest write without a cross-region trip
+C. Use a single region with a CDN in front
+D. Increase RU/s on the container
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Increase RU/s
 ### Question 15
 **Scenario:** Access must be granted to an application without using the account primary key.
 
-A. A resource token broker only
-B. Microsoft Entra ID with the Cosmos DB data plane RBAC roles, assigned to a managed identity
-C. A read-only key
-D. IP firewall rules
+A. A resource token broker that uses the primary key to mint tokens
+B. Microsoft Entra ID with data plane RBAC roles, assigned to a managed identity
+C. A read-only key, which can be rotated on its own schedule
+D. IP firewall rules that allow only the application's subnet
 
 <details>
 <summary>Answer</summary>

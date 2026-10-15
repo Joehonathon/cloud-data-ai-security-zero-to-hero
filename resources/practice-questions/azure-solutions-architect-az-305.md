@@ -19,10 +19,10 @@
 ### Question 1
 **Scenario:** A multinational company is moving to Azure and needs to design an identity solution. They have 50,000 employees with on-premises Active Directory, multiple third-party SaaS applications requiring SSO, and need to support B2B collaboration with partners. What identity solution should they implement?
 
-A. Migrate all users to cloud-only Azure AD accounts
-B. Azure AD with Azure AD Connect using password hash sync, Enterprise Applications for SSO, and Azure AD B2B
-C. Federation with AD FS only
-D. Azure AD B2C for all users
+A. Migrate all users to cloud-only Azure AD accounts, recreating each identity and re-enrolling every employee's devices and applications
+B. Azure AD Connect with hash sync, Enterprise Apps SSO, and B2B
+C. Federation with AD FS only, run from farms in each office with a web proxy per site
+D. Azure AD B2C for all users, including employees, with social identity sign-in
 
 <details>
 <summary>Answer</summary>
@@ -37,10 +37,10 @@ D. Azure AD B2C for all users
 ### Question 2
 **Scenario:** A company needs to design a governance strategy for 20 Azure subscriptions across development, test, and production environments. They need consistent policies, cost tracking by department, and centralized security management. What should they implement?
 
-A. Azure Blueprints only
-B. Management groups with Azure Policy, cost allocation tags, and Microsoft Defender for Cloud
-C. Manage each subscription independently
-D. Single subscription for all environments
+A. Azure Blueprints only, applied to each subscription as a one-off package
+B. Management groups with Policy, cost tags, and Defender for Cloud
+C. Manage each subscription independently, with its own admins and policies
+D. Single subscription for all environments, separating dev, test, and production by resource group and using tags for departmental costs
 
 <details>
 <summary>Answer</summary>
@@ -55,10 +55,10 @@ D. Single subscription for all environments
 ### Question 3
 **Scenario:** A healthcare organization must ensure all Azure resources are compliant with HIPAA requirements. They need to detect non-compliant resources and remediate automatically where possible. What solution should they design?
 
-A. Custom PowerShell scripts
-B. Manual compliance audits quarterly
-C. Azure Security Center free tier
-D. Azure Policy with HIPAA regulatory compliance initiative and auto-remediation tasks
+A. Custom PowerShell scripts run on a schedule against each subscription
+B. Manual compliance audits quarterly, with an auditor sampling resources and filing remediation tickets for non-compliant ones
+C. Azure Security Center free tier, with its default recommendations only
+D. Azure Policy HIPAA initiative with auto-remediation
 
 <details>
 <summary>Answer</summary>
@@ -73,8 +73,8 @@ D. Azure Policy with HIPAA regulatory compliance initiative and auto-remediation
 ### Question 4
 **Scenario:** A company wants to implement zero trust security for Azure resource access. Administrators should only have privileged access when needed, access should be conditional on device compliance, and all access should be logged. What should they design?
 
-A. Azure AD PIM for just-in-time access, Conditional Access with device compliance, Azure AD sign-in logs to Log Analytics
-B. Permanent role assignments to administrators
+A. Azure AD PIM for just-in-time access, Conditional Access requiring device compliance, and sign-in logs sent to Log Analytics
+B. Permanent role assignments, protected by strong passwords and MFA, with quarterly access reviews
 C. VPN-only access to Azure
 D. Shared administrator accounts
 
@@ -91,7 +91,7 @@ D. Shared administrator accounts
 ### Question 5
 **Scenario:** A company needs to design a monitoring solution for 200 VMs, 50 Azure SQL databases, and 30 web applications. They need performance monitoring, alerting, and root cause analysis capabilities. What should they design?
 
-A. Individual monitoring for each resource type
+A. Individual monitoring for each resource type, using a separate tool and dashboard for the VMs, databases, and web apps
 B. Third-party monitoring only
 C. Azure Monitor with VM insights, SQL insights, Application Insights, and a unified Log Analytics workspace
 D. Basic metrics only
@@ -109,10 +109,10 @@ D. Basic metrics only
 ### Question 6
 **Scenario:** A company's application processes sensitive financial data. They need to log all data access operations, retain logs for 7 years, and ensure logs cannot be modified or deleted. What logging architecture should they design?
 
-A. Third-party SIEM
-B. Azure Activity Log only
-C. Azure Diagnostic Settings to Log Analytics with immutable storage export and 7-year retention
-D. Application logging to local files
+A. Third-party SIEM with logs kept on its own appliance, where administrators can purge old entries
+B. Azure Activity Log only, kept for the default retention period of 90 days
+C. Diagnostic Settings to immutable (WORM) storage, retained 7 years
+D. Application logging to local files on each server, rotated daily and archived to a file share at the end of the month
 
 <details>
 <summary>Answer</summary>
@@ -127,9 +127,9 @@ D. Application logging to local files
 ### Question 7
 **Scenario:** A company needs to design a cost management solution for multiple departments using Azure. Each department should see only their costs, central IT should see all costs, and there should be automated alerts when spending exceeds thresholds.
 
-A. Manual cost reports monthly
-B. Single cost view for everyone
-C. Cost Management scopes with RBAC, cost allocation rules by tags, and department-level budgets with alerts
+A. Manual cost reports monthly, exported from the portal by central IT and e-mailed to each department head
+B. Single cost view for everyone, with the same cost report shared by every department and central IT staff
+C. Cost Management scopes with RBAC, cost allocation rules by tags, and department budgets with alerts
 D. Third-party billing tool
 
 <details>
@@ -147,8 +147,8 @@ D. Third-party billing tool
 
 A. Azure AD B2C with custom policies and social identity providers
 B. On-premises AD
-C. Azure AD with guest users
-D. Custom authentication system
+C. Azure AD with guest users invited from each customer's own directory and mailbox
+D. Custom authentication system built on a database of hashed passwords with a hand-written social login integration
 
 <details>
 <summary>Answer</summary>
@@ -182,9 +182,9 @@ D. Azure Key Vault with RBAC, diagnostic logging, and managed identity access fo
 **Scenario:** A company has multiple Azure subscriptions and wants to ensure consistent security posture across all of them. They need vulnerability assessment, security recommendations, and threat protection. What should they implement?
 
 A. Manual security reviews
-B. Microsoft Defender for Cloud with the Defender plans enabled and security policies at management group level
+B. Microsoft Defender for Cloud with Defender plans enabled and security policies at management group level
 C. Azure Policy only
-D. Third-party security tools
+D. Third-party tools deployed per subscription, each with its own console
 
 <details>
 <summary>Answer</summary>
@@ -200,9 +200,9 @@ D. Third-party security tools
 **Scenario:** A company wants to design a landing zone for new Azure workloads that includes identity, networking, governance, and security foundations following best practices.
 
 A. Create resources ad-hoc as needed
-B. Implement Azure Landing Zones using Cloud Adoption Framework with management groups, policies, and hub-spoke networking
-C. Single subscription with all resources
-D. Separate Azure AD tenant per workload
+B. Azure Landing Zones from the Cloud Adoption Framework with hub-spoke networking
+C. Single subscription with all resources, separated by resource groups and RBAC assignments for each workload team and environment
+D. Separate Azure AD tenant per workload, each with its own users, policy set, and billing contact
 
 <details>
 <summary>Answer</summary>
@@ -221,10 +221,10 @@ D. Separate Azure AD tenant per workload
 ### Question 12
 **Scenario:** A company needs to migrate a 20TB on-premises SQL Server database to Azure. They require high availability, automatic failover, and the ability to read from secondary replicas for reporting. They want minimal administration.
 
-A. Azure SQL Managed Instance Business Critical tier with auto-failover groups
-B. SQL Server on Azure VMs with Always On Availability Groups
-C. Azure Database for PostgreSQL
-D. Azure SQL Database Business Critical tier with read scale-out
+A. SQL Managed Instance Business Critical with failover groups
+B. SQL Server on Azure VMs with Always On Availability Groups and a readable secondary replica for reporting
+C. Azure Database for PostgreSQL after converting the schema and stored procedures
+D. Azure SQL Database Business Critical tier with read scale-out replicas
 
 <details>
 <summary>Answer</summary>
@@ -240,9 +240,9 @@ D. Azure SQL Database Business Critical tier with read scale-out
 **Scenario:** An e-commerce company needs a database for their shopping cart that requires single-digit millisecond latency, automatic scaling, and multi-region writes for global availability. What should they design?
 
 A. Azure Cosmos DB with multi-region writes
-B. Azure SQL Database
-C. Azure Table Storage
-D. Azure Cache for Redis
+B. Azure SQL Database with active geo-replication to a second region
+C. Azure Table Storage with a secondary region for read access
+D. Azure Cache for Redis with geo-replication, holding the cart data in memory close to users in each region
 
 <details>
 <summary>Answer</summary>
@@ -276,9 +276,9 @@ D. Azure Blob Storage with Azure Data Lake Storage Gen2 capabilities
 **Scenario:** A media company stores video files that are accessed frequently when new but rarely accessed after 90 days. They need to optimize storage costs while maintaining quick access for recent files. What should they design?
 
 A. Azure Files Premium
-B. Hot tier for initial storage with lifecycle management to cool after 30 days and archive after 90 days
-C. Premium blob storage for all files
-D. Archive tier for all files
+B. Hot tier first, then lifecycle rules to cool at 30 days and archive at 90
+C. Premium blob storage for all files, so that new and old videos get the lowest latency at all times
+D. Archive tier for all files, since old videos are rarely read and cost matters most
 
 <details>
 <summary>Answer</summary>
@@ -293,10 +293,10 @@ D. Archive tier for all files
 ### Question 16
 **Scenario:** A company needs to design a data warehouse solution for business intelligence. They have 50TB of data from multiple sources requiring complex joins and aggregations. Analysts use Power BI and need fast query performance.
 
-A. Azure SQL Database
+A. Azure SQL Database with a read replica for Power BI, scaled up to the largest vCore size for the joins
 B. Azure Cosmos DB
 C. Azure Synapse Analytics dedicated SQL pool
-D. Azure Database for MySQL
+D. Azure Database for MySQL with read replicas, indexed for the analysts' common joins and aggregations
 
 <details>
 <summary>Answer</summary>
@@ -331,8 +331,8 @@ D. Client-side encryption only
 
 A. Geo-redundant storage with read access (RA-GRS)
 B. Locally redundant storage (LRS)
-C. Geo-zone-redundant storage (GZRS)
-D. Zone-redundant storage (ZRS)
+C. Geo-zone-redundant storage (GZRS), which keeps zone redundancy in the primary and a copy in the secondary region
+D. Zone-redundant storage (ZRS), with data copied across three zones in the primary region
 
 <details>
 <summary>Answer</summary>
@@ -347,7 +347,7 @@ D. Zone-redundant storage (ZRS)
 ### Question 19
 **Scenario:** A company needs to design secure data access for an application. The application runs on Azure VMs and needs to access Azure SQL Database and Blob Storage without storing credentials in code or configuration.
 
-A. Store credentials in Key Vault and retrieve at runtime
+A. Store the database and storage credentials in Key Vault and retrieve them at runtime when the application starts
 B. Use Managed Identity for the VMs with Azure RBAC for Blob and Azure AD authentication for SQL
 C. Store connection strings in App Settings
 D. Use service account with password
@@ -365,10 +365,10 @@ D. Use service account with password
 ### Question 20
 **Scenario:** A company needs to build a real-time data pipeline that ingests millions of events per second from IoT devices, processes them, and stores results for analytics. What architecture should they design?
 
-A. Azure Service Bus
-B. Azure Queue Storage
-C. Azure Event Hubs for ingestion, Azure Stream Analytics for processing, Azure Synapse for storage
-D. Direct database inserts
+A. Azure Service Bus topics with a subscription per device, read by a worker service on a VM
+B. Azure Queue Storage, with one queue per device group and a polling worker for each queue
+C. Event Hubs for ingestion, Stream Analytics for processing, Synapse for storage
+D. Direct database inserts from each device into an Azure SQL Database, partitioned by device ID for scale
 
 <details>
 <summary>Answer</summary>
@@ -388,7 +388,7 @@ D. Direct database inserts
 **Scenario:** A company requires their application to have an RTO of 4 hours and RPO of 1 hour. The application runs on Azure VMs with Azure SQL Database. What disaster recovery solution should they design?
 
 A. Azure Site Recovery for VMs with 1-hour replication, Azure SQL geo-replication
-B. Daily backups only
+B. Daily backups only, stored in geo-redundant storage and restored into the secondary region when a disaster is declared
 C. Multi-region active-active deployment
 D. No DR needed
 
@@ -405,10 +405,10 @@ D. No DR needed
 ### Question 22
 **Scenario:** A company wants to ensure their Azure VMs can be recovered to a specific point in time within the last 30 days. They need both full VM recovery and file-level recovery. What should they design?
 
-A. Azure Site Recovery
-B. Azure Backup with VM backup and 30-day retention
-C. Manual scripts to copy VHDs
-D. Storage account snapshots only
+A. Azure Site Recovery replicating the VMs to a second region
+B. Azure Backup, 30-day VM retention
+C. Manual scripts to copy VHDs to another storage account each night
+D. Storage account snapshots of the VM disks only, created by a nightly script and deleted by hand after 30 days
 
 <details>
 <summary>Answer</summary>
@@ -423,10 +423,10 @@ D. Storage account snapshots only
 ### Question 23
 **Scenario:** A company needs their web application to remain available even if an entire Azure region fails. They need automatic failover with minimal data loss. What architecture should they design?
 
-A. On-premises DR site
-B. Single region with Availability Zones
-C. Multi-region active-passive with Azure Front Door, geo-replicated databases, and Azure Site Recovery
-D. Multiple VMs in single region
+A. On-premises DR site connected over ExpressRoute, with a manual cutover when the region fails
+B. Single region with Availability Zones, spreading the web tier and database replicas across three datacenters in the region
+C. Active-passive regions with Front Door, geo-replicated databases, Site Recovery
+D. Multiple VMs in a single region, behind a load balancer with health probes and autoscale
 
 <details>
 <summary>Answer</summary>
@@ -441,10 +441,10 @@ D. Multiple VMs in single region
 ### Question 24
 **Scenario:** A company needs to test their disaster recovery plan without impacting production. They want to validate that applications work correctly in the DR region. What should they use?
 
-A. Third-party DR testing tool
+A. Third-party DR testing tool that replays the VM images in a lab network
 B. Manual documentation review
 C. Azure Site Recovery test failover to isolated network
-D. Failover production to DR region
+D. Failover production to the DR region during a quiet weekend window, then fail back once testing completes
 
 <details>
 <summary>Answer</summary>
@@ -462,7 +462,7 @@ D. Failover production to DR region
 A. Auto-failover groups with synchronous replication in Business Critical tier
 B. Manual backup and restore
 C. LRS backup
-D. Geo-replication with asynchronous replication
+D. Geo-replication with asynchronous replication to a paired region, with readable secondaries for reporting
 
 <details>
 <summary>Answer</summary>
@@ -481,17 +481,17 @@ D. Geo-replication with asynchronous replication
 ### Question 26
 **Scenario:** A company needs to design a network architecture for 50 application environments that require isolation from each other but shared connectivity to on-premises. They want centralized security controls. What should they design?
 
-A. Azure Virtual WAN with secured hubs
-B. 50 separate VNets with individual VPN connections
-C. Hub-spoke topology with Azure Firewall in hub, spoke VNets for applications, VNet peering, and VPN/ExpressRoute in hub
-D. Single flat VNet with NSGs
+A. Azure Front Door with public IPs per environment
+B. 50 separate VNets with individual VPN connections, each with its own gateway, firewall, routing rules, and monthly gateway charges to manage
+C. Hub-spoke: Azure Firewall and VPN/ExpressRoute in the hub, one peered spoke per app
+D. Single flat VNet with NSGs separating the 50 environments by subnet, behind one firewall
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Hub-spoke provides isolation (each spoke is separate) with shared services (firewall, VPN) in hub. VNet peering connects spokes to hub. Azure Firewall in hub provides centralized security. Single VPN/ExpressRoute in hub reduces cost. Separate VNets with VPNs (B) is expensive. Single VNet (D) lacks isolation. Virtual WAN (A) is also valid but hub-spoke is more traditional for this scale.
+**Why:** Hub-spoke provides isolation (each spoke is separate) with shared services (firewall, VPN) in hub. VNet peering connects spokes to hub. Azure Firewall in hub provides centralized security. Single VPN/ExpressRoute in hub reduces cost. Separate VNets with VPNs (B) is expensive. Single VNet (D) lacks isolation. Front Door (A) is a global HTTP load balancer, not a way to give isolated environments shared on-premises connectivity.
 
 **Key Concept:** [Hub-Spoke Topology](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke)
 </details>
@@ -502,7 +502,7 @@ D. Single flat VNet with NSGs
 A. Azure Functions Consumption plan
 B. Azure Kubernetes Service (AKS) with horizontal pod autoscaling and cluster autoscaler
 C. Azure Container Instances
-D. Virtual Machines with manual scaling
+D. Virtual Machines with manual scaling, running the containers directly and adding VMs by hand ahead of expected peaks
 
 <details>
 <summary>Answer</summary>
@@ -518,16 +518,16 @@ D. Virtual Machines with manual scaling
 **Scenario:** A company needs to run Windows-based batch processing jobs that run for 4-6 hours. Jobs are triggered weekly and don't need to run continuously. They want to minimize cost.
 
 A. Always-on VMs
-B. Azure Batch with low-priority VMs
-C. Azure App Service
-D. Azure Functions
+B. Azure Batch with Spot VMs
+C. Azure App Service on a Premium plan, running the job as a continuous WebJob that stays up between weekly runs
+D. Azure Functions on a Consumption plan, triggered by a weekly timer
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** Azure Batch manages large-scale batch workloads with job scheduling. Low-priority VMs (Spot) provide significant cost savings for interruptible workloads. Jobs that can checkpoint and resume are ideal. Functions (D) has 10-minute max execution (60 min for premium). Always-on VMs (A) waste money when idle. App Service (C) is for web apps.
+**Why:** Azure Batch manages large-scale batch workloads with job scheduling. Spot VMs provide significant cost savings for interruptible workloads. Jobs that can checkpoint and resume are ideal. Functions (D) has 10-minute max execution (60 min for premium). Always-on VMs (A) waste money when idle. App Service (C) is for web apps.
 
 **Key Concept:** [Azure Batch](https://learn.microsoft.com/en-us/azure/batch/batch-technical-overview)
 </details>
@@ -535,17 +535,17 @@ D. Azure Functions
 ### Question 29
 **Scenario:** A company's API receives 1000 requests per second during peak hours but only 10 requests per second at night. They want to minimize cost while maintaining performance. What compute solution should they design?
 
-A. VM Scale Set with fixed capacity for peak
-B. Azure App Service with autoscaling
+A. VM Scale Set with fixed capacity sized for the peak, so the API stays fast
+B. Azure App Service on a fixed number of instances with autoscale turned off
 C. Always-on AKS cluster
-D. Azure API Management with Azure Functions Premium plan
+D. Azure API Management in front of Azure Functions on a Premium plan with pre-warmed instances
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** API Management provides API gateway capabilities. Functions Premium plan scales quickly (pre-warmed instances) based on demand and scales to zero during low traffic, minimizing cost. APIM with consumption tier is even more cost-effective for variable load. Fixed capacity (A) wastes money at night. App Service (B) works but Functions is more cost-effective for variable loads.
+**Why:** API Management provides API gateway capabilities. Functions Premium plan scales quickly (pre-warmed instances) based on demand and shrinks to a small baseline at night, minimizing cost. APIM with consumption tier is even more cost-effective for variable load. Fixed capacity (A) wastes money at night. App Service (B) with autoscale turned off keeps paying for peak capacity.
 
 **Key Concept:** [Functions Premium Plan](https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan)
 </details>
@@ -571,17 +571,17 @@ D. Azure Relay Hybrid Connections
 ### Question 31
 **Scenario:** A company needs a global content delivery network for their media streaming application. Content should be cached at edge locations worldwide with custom domain and HTTPS support. What should they design?
 
-A. Azure Front Door
-B. Azure Storage with public access
+A. Front Door with caching disabled on every route
+B. Public blob storage in one region
 C. Traffic Manager
-D. Azure CDN with custom domain and managed certificates
+D. Azure CDN with a custom domain, managed HTTPS certificates, and edge caching rules
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Azure CDN caches content at edge locations globally for low-latency delivery. Custom domains with managed SSL certificates provide branding and security. Multiple CDN providers available (Microsoft, Verizon, Akamai). Storage public access (B) doesn't provide edge caching. Front Door (A) is more for dynamic acceleration. Traffic Manager (C) is DNS-based routing, not caching.
+**Why:** Azure CDN caches content at edge locations globally for low-latency delivery. Custom domains with managed SSL certificates provide branding and security. Multiple CDN providers available (Microsoft, Verizon, Akamai). Storage public access (B) doesn't provide edge caching. Front Door (A) can cache at the edge, but only with caching enabled, and this option sends every request to the origin. Traffic Manager (C) is DNS-based routing, not caching.
 
 **Key Concept:** [Azure CDN](https://learn.microsoft.com/en-us/azure/cdn/cdn-overview)
 </details>
@@ -589,7 +589,7 @@ D. Azure CDN with custom domain and managed certificates
 ### Question 32
 **Scenario:** A company needs to design a solution for running SAP HANA with 12TB of memory. High availability is required within the region. What should they design?
 
-A. Standard D-series VMs
+A. Standard D-series VMs with premium SSD storage, spread across Availability Zones with Linux clustering for HA
 B. Azure SQL Database
 C. M-series VMs with Azure Availability Zones and SAP HANA system replication
 D. Cosmos DB
@@ -607,10 +607,10 @@ D. Cosmos DB
 ### Question 33
 **Scenario:** A company wants to run containers without managing infrastructure. They need integration with Azure services, support for both HTTP and event-driven workloads, and scale-to-zero capability.
 
-A. Virtual Machines with Docker
+A. Virtual Machines running Docker, patched and scaled by the team
 B. Azure Container Instances
 C. Azure Container Apps
-D. Azure Kubernetes Service
+D. Azure Kubernetes Service, with node pools managed by the team
 
 <details>
 <summary>Answer</summary>
@@ -625,7 +625,7 @@ D. Azure Kubernetes Service
 ### Question 34
 **Scenario:** A company needs to migrate 500 VMs from VMware to Azure within 6 months. They need minimal changes to the applications. What migration approach should they design?
 
-A. Rebuild all applications cloud-native
+A. Rebuild all apps cloud-native on containers and PaaS
 B. Manual VHD export and import
 C. Azure Site Recovery only
 D. Azure Migrate with agentless replication for assessment and migration
@@ -643,10 +643,10 @@ D. Azure Migrate with agentless replication for assessment and migration
 ### Question 35
 **Scenario:** A company needs to secure their web application against common attacks like SQL injection, XSS, and DDoS. What should they design?
 
-A. Azure Application Gateway with Web Application Firewall (WAF) and Azure DDoS Protection
+A. Application Gateway with WAF and Azure DDoS Protection on the VNet
 B. On-premises firewall
 C. NSG rules only
-D. Azure Firewall only
+D. Azure Firewall only, with threat intelligence on
 
 <details>
 <summary>Answer</summary>
@@ -661,7 +661,7 @@ D. Azure Firewall only
 ### Question 36
 **Scenario:** A company wants to implement GitOps for their AKS cluster. Configuration changes should be pulled from a Git repository and automatically applied to the cluster.
 
-A. Azure DevOps pipelines only
+A. Azure DevOps pipelines only, with a deployment stage that runs kubectl apply against the cluster on each merge
 B. Manual kubectl apply commands
 C. Helm charts stored locally
 D. Azure Arc-enabled Kubernetes with Flux extension for GitOps
@@ -681,7 +681,7 @@ D. Azure Arc-enabled Kubernetes with Flux extension for GitOps
 
 A. Point-to-Site VPN
 B. ExpressRoute with 200 Mbps circuit
-C. Site-to-Site VPN
+C. Site-to-Site VPN with a gateway sized for 200 Mbps, using IPsec tunnels between the office and the VNet
 D. Azure Bastion
 
 <details>
@@ -698,7 +698,7 @@ D. Azure Bastion
 **Scenario:** A company needs to deploy the same application stack to 10 Azure regions for a global application. They want to manage infrastructure as code with consistent deployments.
 
 A. Copy resources using the portal
-B. Separate templates for each region
+B. Separate templates for each region, copied from the first and edited by hand with that region's settings
 C. Manual deployment in each region
 D. Bicep templates with deployment stacks or Azure DevOps pipelines for multi-region deployment
 
@@ -715,8 +715,8 @@ D. Bicep templates with deployment stacks or Azure DevOps pipelines for multi-re
 ### Question 39
 **Scenario:** A company wants to provide developers with self-service access to create pre-approved VM configurations. VMs should be auto-shutdown at night and have budget limits per developer.
 
-A. Azure DevTest Labs with pre-configured VM bases, auto-shutdown policies, and per-user quotas
-B. Give developers full subscription access
+A. Azure DevTest Labs with pre-approved VM bases, auto-shutdown policies, and per-user quotas
+B. Full subscription access for developers, who stop VMs at night
 C. Manual VM creation requests
 D. Azure Blueprints
 
@@ -733,8 +733,8 @@ D. Azure Blueprints
 ### Question 40
 **Scenario:** A company is designing a microservices application. Services need to discover each other, load balance between instances, and communicate securely with mutual TLS. What should they design?
 
-A. Hard-coded service endpoints
-B. DNS-based discovery only
+A. Hard-coded service endpoints in each service's configuration file, updated on every deployment
+B. DNS-based discovery only, with a record per instance and round-robin responses
 C. Azure Load Balancer
 D. Azure Kubernetes Service with service mesh (Istio or Linkerd)
 

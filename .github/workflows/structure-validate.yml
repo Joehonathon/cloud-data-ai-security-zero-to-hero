@@ -20,6 +20,7 @@ on:
       - '.github/scripts/build-flashcards.py'
       - '.github/scripts/check-readme-counts.py'
       - '.github/scripts/check-repo-metadata.py'
+      - '.github/scripts/balance-answer-positions.py'
   pull_request:
     paths:
       - 'exams/**'
@@ -38,6 +39,7 @@ on:
       - '.github/scripts/build-flashcards.py'
       - '.github/scripts/check-readme-counts.py'
       - '.github/scripts/check-repo-metadata.py'
+      - '.github/scripts/balance-answer-positions.py'
   workflow_dispatch:
 
 permissions:
@@ -74,6 +76,17 @@ jobs:
       # concept pages, topic indexes, comparisons, word count. Those drifted
       # unnoticed (37 vs 46 concept pages) until this check existed.
       # Fix with: python3 .github/scripts/check-readme-counts.py --fix
+      # A bank where one letter is correct for most questions can be passed by guessing
+      # that letter (64 of 152 banks were like that until 2026-10-14). Fix with:
+      # python3 .github/scripts/balance-answer-positions.py --write <file>
+      - name: Check practice-question answer positions are balanced
+        run: python3 .github/scripts/balance-answer-positions.py --check $(ls resources/practice-questions/*.md | grep -v -e README.md -e template.md)
+
+      # Length is a tell too: after the 2026-10 rebalance the correct option was the
+      # shortest in 38% of questions. Fix by rewording options (no script can).
+      - name: Check practice-question option lengths carry no tell
+        run: python3 .github/scripts/balance-answer-positions.py --check-length $(ls resources/practice-questions/*.md | grep -v -e README.md -e template.md)
+
       - name: Check README counts match the tree
         run: python3 .github/scripts/check-readme-counts.py --check
 

@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-14] (4) - Practice questions: length tell removed, distractors reviewed
+
+After the answer letters were balanced, the correct option was still the longest of the four in 88% of questions (2,651 of 3,015). A first rewrite pass removed that but overshot: the correct option became the shortest in 38% of questions overall, and in 80% or more in about 20 banks. A second pass assigned each question a target length rank (shortest / second / third / longest, balanced to 25% each) and checked it with a script.
+
+### Fixed
+
+- All 150 banks now carry no length tell: the correct option is the longest or shortest in at most 45% of any bank's questions (`balance-answer-positions.py --check-length`), and every per-question target is met.
+- A review pass over every question looked for a second arguably-correct option, invented products and stale facts. About 350 questions had option meanings changed (for example options that were also valid, made-up AWS and Azure features, retired products) and the matching explanations corrected.
+- 76 questions with "all of the above" / "both A and B" options were rewritten as independent single-answer options.
+- `gcp-workspace-administrator` Q27 had the wrong key (a bug in my own generator); fixed.
+- `offensive-security-oscp.md` (a 4-question stub that duplicated `oscp-pen-200`) deleted. Header question counts corrected where wrong.
+
+### Added
+
+- `--check-length` in `.github/scripts/balance-answer-positions.py`, and both checks in `structure-validate.yml`.
+- [docs/practice-question-key-review.md](./docs/practice-question-key-review.md): about 70 keys the reviewers believe are stale or wrong, left unchanged for a human to verify against vendor documentation.
+
 ## [2026-10-14] (3) - Practice-question answer positions balanced repo-wide
 
 An audit of `resources/practice-questions` found the correct answer was B in most banks: 64 of 152 banks had B correct for 90% or more of their questions (52 of them for every question). A learner could score well by always choosing B.

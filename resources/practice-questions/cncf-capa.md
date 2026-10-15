@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** A pipeline fetches from three sources in parallel, validates each, merges, trains, then publishes metrics and uploads an artifact in parallel. Validation durations vary widely.
 
-A. A `steps` template with nested parallel groups
-B. A `dag` template with explicit `dependencies` per task
-C. One container running everything
-D. Separate Workflows chained by Argo Events
+A. A `steps` template with nested parallel groups, where each group of steps runs together and the next group starts as soon as the previous one finishes
+B. A `dag` template with explicit `dependencies` per task, so each task starts as soon as the tasks it needs have finished
+C. One container running every stage in sequence with a shell script, which cannot parallelize the fetches
+D. Separate Workflows chained by Argo Events, each stage emitting an event for the next Sensor
 
 <details>
 <summary>Answer</summary>
@@ -27,17 +27,17 @@ D. Separate Workflows chained by Argo Events
 ### Question 2
 **Scenario:** Step A produces a 2 GB dataset and a single numeric quality score. Step B needs both. How should each be passed?
 
-A. Both as output parameters
-B. Both as artifacts
+A. The dataset and the score as output parameters
+B. The dataset and the score as artifacts, because parameters cannot hold numeric values, each read back by step B as a file
 C. The score as an output parameter and the dataset as an artifact through the artifact repository
-D. Both through an `emptyDir` volume
+D. The dataset and the score through a shared `emptyDir` volume mounted into the pods of the two steps, so that no repository is needed
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Parameters carry small string values held in the workflow object, so a 2 GB value is not viable. Artifacts move files through a configured repository such as S3 or MinIO. `emptyDir` does not survive between pods; a `volumeClaimTemplate` would be the volume-based alternative.
+**Why:** Parameters carry small string values held in the workflow object, so a 2 GB value is not viable, but a small numeric score fits fine as a string, so artifacts for both (B) are unnecessary. Artifacts move files through a configured repository such as S3 or MinIO. `emptyDir` does not survive between pods; a `volumeClaimTemplate` would be the volume-based alternative.
 </details>
 
 ---
@@ -46,16 +46,16 @@ D. Both through an `emptyDir` volume
 **Scenario:** An Argo CD Application deploys an operator, its CRDs, and custom resources using those CRDs. The first sync fails because the custom resource kinds do not exist.
 
 A. Use sync waves: CRDs in a lower wave, then the operator, then the custom resources
-B. Retry the sync
-C. Split into two Applications
-D. Disable health checks
+B. Retry the sync until it passes, because the CRDs created in the first attempt will exist by the time the second attempt runs
+C. Split the contents into two Applications with no ordering between them, so one installs the CRDs and operator and the other holds the custom resources
+D. Disable health checks on the Application so that Argo CD stops treating the missing custom resource kinds as a failed sync
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Sync waves order resources within one sync, and Argo CD waits for a wave to become healthy before the next. Retrying works by accident once the CRDs exist and fails again on a fresh cluster. Splitting Applications works but waves solve it in one.
+**Why:** Sync waves order resources within one sync, and Argo CD waits for a wave to become healthy before the next. Retrying works by accident once the CRDs exist and fails again on a fresh cluster. Splitting into Applications with no ordering (C) can hit the same missing-kind failure, whereas waves solve it in one sync.
 </details>
 
 ---
@@ -63,10 +63,10 @@ D. Disable health checks
 ### Question 4
 **Scenario:** With automated sync enabled, a ConfigMap deleted from the repository remains in the cluster, and a manual `kubectl edit` on a Deployment persists.
 
-A. Both symptoms indicate self-heal is off
-B. Prune is off (the orphaned ConfigMap) and self-heal is off (the manual edit)
-C. Automated sync is not actually enabled
-D. The Application is out of scope for its AppProject
+A. Only self-heal is off, which explains both the orphaned ConfigMap and the persisting edit, since it controls deletion and drift reversal
+B. Prune is off (which explains the orphaned ConfigMap) and self-heal is off (which explains the manual edit)
+C. Automated sync is not actually enabled on the Application, so nothing is reconciled
+D. The Application is out of scope for its AppProject, so Argo CD cannot reconcile it
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. The Application is out of scope for its AppProject
 ### Question 5
 **Scenario:** A platform team wants a full ephemeral environment per open pull request, torn down on merge or close, with no human action.
 
-A. The list generator
-B. The Git directory generator
-C. A CI job creating and deleting Applications
-D. The pull request generator in an ApplicationSet
+A. The list generator, which creates one Application per entry in a fixed list that an engineer maintains in the ApplicationSet
+B. The Git directory generator, which creates one Application per folder in a repository and so tracks branches only through folders
+C. A CI job creating and deleting Applications with the Argo CD CLI at the start and end of each pipeline run for the pull request
+D. The pull request generator in an ApplicationSet, which creates an Application for each open pull request and removes it when the pull request closes
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. The pull request generator in an ApplicationSet
 ### Question 6
 **Scenario:** A canary must reach 10% of traffic for 10 minutes, then 50%, then full, rolling back automatically if the error rate exceeds 1%. NGINX ingress is in use.
 
-A. A blue-green Rollout with `autoPromotionEnabled: false`
-B. A Deployment with tuned `maxSurge` and `maxUnavailable`
+A. A blue-green Rollout with `autoPromotionEnabled: false`, which holds the new version until an operator approves each promotion step
+B. A Deployment with tuned `maxSurge` and `maxUnavailable`, which paces the rolling update but cannot split traffic by percentage
 C. A Rollout with canary steps, the NGINX traffic routing integration, and an AnalysisTemplate with a failure condition
-D. A Rollout with canary steps and pauses only
+D. A Rollout with canary steps and pauses only, giving the 10%, 50% and full weights on a timer
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Sensor only
 ### Question 8
 **Scenario:** Twenty workflows must not hit the same legacy database simultaneously; at most two may run at once.
 
-A. Use a CronWorkflow with a concurrency policy
-B. Add a `retryStrategy`
+A. A CronWorkflow with a concurrency policy such as `Forbid`, which stops overlapping runs of one schedule but not different workflows
+B. A `retryStrategy` with a backoff on each step, so that workflows that fail to reach the database wait before they try again
 C. Use a `synchronization` semaphore backed by a ConfigMap
-D. Set `parallelism` on each Workflow
+D. `parallelism` set on each Workflow, which bounds how many steps in that single workflow run at once but not across the others
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Runs before the workflow starts
 ### Question 10
 **Scenario:** Which AppProject setting prevents a tenant's Application from deploying cluster-scoped resources it should not create?
 
-A. Allowed destinations
-B. Sync windows
+A. Allowed destinations, which limit the clusters and namespaces an Application may deploy into but not the kinds of resource
+B. Sync windows, which define when syncs are allowed or denied for the project's Applications, but not which resource kinds are created
 C. Allowed cluster-scoped resource kinds
-D. Allowed source repositories
+D. Allowed source repositories, which restrict where manifests can come from but not which cluster-scoped kinds those manifests contain
 
 <details>
 <summary>Answer</summary>
@@ -190,9 +190,9 @@ D. Allowed source repositories
 **Scenario:** Which Argo CD feature prevents the agent fighting an HPA over a Deployment's replica count?
 
 A. `ignoreDifferences` on the `replicas` field, or removing it from the manifest
-B. A PostSync hook
-C. Disabling automated sync
-D. Sync waves
+B. A PostSync hook that resets the replica count after every sync
+C. Disabling automated sync on the Application so that Argo CD never overwrites the HPA's changes without a manual sync
+D. Sync waves that apply the HPA before the Deployment so the controller owns the replica count after the first sync
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. Sync waves
 ### Question 12
 **Scenario:** A workflow step must repeat once for each item in a JSON array produced by a previous step.
 
-A. A recursive template
-B. `withSequence`
+A. A recursive template that calls itself again until a stop condition is met
+B. `withSequence`, which generates a numeric range to loop over for each repetition
 C. `withItems`
-D. `withParam`
+D. `withParam`, which expands a JSON array from a previous step's output
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. `withParam`
 ### Question 13
 **Scenario:** In a blue-green Rollout, what does `scaleDownDelaySeconds` control?
 
-A. How long before the new version receives traffic
-B. How long the old ReplicaSet remains available after promotion, enabling fast rollback
-C. The analysis duration
-D. The interval between traffic weight increases
+A. How long before the new version receives traffic, since it delays the service selector switch
+B. How long the old ReplicaSet remains available after promotion, enabling fast rollback of a bad release
+C. The analysis duration, since it sets how long metrics are evaluated against the new ReplicaSet before the Rollout is promoted
+D. The interval between traffic weight increases, as each step shifts more requests over
 
 <details>
 <summary>Answer</summary>
@@ -243,10 +243,10 @@ D. The interval between traffic weight increases
 ### Question 14
 **Scenario:** Which Argo Workflows configuration prevents completed workflow objects accumulating indefinitely in the cluster?
 
-A. `retryStrategy`
-B. `synchronization`
+A. `retryStrategy`, which re-runs failed steps with a backoff and so cleans up failed attempts as the Workflow runs
+B. `synchronization`, which uses semaphores and mutexes to limit concurrency and so keeps the number of Workflows in the cluster low
 C. `ttlStrategy` and `podGC`
-D. `activeDeadlineSeconds`
+D. `activeDeadlineSeconds`, which terminates a Workflow that runs too long and so removes stuck objects from the cluster
 
 <details>
 <summary>Answer</summary>

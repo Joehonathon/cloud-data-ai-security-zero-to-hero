@@ -16,10 +16,10 @@ CKS is performance-based and requires a valid CKA. These questions reinforce the
 ### Question 1
 **Scenario:** An auditor asks you to prove which service accounts can create pods in the `payments` namespace.
 
-A. Check the audit log
+A. Search the audit log for successful pod create requests in the payments namespace over the last 30 days and list the users behind them
 B. Inspect the API server flags
 C. `kubectl auth can-i --list --as=system:serviceaccount:payments:<sa> -n payments`
-D. Read every RoleBinding manifest in git
+D. Read every RoleBinding and ClusterRoleBinding manifest in the git repository and work out the permissions from the roles they reference
 
 <details>
 <summary>Answer</summary>
@@ -34,17 +34,17 @@ D. Read every RoleBinding manifest in git
 ### Question 2
 **Scenario:** A pod does not use the Kubernetes API at all, but its service account token is mounted by default.
 
-A. Delete the default service account
-B. Set `automountServiceAccountToken: false` on the pod spec or the service account
-C. Add a NetworkPolicy blocking the API server
-D. Set `runAsNonRoot: true`
+A. Delete the default service account in the namespace so that pods started there get no token
+B. Set `automountServiceAccountToken: false` on the pod spec or the service account so the kubelet never mounts the token into the container
+C. Add a NetworkPolicy that blocks egress to the API server address, so the token cannot be used even though it stays mounted
+D. Set `runAsNonRoot: true` and a numeric `runAsUser` in the pod security context so that a compromised process cannot read the mounted token file
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** An unused token is free credential material for an attacker who gets code execution in the container. Turning off automount is the direct fix and can be set per pod or defaulted on the service account. Deleting the default service account breaks pod admission. A NetworkPolicy is a coarser control and does not remove the credential. `runAsNonRoot` is unrelated.
+**Why:** An unused token is free credential material for an attacker who gets code execution in the container. Turning off automount is the direct fix and can be set per pod or defaulted on the service account. Deleting the default service account does not help because the controller recreates it. A NetworkPolicy is a coarser control and does not remove the credential. `runAsNonRoot` is unrelated.
 </details>
 
 ---
@@ -52,10 +52,10 @@ D. Set `runAsNonRoot: true`
 ### Question 3
 **Scenario:** You need to restrict which syscalls a container can make, using a profile shipped with the node.
 
-A. `capabilities.drop: ["ALL"]`
+A. `capabilities.drop: ["ALL"]` in the container security context, which removes every Linux capability and so restricts all privileged system calls
 B. `seccompProfile` with `type: Localhost` and a `localhostProfile` path
-C. SELinux options
-D. AppArmor annotation
+C. SELinux options with a custom type in the security context, which labels the process and confines file access on the node
+D. An AppArmor profile annotation on the pod that references a profile loaded on the node, which limits file, network and capability access
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. AppArmor annotation
 ### Question 4
 **Scenario:** Pod Security Admission is enabled. A namespace is labeled `pod-security.kubernetes.io/enforce: baseline` and `pod-security.kubernetes.io/audit: restricted`. A pod that violates `restricted` but satisfies `baseline` is applied.
 
-A. Rejected
-B. Admitted with a warning to the user only
-C. Admitted silently
-D. Admitted, with an audit annotation recorded
+A. Rejected, because the `restricted` level is set on the namespace and any violation of the stricter profile blocks admission
+B. Admitted with a warning shown to the user only, because the stricter `restricted` level is configured only in a warning mode
+C. Admitted silently, because only the `enforce` label is evaluated and the `audit` label is ignored unless `warn` is also set
+D. Admitted, with an audit annotation recorded on the audit event and no warning shown to the user, because each mode is evaluated independently
 
 <details>
 <summary>Answer</summary>
@@ -89,9 +89,9 @@ D. Admitted, with an audit annotation recorded
 **Scenario:** You must ensure only images signed by your organization can run.
 
 A. A validating admission webhook or policy engine that verifies signatures before admission
-B. An ImagePullPolicy of `Always`
-C. `imagePullSecrets` on every pod
-D. A private registry
+B. An ImagePullPolicy of `Always` on every container, which makes the kubelet re-check the registry and so reject any image that is not trusted
+C. `imagePullSecrets` on every pod, so the node authenticates to the registry and can only pull images that the organization has approved
+D. A private registry with push access limited to the CI service account, so that only images built by the organization can ever be stored
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. A private registry
 ### Question 6
 **Scenario:** `kube-bench` reports that the API server allows anonymous authentication.
 
-A. Set `--anonymous-auth=false` on the API server
-B. Enable audit logging
-C. Add a NetworkPolicy in `kube-system`
-D. Rotate the API server certificate
+A. Set `--anonymous-auth=false` on the API server and then verify that health checks and bootstrap flows still work
+B. Enable audit logging with a policy that records every request, so anonymous access can be reviewed later
+C. Add a default-deny NetworkPolicy in `kube-system` so unauthenticated clients cannot reach the API server
+D. Rotate the API server serving certificate and its signing CA so old credentials are rejected
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Rotate the API server certificate
 ### Question 7
 **Scenario:** A container is compromised and the attacker attempts to write to `/etc`. You want the write to fail regardless of the process's UID.
 
-A. `runAsUser: 1000`
-B. `readOnlyRootFilesystem: true`
-C. A ResourceQuota
-D. `allowPrivilegeEscalation: false`
+A. `runAsUser: 1000`, so the process runs as a non-root user and cannot write to system directories
+B. `readOnlyRootFilesystem: true`, which makes the container's root filesystem read-only, so writes fail even for root
+C. A ResourceQuota on the namespace, which caps storage and object counts the workloads can use
+D. `allowPrivilegeEscalation: false`, which stops the process gaining more privileges than its parent through setuid binaries or file capabilities
 
 <details>
 <summary>Answer</summary>
@@ -143,9 +143,9 @@ D. `allowPrivilegeEscalation: false`
 **Scenario:** You need runtime detection of a shell being spawned inside a production container.
 
 A. Falco with a rule matching shell execution in a container
-B. `kubectl logs`
-C. Prometheus alerts on CPU
-D. An admission webhook
+B. `kubectl logs`, reviewed daily for shell prompts
+C. Prometheus alerts on sustained CPU usage per container, since an attacker who opens a shell and runs tools will push CPU past its baseline
+D. A validating admission webhook that inspects every pod spec and rejects any pod that lists a shell as its entrypoint or command
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. An admission webhook
 ### Question 9
 **Scenario:** A default-deny egress NetworkPolicy is applied to a namespace and every pod immediately fails to resolve service names.
 
-A. DNS was blocked; allow egress to kube-dns on UDP and TCP port 53
-B. CoreDNS crashed
-C. The CNI does not support the policy
-D. NetworkPolicies do not support egress
+A. DNS was blocked; allow egress to kube-dns on UDP and TCP port 53, since pods resolve names before connecting
+B. CoreDNS crashed when the policy was applied and must be restarted in kube-system
+C. The CNI plugin does not support NetworkPolicy, so the policy was applied incorrectly and has blocked all pod traffic cluster-wide
+D. NetworkPolicies do not support egress rules, so it was read as deny-all
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. NetworkPolicies do not support egress
 ### Question 10
 **Scenario:** You want stronger workload isolation for an untrusted tenant than a shared kernel provides.
 
-A. A dedicated ServiceAccount
+A. A ServiceAccount with a narrowly scoped Role
 B. A RuntimeClass backed by gVisor or Kata Containers
-C. A separate namespace
-D. A PodDisruptionBudget
+C. A separate namespace for the tenant with its own ResourceQuota and NetworkPolicies, which keeps their workloads apart from other tenants
+D. A PodDisruptionBudget for the tenant workloads, which keeps a minimum number of replicas running during node drains and upgrades
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. A PodDisruptionBudget
 ### Question 11
 **Scenario:** Secrets in etcd are stored unencrypted. What is the correct remediation?
 
-A. Move secrets to ConfigMaps
-B. Base64-encode the values twice
-C. Restrict `kubectl get secrets` with RBAC
-D. Configure an `EncryptionConfiguration` on the API server and re-write existing secrets
+A. Move secrets to ConfigMaps so that the values are stored in a separate resource type that the API server does not treat as sensitive
+B. Base64-encode the values twice before they are stored, so that anyone reading the etcd files sees only the encoded text
+C. Restrict `kubectl get secrets` with RBAC so that only a small set of administrators can read secret values through the API
+D. Configure an `EncryptionConfiguration` with a KMS or aescbc provider on the API server, then rewrite every existing secret so it is stored encrypted
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Configure an `EncryptionConfiguration` on the API server and re-write existin
 ### Question 12
 **Scenario:** You want to reduce the attack surface of a container image before it ships.
 
-A. Use `latest` tags so fixes arrive automatically
-B. Add a shell for debugging
-C. Use a minimal or distroless base, run a vulnerability scan in CI, and fail the build on critical findings
-D. Run the scan after deployment
+A. Use `latest` tags in every Dockerfile and manifest so that fixes in the base image arrive automatically on the next pull
+B. Add a shell and common debugging tools to the image so that engineers can diagnose problems in production without rebuilding
+C. Use a minimal or distroless base, scan in CI, and fail the build on critical findings
+D. Run the vulnerability scan after deployment on a schedule, so that running workloads are checked against the newest CVE database
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Run the scan after deployment
 ### Question 13
 **Scenario:** Audit logging is enabled but every request is recorded at `RequestResponse` level and the log volume is unmanageable.
 
-A. Increase disk size
-B. Disable audit logging
+A. Increase the disk size on every control plane node so that the large audit log files can be retained for longer
+B. Disable audit logging on the API server entirely, since the cluster already records events and the storage is not worth it
 C. Write an audit policy with per-resource rules: `Metadata` for most traffic, `RequestResponse` only for sensitive resources such as secrets
-D. Sample the log randomly
+D. Sample the audit log randomly at the log shipper so that only a fraction of events are kept and the volume drops to a manageable level for the storage budget
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Sample the log randomly
 ### Question 14
 **Scenario:** A ServiceAccount token should be short-lived and audience-bound rather than a permanent secret.
 
-A. Use a static token file on the API server
-B. Rotate the secret manually every month
+A. Use a static token file passed to the API server with `--token-auth-file`, which gives each workload a fixed, named credential
+B. Rotate the Secret holding the token manually every month
 C. Use a projected service account token volume with `audience` and `expirationSeconds`
-D. Use basic auth
+D. Use basic authentication with a username and password stored in a Secret, rotated by the application on a schedule
 
 <details>
 <summary>Answer</summary>
@@ -268,9 +268,9 @@ D. Use basic auth
 ### Question 15
 **Scenario:** You need to confirm that a running cluster's node OS is not exposing the kubelet read-only port.
 
-A. Check the API server flags
-B. Check the Service definitions
-C. Check the CNI configuration
+A. Check the API server flags for `--anonymous-auth=false`, which controls whether the control plane accepts unauthenticated requests
+B. Check the Service definitions in kube-system to confirm no NodePort or LoadBalancer exposes port 10255 outside the cluster
+C. Check the CNI configuration to confirm that no plugin rule allows inbound traffic to the node on the kubelet ports
 D. Check `--read-only-port=0` in the kubelet configuration and verify port 10255 is closed
 
 <details>

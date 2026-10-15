@@ -17,9 +17,9 @@ PromQL is the largest domain and the one candidates most often under-practice, s
 **Scenario:** A counter `http_requests_total` resets to zero when the process restarts. Which function handles that correctly when computing per-second traffic?
 
 A. `delta()`
-B. `changes()`
+B. `changes()`, which counts how many times the value changed in the window
 C. `deriv()`
-D. `rate()`
+D. `rate()`, which compensates for counter resets
 
 <details>
 <summary>Answer</summary>
@@ -34,9 +34,9 @@ D. `rate()`
 ### Question 2
 **Scenario:** You need the 95th percentile request latency from a histogram metric `http_duration_seconds_bucket`.
 
-A. `quantile(0.95, http_duration_seconds_bucket)`
+A. `quantile(0.95, http_duration_seconds_bucket)`, taking the 95th percentile across the bucket series at the latest sample, without `rate()`
 B. `histogram_quantile(0.95, rate(http_duration_seconds_bucket[5m]))`
-C. `avg(http_duration_seconds_bucket) * 0.95`
+C. `avg(http_duration_seconds_bucket) * 0.95`, scaling the average bucket count to estimate where 95 percent of requests fall
 D. `topk(0.95, http_duration_seconds_bucket)`
 
 <details>
@@ -52,10 +52,10 @@ D. `topk(0.95, http_duration_seconds_bucket)`
 ### Question 3
 **Scenario:** How does Prometheus normally acquire metrics?
 
-A. An agent forwards syslog
-B. Prometheus reads log files
-C. Prometheus scrapes HTTP endpoints exposed by targets on an interval
-D. Applications push metrics to Prometheus
+A. An agent on each host forwards syslog messages to the Prometheus server, which parses them into samples as they arrive
+B. Prometheus tails the log files written by each application and extracts a sample from every line it reads
+C. Prometheus scrapes HTTP endpoints exposed by targets on an interval, which it discovers through service discovery and fetches on a schedule
+D. Applications push metrics to Prometheus by sending each sample to a write endpoint when it is recorded
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Applications push metrics to Prometheus
 ### Question 4
 **Scenario:** `rate(http_requests_total[1m])` returns no data for a target scraped every 60 seconds.
 
-A. `rate()` cannot be used on counters
-B. A range needs at least two samples; the window is too short relative to the scrape interval
-C. The metric does not exist
-D. The target is down
+A. `rate()` cannot be used on counters, only on gauges, so the query is invalid and returns an empty result by design
+B. A range needs at least two samples; the window is too short for the scrape interval
+C. The metric does not exist on the target, so the selector matches no series and the function returns nothing for it
+D. The rule evaluation interval is longer than the range window, so Prometheus skips evaluation and returns no data
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. The target is down
 ### Question 5
 **Scenario:** Which metric type fits "current number of items in a queue"?
 
-A. Gauge
-B. Histogram
-C. Summary
-D. Counter
+A. A gauge, since it rises and falls
+B. A histogram with buckets for the queue length
+C. A summary with quantiles over the queue length
+D. A counter
 
 <details>
 <summary>Answer</summary>
@@ -107,9 +107,9 @@ D. Counter
 **Scenario:** You want total requests per second across all instances of a job, broken out by HTTP status code.
 
 A. `sum(rate(http_requests_total[5m])) by (status)`
-B. `sum by (instance) (http_requests_total)`
-C. `avg(rate(http_requests_total[5m]))`
-D. `rate(sum(http_requests_total) by (status)[5m])`
+B. `sum by (instance) (http_requests_total)`, which adds the raw counters per instance without applying `rate()` or grouping by status
+C. `avg(rate(http_requests_total[5m]))`, which applies `rate()` first but returns one average across series, with no status breakdown
+D. `rate(sum(http_requests_total) by (status)[5m])`, which tries to take a rate over the aggregated sum of the raw counters
 
 <details>
 <summary>Answer</summary>
@@ -124,8 +124,8 @@ D. `rate(sum(http_requests_total) by (status)[5m])`
 ### Question 7
 **Scenario:** An alert should only fire if the condition has held continuously for 10 minutes.
 
-A. Set `evaluation_interval: 10m`
-B. Set `group_wait: 10m` in Alertmanager
+A. Set `evaluation_interval: 10m` in the global config
+B. Set `group_wait: 10m` in the Alertmanager route
 C. Set `for: 10m` in the alerting rule
 D. Use `[10m]` in the expression
 
@@ -143,9 +143,9 @@ D. Use `[10m]` in the expression
 **Scenario:** Which component sends notifications to Slack, PagerDuty, and email?
 
 A. Grafana
-B. Alertmanager
+B. The Alertmanager component
 C. Node exporter
-D. Prometheus server
+D. The Prometheus server itself, evaluating rules
 
 <details>
 <summary>Answer</summary>
@@ -160,9 +160,9 @@ D. Prometheus server
 ### Question 9
 **Scenario:** A team needs metrics from a system that cannot be modified to expose `/metrics`.
 
-A. Increase the scrape interval
-B. Write a recording rule
-C. Use the Pushgateway
+A. Increase the scrape interval so the target is queried less often, which reduces load on the system being monitored
+B. Write a recording rule that converts the system's data into Prometheus format at evaluation time
+C. Use the Pushgateway so the system can send its data to Prometheus in the exposition format on its own schedule
 D. Deploy an exporter that translates the system's data into Prometheus format
 
 <details>
@@ -179,8 +179,8 @@ D. Deploy an exporter that translates the system's data into Prometheus format
 **Scenario:** A dashboard query is slow because it aggregates a costly expression evaluated over many series.
 
 A. Create a recording rule that precomputes the expression at evaluation time
-B. Increase retention
-C. Add more labels
+B. Increase retention so the dashboard can read more history from disk, which also makes the slow query run faster
+C. Add more labels to the series so that the query can select and group its data more precisely
 D. Lower the scrape interval
 
 <details>
@@ -196,10 +196,10 @@ D. Lower the scrape interval
 ### Question 11
 **Scenario:** A metric is labeled with a user ID. What is the concern?
 
-A. Labels must be numeric
-B. Prometheus rejects string labels
+A. Labels must be numeric values only, so a user ID in string form is rejected at ingestion
+B. Prometheus rejects string labels and drops any sample with a non-numeric label value
 C. High cardinality: each distinct label value creates a separate time series and can exhaust memory
-D. Nothing, labels are free
+D. Nothing to worry about, because labels are free and Prometheus stores them once per target rather than once per series
 
 <details>
 <summary>Answer</summary>
@@ -215,8 +215,8 @@ D. Nothing, labels are free
 **Scenario:** How do you check whether a scrape target is currently reachable?
 
 A. `prometheus_build_info`
-B. `up{job="myjob"}`
-C. `process_start_time_seconds`
+B. `up{job="myjob"}`, which is 1 when the last scrape worked
+C. `process_start_time_seconds`, which reports when the monitored process last started and restarted
 D. `scrape_duration_seconds`
 
 <details>
@@ -232,10 +232,10 @@ D. `scrape_duration_seconds`
 ### Question 13
 **Scenario:** Which service discovery mechanism would you use for pods in a Kubernetes cluster?
 
-A. `file_sd_configs`
-B. `dns_sd_configs`
-C. `kubernetes_sd_configs`
-D. `static_configs`
+A. `file_sd_configs`, reading targets from a JSON or YAML file that the cluster updates whenever pods are created or deleted
+B. `dns_sd_configs`, resolving service names with SRV records so each pod appears as a target without extra configuration
+C. `kubernetes_sd_configs`, which asks the API server for pods and services and turns them into scrape targets through relabeling, tracking changes as they happen
+D. `static_configs`, listing the pod addresses by hand, which works when the set of pods does not change over time
 
 <details>
 <summary>Answer</summary>
@@ -251,9 +251,9 @@ D. `static_configs`
 **Scenario:** You need to drop a noisy metric before it is stored.
 
 A. `metric_relabel_configs` with a `drop` action matching `__name__`
-B. A recording rule
-C. Delete it after ingestion
-D. `relabel_configs` on the target
+B. A recording rule that replaces the noisy metric with an aggregated one, which still leaves the original series stored
+C. Delete it after it has been stored, using the admin API, which removes the series but leaves storage used until compaction
+D. `relabel_configs` on the target, which can drop whole targets or rewrite their labels before the scrape happens
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. `relabel_configs` on the target
 ### Question 15
 **Scenario:** A long-term storage and global query view is needed across several Prometheus servers.
 
-A. Increase local retention to 5 years
-B. Run one enormous Prometheus
-C. Federate every metric from every server
-D. Use remote write to a system such as Thanos, Cortex, or Mimir
+A. Increase local retention to 5 years on each server, which keeps data longer but leaves each server's view separate
+B. Run one enormous Prometheus that scrapes every target, which gives one view but is a single point of failure with limited scale
+C. Federate every metric from every server into a central one, which would copy all series and so double the storage needed
+D. Use remote write to a horizontally scalable backend such as Thanos, Cortex, or Mimir, with a global query layer on top of it for all servers
 
 <details>
 <summary>Answer</summary>

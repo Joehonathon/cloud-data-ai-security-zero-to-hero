@@ -19,17 +19,17 @@
 ### Question 1
 **Scenario:** A SysOps administrator needs to create a CloudWatch alarm that triggers when EC2 CPU utilization exceeds 80% for 15 minutes. The alarm should send notifications to an operations team. What configuration is required?
 
-A. Create an alarm with 5 evaluation periods of 3 minutes each
-B. Create an alarm with 15 evaluation periods of 1 minute each
+A. Create an alarm with 5 evaluation periods of 3 minutes each, using the basic monitoring metrics that are published every 5 minutes
+B. Create an alarm with 15 evaluation periods of 1 minute each, using the basic monitoring metrics that are published every 5 minutes
 C. Create an alarm with 3 evaluation periods of 5 minutes each
-D. Create an alarm with 1 evaluation period of 15 minutes
+D. Create an alarm with 1 evaluation period of 5 minutes, so that one breaching data point sets the alarm state
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** To trigger after 15 minutes of sustained high CPU, configure 3 evaluation periods of 5 minutes (3 x 5 = 15 minutes). The alarm triggers when all 3 consecutive periods breach the threshold. Single 15-minute period provides less granularity. The period and evaluation count multiply to give the total duration.
+**Why:** To trigger after 15 minutes of sustained high CPU, configure 3 evaluation periods of 5 minutes (3 x 5 = 15 minutes). The alarm triggers when all 3 consecutive periods breach the threshold. A single 5-minute period would alarm on one brief spike. The period and evaluation count multiply to give the total duration.
 
 **Key Concept:** [CloudWatch Alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html)
 </details>
@@ -39,10 +39,10 @@ D. Create an alarm with 1 evaluation period of 15 minutes
 ### Question 2
 **Scenario:** An application running on EC2 writes logs to local files. The SysOps team needs to centralize these logs for analysis and alerting. What's the most efficient approach?
 
-A. SSH into each instance and manually copy logs
+A. SSH into each instance and manually copy the logs to a shared location
 B. Install and configure the CloudWatch agent
 C. Configure VPC Flow Logs
-D. Use S3 sync to copy log files periodically
+D. Use S3 sync on a timer
 
 <details>
 <summary>Answer</summary>
@@ -59,17 +59,17 @@ D. Use S3 sync to copy log files periodically
 ### Question 3
 **Scenario:** A company needs to automatically remediate EC2 instances that fail health checks. The remediation should replace unhealthy instances without manual intervention. What should be configured?
 
-A. Lambda function triggered by CloudWatch Events
-B. Systems Manager Automation document
-C. Auto Scaling group health checks with ReplaceUnhealthy process
-D. CloudWatch alarm with EC2 action to reboot
+A. Lambda function that emails the team on a failed check
+B. Systems Manager Automation document, started by an operator whenever an instance is reported unhealthy
+C. Auto Scaling group health checks with the ReplaceUnhealthy process
+D. CloudWatch alarm with an EC2 action to reboot the instance when its status check fails
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** Auto Scaling groups with health checks automatically terminate and replace unhealthy instances. The ReplaceUnhealthy process must be active. CloudWatch reboot action doesn't replace instances. Lambda adds complexity. Systems Manager requires manual triggers for this use case.
+**Why:** Auto Scaling groups with health checks automatically terminate and replace unhealthy instances. The ReplaceUnhealthy process must be active. CloudWatch reboot action doesn't replace instances. A notification-only Lambda function leaves the replacement to a person. Systems Manager here is started by an operator.
 
 **Key Concept:** [Auto Scaling Health Checks](https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html)
 </details>
@@ -80,9 +80,9 @@ D. CloudWatch alarm with EC2 action to reboot
 **Scenario:** A SysOps administrator needs to find all API calls made to delete S3 buckets in the last 30 days for a security audit. Where should they look?
 
 A. CloudTrail event history
-B. CloudWatch Logs Insights
-C. S3 server access logs
-D. VPC Flow Logs
+B. CloudWatch Logs Insights, querying the log groups where each S3 bucket writes its management activity by default
+C. S3 server access logs, which record the bucket-level requests made to every bucket in the account over the period
+D. VPC Flow Logs filtered on the S3 endpoint addresses, which show each DeleteBucket request and the caller that made it
 
 <details>
 <summary>Answer</summary>
@@ -100,9 +100,9 @@ D. VPC Flow Logs
 **Scenario:** An RDS database is experiencing slow query performance. The SysOps team needs to identify the problematic queries without impacting production. What should they enable?
 
 A. Enhanced Monitoring
-B. Performance Insights
-C. Slow query log with manual analysis
-D. CloudWatch Logs export
+B. Performance Insights dashboard
+C. Slow query log with manual analysis by an engineer
+D. CloudWatch Logs export of the slow query log
 
 <details>
 <summary>Answer</summary>
@@ -119,7 +119,7 @@ D. CloudWatch Logs export
 ### Question 6
 **Scenario:** A company wants to be notified when their AWS account is approaching service quotas for EC2 instances. What should be configured?
 
-A. Trusted Advisor with CloudWatch integration
+A. Trusted Advisor, checking its service limit page by hand each month
 B. CloudWatch billing alarms
 C. AWS Config rules
 D. AWS Service Quotas with CloudWatch alarms
@@ -129,7 +129,7 @@ D. AWS Service Quotas with CloudWatch alarms
 
 **Correct: D**
 
-**Why:** AWS Service Quotas integrates with CloudWatch, allowing alarms when utilization approaches limits. Trusted Advisor shows current usage but limited alarm integration. Config rules check configurations. Billing alarms track costs, not quotas.
+**Why:** AWS Service Quotas integrates with CloudWatch, allowing alarms when utilization approaches limits. Trusted Advisor shows current usage, but checking it by hand is not a notification. Config rules check configurations. Billing alarms track costs, not quotas.
 
 **Key Concept:** [Service Quotas](https://docs.aws.amazon.com/servicequotas/latest/userguide/servicequotas-integration-cloudwatch.html)
 </details>
@@ -140,8 +140,8 @@ D. AWS Service Quotas with CloudWatch alarms
 **Scenario:** A Lambda function is experiencing errors. The SysOps administrator needs to trace the request path through API Gateway, Lambda, and DynamoDB to identify where failures occur. What service should they use?
 
 A. VPC Flow Logs
-B. AWS X-Ray
-C. CloudWatch Logs
+B. AWS X-Ray distributed tracing
+C. CloudWatch Logs with Logs Insights queries across each service's log group
 D. CloudTrail
 
 <details>
@@ -159,17 +159,17 @@ D. CloudTrail
 ### Question 8
 **Scenario:** A SysOps administrator needs to create a dashboard that shows EC2 metrics from multiple AWS regions on a single view. What should they use?
 
-A. Third-party monitoring tool
+A. A third-party monitoring tool that polls each region's metrics API and shows the results in one view
 B. CloudWatch cross-account cross-region dashboard
-C. Amazon Managed Grafana
-D. Separate CloudWatch dashboards per region
+C. Amazon Managed Grafana, which can read CloudWatch metrics from only the region where the workspace is created
+D. Separate CloudWatch dashboards per region, opened in different browser tabs by the operations team
 
 <details>
 <summary>Answer</summary>
 
 **Correct: B**
 
-**Why:** CloudWatch supports cross-region dashboards, allowing metrics from multiple regions on a single view. Separate dashboards per region defeats the purpose. Managed Grafana works but adds complexity for this use case. Third-party tools aren't the AWS-native solution.
+**Why:** CloudWatch supports cross-region dashboards, allowing metrics from multiple regions on a single view. Separate dashboards per region defeats the purpose. Managed Grafana adds workspaces and data sources to administer for a single view. Third-party tools aren't the AWS-native solution.
 
 **Key Concept:** [CloudWatch Cross-Region Dashboards](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_crossaccount_dashboard.html)
 </details>
@@ -181,9 +181,9 @@ D. Separate CloudWatch dashboards per region
 ### Question 9
 **Scenario:** A company runs a critical web application on EC2 instances in a single Availability Zone. They need to improve availability without significant application changes. What's the recommended approach?
 
-A. Enable EC2 Auto Recovery
-B. Add more instances in the same AZ
-C. Use a larger instance type
+A. Enable EC2 Auto Recovery, which restarts a failed instance on new hardware but cannot survive the loss of the AZ
+B. Add more instances in the same AZ behind a Network Load Balancer, so that one failing instance does not affect users
+C. Use a larger instance type with more memory and network bandwidth, which makes failures of the instance less likely
 D. Deploy instances across multiple AZs with an ALB
 
 <details>
@@ -201,10 +201,10 @@ D. Deploy instances across multiple AZs with an ALB
 ### Question 10
 **Scenario:** An RDS MySQL database needs to be recoverable to any point in time within the last 7 days. What feature should be enabled?
 
-A. Read replicas
+A. Read replicas, which keep an asynchronous copy of the database that can be promoted to a new primary
 B. Automated backups with PITR
-C. Multi-AZ deployment
-D. Manual snapshots
+C. Multi-AZ deployment, which keeps a synchronous standby that can be rolled back to any second of the last week
+D. Manual snapshots taken each night with a script, which restore the database to the time each snapshot was taken
 
 <details>
 <summary>Answer</summary>
@@ -241,17 +241,17 @@ D. Cross-region replication
 ### Question 12
 **Scenario:** A SysOps administrator needs to create a disaster recovery strategy with RTO of 1 hour and RPO of 15 minutes for an application running on EC2 with RDS. What approach meets these requirements?
 
-A. Warm standby with Auto Scaling and RDS Multi-AZ
-B. Active-active multi-region
-C. Pilot light with AMIs and RDS snapshots
-D. Backup and restore from S3
+A. Warm standby with a scaled-down but running application tier, Auto Scaling and RDS Multi-AZ
+B. Active-active multi-region, with the application at full size in two regions and the database copied between them every six hours
+C. Pilot light with AMIs and hourly RDS snapshots
+D. Backup and restore from S3 with nightly backups
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** Warm standby with scaled-down infrastructure running continuously meets 1-hour RTO. RDS Multi-AZ with synchronous replication achieves 15-minute RPO (near-zero). Backup/restore takes hours. Pilot light requires provisioning time. Active-active is more than needed and expensive.
+**Why:** Warm standby with scaled-down infrastructure running continuously meets 1-hour RTO. RDS Multi-AZ with synchronous replication achieves 15-minute RPO (near-zero). Backup/restore takes hours. Pilot light requires provisioning time. Active-active with a six-hourly database copy misses the 15-minute RPO.
 
 **Key Concept:** [Disaster Recovery Strategies](https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html)
 </details>
@@ -261,7 +261,7 @@ D. Backup and restore from S3
 ### Question 13
 **Scenario:** An EBS volume attached to an EC2 instance needs to be backed up automatically every day with retention for 30 days. What's the most efficient method?
 
-A. AWS Backup
+A. AWS Storage Gateway
 B. Custom Lambda function with CreateSnapshot API
 C. Manual snapshots via console
 D. Amazon Data Lifecycle Manager (DLM)
@@ -271,7 +271,7 @@ D. Amazon Data Lifecycle Manager (DLM)
 
 **Correct: D**
 
-**Why:** Amazon Data Lifecycle Manager automates EBS snapshot creation with retention policies. AWS Backup provides broader functionality but DLM is simpler for EBS-only needs. Lambda requires custom code. Manual snapshots don't scale.
+**Why:** Amazon Data Lifecycle Manager automates EBS snapshot creation with retention policies. AWS Storage Gateway is for hybrid storage, not for scheduling EBS snapshots. Lambda requires custom code. Manual snapshots don't scale.
 
 **Key Concept:** [Amazon DLM](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-lifecycle.html)
 </details>
@@ -303,7 +303,7 @@ D. Aurora Global Database
 ### Question 15
 **Scenario:** A SysOps administrator needs to deploy a CloudFormation stack but wants to preview changes before applying them. The stack manages production infrastructure. What should they do?
 
-A. Create a change set and review it
+A. Create a change set and review it before executing it
 B. Use CloudFormation drift detection
 C. Use the ValidateTemplate API
 D. Deploy to a separate test account first
@@ -324,9 +324,9 @@ D. Deploy to a separate test account first
 **Scenario:** A company needs to ensure all EC2 instances are launched with a specific IAM role, regardless of how they're created. How can this be enforced?
 
 A. Implement a Service Control Policy (SCP)
-B. Use AWS Config with a required-tags rule
+B. Use AWS Config with a required-tags rule on the instances
 C. Create a custom AMI with the role
-D. Use EC2 launch templates as default
+D. Use EC2 launch templates as default for all teams
 
 <details>
 <summary>Answer</summary>
@@ -343,10 +343,10 @@ D. Use EC2 launch templates as default
 ### Question 17
 **Scenario:** A SysOps administrator needs to install and configure the same software on 500 EC2 instances. The configuration should be applied automatically to new instances. What should they use?
 
-A. Custom AMI only
-B. AWS Systems Manager State Manager
-C. User data scripts
-D. Manual SSH and installation
+A. Custom AMI only, rebuilt with the software baked in
+B. AWS Systems Manager State Manager associations, targeting instances by tag
+C. User data scripts in the launch template
+D. Manual SSH and installation scripted in a loop over a list of the 500 instance addresses, run by an engineer
 
 <details>
 <summary>Answer</summary>
@@ -364,9 +364,9 @@ D. Manual SSH and installation
 **Scenario:** An Auto Scaling group needs to update instances to a new AMI without service interruption. The update should replace instances gradually. What's the recommended approach?
 
 A. Update the launch template and start an instance refresh
-B. Update the launch template and manually terminate instances
+B. Update the launch template and manually terminate instances one by one
 C. Use rolling update with AWS CodeDeploy
-D. Create a new Auto Scaling group and switch traffic
+D. Create a new Auto Scaling group and switch traffic over to it
 
 <details>
 <summary>Answer</summary>
@@ -384,8 +384,8 @@ D. Create a new Auto Scaling group and switch traffic
 **Scenario:** A company needs to patch Windows EC2 instances during a maintenance window with automatic rollback if patching fails. What should be used?
 
 A. Custom Lambda function
-B. Windows Update scheduled task
-C. User data script at instance launch
+B. Windows Update scheduled task on each instance
+C. User data script at instance launch time
 D. AWS Systems Manager Patch Manager
 
 <details>
@@ -403,10 +403,10 @@ D. AWS Systems Manager Patch Manager
 ### Question 20
 **Scenario:** A CloudFormation stack update failed and rolled back. The SysOps administrator needs to understand why. Where should they look?
 
-A. EC2 system logs
-B. CloudWatch Logs
-C. CloudTrail logs
-D. CloudFormation Events tab
+A. EC2 system logs from the instances that were being updated
+B. CloudWatch Logs groups for the stack's Lambda functions
+C. CloudTrail logs of each API call CloudFormation made
+D. CloudFormation Events tab, which lists the failure reason for each resource that failed
 
 <details>
 <summary>Answer</summary>
@@ -423,7 +423,7 @@ D. CloudFormation Events tab
 ### Question 21
 **Scenario:** A company wants to automatically terminate EC2 instances that have been running for more than 7 days to ensure fresh deployments. What should be configured?
 
-A. Lambda function with EventBridge scheduled rule
+A. EventBridge rule on EC2 state-change notifications, with an EC2 terminate action after seven days
 B. Auto Scaling max instance lifetime
 C. CloudWatch alarm with EC2 terminate action
 D. AWS Instance Scheduler
@@ -433,7 +433,7 @@ D. AWS Instance Scheduler
 
 **Correct: B**
 
-**Why:** Auto Scaling groups support max instance lifetime, automatically replacing instances that exceed the specified age. CloudWatch can't track instance age easily. Instance Scheduler is for start/stop, not termination. Lambda requires custom code.
+**Why:** Auto Scaling groups support max instance lifetime, automatically replacing instances that exceed the specified age. CloudWatch can't track instance age easily. Instance Scheduler is for start/stop, not termination. EventBridge cannot delay an action until an instance reaches a given age.
 
 **Key Concept:** [Instance Lifetime](https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-max-instance-lifetime.html)
 </details>
@@ -466,9 +466,9 @@ D. S3 bucket policies on each bucket
 **Scenario:** An EC2 instance needs to access an S3 bucket without storing long-term credentials on the instance. What's the recommended approach?
 
 A. Create an IAM user and store access keys in environment variables
-B. Use S3 bucket policies with IP restrictions
+B. Bucket policies with IP limits
 C. Attach an IAM role to the EC2 instance
-D. Store credentials in AWS Secrets Manager
+D. Credentials in Secrets Manager
 
 <details>
 <summary>Answer</summary>
@@ -486,7 +486,7 @@ D. Store credentials in AWS Secrets Manager
 **Scenario:** A company needs to encrypt EBS volumes using a customer-managed KMS key. Existing unencrypted volumes need to be encrypted. What's the correct process?
 
 A. Enable encryption on existing volumes directly
-B. Copy data to new encrypted volumes using rsync
+B. Stop the instance and tick encrypt on each attached volume
 C. Use the EBS modify volume API
 D. Create encrypted snapshots and restore to new encrypted volumes
 
@@ -495,7 +495,7 @@ D. Create encrypted snapshots and restore to new encrypted volumes
 
 **Correct: D**
 
-**Why:** You cannot directly encrypt an unencrypted volume. Create a snapshot, copy the snapshot with encryption enabled using the CMK, then create a new volume from the encrypted snapshot. Modify volume can't add encryption. rsync requires instance downtime and doesn't use EBS encryption.
+**Why:** You cannot directly encrypt an unencrypted volume. Create a snapshot, copy the snapshot with encryption enabled using the CMK, then create a new volume from the encrypted snapshot. Modify volume can't add encryption. Encryption cannot be switched on for an existing volume, whether or not the instance is stopped.
 
 **Key Concept:** [EBS Encryption](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html)
 </details>
@@ -505,17 +505,17 @@ D. Create encrypted snapshots and restore to new encrypted volumes
 ### Question 25
 **Scenario:** A company needs to enforce MFA for all IAM users who access the AWS Console. How can this be implemented?
 
-A. IAM user password policy
-B. AWS Config rule to check MFA status
-C. IAM policy with MFA condition on all actions
-D. SCPs requiring MFA for console access
+A. IAM user password policy requiring MFA at sign-in
+B. AWS Config rule that reports users without an MFA device
+C. IAM policy that denies all actions unless the `aws:MultiFactorAuthPresent` condition is true
+D. SCPs requiring MFA for console access, which also cover users in the management account
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** IAM policies with `aws:MultiFactorAuthPresent` condition can deny actions when MFA isn't used. This can be applied via permission boundaries or group policies. Config rules detect but don't enforce. SCPs work at organization level but the condition-based policy is more common. Password policy doesn't enforce MFA.
+**Why:** IAM policies with `aws:MultiFactorAuthPresent` condition can deny actions when MFA isn't used. This can be applied via permission boundaries or group policies. Config rules detect but don't enforce. SCPs work at organization level but do not apply to the management account. Password policy doesn't enforce MFA.
 
 **Key Concept:** [MFA in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_configure-api-require.html)
 </details>
@@ -545,10 +545,10 @@ D. Create new key, update applications, verify, then delete old key
 ### Question 27
 **Scenario:** A company needs to detect when root account credentials are used for any action. What should be configured?
 
-A. AWS Config rule
-B. CloudWatch Logs metric filter
-C. CloudTrail with EventBridge rule for root user events
-D. IAM Access Analyzer
+A. AWS Config rule that flags the root user's activity as non-compliant whenever the account's resources change
+B. CloudWatch Logs metric filter on application log groups
+C. CloudTrail with an EventBridge rule that matches root user sign-in and API events, and alerts
+D. IAM Access Analyzer findings for each root use
 
 <details>
 <summary>Answer</summary>
@@ -587,7 +587,7 @@ D. S3 bucket with encryption
 ### Question 29
 **Scenario:** An EC2 instance in a private subnet needs to download software updates from the internet without having a public IP address. What should be configured?
 
-A. NAT Gateway in a public subnet with route table update
+A. NAT Gateway in a public subnet with a route table update
 B. Internet Gateway attached to the VPC
 C. Elastic IP address on the instance
 D. VPC endpoint for S3
@@ -607,10 +607,10 @@ D. VPC endpoint for S3
 ### Question 30
 **Scenario:** A company needs to allow EC2 instances in a VPC to access S3 without traffic going over the internet. What should be configured?
 
-A. Internet Gateway
+A. Internet Gateway attached to the VPC, with a route that sends the S3 address ranges to it
 B. VPC Gateway Endpoint for S3
-C. Direct Connect
-D. NAT Gateway
+C. Direct Connect from the data center to AWS, which keeps the S3 traffic off the internet for the VPC's instances
+D. NAT Gateway in a public subnet, which hides the instances' addresses so that the S3 traffic is private
 
 <details>
 <summary>Answer</summary>
@@ -627,17 +627,17 @@ D. NAT Gateway
 ### Question 31
 **Scenario:** A web application behind an ALB needs to reject requests from specific IP addresses known to be malicious. What should be configured?
 
-A. Route 53 routing policy
-B. Security Group on the ALB
-C. AWS WAF with IP set rules
-D. Network ACL on the subnet
+A. Route 53 routing policy that returns no answer for the clients' addresses, so the requests are never made
+B. Security Group on the ALB with a deny rule for each of the malicious IP addresses and ranges
+C. AWS WAF with IP set rules attached to the ALB
+D. Network ACL on the targets' subnet
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** AWS WAF can block specific IP addresses or ranges using IP set rules attached to the ALB. Security Groups are allow-only (no explicit deny). NACLs could work but don't integrate with threat intelligence. Route 53 doesn't filter requests.
+**Why:** AWS WAF can block specific IP addresses or ranges using IP set rules attached to the ALB. Security Groups are allow-only (no explicit deny). A NACL on the targets' subnet only sees the ALB's address, not the client's. Route 53 doesn't filter requests.
 
 **Key Concept:** [AWS WAF IP Rules](https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-ipset-match.html)
 </details>
@@ -648,16 +648,16 @@ D. Network ACL on the subnet
 **Scenario:** Two VPCs in different regions need to communicate with each other. Traffic should stay on the AWS network. What should be configured?
 
 A. Direct Connect
-B. VPN connection
-C. AWS Transit Gateway with inter-region peering
-D. VPC Peering
+B. Site-to-Site VPN connection between the two VPCs over the internet
+C. AWS Transit Gateway in one region, with both VPCs attached to it
+D. VPC Peering across the two regions
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** VPC Peering supports inter-region connectivity with traffic staying on the AWS backbone network. Transit Gateway with peering also works but is more complex for two VPCs. VPN uses encrypted tunnels but goes over internet. Direct Connect is for on-premises.
+**Why:** VPC Peering supports inter-region connectivity with traffic staying on the AWS backbone network. A Transit Gateway cannot attach a VPC in another region directly; it needs inter-region gateway peering, which is more complex for two VPCs. VPN uses encrypted tunnels but goes over internet. Direct Connect is for on-premises.
 
 **Key Concept:** [Inter-Region VPC Peering](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html)
 </details>
@@ -667,10 +667,10 @@ D. VPC Peering
 ### Question 33
 **Scenario:** An Application Load Balancer shows healthy targets, but users report intermittent 504 Gateway Timeout errors. What is the most likely cause?
 
-A. DNS resolution issues
-B. Insufficient ALB capacity
+A. DNS resolution issues, since intermittent errors usually come from clients resolving stale ALB addresses
+B. Insufficient ALB capacity, because the load balancer cannot scale quickly enough for the traffic spikes
 C. Backend instances taking longer than the ALB idle timeout
-D. Security Group blocking traffic
+D. Security Group blocking traffic from the ALB to some of the targets in the target group
 
 <details>
 <summary>Answer</summary>
@@ -687,9 +687,9 @@ D. Security Group blocking traffic
 ### Question 34
 **Scenario:** A company needs to distribute static content globally with low latency and reduce load on origin servers. What AWS service should they use?
 
-A. Amazon CloudFront
-B. Route 53 latency-based routing
-C. Application Load Balancer
+A. Amazon CloudFront edge caching
+B. Route 53 latency-based routing policy
+C. Application Load Balancer with cross-zone balancing
 D. Global Accelerator
 
 <details>
@@ -709,8 +709,8 @@ D. Global Accelerator
 
 A. Use Route 53 DNS query test
 B. Review VPC Flow Logs
-C. Check CloudWatch Logs
-D. Check EC2 instance system logs
+C. Check CloudWatch Logs for the hosted zone
+D. Check EC2 instance system logs and DNS caches
 
 <details>
 <summary>Answer</summary>
@@ -729,9 +729,9 @@ D. Check EC2 instance system logs
 ### Question 36
 **Scenario:** A company's EC2 instances have consistently low CPU utilization (under 10%) but can't be downsized due to memory requirements. What should they consider?
 
-A. Implement Spot Instances
-B. Enable detailed monitoring
-C. Use Reserved Instances for cost savings
+A. Use Spot Instances for the workload
+B. Enable detailed monitoring, so that CloudWatch collects 1-minute metrics and shows how far the instance can be downsized
+C. Buy one-year Reserved Instances
 D. Switch to memory-optimized instance types
 
 <details>
@@ -752,7 +752,7 @@ D. Switch to memory-optimized instance types
 A. On-Demand Instances
 B. Reserved Instances
 C. Dedicated Hosts
-D. Spot Instances
+D. Spot Instances for the interruptible batch jobs
 
 <details>
 <summary>Answer</summary>
@@ -809,10 +809,10 @@ D. AWS Budgets
 ### Question 40
 **Scenario:** An S3 bucket stores log files that are accessed frequently for the first 30 days, then rarely accessed. How can storage costs be optimized?
 
-A. Configure lifecycle policy to transition to S3 Standard-IA after 30 days
-B. Use S3 Intelligent-Tiering
-C. Delete files after 30 days
-D. Enable S3 Transfer Acceleration
+A. Lifecycle policy to transition to S3 Standard-IA after 30 days
+B. Use S3 Intelligent-Tiering, which moves objects between access tiers for a monitoring fee on each object
+C. Delete files after 30 days with an expiration rule, since logs that are rarely read have little value after that
+D. Enable S3 Transfer Acceleration, which stores the logs in a cheaper class once they have been uploaded
 
 <details>
 <summary>Answer</summary>

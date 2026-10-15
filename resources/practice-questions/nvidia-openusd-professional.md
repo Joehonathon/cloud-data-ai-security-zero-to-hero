@@ -15,8 +15,8 @@ difficulty: advanced
 **Scenario:** What is a prim in USD?
 
 A. The primary container object in a scene hierarchy, carrying a type, properties, and metadata
-B. A file format
-C. A material shader
+B. A file format, either .usda or .usdc, that stores layers of scene description on disk in text or binary form
+C. A material shader node that computes how light reflects off the surface of a mesh when it is rendered
 D. A rendering pass
 
 <details>
@@ -34,8 +34,8 @@ D. A rendering pass
 
 A. The composition arc strength order: Local, Inherits, VariantSets, References, Payloads, Specializes
 B. A file naming convention
-C. A rendering pipeline
-D. A material model
+C. A rendering pipeline order in which the engine processes lights, shadows, indirect bounces, and post effects
+D. A physically based material model that describes how surfaces reflect, absorb and transmit light in a renderer
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. A variant
 ### Question 4
 **Scenario:** One asset must be available in three configurations, switchable at runtime.
 
-A. Three payloads always loaded
-B. Three stages
+A. Three sibling prims referencing different files, switched by hand-editing the visibility attribute
+B. Three separate stages opened in three viewports and switched by hand
 C. A variant set with three variants on the prim
-D. Three separate files with no relationship
+D. Three separate files with no relationship between them, one for each configuration
 
 <details>
 <summary>Answer</summary>
@@ -87,9 +87,9 @@ D. Three separate files with no relationship
 **Scenario:** Several artists must work on the same scene simultaneously without overwriting each other.
 
 A. Take turns
-B. One shared file
-C. Layer-based workflow: each contributor works in their own layer, composed into the stage by the layer stack
-D. Duplicate the scene per artist
+B. One shared file that everyone opens and edits at the same time, with the last person to save winning
+C. Layer-based workflow: each artist authors in their own layer, composed by the layer stack
+D. Duplicate the scene per artist and have a supervisor merge the changed prims back into a master file each evening
 
 <details>
 <summary>Answer</summary>
@@ -104,8 +104,8 @@ D. Duplicate the scene per artist
 ### Question 6
 **Scenario:** What is a stage in USD?
 
-A. The composed scene graph resulting from evaluating the root layer and all its composition arcs
-B. A single file
+A. The composed scene graph produced by evaluating the root layer and its composition arcs
+B. A single .usd file on disk that holds every prim, read directly with no composition step involved
 C. A rendering device
 D. A material library
 
@@ -122,10 +122,10 @@ D. A material library
 ### Question 7
 **Scenario:** An edit must be made without modifying the referenced source asset.
 
-A. Author an override in a stronger local layer, so the source remains unchanged
-B. Copy the asset
-C. Edit the source file
-D. Delete the reference
+A. Author an override in a stronger local layer; the source stays unchanged
+B. Copy the asset and edit the copy, then point the scene at the new copy instead of the source
+C. Edit the source file directly and republish it, since every other reference will pick up the change automatically
+D. Delete the reference and re-author the whole asset from scratch directly in the shot layer
 
 <details>
 <summary>Answer</summary>
@@ -140,9 +140,9 @@ D. Delete the reference
 ### Question 8
 **Scenario:** Which describes Omniverse Nucleus?
 
-A. A renderer
+A. A renderer that ray traces USD stages on RTX GPUs and writes final frames to disk for review
 B. A physics engine
-C. The collaboration and data service that stores USD content and publishes live change notifications to connected clients
+C. The server that stores USD content and syncs live changes between connected clients
 D. A file format
 
 <details>
@@ -159,9 +159,9 @@ D. A file format
 **Scenario:** Materials must be portable across renderers.
 
 A. Hard-coded colors
-B. Renderer-specific shaders only
+B. Renderer-specific shaders only, since each renderer then reads its own native material network at full quality
 C. Textures with no material
-D. MaterialX and UsdPreviewSurface for portable definitions, with renderer-specific implementations where needed
+D. MaterialX or UsdPreviewSurface, with renderer-specific shaders only where needed
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. The last one listed
 ### Question 11
 **Scenario:** Hydra is used in the rendering path. What is its role?
 
-A. It stores assets
-B. It authors USD files
-C. It handles physics
-D. It is the scene delegate architecture that decouples the scene description from the renderer, so multiple render delegates can consume the same stage
+A. It stores the assets in a versioned database that clients read from and write to over the network
+B. It authors USD files from DCC applications by exporting each tool's native scene data into layers
+C. It handles physics, solving rigid body dynamics and collisions for every prim on the stage each frame
+D. The scene delegate architecture that lets many render delegates draw the same stage
 
 <details>
 <summary>Answer</summary>
@@ -212,7 +212,7 @@ D. It is the scene delegate architecture that decouples the scene description fr
 ### Question 12
 **Scenario:** A schema must add domain-specific properties to prims consistently.
 
-A. External spreadsheets
+A. External spreadsheets that list each prim's expected properties, checked by a script before export
 B. Comments in the file
 C. Ad-hoc attributes on each prim
 D. A typed or applied API schema defining the properties, so tooling can rely on them
@@ -230,10 +230,10 @@ D. A typed or applied API schema defining the properties, so tooling can rely on
 ### Question 13
 **Scenario:** A scene opens very slowly with high memory use.
 
-A. Reduce the screen resolution
-B. Convert heavy references to payloads, use instancing for repeated geometry, and check for unnecessarily deep composition
+A. Reduce the screen resolution and viewport sampling so fewer pixels and textures are held in GPU memory
+B. Convert heavy references to payloads, instance repeated geometry, and check for deep composition
 C. Disable materials
-D. Buy more RAM
+D. Buy more RAM and a faster GPU, so that the entire scene fits in memory without changing how it is built
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Buy more RAM
 ### Question 14
 **Scenario:** Assets from several tools must combine into one scene.
 
-A. Convert everything to a proprietary format
-B. Use USD as the interchange format, with connectors exporting each tool's data, and validate with the USD validation tooling
-C. Screenshot each asset
-D. Rebuild everything in one tool
+A. Convert every asset to one proprietary format and require each tool in the pipeline to import it directly
+B. Use USD as the interchange format, with connectors per tool, and run the USD validator
+C. Screenshot each asset from every tool and paste the images into a single scene as flat planes
+D. Rebuild everything in one tool so that a single native format is used, then re-export the combined result
 
 <details>
 <summary>Answer</summary>

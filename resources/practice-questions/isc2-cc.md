@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** A web server runs an unpatched library with a known remote code execution flaw. Attack groups are actively scanning for it. The server holds payment records. Which term describes the unpatched library?
 
-A. Asset
+A. Asset, meaning the payment records an attacker would want to steal
 B. Threat
 C. Vulnerability
-D. Risk
+D. Risk, meaning the likelihood of exploitation combined with the business impact
 
 <details>
 <summary>Answer</summary>
@@ -27,10 +27,10 @@ D. Risk
 ### Question 2
 **Scenario:** A company installs a visible warning sign stating that an area is under camera surveillance. What control function is the sign?
 
-A. Detective
-B. Corrective
-C. Deterrent
-D. Preventive
+A. Detective (it records events as they happen)
+B. Corrective (it repairs damage after an event)
+C. Deterrent (discourages)
+D. Preventive (it physically blocks the attempt)
 
 <details>
 <summary>Answer</summary>
@@ -45,10 +45,10 @@ D. Preventive
 ### Question 3
 **Scenario:** An organization buys cyber insurance to cover the financial consequence of a breach it cannot fully prevent. Which risk treatment is this?
 
-A. Transfer
-B. Avoid
-C. Mitigate
-D. Accept
+A. Transfer, by shifting the loss
+B. Avoid, by ending the risky activity altogether
+C. Mitigate, by deploying monitoring and hardening so a breach becomes less likely
+D. Accept, by documenting the residual exposure and carrying the loss internally
 
 <details>
 <summary>Answer</summary>
@@ -63,10 +63,10 @@ D. Accept
 ### Question 4
 **Scenario:** A government system labels documents Secret and Top Secret, and the system enforces clearance levels that users cannot override. Which access control model is this?
 
-A. ABAC
-B. RBAC
-C. MAC
-D. DAC
+A. ABAC (attribute-based access)
+B. RBAC (role-based access)
+C. MAC (mandatory)
+D. DAC (discretionary access)
 
 <details>
 <summary>Answer</summary>
@@ -82,9 +82,9 @@ D. DAC
 **Scenario:** An HR analyst can read employee records only for their own region, even though the system technically permits reading others. Which principle is this?
 
 A. Least privilege
-B. Need to know
+B. Need to know, because access follows the analyst's duties
 C. Job rotation
-D. Separation of duties
+D. Separation of duties, so that no one person controls a whole process end to end
 
 <details>
 <summary>Answer</summary>
@@ -118,7 +118,7 @@ D. RPO; it drives backup and replication frequency
 **Scenario:** During a ransomware incident, clinical staff switch to paper forms so patient care continues. Which discipline owns this activity?
 
 A. Disaster recovery
-B. Business continuity
+B. Business continuity planning
 C. Incident response
 D. Change management
 
@@ -137,7 +137,7 @@ D. Change management
 
 A. Preparation, detection and analysis, containment, eradication, recovery, post-incident activity
 B. Preparation, containment, detection, recovery, eradication
-C. Detection, preparation, containment, recovery, eradication, lessons learned
+C. Detection, preparation, containment, recovery, eradication, lessons learned, restoring service before the cause is removed
 D. Containment, detection, eradication, preparation, recovery
 
 <details>
@@ -153,9 +153,9 @@ D. Containment, detection, eradication, preparation, recovery
 ### Question 9
 **Scenario:** A system must store user passwords so they cannot be recovered. Which cryptographic approach applies?
 
-A. Asymmetric encryption
+A. Asymmetric encryption with a protected private key
 B. Symmetric encryption
-C. Hashing with a salt
+C. Hashing with a unique salt
 D. Digital signatures
 
 <details>
@@ -171,8 +171,8 @@ D. Digital signatures
 ### Question 10
 **Scenario:** In a SaaS deployment, who is responsible for configuring which users can access the application?
 
-A. The provider
-B. Shared equally
+A. Vendor
+B. Shared 50/50 with the provider
 C. It depends on the SLA
 D. The customer
 
@@ -189,10 +189,10 @@ D. The customer
 ### Question 11
 **Scenario:** Which document type is recommended rather than mandatory?
 
-A. Guideline
-B. Policy
+A. Guideline, a recommendation that staff are encouraged to follow
+B. Policy; it states management intent that staff may follow at their discretion
 C. Procedure
-D. Standard
+D. Standard; it sets technical settings such as minimum password length that staff may adopt where convenient
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. Standard
 ### Question 12
 **Scenario:** A device sits inline and blocks traffic matching known attack signatures. What is it?
 
-A. Load balancer
-B. Proxy
-C. IDS
-D. IPS
+A. Load balancer appliance
+B. Web proxy server
+C. Network IDS sensor
+D. Network IPS
 
 <details>
 <summary>Answer</summary>
@@ -228,7 +228,7 @@ D. IPS
 A. A password and a security question
 B. A password and a code from a hardware token
 C. A password and a PIN
-D. A fingerprint and a facial scan
+D. A fingerprint and a facial scan, because biometric checks are stronger than passwords
 
 <details>
 <summary>Answer</summary>
@@ -246,7 +246,7 @@ D. A fingerprint and a facial scan
 A. A mantrap or access control vestibule; tailgating
 B. A badge reader; shoulder surfing
 C. CCTV; dumpster diving
-D. A turnstile; piggybacking
+D. A perimeter fence; eavesdropping
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. A turnstile; piggybacking
 ### Question 15
 **Scenario:** Which backup type creates backups fastest but takes longest to restore?
 
-A. Differential
+A. Differential backup
 B. Incremental
 C. Full
-D. Snapshot
+D. Storage snapshot
 
 <details>
 <summary>Answer</summary>

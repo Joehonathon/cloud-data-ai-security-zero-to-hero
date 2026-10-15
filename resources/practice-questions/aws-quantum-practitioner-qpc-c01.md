@@ -16,10 +16,10 @@ This is an anticipated exam rather than a confirmed AWS certification. Treat the
 ### Question 1
 **Scenario:** What distinguishes a qubit from a classical bit?
 
-A. A qubit is faster
+A. A qubit is faster because it performs each classical operation in less time than a transistor does
 B. A qubit can exist in a superposition of the 0 and 1 basis states until measured
-C. A qubit stores more bytes
-D. A qubit cannot be measured
+C. A qubit stores more bytes, since each qubit holds exponentially many classical bits that you can read out
+D. A qubit cannot be measured directly, so its state can only be inferred from the structure of the circuit
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. A qubit cannot be measured
 ### Question 2
 **Scenario:** Two qubits are entangled. What does that mean operationally?
 
-A. They are copies
-B. They have the same value
-C. They are physically adjacent
-D. Their joint state cannot be written as a product of individual states, so measuring one determines correlations with the other
+A. They are copies of each other, created by cloning the first qubit's state onto the second one
+B. They always hold the same value, so measuring one qubit tells you the other's value in advance in any basis
+C. They are physically adjacent on the chip, which is what lets them share a single quantum state
+D. Their joint state cannot be written as a product of individual states, so measurements are correlated
 
 <details>
 <summary>Answer</summary>
@@ -52,9 +52,9 @@ D. Their joint state cannot be written as a product of individual states, so mea
 ### Question 3
 **Scenario:** Which Amazon Braket component runs a circuit on a simulator without using QPU time?
 
-A. Braket Hybrid Jobs only
-B. A QPU device
-C. S3
+A. Braket Hybrid Jobs only, since every circuit has to be submitted from inside a job container
+B. A QPU device, which runs the circuit on real hardware and bills only for the runtime that is used
+C. S3, which executes the circuit when you upload the circuit file into the results bucket
 D. On-demand and local simulators (SV1, DM1, TN1, and the local simulator)
 
 <details>
@@ -70,8 +70,8 @@ D. On-demand and local simulators (SV1, DM1, TN1, and the local simulator)
 ### Question 4
 **Scenario:** A Braket task must be run 1,000 times to build a distribution of outcomes.
 
-A. Use 1,000 qubits
-B. Use 1,000 devices
+A. Use 1,000 qubits, one for each repetition, so that all the outcomes are measured together
+B. Use 1,000 devices in parallel, one per repetition, and merge the results afterwards
 C. Specify 1,000 shots, since each shot is one prepare-and-measure repetition
 D. Run the circuit once
 
@@ -90,7 +90,7 @@ D. Run the circuit once
 
 A. Measurement
 B. CNOT
-C. Hadamard
+C. Hadamard (H) gate
 D. Pauli-X
 
 <details>
@@ -106,10 +106,10 @@ D. Pauli-X
 ### Question 6
 **Scenario:** Results from a QPU are noisier than the simulator predicted.
 
-A. The simulator is broken
-B. The circuit is wrong
-C. The shots were too many
-D. Current hardware is noisy: gate errors, decoherence, and readout error accumulate with circuit depth, so mitigate with shorter circuits and error mitigation techniques
+A. The simulator is broken, because a correct simulator would always match the hardware's output exactly and should be reinstalled from a clean image
+B. The circuit is wrong, so it must contain a logic error that the ideal simulator happened to hide from the developer
+C. The shots were too many, which adds noise because each extra shot is a fresh sample of random hardware errors
+D. Current hardware is noisy: gate, decoherence, and readout errors grow with depth, so use shorter circuits and error mitigation
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. Current hardware is noisy: gate errors, decoherence, and readout error accumu
 ### Question 7
 **Scenario:** A variational algorithm alternates quantum circuit evaluation with classical parameter updates.
 
-A. A Lambda per shot
-B. Braket Hybrid Jobs, which colocate classical compute with the QPU and manage the loop
-C. A batch job on S3
-D. A single quantum task
+A. A Lambda function invoked once per shot, passing each measurement result back to the optimizer
+B. Braket Hybrid Jobs, which colocate classical compute with the QPU and manage the optimization loop with priority access
+C. A batch job that reads circuits from S3, with each iteration queued as a separate unrelated task
+D. A single quantum task submitted once, which runs the whole optimization loop inside the QPU
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. A single quantum task
 ### Question 8
 **Scenario:** Which problem class does Grover's algorithm address?
 
-A. Unstructured search, with a quadratic speedup over classical brute force
-B. Sorting
-C. Linear systems
-D. Factoring integers
+A. Unstructured search, with a quadratic speedup over brute force
+B. Sorting, where it reduces the n log n comparisons to a linear number of steps on a list
+C. Linear systems, where it solves them exponentially faster than classical elimination methods do
+D. Factoring integers, where it breaks RSA moduli in polynomial time using period finding
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Factoring integers
 ### Question 9
 **Scenario:** An organization asks whether quantum computers threaten their encryption today.
 
-A. Not with current hardware, but harvest-now-decrypt-later means long-lived secrets should migrate to post-quantum algorithms now
-B. Only symmetric encryption is at risk
-C. Yes, immediately
-D. Never
+A. Not yet, but harvest-now-decrypt-later means long-lived secrets should move to post-quantum cryptography now
+B. Only symmetric encryption is at risk, because Shor's algorithm breaks AES-256 outright but cannot touch RSA or elliptic curves
+C. Yes, immediately: a quantum computer capable of breaking RSA-2048 is already operating in several research labs today
+D. Never, because quantum computers can only run toy circuits and cannot attack encryption of any kind
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Never
 ### Question 10
 **Scenario:** Different Braket QPU providers use different qubit technologies.
 
-A. Only price varies
-B. Only speed varies
-C. They differ (superconducting, trapped ion, neutral atom), with different connectivity, gate sets, gate times, and error characteristics
-D. They are identical
+A. Only price varies, since every provider exposes the same native gates, topology, connectivity, and error rates to Braket
+B. Only speed varies, because all providers use the same superconducting design with the same connectivity and the same native gate set
+C. They differ (superconducting, trapped ion, neutral atom) in connectivity, gate sets, gate times, and errors
+D. They are identical, and Braket hides the hardware differences by compiling every circuit the same way
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. They are identical
 ### Question 11
 **Scenario:** A circuit uses a two-qubit gate between physically non-adjacent qubits.
 
-A. It runs unchanged
+A. It runs unchanged, because the hardware applies the two-qubit gate across any pair of qubits equally
 B. The compiler inserts SWAP operations to route the qubits, increasing depth and error
-C. Connectivity is irrelevant
-D. It fails
+C. Connectivity is irrelevant, because every Braket QPU offers all-to-all coupling between its qubits
+D. It fails with a validation error, because gates between non-adjacent qubits are not allowed at all
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. It fails
 ### Question 12
 **Scenario:** Costs on Braket must be controlled.
 
-A. Run everything on QPUs
-B. Use the largest device
-C. Use simulators during development, size shot counts deliberately, and monitor per-task and per-shot charges plus Hybrid Jobs instance time
-D. Costs are fixed
+A. Run everything on QPUs, so that the results are always real-hardware results and never need to be re-run or checked on a simulator
+B. Use the largest device available, since larger devices complete each task faster and so cost less
+C. Use simulators during development, size shot counts deliberately, and monitor per-task and per-shot charges
+D. Costs are fixed, because Braket charges one flat monthly rate regardless of the tasks, shots, or devices you choose to use
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Costs are fixed
 ### Question 13
 **Scenario:** What is quantum error correction, as distinct from error mitigation?
 
-A. Correction encodes a logical qubit across many physical qubits to detect and fix errors during computation; mitigation post-processes noisy results without correcting the computation
-B. Mitigation requires more qubits
-C. They are the same
-D. Correction is available on today's devices at scale
+A. Correction encodes a logical qubit across many physical qubits to fix errors; mitigation post-processes noisy results
+B. Mitigation requires more qubits than correction, because it duplicates the whole circuit in parallel
+C. They are the same technique, with correction being the name used for software and mitigation for hardware
+D. Correction is available on today's devices at scale, which is why circuit depth is no longer the limit on useful results and error mitigation is obsolete
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. Correction is available on today's devices at scale
 ### Question 14
 **Scenario:** Results of a Braket task need to be retrieved later.
 
-A. Task results are written to an S3 bucket you specify, retrievable by task ARN
-B. They are not stored
-C. They are returned only synchronously
-D. They are emailed
+A. Task results are written to an S3 bucket you specify, retrievable by task ARN, so you can fetch them after the task finishes
+B. They are not stored, so the circuit must be rerun whenever you want to read the results again
+C. They are returned only synchronously, so the client must stay connected until the task finishes
+D. They are emailed to the account's root address as soon as the device finishes the task
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. They are emailed
 ### Question 15
 **Scenario:** A business asks which of their problems are candidates for quantum advantage.
 
-A. Machine learning generally
-B. A narrow set today: research into simulation of quantum systems, certain optimization and sampling problems, with classical methods still stronger for most production workloads
-C. All optimization problems
-D. Database queries
+A. Machine learning generally, since quantum computers speed up the training of every neural network
+B. A narrow set today, such as simulating quantum systems, while classical methods stay stronger for most workloads
+C. Every optimization problem, because quantum annealing is proven to beat classical solvers across the board
+D. Database queries, since Grover's algorithm gives an exponential speedup for every table lookup in a very large database
 
 <details>
 <summary>Answer</summary>

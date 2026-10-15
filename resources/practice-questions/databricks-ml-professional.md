@@ -14,10 +14,10 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A feature must be computed from events strictly before each label's timestamp.
 
-A. Ignore timestamps
-B. A point-in-time join using the feature store's time-aware lookup, so no future information leaks into training
-C. Use the latest feature values
-D. Join on the key only
+A. Ignore the timestamps and join each label to the whole feature table by key
+B. A point-in-time join using the feature store's time-aware lookup
+C. Use the latest feature values available at training time, joining each label to the most recent computed row in the table
+D. Join on the entity key only, without any condition on the event timestamps
 
 <details>
 <summary>Answer</summary>
@@ -35,7 +35,7 @@ D. Join on the key only
 A. A monitored trigger feeding a pipeline that retrains, evaluates against the incumbent, and promotes only if it wins
 B. Never retrain
 C. Retrain daily regardless
-D. Manual retraining when someone notices
+D. Manual retraining when someone notices a drop on a dashboard, followed by a hand-run deployment to the production endpoint
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Manual retraining when someone notices
 ### Question 3
 **Scenario:** Two model versions must be compared on live traffic.
 
-A. Offline evaluation only
+A. Offline evaluation only, using a held-out test set from historical data to decide which version serves users, then promoting the winner directly
 B. Replace the model entirely
-C. A serving endpoint with traffic split between versions, or shadow serving the challenger without returning its responses
-D. Ask users
+C. An endpoint with traffic split between versions, or shadow serving of the challenger
+D. Ask a sample of users which version they prefer after they have used each one for a whole week
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Ask users
 ### Question 4
 **Scenario:** Model quality monitoring needs ground truth that arrives days after the prediction.
 
-A. Monitor input drift immediately and join delayed labels to predictions when they arrive, computing quality metrics on that lag
+A. Monitor input drift now, and join delayed labels to predictions when they arrive
 B. Skip monitoring
-C. Monitor input drift only
-D. Assume quality is stable
+C. Monitor input drift only, and skip quality metrics because labels arrive too late to be useful
+D. Assume quality is stable until a customer complaint arrives, then investigate the model
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. Assume quality is stable
 ### Question 5
 **Scenario:** A model artifact must carry its input schema so bad requests fail clearly.
 
-A. Document it separately
+A. Document the schema separately in a wiki page that callers are expected to read and follow
 B. No schema
-C. Validate in the client only
+C. Validate in the client only, trusting every caller to send correctly shaped requests
 D. Log the model with an MLflow signature and an input example
 
 <details>
@@ -104,7 +104,7 @@ D. Log the model with an MLflow signature and an input example
 ### Question 6
 **Scenario:** Custom preprocessing and postprocessing must ship with the model.
 
-A. Two separate services
+A. Two separate services, one for preprocessing and one for the model, called in sequence by each client
 B. Ask callers to reimplement it
 C. An `mlflow.pyfunc` custom model wrapping the full logic, logged as one artifact
 D. A README
@@ -122,10 +122,10 @@ D. A README
 ### Question 7
 **Scenario:** Feature computation is expensive and shared by several models.
 
-A. Cache in memory only
-B. Compute in each notebook
-C. Materialize features into feature tables on a schedule, with online tables for low-latency serving
-D. Recompute per model
+A. Cache the computed features in memory inside each notebook session and rebuild them after every restart
+B. Compute in each notebook that needs the feature, so each model team owns and schedules its own copy of the logic
+C. Materialize features into feature tables on a schedule, with online tables for serving
+D. Recompute the features inside each model's own training job and serving code every time it runs
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. One workspace for everything
 ### Question 9
 **Scenario:** An ensemble of models must be served behind one endpoint.
 
-A. Multiple endpoints and client-side logic
-B. A pyfunc model that loads the components and implements the combination logic, served as a single version
+A. Multiple endpoints with client-side logic that calls each one and combines the predictions in the application
+B. A pyfunc model that loads the components and combines their predictions, served as one version
 C. Retrain as one model
-D. It is not possible
+D. It is not possible, because a serving endpoint can host only a single model and cannot run any custom code
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Training curves
 ### Question 11
 **Scenario:** A time-series model must be validated correctly.
 
-A. Leave-one-out
-B. Stratified split
-C. Random k-fold
-D. Rolling-origin (walk-forward) validation, training on past and validating on future, respecting the forecast horizon
+A. Leave-one-out validation, holding out a single row at a time and training on every remaining row
+B. A random stratified split that keeps the class proportions the same in the training and test sets
+C. Random k-fold cross-validation, shuffling all rows into folds so that every fold trains on a mix of past and future data
+D. Rolling-origin (walk-forward) validation, training on the past and validating on the future
 
 <details>
 <summary>Answer</summary>
@@ -212,7 +212,7 @@ D. Rolling-origin (walk-forward) validation, training on past and validating on 
 ### Question 12
 **Scenario:** Training data must be versioned so a model can be rebuilt exactly.
 
-A. Overwrite the table each run
+A. Overwrite the table each run, and keep the notebook that produced it in Git for later reproduction
 B. Keep the latest only
 C. Note the date
 D. Delta table versions or a snapshot, with the version recorded in the MLflow run
@@ -230,10 +230,10 @@ D. Delta table versions or a snapshot, with the version recorded in the MLflow r
 ### Question 13
 **Scenario:** An endpoint's latency must be reduced for a large model.
 
-A. Reduce logging
-B. Add more model versions
-C. Right-size the compute (including GPU where appropriate), enable caching where responses repeat, and consider a distilled or quantized model
-D. Increase the batch size
+A. Reduce logging to errors only, and turn off the inference table and the request payload capture
+B. Add more model versions behind the same endpoint so that the requests are spread across all of them
+C. Right-size the compute (GPU if needed), cache repeated responses, consider quantization
+D. Increase the batch size so that each request waits until many more rows can be processed together
 
 <details>
 <summary>Answer</summary>
@@ -251,7 +251,7 @@ D. Increase the batch size
 A. Unity Catalog lineage linking the model to the tables and features it consumed, with grants controlling access to the model
 B. Comments in code
 C. File permissions
-D. A wiki page
+D. A wiki page listing each model with its training tables and owners, updated by hand by the model owner after every single release
 
 <details>
 <summary>Answer</summary>

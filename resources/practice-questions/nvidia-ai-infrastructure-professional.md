@@ -15,8 +15,8 @@ difficulty: advanced
 **Scenario:** A DGX system's eight GPUs must communicate at full bandwidth for tensor-parallel training.
 
 A. InfiniBand
-B. PCIe switching
-C. NVLink with NVSwitch providing all-to-all GPU bandwidth within the node
+B. PCIe switching on the node's root complex, which gives every GPU a dedicated x16 link to the CPUs
+C. NVLink with NVSwitch giving all-to-all GPU bandwidth within the node
 D. Ethernet
 
 <details>
@@ -32,10 +32,10 @@ D. Ethernet
 ### Question 2
 **Scenario:** A multi-node training cluster is being designed for 64 nodes with 8 GPUs each.
 
-A. A rail-optimized fat-tree InfiniBand fabric with non-blocking bandwidth and one NIC per GPU rail
+A. A rail-optimized fat-tree InfiniBand fabric with non-blocking bandwidth and one NIC per GPU
 B. A single top-of-rack switch
 C. Wireless
-D. Standard 10 GbE
+D. Standard 10 GbE with TCP and a two-tier leaf-spine design oversubscribed 4:1 to save on switch cost
 
 <details>
 <summary>Answer</summary>
@@ -53,7 +53,7 @@ D. Standard 10 GbE
 A. Display streaming
 B. GPU virtualization
 C. Direct memory transfer between GPU memory and the network adapter, bypassing host memory
-D. Faster local disk access
+D. Faster local disk access by letting the GPU read NVMe drives directly into its own memory buffers
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Faster local disk access
 ### Question 4
 **Scenario:** RoCE is used instead of InfiniBand. What must be configured for it to perform?
 
-A. A separate VLAN only
+A. A separate VLAN only, with RDMA traffic isolated from management traffic and a dedicated subnet per rack
 B. Nothing special
-C. Lossless Ethernet: PFC for flow control and ECN for congestion notification, configured consistently end to end
-D. Jumbo frames only
+C. Lossless Ethernet with PFC flow control and ECN congestion marking set end to end
+D. Jumbo frames only, with a 9000 byte MTU on every switch port and every NIC in the data path
 
 <details>
 <summary>Answer</summary>
@@ -87,9 +87,9 @@ D. Jumbo frames only
 **Scenario:** A Slurm cluster must guarantee that all ranks of a distributed job start together.
 
 A. Preemption
-B. First-come-first-served per node
+B. First-come-first-served per node as they free up
 C. Backfill only
-D. Gang scheduling, so the job runs only when all requested nodes are simultaneously available
+D. Gang scheduling, so the job runs only when all requested nodes are available at once
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Gang scheduling, so the job runs only when all requested nodes are simultaneo
 ### Question 6
 **Scenario:** Storage must feed 512 GPUs reading a large image dataset.
 
-A. Local disk only
-B. A parallel filesystem or high-throughput object store sized for aggregate bandwidth, with local NVMe caching on nodes
-C. A cloud bucket over the internet
-D. A single NFS server
+A. Local disk only, copying the dataset to every node before the job starts and again each epoch
+B. A parallel filesystem or high-throughput object store sized for aggregate bandwidth
+C. A cloud bucket reached over the public internet through a NAT gateway, with every node fetching its own copy of the data
+D. A single, well-provisioned NFS server with a large RAM cache and a 100 GbE link to every compute node
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A single NFS server
 ### Question 7
 **Scenario:** MIG is enabled on a node in a Kubernetes cluster. How do workloads request a slice?
 
-A. MIG is not supported in Kubernetes
+A. MIG is not supported in Kubernetes, so MIG mode must be turned off on the node before any pod can use the GPU at all, and pods then request whole GPUs only
 B. They request the specific MIG profile resource advertised by the device plugin, such as `nvidia.com/mig-1g.10gb`
 C. They request CPU only
-D. They request `nvidia.com/gpu`
+D. They request `nvidia.com/gpu` with a limit of 1 and then pick the slice size at runtime with a CUDA environment variable in the container
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. They request `nvidia.com/gpu`
 ### Question 8
 **Scenario:** Training throughput is well below the theoretical FLOPS of the hardware.
 
-A. Reduce the model size
-B. Profile with Nsight Systems and Nsight Compute to find whether the job is compute bound, memory bound, communication bound, or input bound
-C. Increase the learning rate
-D. Buy newer GPUs
+A. Reduce the model size until the job reaches the hardware's theoretical throughput
+B. Profile with Nsight Systems and Nsight Compute to find the actual bottleneck
+C. Increase the learning rate and batch size together so each step does more work per kernel launch and utilization rises on every GPU
+D. Buy newer GPUs with a higher peak FLOPS rating and rerun the same job without any changes
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Buy newer GPUs
 ### Question 9
 **Scenario:** Mixed precision training is enabled and loss becomes NaN.
 
-A. Use loss scaling (or BF16, which has the same exponent range as FP32) to prevent gradient underflow
+A. Use loss scaling (or BF16, which has FP32's exponent range) to prevent gradient underflow
 B. Lower the batch size
 C. Increase the epochs
-D. Disable mixed precision permanently
+D. Disable mixed precision permanently and train in FP32 only
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Disable mixed precision permanently
 ### Question 10
 **Scenario:** A multi-tenant cluster must prevent one team from monopolizing GPUs.
 
-A. Manual approval for every job
+A. Manual approval for every job by a platform administrator, who checks the requested GPU count against the team's allocation
 B. One large namespace
-C. Trust the teams
-D. Resource quotas per namespace, priority classes, and fair-share or partition limits in the scheduler
+C. Trust the teams to self-limit and let them submit as many GPU jobs as they like, since usage is visible in dashboards
+D. Resource quotas per namespace, priority classes, and fair-share limits in the scheduler
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Resource quotas per namespace, priority classes, and fair-share or partition 
 ### Question 11
 **Scenario:** NCCL collectives are unexpectedly slow across nodes.
 
-A. Add more nodes
-B. Set `NCCL_DEBUG=INFO` and check the selected transport, topology detection, and whether it fell back from RDMA to sockets
-C. Reduce the model
-D. Restart the job
+A. Add more nodes so the collective is spread across more links and each GPU handles a smaller share of the traffic
+B. Set `NCCL_DEBUG=INFO` to see the chosen transport and any fallback from RDMA to sockets
+C. Reduce the model size so that each collective moves fewer gradients across the cluster network
+D. Restart the job on the same nodes several times and keep the run that picks the fastest transport
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. Restart the job
 **Scenario:** Power and cooling must be planned for a rack of DGX systems.
 
 A. Cooling is unnecessary
-B. Standard office power
-C. Plan per-rack power draw and cooling capacity against the systems' rated consumption, including redundancy and possibly liquid cooling
-D. Use fewer GPUs per node
+B. Standard office-grade power with a single circuit per rack
+C. Plan per-rack power and cooling capacity against the systems' rated consumption, including redundancy and possibly liquid cooling
+D. Buy the racks first and size power and cooling after the systems arrive
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Use fewer GPUs per node
 ### Question 13
 **Scenario:** A node's GPU fails mid-training in a 64-node run.
 
-A. Continue with 63 nodes and no changes
-B. Ignore it
-C. Restart from scratch
-D. Resume from the most recent checkpoint on healthy nodes, with the failed node cordoned; use frequent checkpointing and elastic training where supported
+A. Continue with 63 nodes and no changes, since data parallel training tolerates a missing worker without any reconfiguration or restart of the remaining ranks
+B. Ignore the failed GPU and let the run carry on with the remaining GPUs in the same node
+C. Restart the whole run from scratch with the original random seed and the same data order
+D. Resume from the latest checkpoint on healthy nodes with the failed node cordoned
 
 <details>
 <summary>Answer</summary>
@@ -249,7 +249,7 @@ D. Resume from the most recent checkpoint on healthy nodes, with the failed node
 **Scenario:** Which tool manages and monitors an InfiniBand fabric?
 
 A. NVIDIA UFM (Unified Fabric Manager)
-B. DCGM
+B. DCGM, which monitors GPU health but not switches
 C. Nsight
 D. NGC
 
@@ -266,10 +266,10 @@ D. NGC
 ### Question 15
 **Scenario:** Benchmarking should validate a new cluster before handing it to users.
 
-A. Run standard benchmarks at each layer: single-GPU compute, NCCL all-reduce bandwidth, storage throughput, and an end-to-end MLPerf-style training run
+A. Run benchmarks per layer: single-GPU compute, NCCL all-reduce bandwidth, storage throughput, then end to end
 B. Run one training job
-C. Trust the vendor specification
-D. Check `nvidia-smi` only
+C. Trust the vendor's acceptance report and published specifications, since the system was already tested at the factory and again by the integrator
+D. Check `nvidia-smi` only, since a clean GPU listing, driver version and temperature readings show the fabric and storage also work
 
 <details>
 <summary>Answer</summary>

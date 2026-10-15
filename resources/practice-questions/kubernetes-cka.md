@@ -10,7 +10,7 @@
 **Scenario:** A pod is stuck in `Pending` state. `kubectl describe pod` shows `0/3 nodes are available: 3 Insufficient memory`. What's the right fix?
 
 A. Reduce the pod's memory `requests` or scale up the cluster
-B. Drain a node
+B. Drain a node so the scheduler can spread the load, which frees memory on the remaining nodes for the pending pod
 C. Delete and recreate the pod
 D. Restart the kubelet
 
@@ -27,10 +27,10 @@ D. Restart the kubelet
 ### Question 2
 **Scenario:** You need to upgrade a 1.28 cluster to 1.29 using kubeadm. What's the correct order?
 
-A. Upgrade etcd directly with binary replacement
-B. Upgrade control plane (kubeadm + kubelet + kubectl), drain a worker, upgrade kubeadm + kubelet on that worker, uncordon, repeat
-C. Upgrade kubelet on all nodes simultaneously
-D. Upgrade all worker nodes, then control plane
+A. Upgrade etcd directly with binary replacement on every node first, then run kubeadm on the workers afterward
+B. Upgrade control plane first, then drain, upgrade, and uncordon each worker in turn
+C. Upgrade the kubelet on all nodes at the same time, starting with the workers and then the control plane
+D. Upgrade all worker nodes first and in parallel, then upgrade the control plane once they are done
 
 <details>
 <summary>Answer</summary>
@@ -45,17 +45,17 @@ D. Upgrade all worker nodes, then control plane
 ### Question 3
 **Scenario:** A Deployment YAML has `replicas: 3` but only 1 pod is running. What's most likely?
 
-A. Resource quota in the namespace caps pod count
-B. Network policy blocking pod creation
-C. The kubelet on 2 nodes is down
-D. Any of the above
+A. A NetworkPolicy selecting the pods, which blocks the ReplicaSet controller from creating the missing replicas
+B. The Deployment's strategy.type is Recreate, which caps the ReplicaSet at a single pod for as long as the Deployment exists
+C. The kube-proxy DaemonSet pod on one node is not ready, so the ReplicaSet counts only one replica as available
+D. A ResourceQuota in the namespace with a hard `pods` limit (confirm with `kubectl describe rs` events)
 
 <details>
 <summary>Answer</summary>
 
-**Correct: D** (most likely A in practice; check `kubectl describe rs` events)
+**Correct: D** (check `kubectl describe rs` events)
 
-**Why:** Multiple causes. `kubectl describe replicaset` and `kubectl get events --sort-by=.metadata.creationTimestamp` are the diagnostic tools. ResourceQuota with a `pods` hard limit is the most common cause. Less commonly: insufficient cluster capacity, taints, or controller issues.
+**Why:** Several things can limit replicas, but a ResourceQuota is the most common. `kubectl describe replicaset` and `kubectl get events --sort-by=.metadata.creationTimestamp` are the diagnostic tools. ResourceQuota with a `pods` hard limit is the most common cause. Less commonly: insufficient cluster capacity, taints, or controller issues.
 </details>
 
 ---
@@ -63,10 +63,10 @@ D. Any of the above
 ### Question 4
 **Scenario:** You need to expose a Deployment so it's reachable on every node's IP at port 30080. What Service type?
 
-A. ClusterIP
+A. ClusterIP, which gives the Service a stable virtual IP reachable on port 30080 from every node's own address
 B. ExternalName
-C. NodePort
-D. LoadBalancer
+C. NodePort, which opens the same port on every node's IP
+D. LoadBalancer, which provisions a cloud load balancer in front of the Service on a managed platform
 
 <details>
 <summary>Answer</summary>
@@ -81,17 +81,17 @@ D. LoadBalancer
 ### Question 5
 **Scenario:** etcd backup task: take a snapshot of etcd on a control plane node. Which command?
 
-A. `kubectl backup etcd`
-B. `systemctl backup etcd`
-C. `ETCDCTL_API=3 etcdctl snapshot save /backup/snap.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key`
-D. `kubeadm reset etcd`
+A. `kubectl exec -n kube-system etcd-<node> -- etcdctl backup --data-dir /var/lib/etcd --backup-dir /backup`
+B. `etcdctl member list --endpoints=https://127.0.0.1:2379`
+C. `ETCDCTL_API=3 etcdctl snapshot save /backup/snap.db --cacert=... --cert=... --key=...` (kubeadm default PKI paths)
+D. `etcdctl snapshot restore /backup/snap.db --data-dir /var/lib/etcd-new` on a control plane node
 
 <details>
 <summary>Answer</summary>
 
 **Correct: C**
 
-**Why:** etcdctl with API v3 takes the snapshot. The TLS certs path is the kubeadm default. There's no `kubectl backup` command; `kubeadm reset` is destructive.
+**Why:** etcdctl with API v3 takes the snapshot. The TLS certs path is the kubeadm default. `etcdctl member list` only reads cluster membership, `snapshot restore` loads a snapshot rather than taking one, and `etcdctl backup` is the legacy v2 command that does not take a v3 snapshot.
 </details>
 
 ---
@@ -101,7 +101,7 @@ D. `kubeadm reset etcd`
 
 A. Role + RoleBinding in `dev`
 B. ClusterRole + ClusterRoleBinding
-C. ServiceAccount only
+C. A ServiceAccount named alice in dev, bound to the built-in view ClusterRole through a ClusterRoleBinding
 D. NetworkPolicy
 
 <details>
@@ -117,9 +117,9 @@ D. NetworkPolicy
 ### Question 7
 **Scenario:** A ConfigMap is mounted in a pod. You update the ConfigMap. The pod's mounted file isn't updating. Why?
 
-A. ConfigMaps require a rolling update
-B. Subkey mounts (volume.configMap.items) are not auto-updated; whole-volume mounts auto-refresh after a delay
-C. ConfigMaps don't propagate to pods
+A. ConfigMaps require a rolling update of the Deployment before any volume mount will ever show new content
+B. Subpath mounts don't auto-update; whole-volume mounts refresh after a delay
+C. ConfigMaps don't propagate to running pods after creation, so a mounted volume is only populated once at pod start
 D. You need to restart the cluster
 
 <details>
@@ -135,10 +135,10 @@ D. You need to restart the cluster
 ### Question 8
 **Scenario:** PV is created but PVC stays `Pending` forever. The PV has accessModes `[ReadWriteMany]`, the PVC requests `[ReadWriteOnce]`. Why isn't it binding?
 
-A. PV access modes must be a superset of PVC's, but they don't match exactly when `[RWX]` vs `[RWO]`
-B. Storage class mismatch is more likely the cause
-C. Capacity mismatch
-D. Both A and B (PVC binding requires access mode in PV's set + storage class match + sufficient capacity)
+A. The PV has no reclaim policy set, so the PV controller refuses to bind it until Retain or Delete is added
+B. PVs are namespaced and must live in the same namespace as the PVC, and this one was created in kube-system
+C. The PV capacity must exceed the PVC request by at least 10Gi whenever a ReadWriteMany volume is involved
+D. The PV's access modes do not include ReadWriteOnce, which the PVC requests (binding also needs a matching class and enough capacity)
 
 <details>
 <summary>Answer</summary>
@@ -153,8 +153,8 @@ D. Both A and B (PVC binding requires access mode in PV's set + storage class ma
 ### Question 9
 **Scenario:** A node is unreachable. Pods on it stay running for 5 minutes, then start failing over. Why the delay?
 
-A. `pod-eviction-timeout` defaults to 5 minutes; the controller waits before evicting
-B. There's a randomized backoff
+A. The unreachable taint has a default 300-second toleration (formerly `pod-eviction-timeout`), so eviction waits 5 minutes
+B. A randomized backoff in the scheduler spreads evictions over several minutes
 C. Pods crash because etcd loses node state
 D. Kubelet stops responding immediately
 
@@ -163,7 +163,7 @@ D. Kubelet stops responding immediately
 
 **Correct: A**
 
-**Why:** `kube-controller-manager` waits `--pod-eviction-timeout` (default 5m) after a node becomes `NotReady` before evicting pods. This avoids unnecessary churn from transient network blips. Tunable on the kube-controller-manager flag.
+**Why:** A node that becomes unreachable gets a taint, and pods carry a default toleration of 300 seconds for it, so eviction starts after 5 minutes. Older clusters used the `--pod-eviction-timeout` flag of kube-controller-manager (default 5m) for the same delay. This avoids unnecessary churn from transient network blips. Tune it with `tolerationSeconds` on the pod.
 </details>
 
 ---
@@ -171,10 +171,10 @@ D. Kubelet stops responding immediately
 ### Question 10
 **Scenario:** A pod must run only on nodes with a specific GPU type. You set a taint `gpu=v100:NoSchedule` on those nodes. What does the pod need?
 
-A. nodeSelector with `gpu: v100`
-B. A toleration matching the taint
-C. Both A and B
-D. Affinity rules
+A. A nodeSelector with `gpu: v100` alone, since a matching label selector overrides the NoSchedule taint on the node
+B. A toleration matching the taint alone, because a toleration permits and also attracts the pod to the tainted GPU nodes
+C. A nodeSelector (or node affinity) on the GPU label plus a toleration for the taint
+D. Pod affinity to pods already running on the GPU nodes, which also lets the new pod ignore the taint
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. Affinity rules
 ### Question 11
 **Scenario:** Which command shows the resource usage of all pods sorted by CPU?
 
-A. `kubectl top pods`
-B. `kubectl describe pods | grep CPU`
+A. `kubectl top pods`, which lists every pod in all namespaces and orders them by CPU usage by default
+B. `kubectl describe pods -A | grep -i cpu | sort`
 C. `kubectl top pods -A --sort-by=cpu`
-D. `kubectl top pods --sort-by=cpu`
+D. `kubectl top pods -n default --sort-by=cpu`
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. `kubectl top pods --sort-by=cpu`
 ### Question 12
 **Scenario:** A NetworkPolicy is created with `policyTypes: [Ingress]` and an empty ingress rule. What's the effect on selected pods?
 
-A. No change
+A. No change, because a policy with an empty ingress rule is ignored unless at least one allow rule is also present
 B. Egress also blocked
-C. All ingress allowed
-D. All ingress blocked
+C. All ingress allowed to the selected pods, from every source
+D. All ingress blocked to the selected pods
 
 <details>
 <summary>Answer</summary>
@@ -225,10 +225,10 @@ D. All ingress blocked
 ### Question 13
 **Scenario:** kube-proxy mode iptables vs IPVS - which scales better for thousands of services?
 
-A. iptables; it's the default and battle-tested
+A. iptables; it is the default and battle-tested, and its rule chains are matched in constant time however many services exist
 B. IPVS; it uses hash tables for O(1) lookup vs iptables' O(n)
 C. They scale identically
-D. Neither - use a service mesh
+D. A service mesh sidecar replaces kube-proxy rules entirely, so the proxy mode has no effect on lookup cost
 
 <details>
 <summary>Answer</summary>
@@ -243,9 +243,9 @@ D. Neither - use a service mesh
 ### Question 14
 **Scenario:** A Pod has a `livenessProbe` that fails. What happens?
 
-A. The container is restarted (in-place); the pod stays scheduled
+A. The container is restarted in place by the kubelet, and the pod stays scheduled on its node
 B. The deployment scales up
-C. The pod is deleted and rescheduled
+C. The pod is deleted and rescheduled by its ReplicaSet onto a fresh node
 D. The pod is moved to another node
 
 <details>
@@ -261,10 +261,10 @@ D. The pod is moved to another node
 ### Question 15
 **Scenario:** You need to drain a node for maintenance with active workloads. Which command?
 
-A. `kubectl delete node <name>`
+A. `kubectl delete node <name>` after stopping the node's workloads by hand
 B. `kubectl drain <name> --ignore-daemonsets --delete-emptydir-data`
-C. `systemctl stop kubelet` on that node
-D. `kubectl cordon <name>`
+C. `systemctl stop kubelet` on that node, then wait for the pods to be evicted
+D. `kubectl cordon <name>`, which marks the node unschedulable and evicts all running pods so the node can be serviced
 
 <details>
 <summary>Answer</summary>
@@ -281,7 +281,7 @@ D. `kubectl cordon <name>`
 
 A. The Service's `selector` doesn't match any Pod labels
 B. The Service spec is wrong
-C. The Pods are in a different namespace
+C. The Pods are Ready, but the Endpoints controller lists only pods that run on the same node as the Service
 D. CoreDNS is down
 
 <details>
@@ -297,10 +297,10 @@ D. CoreDNS is down
 ### Question 17
 **Scenario:** You need to give a CI service account read-only access to all resources in the `staging` namespace. What's the minimal correct setup?
 
-A. ClusterRole with full read permissions, ClusterRoleBinding to the service account
+A. A ClusterRole with get/list/watch on all resources, bound to the service account through a ClusterRoleBinding
 B. Run the CI as cluster-admin
 C. Edit the kube-system service account
-D. Role in `staging` namespace with `verbs: [get, list, watch]`, RoleBinding to the service account
+D. A Role in `staging` with `verbs: [get, list, watch]`, bound by a RoleBinding
 
 <details>
 <summary>Answer</summary>
@@ -315,9 +315,9 @@ D. Role in `staging` namespace with `verbs: [get, list, watch]`, RoleBinding to 
 ### Question 18
 **Scenario:** A pod's container exits with `OOMKilled`. What's the right first action?
 
-A. Lower `resources.limits.memory`
+A. Lower `resources.limits.memory`, so the kernel reclaims the container's pages before an OOM occurs
 B. Disable OOM kills on the node
-C. Increase `resources.limits.memory` (and `requests` if needed)
+C. Increase `resources.limits.memory` (and `requests` if needed) after profiling the container's real memory use
 D. Switch to a different node
 
 <details>
@@ -334,9 +334,9 @@ D. Switch to a different node
 **Scenario:** You want to schedule a Pod only on nodes labeled `disk=ssd`. What's the standard mechanism?
 
 A. `priorityClassName: ssd-only`
-B. `tolerations` for `disk=ssd`
-C. Manually choose the node in the spec
-D. `nodeSelector: { disk: ssd }`
+B. `tolerations` for `disk=ssd`, which restricts the Pod to nodes carrying that label and keeps it off all other nodes
+C. Manually choose the node by setting its name in the Pod spec for each deployment
+D. `nodeSelector: { disk: ssd }` in the Pod spec
 
 <details>
 <summary>Answer</summary>
@@ -351,10 +351,10 @@ D. `nodeSelector: { disk: ssd }`
 ### Question 20
 **Scenario:** A NetworkPolicy denies all ingress to namespace `app`. You need to allow traffic from namespace `web` only. What's the right rule?
 
-A. Edit the CNI directly
+A. Edit the CNI configuration directly on each node so that only addresses from the `web` namespace's pod CIDR are accepted
 B. Service Account binding
 C. RBAC role
-D. NetworkPolicy with `podSelector: {}` and ingress from a `namespaceSelector` matching `web`
+D. A NetworkPolicy with `podSelector: {}` and ingress from a matching `namespaceSelector`
 
 <details>
 <summary>Answer</summary>
@@ -369,10 +369,10 @@ D. NetworkPolicy with `podSelector: {}` and ingress from a `namespaceSelector` m
 ### Question 21
 **Scenario:** You apply a Deployment manifest. Pods come up but immediately CrashLoopBackOff. `kubectl logs` shows the container can't connect to its database. What do you check first?
 
-A. Service exists and resolves the DB hostname; ConfigMap / Secret with DB creds is mounted; NetworkPolicy doesn't block egress
-B. Restart all nodes
-C. Increase replica count
-D. Disable health checks
+A. Check the DB Service and DNS name, the mounted Secret or ConfigMap, and NetworkPolicy egress
+B. Restart all nodes, since a connection error at startup usually means the node's kubelet has lost its network state
+C. Increase the replica count so that more pods try to reach the database at the same time, sharing the load
+D. Disable health checks so that Kubernetes stops restarting the container while the database is unreachable
 
 <details>
 <summary>Answer</summary>
@@ -388,7 +388,7 @@ D. Disable health checks
 **Scenario:** A StatefulSet has 3 replicas. You delete pod-1 (the middle one). What happens?
 
 A. K8s recreates pod-1 with the same name and same PVC binding
-B. K8s renames the remaining pods sequentially (pod-0, pod-1)
+B. K8s renames the remaining pods sequentially (pod-0, pod-1) so ordinals stay contiguous, and keeps each PVC with its pod
 C. The PVC is deleted
 D. The StatefulSet enters a degraded state
 
@@ -406,7 +406,7 @@ D. The StatefulSet enters a degraded state
 **Scenario:** You need to expose a Deployment to the internet on a managed K8s service (EKS / AKS / GKE). What's the standard way?
 
 A. Manually configure cloud LB outside K8s
-B. Pod with `hostNetwork: true`
+B. A Pod with `hostNetwork: true` on each node
 C. `Service` of type `LoadBalancer`
 D. NodePort + manual cloud LB pointing at NodePort
 
@@ -423,17 +423,17 @@ D. NodePort + manual cloud LB pointing at NodePort
 ### Question 24
 **Scenario:** etcd backup. What's the correct command to take a snapshot?
 
-A. `etcdctl snapshot save backup.db --cacert ... --cert ... --key ...` (with appropriate cert paths and the etcd endpoint)
-B. `kubectl backup etcd`
+A. `etcdctl snapshot save backup.db --cacert ... --cert ... --key ...` against the etcd endpoint
+B. `kubectl backup etcd --all-namespaces`, which asks the API server to stream a consistent copy of etcd to a local file
 C. `cp -r /var/lib/etcd /backups/`
-D. `systemctl stop etcd && tar -czf etcd.tar.gz /var/lib/etcd`
+D. `etcdctl snapshot restore backup.db --data-dir /var/lib/etcd-restore`
 
 <details>
 <summary>Answer</summary>
 
 **Correct: A**
 
-**Why:** `etcdctl snapshot save` is the documented way to take a consistent backup of etcd while it's running. B isn't a kubectl subcommand. C copies live data files (not consistent). D works but takes the cluster down.
+**Why:** `etcdctl snapshot save` is the documented way to take a consistent backup of etcd while it's running. B isn't a kubectl subcommand. C copies live data files (not consistent). D restores a snapshot rather than taking one.
 </details>
 
 ---
@@ -442,9 +442,9 @@ D. `systemctl stop etcd && tar -czf etcd.tar.gz /var/lib/etcd`
 **Scenario:** You need to enforce that all pods in a namespace must have CPU/memory `requests` and `limits` set. What's the right tool?
 
 A. NetworkPolicy
-B. PodSecurityPolicy
+B. PodSecurityPolicy, which can require every pod to declare CPU and memory limits
 C. ClusterRole
-D. LimitRange + ResourceQuota in the namespace
+D. A LimitRange for default requests and limits, plus a ResourceQuota that caps the namespace totals
 
 <details>
 <summary>Answer</summary>

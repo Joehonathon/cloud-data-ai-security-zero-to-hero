@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** What problem does Boundary solve compared with a bastion host and a VPN?
 
-A. It is a firewall
-B. It replaces the network entirely
-C. It stores secrets
-D. It grants identity-based access to specific services without giving network access to the whole subnet, and without distributing credentials
+A. It is a stateful firewall that filters traffic at the subnet edge by source address, port, and protocol rules
+B. It replaces the network entirely, so the VPCs, subnets, and routing between environments are no longer needed
+C. It stores secrets in an encrypted key-value store and returns them to authorized users on request, as a vault does
+D. It grants identity-based access to specific services without network access to the whole subnet, and without distributing credentials
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. It grants identity-based access to specific services without giving network a
 ### Question 2
 **Scenario:** What are the two main components of a Boundary deployment?
 
-A. Server and agent
+A. A server and an agent, where the agent runs on each target host and the server issues policy to it
 B. Controllers, which handle API, authentication, and authorization, and workers, which proxy session traffic
-C. Client and proxy
-D. Master and replica
+C. A client and a proxy, where the client runs on the user's laptop and the proxy stores sessions and credentials for it
+D. A master and a replica, where the replica serves reads and takes over if the master fails over to it
 
 <details>
 <summary>Answer</summary>
@@ -51,9 +51,9 @@ D. Master and replica
 **Scenario:** Boundary's resource hierarchy, from the top.
 
 A. Global scope, organization scopes, project scopes
-B. Account, user, role
-C. Project, organization, global
-D. Host, target, session
+B. Account, user, role, with each user holding accounts under auth methods and roles granting permissions to those users
+C. Project, organization, global, where permissions granted in a project flow upward to the organizations that contain it
+D. Host, target, session, where each host contains the targets it exposes and each target contains the sessions opened to it
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Host, target, session
 ### Question 4
 **Scenario:** Users must connect to a set of interchangeable web servers by one name.
 
-A. A target with a host set containing the host catalog's matching hosts
-B. One target per host
-C. A DNS record
-D. A load balancer only
+A. A target with a host set holding the matching hosts of the host catalog
+B. One target per host, so users pick a server from a list
+C. A DNS record that points at the servers, which Boundary then resolves and uses as a single address for authorization
+D. A load balancer only, placed in front of the web servers, with users connecting straight to its address with no Boundary target
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. A load balancer only
 ### Question 5
 **Scenario:** A user should connect to a database without ever learning the password.
 
-A. A shared vault of static passwords
-B. Emailing the password
-C. Credential brokering only
-D. Credential injection from a credential library, with the worker supplying credentials to the session
+A. A shared vault of static passwords that every engineer can read, rotated by hand once a quarter
+B. Emailing the password to approved users in a one-time link, which expires after a single view
+C. Credential brokering only, where the credential is returned to the client for the user to enter or pass to a tool
+D. Credential injection from a credential library, with the worker supplying the credentials to the session
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Credential injection from a credential library, with the worker supplying cre
 ### Question 6
 **Scenario:** Boundary integrates with Vault for credentials.
 
-A. Only static credentials are supported
-B. Vault is not supported
-C. A Vault credential store with credential libraries issuing dynamic credentials per session
-D. Boundary stores its own passwords only
+A. Only static credentials are supported, entered by hand and shared by all sessions
+B. Vault is not supported, because Boundary cannot call external secrets managers to obtain credentials
+C. A Vault credential store with credential libraries that issue dynamic, short-lived credentials for each session
+D. Boundary stores its own passwords only, in its database, and a separate custom integration or plugin is needed before it can read anything from Vault
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Boundary stores its own passwords only
 ### Question 7
 **Scenario:** Which authentication methods can Boundary use?
 
-A. Certificates only
-B. Kerberos only
-C. Password, OIDC (for enterprise identity providers), and LDAP
-D. Password only
+A. Certificates only, issued by an internal CA
+B. Kerberos only, which requires users to hold a ticket from a domain controller before any session can be authorized
+C. Password, OIDC, and LDAP, with OIDC the usual production choice
+D. Password only, as the sole method Boundary supports, with accounts created and managed directly in each scope
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Password only
 ### Question 8
 **Scenario:** Permissions are assigned to whom in Boundary?
 
-A. To sessions
-B. Through roles containing grants, assigned to users, groups, or managed groups within a scope
-C. To hosts
-D. Directly to users only
+A. To sessions, each of which carries its own permission list set by the person who opens the connection
+B. Through roles containing grants, assigned to users, groups, or managed groups within a scope, with each grant naming resources and actions
+C. To hosts, with each host holding a list of the users allowed to open sessions against its address
+D. Directly to users only, with individual grants attached to each account and no group or role in between
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Directly to users only
 ### Question 9
 **Scenario:** An auditor asks who accessed which host last Tuesday.
 
-A. Boundary session recording and audit events, showing principal, target, host, and times
-B. Host-level logs only
-C. Firewall logs
-D. It cannot be determined
+A. Boundary session metadata and audit events, showing the authenticated principal, target, host, and times of each session
+B. Host-level logs only, from each server's authentication log, showing who logged in there
+C. Firewall logs from the network edge, which record source and destination addresses of allowed connections
+D. It cannot be determined, because Boundary keeps no record of who opened a session once it closes
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. It cannot be determined
 ### Question 10
 **Scenario:** A session must automatically end after a defined period.
 
-A. Sessions never end
-B. Ask the user to disconnect
+A. Sessions never end on their own once authorized, and stay open until the user closes the client
+B. Ask the user to disconnect when the time is up, and have an administrator check the session list each day
 C. Set session max seconds and connection limits on the target
-D. Reboot the host
+D. Reboot the host at the end of the period, which drops any open connections from the Boundary workers
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Reboot the host
 ### Question 11
 **Scenario:** Targets live in a private network the controller cannot reach.
 
-A. Use a VPN
+A. Give every user a VPN client into the private network and have them connect to targets directly, bypassing Boundary workers
 B. Deploy workers inside that network; they connect outward to the controller and proxy sessions to local targets
-C. Expose the targets publicly
-D. It cannot work
+C. Expose the targets publicly behind a security group that allows only the Boundary controller's address
+D. It cannot work, because the controller must be able to open connections to every target directly
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. It cannot work
 ### Question 12
 **Scenario:** A host catalog should update automatically as cloud instances change.
 
-A. A cron job editing the catalog
-B. Static host catalogs updated manually
-C. Manual imports
-D. A dynamic host catalog with a plugin for AWS, Azure, or GCP, using tag-based filters
+A. A cron job that edits the catalog file on a schedule, adding hosts it finds by listing instances from the cloud API
+B. Static host catalogs updated manually, with an administrator adding and removing hosts as instances change
+C. Manual imports of host lists from the console or API, run by an engineer after each scaling event or release
+D. A dynamic host catalog with a cloud plugin and tag-based filters
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. A dynamic host catalog with a plugin for AWS, Azure, or GCP, using tag-based 
 ### Question 13
 **Scenario:** A user runs `boundary connect ssh -target-id ttcp_...`. What happens?
 
-A. The target's password is printed
-B. The user gets a network route to the subnet
-C. Boundary authorizes the session, returns connection details, and the local client proxies through a worker to the chosen host
-D. Boundary opens the firewall
+A. The target's password is printed in the terminal so the user can paste it into the SSH client
+B. The user gets a network route to the whole target subnet, and the SSH client then connects over that route directly to the host
+C. Boundary authorizes the session, returns connection details, and the local client proxies through a worker
+D. Boundary opens the firewall for the user's address for the duration of the session, then closes it again when the session ends
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Boundary opens the firewall
 ### Question 14
 **Scenario:** Boundary's database.
 
-A. Controllers use PostgreSQL for configuration and session state, with a KMS for encrypting sensitive values
-B. No database is needed
-C. It uses SQLite in production
-D. It stores secrets in plaintext
+A. Controllers use PostgreSQL for state, with a KMS for encrypting sensitive values
+B. No database is needed, because controllers keep all configuration and session state in memory and rebuild it on restart
+C. It uses SQLite in production, embedded in each controller process, and the controllers synchronize their files with each other
+D. It stores secrets in plaintext in the database, relying on network controls and database permissions to protect them
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. It stores secrets in plaintext
 ### Question 15
 **Scenario:** How does Boundary fit a zero trust model?
 
-A. It grants standing network access
-B. Every session is authenticated, authorized against a policy at connection time, scoped to one service, time-bounded, and logged
-C. It replaces identity providers
-D. It is a network firewall
+A. It grants standing network access to approved users, reviewed at set intervals
+B. Every session is authenticated, authorized at connection time, scoped to one service, time-bounded, and logged
+C. It replaces identity providers, holding its own user directory in place of the organization's single sign-on system
+D. It is a network firewall that inspects packets, so trust is enforced at the network edge instead of per identity or session
 
 <details>
 <summary>Answer</summary>

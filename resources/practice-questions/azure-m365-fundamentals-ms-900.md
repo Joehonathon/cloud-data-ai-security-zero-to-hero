@@ -16,10 +16,10 @@ MS-900 is a business-and-vocabulary exam. It rewards knowing what each product i
 ### Question 1
 **Scenario:** Which cloud deployment model combines on-premises infrastructure with public cloud services?
 
-A. Hybrid cloud
-B. Community cloud
+A. A hybrid cloud model
+B. Community cloud shared by several organizations
 C. Private cloud
-D. Public cloud
+D. Public cloud run by a provider
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. Public cloud
 ### Question 2
 **Scenario:** Which describes the difference between capital expenditure and operating expenditure in a cloud move?
 
-A. CapEx is monthly subscription; OpEx is upfront purchase
+A. CapEx is a monthly subscription paid as services are used; OpEx is a large upfront purchase of assets
 B. They are the same
 C. CapEx is upfront purchase of assets; OpEx is ongoing consumption-based spending
-D. OpEx applies only to hardware
+D. OpEx applies only to hardware, such as servers and network devices that are bought and depreciated
 
 <details>
 <summary>Answer</summary>
@@ -53,7 +53,7 @@ D. OpEx applies only to hardware
 **Scenario:** Which service is the hub for teamwork, combining chat, meetings, and file collaboration?
 
 A. Exchange Online
-B. Microsoft Teams
+B. Microsoft Teams, the hub for chat, meetings, and files
 C. Power BI
 D. SharePoint Online
 
@@ -70,10 +70,10 @@ D. SharePoint Online
 ### Question 4
 **Scenario:** A department needs a document library with versioning, co-authoring, and permissions for a project site.
 
-A. OneDrive for Business
+A. OneDrive for Business sync client
 B. SharePoint Online
-C. Microsoft Viva
-D. Exchange Online
+C. Viva Engage
+D. Exchange Online shared mailbox
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Exchange Online
 ### Question 5
 **Scenario:** Which tool automates a workflow, such as saving email attachments to SharePoint?
 
-A. Power BI
+A. Power BI, which connects to SharePoint lists and email data sources to build interactive dashboards
 B. Power Automate
-C. Power Apps
-D. Dataverse
+C. Power Apps, which builds a low-code app that users open to save the attachments by hand
+D. Dataverse, the data platform that stores attachments as table rows once a person uploads them
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Dataverse
 ### Question 6
 **Scenario:** Which describes Microsoft 365 Copilot's data access model?
 
-A. It trains on your tenant data and shares it with other tenants
-B. It only works on public web data
+A. It trains on your tenant data and shares what it learns with other tenants
+B. It only works on public web data retrieved through Bing
 C. It respects existing permissions, so a user can only surface content they already have access to
-D. It bypasses permissions for productivity
+D. It bypasses permissions so that every user can find any file in the tenant
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. It bypasses permissions for productivity
 ### Question 7
 **Scenario:** Which portal do administrators use to manage devices, app protection, and compliance policies?
 
-A. Exchange admin center
-B. Power Platform admin center
+A. Exchange admin center, which manages mailboxes, mail flow rules, and transport settings
+B. Power Platform admin center, which manages environments, data policies, and connectors
 C. Microsoft Intune admin center
-D. Azure portal only
+D. Azure portal only, because every Microsoft 365 setting is administered from one Azure screen
 
 <details>
 <summary>Answer</summary>
@@ -142,7 +142,7 @@ D. Azure portal only
 ### Question 8
 **Scenario:** An organization needs Microsoft 365 with advanced threat protection, Intune, and Entra ID P2 in one license.
 
-A. Microsoft 365 E5
+A. Microsoft 365 E5 plan
 B. Microsoft 365 Business Basic
 C. Office 365 E1
 D. Microsoft 365 Apps for enterprise
@@ -160,9 +160,9 @@ D. Microsoft 365 Apps for enterprise
 ### Question 9
 **Scenario:** What does the Microsoft 365 service level agreement of 99.9% mean in practice?
 
-A. A best-effort target with no remedy
-B. A guarantee covering the customer's network
-C. No downtime is possible
+A. A best-effort target with no remedy if it is missed
+B. A guarantee covering the customer's own network, devices, and internet connection as well as the service
+C. No downtime is possible, because the data centers are redundant
 D. A financially backed uptime commitment with service credits if Microsoft misses it
 
 <details>
@@ -179,9 +179,9 @@ D. A financially backed uptime commitment with service credits if Microsoft miss
 **Scenario:** Where do administrators track planned changes and current service incidents?
 
 A. The Microsoft 365 admin center Service health and Message center
-B. The Azure pricing calculator
-C. The Service Trust Portal
-D. Compliance Manager
+B. The Azure pricing calculator, which estimates the monthly cost of the services in a planned deployment
+C. The Service Trust Portal, where Microsoft publishes audit reports and compliance documentation for customers
+D. Compliance Manager, which scores the organization's compliance posture against regulatory templates
 
 <details>
 <summary>Answer</summary>
@@ -196,9 +196,9 @@ D. Compliance Manager
 ### Question 11
 **Scenario:** Which describes the difference between Microsoft 365 and Office 365?
 
-A. Office 365 includes Windows
-B. Microsoft 365 is on-premises only
-C. They are identical
+A. Office 365 includes Windows and device management as well as the Office apps
+B. Microsoft 365 is on-premises only, delivered as software on the customer's servers
+C. They are identical, and the name was changed only for marketing, with the same licensed components in each
 D. Microsoft 365 includes Office 365 plus Windows and enterprise mobility and security components
 
 <details>
@@ -214,10 +214,10 @@ D. Microsoft 365 includes Office 365 plus Windows and enterprise mobility and se
 ### Question 12
 **Scenario:** A retention policy is applied to a mailbox for 7 years. A user deletes an email after 2 years.
 
-A. The mailbox is locked
-B. Retention only applies to SharePoint
+A. The mailbox is locked and the user is blocked from any further deletion until the policy ends
+B. Retention only applies to SharePoint sites and has no effect on Exchange mailbox content or deletions
 C. The email is preserved in the recoverable items area until the retention period ends
-D. The email is permanently gone
+D. The email is permanently gone because a user deletion always overrides any retention policy
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. The email is permanently gone
 ### Question 13
 **Scenario:** Which support option is included with a standard Microsoft 365 subscription?
 
-A. No support at all
+A. No support at all, because every request needs a paid support contract
 B. Access to online support requests and the admin center support experience for all customers
-C. A dedicated technical account manager
-D. On-site engineering
+C. A dedicated technical account manager who reviews the tenant and answers calls around the clock, every day
+D. On-site visits from Microsoft engineers whenever a severity A problem is raised
 
 <details>
 <summary>Answer</summary>
@@ -250,10 +250,10 @@ D. On-site engineering
 ### Question 14
 **Scenario:** An organization wants to try Microsoft 365 before committing to annual billing.
 
-A. Only annual commitment exists
+A. Only annual commitment exists, so the organization must pay for a full year of seats upfront before any use
 B. There is no trial
-C. Trials require a partner
-D. A free trial for a limited number of users and days, and monthly billing options if flexibility matters more than price
+C. Trials require a Microsoft partner to set up the tenant
+D. A free trial for limited users and days, plus monthly billing if flexibility matters more than price
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. A free trial for a limited number of users and days, and monthly billing opti
 ### Question 15
 **Scenario:** Which best describes Microsoft Purview in the Microsoft 365 context?
 
-A. The data governance, protection, and compliance solution set: classification, labels, DLP, retention, insider risk, and eDiscovery
-B. An identity provider
-C. A device management tool
-D. A virtual desktop service
+A. The data governance, protection, and compliance solution set: labels, DLP, retention, insider risk, eDiscovery
+B. An identity provider that handles sign-in, multifactor authentication, and conditional access for users
+C. A device management tool that enrolls laptops and phones and applies configuration profiles
+D. A virtual desktop service that streams a Windows desktop to remote users from Azure
 
 <details>
 <summary>Answer</summary>

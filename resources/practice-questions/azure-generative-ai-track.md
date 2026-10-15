@@ -16,10 +16,10 @@ This is a self-directed track rather than a Microsoft exam, so these questions t
 ### Question 1
 **Scenario:** A deployment must guarantee throughput for a latency-sensitive production application.
 
-A. Batch deployment
-B. Provisioned throughput units (PTU)
-C. Standard (pay-as-you-go) deployment
-D. A larger model
+A. Batch deployment, which processes requests asynchronously at a lower price within a 24-hour target
+B. Provisioned throughput units (PTU), which reserve capacity
+C. Standard (pay-as-you-go) deployment, which scales on demand but shares capacity and can return 429 errors
+D. A larger model, which improves answer quality but does not reserve any capacity for the deployment
 
 <details>
 <summary>Answer</summary>
@@ -35,9 +35,9 @@ D. A larger model
 **Scenario:** An application must answer questions from a company's internal documents.
 
 A. Retrieval-augmented generation: index the documents and pass relevant chunks as context
-B. Put every document in the system prompt
-C. Train a model from scratch
-D. Fine-tune the model on the documents
+B. Put every document in the system prompt, so the model can read the company's whole content on each request
+C. Train a model from scratch on the company's documents, which gives full control over what it knows
+D. Fine-tune the model on the documents so that it memorizes the facts and needs no retrieval step
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Fine-tune the model on the documents
 ### Question 3
 **Scenario:** Retrieval quality is poor: relevant passages exist but are not returned.
 
-A. Lower the top-k
-B. Increase the model's temperature
-C. Improve chunking and try hybrid search (keyword plus vector) with semantic reranking
-D. Use a larger model
+A. Lower the top-k, so fewer passages are returned and the most relevant ones are easier to find in the list
+B. Increase the model's temperature, which makes the model explore more of the index and surface other passages
+C. Improve chunking and use hybrid search (keyword plus vector) with semantic reranking
+D. Use a larger model, which can find passages in the index given capacity
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Use a larger model
 ### Question 4
 **Scenario:** Which parameter makes output more deterministic?
 
-A. Lowering temperature toward 0
-B. Raising top_p to 1
-C. Increasing max_tokens
-D. Raising temperature
+A. Lowering temperature toward 0, which makes sampling close to greedy decoding
+B. Raising top_p to 1, which lets the sampler consider every token in the vocabulary at each step
+C. Increasing max_tokens, which gives the model more room to settle
+D. Raising temperature, which sharpens the probability distribution so the most likely token wins more often
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Raising temperature
 ### Question 5
 **Scenario:** An app must return JSON that always matches a defined schema.
 
-A. Lower temperature only
-B. Use structured outputs or JSON mode with a schema, and validate the result before use
-C. Ask nicely in the prompt
-D. Parse with a regular expression
+A. Lower temperature only, since near-zero sampling makes the model emit the same schema every time
+B. Use structured outputs or JSON mode with a schema, and validate the result
+C. Ask nicely in the prompt, naming the required keys
+D. Parse with a regular expression, extracting the fields from whatever text the model returns
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Parse with a regular expression
 ### Question 6
 **Scenario:** Content filtering must be adjusted for a medical application where clinical terms trigger false positives.
 
-A. Switch cloud providers
-B. Disable all filtering
-C. Configure content filter severity thresholds per category, and apply for modified filters where the use case justifies it
-D. Rewrite the prompts to avoid clinical terms
+A. Switch cloud providers, since another vendor's default filters will not flag clinical terms
+B. Disable all filtering for the deployment on your own, so that no clinical term is blocked in a prompt or a completion, whatever the category
+C. Configure severity thresholds per category, and apply for modified filters where the use case justifies it
+D. Rewrite the prompts to avoid clinical terms, replacing them with lay words
 
 <details>
 <summary>Answer</summary>
@@ -124,9 +124,9 @@ D. Rewrite the prompts to avoid clinical terms
 ### Question 7
 **Scenario:** A retrieval system must not return documents the asking user cannot see.
 
-A. Rely on the model to decline
-B. Add a system prompt instruction
-C. Index only public documents
+A. Rely on the model to decline when a document looks confidential
+B. Add a system prompt instruction that tells the model never to reveal documents the user cannot access under any circumstance
+C. Lower top-k so that fewer documents are returned
 D. Filter results by the user's identity and group membership at query time, using security trimming on the index
 
 <details>
@@ -142,9 +142,9 @@ D. Filter results by the user's identity and group membership at query time, usi
 ### Question 8
 **Scenario:** Costs are dominated by a long, unchanging system prompt repeated on every request.
 
-A. Use a smaller model only
-B. Shorten the prompt until quality drops
-C. Batch the requests
+A. Use a smaller model only, accepting lower answer quality
+B. Move the system prompt into the user message of each request, which changes where the tokens sit but not how many are billed
+C. Batch the requests, which lowers the price but delays every response
 D. Use prompt caching so the repeated prefix is billed and processed at a reduced rate
 
 <details>
@@ -160,10 +160,10 @@ D. Use prompt caching so the repeated prefix is billed and processed at a reduce
 ### Question 9
 **Scenario:** Which technique gives the model examples of the desired input and output format inside the prompt?
 
-A. Chain of thought
-B. Fine-tuning
-C. Few-shot prompting
-D. Zero-shot prompting
+A. Chain of thought, which asks the model to write out its reasoning steps before the final answer
+B. Fine-tuning, which trains the model's weights on example pairs outside the prompt
+C. Few-shot prompting, which includes example inputs and outputs in the prompt
+D. Zero-shot prompting, which gives the instruction alone with no examples in the prompt
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Zero-shot prompting
 ### Question 10
 **Scenario:** An agent has a tool that can delete records. What is the minimum responsible design?
 
-A. Scope the tool's credential narrowly, check authorization against the calling user in code, require confirmation for destructive actions, and log every call
-B. Add a warning in the system prompt
-C. Trust the model's judgment
-D. Use a smaller model
+A. Narrow credential scope, an authorization check against the calling user in code, confirmation for destructive actions, and logging of every call
+B. Add a warning in the system prompt telling the model never to delete a record unless the user has clearly asked
+C. Trust the model's judgment, since a capable model will not call a delete tool unless the task requires it
+D. Use a smaller model, which is less likely to follow injected instructions that ask it to delete records
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Use a smaller model
 ### Question 11
 **Scenario:** A model deployment must be evaluated before and after a version upgrade.
 
-A. Manual spot checks
-B. An evaluation set with defined metrics (groundedness, relevance, fluency, and task-specific accuracy) run against both versions
-C. User complaints
-D. Latency measurement only
+A. Manual spot checks of a few favorite prompts by the developer, repeated after the upgrade goes live in production
+B. An evaluation set with defined metrics (groundedness, relevance, fluency, task accuracy) run against the old and new versions
+C. User complaints collected through the support queue, reviewed weekly after the new version is released to everyone
+D. Latency measurement only, since a model with the same response time must behave the same as it did before the upgrade
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Latency measurement only
 ### Question 12
 **Scenario:** Which Azure service provides the managed development surface for building, evaluating, and deploying generative AI applications?
 
-A. Azure Machine Learning only
-B. Azure Data Factory
+A. Azure Machine Learning only, which trains and deploys classical models but is not the generative AI hub
+B. Azure Data Factory, which orchestrates data movement and transformation pipelines between data stores
 C. Azure AI Foundry, with model catalog, prompt flow, evaluation, and deployment
-D. Azure Functions
+D. Azure Functions, which runs event-triggered code without servers and is not a development surface for models
 
 <details>
 <summary>Answer</summary>
@@ -232,9 +232,9 @@ D. Azure Functions
 ### Question 13
 **Scenario:** An embedding model is swapped for a newer one in a live RAG system.
 
-A. Increase the index size
-B. Only new documents need re-embedding
-C. Nothing else is needed
+A. Increase the index size, so the stored vectors from the old model have more room to match new queries
+B. Only new documents need re-embedding, because older vectors remain valid
+C. Nothing else is needed, since vectors from any embedding model share one common similarity space and compare directly
 D. The entire index must be re-embedded, because vectors from different models are not comparable
 
 <details>
@@ -250,10 +250,10 @@ D. The entire index must be re-embedded, because vectors from different models a
 ### Question 14
 **Scenario:** Which Microsoft framework should guide the responsible AI review of a new generative feature?
 
-A. ISO 27001 alone
-B. The Microsoft Responsible AI Standard, with fairness, reliability and safety, privacy and security, inclusiveness, transparency, and accountability
-C. The Azure Well-Architected Framework alone
-D. The Cloud Adoption Framework alone
+A. ISO 27001 alone, since an information security management certification covers the harms of a generative feature
+B. The Microsoft Responsible AI Standard and its principles: fairness, reliability, privacy, inclusiveness, transparency, and accountability
+C. The Azure Well-Architected Framework alone, since its pillars of reliability and security cover the harms of AI features
+D. The Cloud Adoption Framework alone, since its govern methodology already includes impact assessments for each use case
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. The Cloud Adoption Framework alone
 ### Question 15
 **Scenario:** Production monitoring must catch quality degradation over time.
 
-A. Log prompts, completions, latency, token usage, and evaluation scores on sampled traffic, with alerts on drift in those scores
-B. Wait for support tickets
-C. Monitor CPU only
-D. Re-run the launch evaluation once a year
+A. Log prompts, completions, latency, token usage, and evaluation scores on sampled traffic, with alerts on score drift
+B. Wait for support tickets and escalations to show that answers have worsened
+C. Monitor CPU only, because compute saturation is the first sign of any regression
+D. Re-run the launch evaluation once a year, comparing the scores with the numbers from the original release and the previous review
 
 <details>
 <summary>Answer</summary>

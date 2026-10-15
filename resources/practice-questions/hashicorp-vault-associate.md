@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An application needs database credentials that are unique per instance and expire automatically.
 
-A. Environment variables
-B. The Transit engine
+A. Environment variables set at deploy time, which rotate automatically each time the pod restarts
+B. The Transit engine, which returns a fresh database login for each instance as part of its encryption API
 C. The Database secrets engine generating dynamic credentials with a lease
-D. The KV secrets engine with a shared password
+D. The KV secrets engine with one shared password stored at a path that every instance reads
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. The KV secrets engine with a shared password
 ### Question 2
 **Scenario:** An application must encrypt data without ever holding the encryption key.
 
-A. The PKI engine
+A. The PKI engine, which issues certificates that the application then uses to encrypt its data in place
 B. The Transit secrets engine, which performs encryption and decryption as a service
-C. KV version 2
-D. The TOTP engine
+C. KV version 2, storing the key as a versioned secret that the application fetches at startup
+D. The TOTP engine, which generates time-based codes that the application uses as its encryption key
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. The TOTP engine
 ### Question 3
 **Scenario:** A Vault policy must allow reading secrets under `secret/data/app/*` but not writing.
 
-A. `capabilities = ["deny"]`
-B. `capabilities = ["sudo"]`
-C. `path "secret/data/app/*" { capabilities = ["read", "list"] }`
-D. `capabilities = ["create", "update"]`
+A. path "secret/data/app/*" { capabilities = ["deny"] }
+B. path "secret/data/app/*" { capabilities = ["sudo"] }
+C. path "secret/data/app/*" { capabilities = ["read", "list"] }
+D. path "secret/data/app/*" { capabilities = ["create", "update", "patch"] }
 
 <details>
 <summary>Answer</summary>
@@ -69,9 +69,9 @@ D. `capabilities = ["create", "update"]`
 **Scenario:** A Kubernetes pod must authenticate to Vault without a stored token.
 
 A. The Kubernetes auth method, validating the pod's service account token
-B. A root token in a ConfigMap
-C. Username and password
-D. A shared AppRole secret ID in the image
+B. A root token stored in a ConfigMap and mounted into the pod, so no login step is needed
+C. Userpass credentials stored in a Kubernetes Secret
+D. A shared AppRole secret ID baked into the container image so every replica logs in the same way
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. A shared AppRole secret ID in the image
 ### Question 5
 **Scenario:** What happens to dynamic credentials when their lease expires?
 
-A. Nothing, leases are advisory
-B. They remain valid
-C. Vault revokes them at the backend, so the database user is deleted
-D. They become read-only
+A. Nothing happens, because leases are advisory and the database user stays until an operator drops it by hand
+B. They stay valid until the database's own password policy forces a change
+C. Vault revokes them at the backend, so the database user is deleted and the login stops working
+D. They become read-only, so the app can still query but not write
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. They become read-only
 ### Question 6
 **Scenario:** Vault is sealed after a restart.
 
-A. Unsealing requires a quorum of Shamir key shares (or auto-unseal via a cloud KMS or HSM) to reconstruct the master key
-B. Delete the storage backend
-C. It is broken
-D. Restart it again
+A. Unseal with a quorum of Shamir key shares, or configure auto-unseal through a cloud KMS or HSM
+B. Delete the storage backend and re-initialize Vault for a fresh instance
+C. It is broken, and the data has to be restored from a snapshot before Vault can serve requests again at all
+D. Restart it again, since a sealed state clears itself on the second start once storage is reachable again
 
 <details>
 <summary>Answer</summary>
@@ -122,9 +122,9 @@ D. Restart it again
 ### Question 7
 **Scenario:** A CI system needs a Vault identity with a distributed secret that is not in the code repository.
 
-A. TLS certificates only
-B. A root token in the pipeline configuration
-C. Basic auth
+A. Userpass with one shared account for all pipelines, its password read from a file in the repository
+B. A root token in the pipeline configuration, passed to each job as a masked variable
+C. Basic auth with a username and password committed alongside the pipeline definition
 D. AppRole, delivering the role ID with the application and the secret ID through a separate trusted channel
 
 <details>
@@ -140,10 +140,10 @@ D. AppRole, delivering the role ID with the application and the secret ID throug
 ### Question 8
 **Scenario:** A token's TTL has passed but the application is still working.
 
-A. Tokens never expire
-B. TTL is advisory
-C. Vault is misconfigured
-D. The token was renewed, or it is a periodic token that renews indefinitely within its period
+A. Tokens never expire once issued, so TTL only matters for audit
+B. The TTL is advisory, and Vault only enforces it for tokens created in the root namespace
+C. Vault is misconfigured and the clock is skewed, so it has not yet revoked the token
+D. The token was renewed, or it is a periodic token renewed within each period
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. The token was renewed, or it is a periodic token that renews indefinitely wit
 ### Question 9
 **Scenario:** Vault must issue short-lived TLS certificates for internal services.
 
-A. Manual certificate signing
-B. The PKI secrets engine with a role constraining allowed domains and TTLs
-C. The KV engine storing certificates
-D. The Transit engine
+A. Manual certificate signing with an offline CA, issuing each certificate by ticket and tracking expiry in a spreadsheet that someone updates by hand
+B. The PKI secrets engine, with a role that limits allowed domains and key types and sets a maximum TTL for each service
+C. The KV engine storing certificates, with a scheduled job replacing them before they expire
+D. The Transit engine, which signs certificate requests with a named key and returns an X.509 certificate
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. The Transit engine
 ### Question 10
 **Scenario:** KV version 2 is in use and a secret was overwritten by mistake.
 
-A. Read the previous version, since KV v2 is versioned, and undelete if it was soft-deleted
-B. Restore from backup
-C. It is lost
-D. Recreate it manually
+A. Read the previous version, since KV v2 is versioned, and undelete it if needed
+B. Restore from a Raft snapshot taken before the change, since KV keeps no history of overwritten values
+C. It is lost, because writing to the same path replaces the value and the old data is purged immediately
+D. Recreate it manually from the application's configuration files, since versions cannot be read back through the API
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Recreate it manually
 ### Question 11
 **Scenario:** Audit logging must record every request and response.
 
-A. Audit is on by default
-B. Use application logs
-C. Enable it only for failures
-D. Enable an audit device (file, syslog, or socket); Vault refuses requests if no enabled audit device can log
+A. Audit is on by default for every request, writing to the operational log
+B. Use application logs, since the client app can record the secrets it requests
+C. Enable it only for failures, because successful reads are already recorded by the storage backend itself
+D. Enable an audit device (file, syslog, or socket); Vault refuses requests if no device can log
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Enable an audit device (file, syslog, or socket); Vault refuses requests if n
 ### Question 12
 **Scenario:** Vault namespaces are mentioned in a design discussion.
 
-A. They replace policies
+A. They replace policies, so ACL rules are no longer needed once a namespace exists
 B. Namespaces are an Enterprise feature providing multi-tenancy with isolated policies, auth, and secrets
-C. They are open source
-D. They are the same as paths
+C. They are open source and available in every edition, used to group secrets engines by team
+D. They are the same as paths, just a different name for mount points under one shared root
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. They are the same as paths
 ### Question 13
 **Scenario:** Which storage backend is recommended for a production HA Vault cluster?
 
-A. A single Consul agent
-B. Filesystem
-C. Integrated Storage (Raft)
-D. In-memory
+A. A single Consul agent running on the same host as the Vault node, with no other cluster members
+B. The local filesystem on a shared NFS mount, so every node reads the same data directory
+C. Integrated Storage (Raft), built into Vault and replicated across the nodes
+D. In-memory storage, since it is the fastest option
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. In-memory
 ### Question 14
 **Scenario:** A CLI user must write a secret and read it back.
 
-A. `vault write` only
+A. `vault write secret/app/config user=admin` only, since a successful write also prints the stored values
 B. `vault kv put secret/app/config user=admin` then `vault kv get secret/app/config`
-C. `vault login` only
-D. `vault read secret/app/config` without writing
+C. `vault login` followed by `vault status`, which writes and displays the stored secret data
+D. `vault read secret/app/config` first, because reading a path that does not exist creates it
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. `vault read secret/app/config` without writing
 ### Question 15
 **Scenario:** A response must be delivered to a client such that any interception is detectable.
 
-A. Response wrapping, returning a single-use wrapping token the recipient unwraps
-B. Base64 encoding
-C. A long TTL token
-D. TLS alone
+A. Response wrapping, returning a single-use wrapping token that the recipient unwraps
+B. Base64 encoding, which hides the value from casual observers
+C. A long TTL token that outlives any delay between delivery and use
+D. TLS alone, since transport encryption already makes interception visible
 
 <details>
 <summary>Answer</summary>

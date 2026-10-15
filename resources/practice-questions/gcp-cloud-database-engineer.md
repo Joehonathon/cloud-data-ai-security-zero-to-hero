@@ -14,9 +14,9 @@ difficulty: advanced
 ### Question 1
 **Scenario:** A workload needs horizontal scale, strong consistency, and relational semantics across regions.
 
-A. Firestore
-B. Cloud Spanner
-C. Bigtable
+A. Firestore, a serverless document database whose multi-region mode supports relational joins
+B. Cloud Spanner, which is horizontally scalable and relational with strong consistency across regions
+C. Bigtable, which scales horizontally and supports multi-row transactions across regions through its SQL interface
 D. Cloud SQL
 
 <details>
@@ -32,10 +32,10 @@ D. Cloud SQL
 ### Question 2
 **Scenario:** A time-series workload writes millions of events per second with key-range scans.
 
-A. Firestore
-B. Cloud SQL
+A. Firestore, a document database that scales automatically and streams events into key-range scans without index planning
+B. Cloud SQL with a time-indexed table
 C. Bigtable
-D. Memorystore
+D. Memorystore, an in-memory store that holds the event stream durably and serves key-range scans across millions of writes
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Memorystore
 ### Question 3
 **Scenario:** A Bigtable table is hotspotting on writes.
 
-A. Increase the timeout
-B. Use a smaller cell size
-C. Redesign the row key so writes distribute, for example by salting or field promotion, avoiding a purely sequential prefix
-D. Add more nodes
+A. Increase the client timeout so that long writes to the busy tablet complete instead of being abandoned
+B. Use a smaller cell size so that each write to the hot range carries less data and the tablet keeps up
+C. Redesign the row key so writes distribute, such as salting or field promotion
+D. Add more nodes to the cluster so that the hot range is spread across extra tablet servers automatically
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. Add more nodes
 ### Question 4
 **Scenario:** A Cloud SQL instance must survive a zone failure automatically.
 
-A. A larger machine type
-B. High availability configuration with a synchronous standby in another zone and automatic failover
-C. Read replicas
-D. Backups
+A. A larger machine type with more memory in the same zone, so the instance restarts quickly after a zone outage
+B. HA configuration with a synchronous standby in a second zone
+C. Read replicas in a second zone, which Cloud SQL promotes automatically when the primary's zone fails
+D. Daily backups restored into a new instance in another zone after the failure
 
 <details>
 <summary>Answer</summary>
@@ -86,9 +86,9 @@ D. Backups
 ### Question 5
 **Scenario:** A Spanner schema uses a monotonically increasing primary key and writes are slow.
 
-A. Avoid sequential keys: use a UUID, a hashed prefix, or bit-reversed sequence so writes spread across splits
-B. Add nodes
-C. Use a secondary index
+A. Avoid sequential keys: use a UUID, a hashed prefix, or a bit-reversed sequence so writes spread over many splits
+B. Add more nodes, since each added node takes a share of the sequential key range for writes
+C. Use a secondary index on the key column, which spreads writes over many splits instead of a single hot one
 D. Increase the timeout
 
 <details>
@@ -104,9 +104,9 @@ D. Increase the timeout
 ### Question 6
 **Scenario:** Related child rows should be stored physically near their parent in Spanner.
 
-A. Table interleaving, declaring the child table interleaved in the parent
-B. A foreign key
-C. A secondary index
+A. Table interleaving: declare the child table interleaved in the parent so child rows sit beside the parent row
+B. A foreign key between the tables, which stores child rows next to the parent on one split
+C. A secondary index on the parent key in the child table, which co-locates its rows
 D. A view
 
 <details>
@@ -122,10 +122,10 @@ D. A view
 ### Question 7
 **Scenario:** An on-premises PostgreSQL database must migrate to Cloud SQL with minimal downtime.
 
-A. Dump and restore during a maintenance window
+A. Dump and restore during a maintenance window, since PostgreSQL's native tools keep the source live while loading
 B. Export to CSV
-C. Manual replication scripts
-D. Database Migration Service with continuous replication, cutting over after the target catches up
+C. Manual replication scripts that copy changed rows on a timer, then switching the application over once they finish
+D. Database Migration Service with continuous replication, cutting over once the target catches up
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Database Migration Service with continuous replication, cutting over after th
 ### Question 8
 **Scenario:** A heterogeneous migration from Oracle to PostgreSQL is required.
 
-A. Change the connection string
-B. Copy the datafiles
+A. Change the connection string so the application points at Cloud SQL, as PostgreSQL accepts Oracle SQL natively
+B. Copy the Oracle datafiles to the new server, where PostgreSQL attaches them as tablespaces on first start
 C. It is not possible
-D. Use Database Migration Service with conversion tooling, expecting manual work on stored procedures and vendor-specific SQL
+D. Database Migration Service with conversion tooling, expecting manual work on procedures
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Use Database Migration Service with conversion tooling, expecting manual work
 ### Question 9
 **Scenario:** Read latency must be reduced for a repeated key-value lookup.
 
-A. Add an index
+A. Use a columnar storage format, so repeated key lookups read fewer bytes
 B. Increase the instance size
-C. Memorystore for Redis or Memcached in front of the database, with a defined invalidation strategy
-D. Add a read replica
+C. Memorystore (Redis or Memcached) in front of the database, with an invalidation strategy
+D. Add a read replica so that repeated lookups are served from a second copy and the primary's cache stays warm
 
 <details>
 <summary>Answer</summary>
@@ -176,10 +176,10 @@ D. Add a read replica
 ### Question 10
 **Scenario:** A mobile application needs real-time sync of documents with offline support.
 
-A. BigQuery
-B. Firestore
+A. BigQuery, whose streaming inserts and BI Engine sync documents to phones
+B. Firestore, which has realtime listeners and offline persistence in its client SDKs
 C. Bigtable
-D. Cloud SQL
+D. Cloud SQL, which pushes row changes to mobile clients through its replication slots and caches edits offline
 
 <details>
 <summary>Answer</summary>
@@ -194,9 +194,9 @@ D. Cloud SQL
 ### Question 11
 **Scenario:** Database credentials must not appear in application configuration.
 
-A. IAM database authentication where supported, or Secret Manager with a workload identity, rather than static passwords
-B. Hard-coded strings
-C. Environment variables in the image
+A. IAM database authentication with short-lived tokens, or Secret Manager with workload identity, not static passwords
+B. Hard-coded strings in the source, which are reviewed in pull requests and so never leak outside the team
+C. Environment variables baked into the container image at build time, rotated by rebuilding the image
 D. A config file
 
 <details>
@@ -212,10 +212,10 @@ D. A config file
 ### Question 12
 **Scenario:** Point-in-time recovery is needed for a Cloud SQL instance.
 
-A. Export to Cloud Storage
-B. Snapshots of the disk
-C. Daily backups only
-D. Enable point-in-time recovery, which uses binary or write-ahead logs to restore to a specific moment
+A. Export to Cloud Storage on a schedule, then import the latest dump into a new instance when needed
+B. Snapshots of the persistent disk taken by hand, each restorable only to the moment it was taken
+C. Daily backups only, since restoring one automatically replays the day's transactions up to the requested time
+D. Enable point-in-time recovery, using binary or write-ahead logs to restore to a moment
 
 <details>
 <summary>Answer</summary>
@@ -230,8 +230,8 @@ D. Enable point-in-time recovery, which uses binary or write-ahead logs to resto
 ### Question 13
 **Scenario:** A Spanner instance's CPU sits above 65% sustained.
 
-A. Ignore it
-B. Add nodes or processing units, since Google recommends staying below the high-priority CPU threshold to leave headroom for failover and latency
+A. Ignore it, because Spanner autoscales storage and compute together so sustained CPU past 65% is expected and harmless
+B. Add nodes or processing units, leaving headroom for failover and latency
 C. Reduce the schema size
 D. Add secondary indexes
 
@@ -248,10 +248,10 @@ D. Add secondary indexes
 ### Question 14
 **Scenario:** A query on Cloud SQL is slow and the cause is unclear.
 
-A. Use Query Insights to identify the top queries and wait events, then fix the query or index
-B. Add a read replica
+A. Use Query Insights to find top queries and wait events, then fix the query or index
+B. Add a read replica, because moving the slow query's reads to a second instance clears the contention seen on the primary
 C. Increase the machine size
-D. Restart the instance
+D. Restart the instance so the buffer cache is rebuilt and any lock contention behind the slow queries is released
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Restart the instance
 ### Question 15
 **Scenario:** Analytics must run over operational data without affecting the transactional database.
 
-A. Query the primary directly
+A. Query the primary directly during business hours, since read-only analytics queries never take locks that block writers
 B. Increase the instance size
-C. Replicate to BigQuery (for example with Datastream or federated queries), keeping analytical load off the operational store
-D. Run analytics at night
+C. Replicate to BigQuery (Datastream or federated queries) to keep analytics off the operational store
+D. Run analytics at night on the primary, since the transactional load is lowest and the scans no longer matter
 
 <details>
 <summary>Answer</summary>

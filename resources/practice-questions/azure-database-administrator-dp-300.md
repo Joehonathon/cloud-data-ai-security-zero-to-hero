@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** An application uses SQL Server Agent jobs, cross-database queries, and CLR. It must move to a PaaS offering with minimal code change.
 
-A. SQL Server on an Azure VM
-B. Azure SQL Managed Instance
-C. Azure SQL Database single database
-D. Azure Database for PostgreSQL
+A. SQL Server on an Azure VM, which leaves patching and backups with the team
+B. Azure SQL Managed Instance, the PaaS option with near-complete SQL Server compatibility
+C. Azure SQL Database single database, which is PaaS and low-maintenance but does not offer SQL Agent or cross-database queries
+D. Azure Database for PostgreSQL, a managed service that needs the schema and T-SQL code to be ported to a different engine
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Azure Database for PostgreSQL
 ### Question 2
 **Scenario:** A single database must survive a regional outage with an RPO measured in seconds and a readable secondary.
 
-A. Long-term retention
+A. Long-term retention of backups for up to ten years, which supports compliance but restores from backup rather than replicating
 B. Active geo-replication or a failover group to a secondary region
-C. Geo-redundant backups only
-D. Zone-redundant configuration
+C. Geo-redundant backups only, which copy backups to a paired region but give an RPO of an hour or more and no readable secondary
+D. Zone-redundant configuration, which spreads replicas across datacenters in a region but does not protect against a regional outage
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Zone-redundant configuration
 ### Question 3
 **Scenario:** A query that ran in 200 ms now takes 30 seconds after a statistics update, and the plan changed.
 
-A. Increase the service tier
+A. Increase the service tier to give the query more CPU, memory, and IOPS, on the assumption that the slow plan is a resource shortage
 B. Use Query Store to find the regression and force the previously good plan
-C. Rebuild all indexes
-D. Restart the server
+C. Rebuild all indexes in the database, which refreshes statistics as a side effect but does not restore the earlier plan on its own
+D. Restart the server, which clears the plan cache but may produce the same slow plan again from the updated statistics
 
 <details>
 <summary>Answer</summary>
@@ -70,8 +70,8 @@ D. Restart the server
 
 A. Always Encrypted
 B. Row-Level Security
-C. Transparent Data Encryption
-D. Dynamic Data Masking
+C. Transparent Data Encryption at rest on the database files
+D. Dynamic Data Masking, using a partial() mask
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Dynamic Data Masking
 ### Question 5
 **Scenario:** Data must be unreadable to Microsoft operators and to the DBA, including in memory on the server.
 
-A. Auditing
-B. TDE
-C. Always Encrypted with secure enclaves
-D. Dynamic Data Masking
+A. Auditing, which records who accessed which data but does not stop a privileged user from reading plaintext values
+B. Transparent data encryption, which encrypts data files and backups at rest but returns plaintext to anyone who can query
+C. Always Encrypted with secure enclaves, keeping keys outside the engine so neither the DBA nor Microsoft operators can read plaintext data
+D. Dynamic Data Masking on the sensitive columns, which hides values in results but leaves data readable to privileged users
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. Dynamic Data Masking
 ### Question 6
 **Scenario:** Users should only see rows belonging to their own department, enforced in the database.
 
-A. Row-Level Security with a security predicate function
-B. Views for each department
-C. Application filtering
-D. Column encryption
+A. Row-Level Security with a security predicate
+B. A view for each department that filters on the department column, with users granted access to only their own view
+C. Application filtering, where the app adds a department condition to every query before sending it to the database
+D. Column encryption on the department-specific columns, which hides values but does not filter which rows a user can see
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Column encryption
 ### Question 7
 **Scenario:** A database must authenticate application access without storing a password.
 
-A. Microsoft Entra ID authentication using a managed identity for the app
-B. SQL authentication with a strong password
-C. A shared service account
-D. Certificate in the connection string
+A. Microsoft Entra ID authentication using a managed identity, with a contained database user for the app
+B. SQL authentication with a strong random password kept in the app's secure configuration store
+C. A shared service account used by all app instances, with credentials rotated every quarter
+D. A certificate in the connection string, which replaces the password with a private key that must still be stored with the application
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Certificate in the connection string
 ### Question 8
 **Scenario:** A workload has unpredictable, bursty usage with long idle periods, and cost must follow usage.
 
-A. Business Critical
-B. Hyperscale
-C. Serverless compute tier with auto-pause
-D. Provisioned General Purpose
+A. Business Critical, billed continuously whether or not the database is in use
+B. Hyperscale, which suits very large databases with rapid scale-out but bills for provisioned compute while the database is idle
+C. Serverless compute tier with auto-pause, which bills per vCore-second only while the database is active
+D. Provisioned General Purpose, which gives a fixed number of vCores billed hourly, so cost does not follow usage during idle periods
 
 <details>
 <summary>Answer</summary>
@@ -159,8 +159,8 @@ D. Provisioned General Purpose
 **Scenario:** A 40 TB database needs near-instant restores and rapid scale-out of read replicas.
 
 A. General Purpose
-B. Managed Instance General Purpose
-C. Hyperscale
+B. Managed Instance General Purpose, with remote storage
+C. Hyperscale, with snapshot-based backups
 D. Business Critical
 
 <details>
@@ -176,10 +176,10 @@ D. Business Critical
 ### Question 10
 **Scenario:** You must prove who read a sensitive table over the last 90 days.
 
-A. SQL auditing writing to a Log Analytics workspace or storage account
-B. Extended events on the client
-C. Dynamic Data Masking
-D. Query Store
+A. SQL auditing to Log Analytics or a storage account, recording the principal for each read with retention you control
+B. Extended events on the client, collected from each application server, which record what the client sent but not what the database served
+C. Dynamic Data Masking on the sensitive table, which hides values from users in results but does not record who read them or when
+D. Query Store, which keeps query text and runtime stats for tuning but not which principal ran them
 
 <details>
 <summary>Answer</summary>
@@ -194,9 +194,9 @@ D. Query Store
 ### Question 11
 **Scenario:** A maintenance job must run nightly against an Azure SQL Database single database, which has no SQL Agent.
 
-A. It cannot be automated
-B. A cron job on the server
-C. SQL Server Agent
+A. It cannot be automated, because a database without SQL Agent has no way to run a job on a schedule
+B. A cron job on the server, which runs scripts on the database host that Azure SQL Database does not give customers access to
+C. SQL Server Agent, enabled from the database settings in the portal, which schedules T-SQL job steps inside the single database
 D. Elastic Jobs (or Azure Automation / Logic Apps) scheduled against the database
 
 <details>
@@ -212,10 +212,10 @@ D. Elastic Jobs (or Azure Automation / Logic Apps) scheduled against the databas
 ### Question 12
 **Scenario:** Waits show high `PAGEIOLATCH_SH` and the storage is at its IOPS ceiling.
 
-A. Increase MAXDOP
-B. Enable Query Store
-C. Add indexes to reduce reads, and scale the tier or move to a tier with higher IOPS
-D. Rebuild statistics
+A. Increase MAXDOP so queries use more parallel threads, which spreads the CPU work but leaves storage as the limit
+B. Enable Query Store to capture plan history, which helps diagnose regressions but does nothing about waiting on storage
+C. Add indexes to reduce reads, and scale the tier or move to a tier with higher IOPS, since the waits show storage is the bottleneck here
+D. Rebuild statistics for the busiest tables, which can improve plan choice but does not raise the storage IOPS ceiling
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Rebuild statistics
 ### Question 13
 **Scenario:** A deleted table must be recovered from four days ago on a database with default settings.
 
-A. Restore the log manually
-B. Undo the delete
-C. Use geo-replication failover
-D. Point-in-time restore to a new database, then copy the table back
+A. Restore the transaction log manually to a point four days ago on the live database, then cancel the delete
+B. Undo the delete with a T-SQL command that reverses the last committed transaction on the table
+C. Use geo-replication failover to the secondary, which holds a copy from before the delete
+D. Point-in-time restore to a new database from a time before the deletion, within the retention window, then copy the table back into the original
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Point-in-time restore to a new database, then copy the table back
 ### Question 14
 **Scenario:** Connections from the app tier must not traverse the public internet.
 
-A. A service endpoint plus public access
-B. A private endpoint for the logical server, with public network access disabled
-C. Encrypting the connection string
-D. A firewall rule allowing the app's public IP
+A. TLS 1.2 enforced as the minimum, which encrypts traffic but does not change its path
+B. A private endpoint for the logical server, with public network access disabled on the server
+C. Encrypting the connection string, which protects the secret but not the network path
+D. A firewall rule allowing the app's public IP, which restricts who can connect but still uses the public internet path
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. A firewall rule allowing the app's public IP
 ### Question 15
 **Scenario:** Several databases with varying, uncorrelated load should share a cost-efficient resource pool.
 
-A. An elastic pool
-B. One large single database
+A. An elastic pool shared by the databases
+B. One large single database sized for the combined load
 C. Serverless for each
-D. Separate provisioned databases at peak size
+D. Separate provisioned databases, each sized at its own peak
 
 <details>
 <summary>Answer</summary>

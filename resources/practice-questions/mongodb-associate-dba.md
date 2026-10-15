@@ -14,10 +14,10 @@ difficulty: intermediate
 ### Question 1
 **Scenario:** How many voting members should a replica set have?
 
-A. Exactly five
-B. Any number
+A. Exactly five, since that is the maximum number of voting members
+B. Any number, because an even count gives better fault tolerance than an odd one when a member fails
 C. An odd number, so an election can reach a strict majority without ties
-D. Exactly two
+D. Exactly two, so that each data center holds a full copy and the primary can be chosen by whichever side is faster
 
 <details>
 <summary>Answer</summary>
@@ -32,10 +32,10 @@ D. Exactly two
 ### Question 2
 **Scenario:** The primary becomes unreachable.
 
-A. An administrator must promote manually
-B. The remaining members hold an election and a secondary with the most recent oplog becomes the new primary
-C. All data is lost
-D. The cluster stops accepting writes permanently
+A. An administrator must promote a secondary by hand with a forced reconfiguration before the replica set accepts writes again
+B. The remaining members hold an election; a secondary with a recent oplog becomes primary
+C. All data is lost, because the secondaries only hold partial copies of the collections and cannot rebuild the primary's state
+D. The cluster stops accepting writes permanently until the original primary comes back and rejoins the replica set
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. The cluster stops accepting writes permanently
 ### Question 3
 **Scenario:** A shard key must be chosen for a large collection.
 
-A. A field with high cardinality, low frequency, and non-monotonic change, or a compound or hashed key that achieves the same
-B. A monotonically increasing field such as a timestamp
-C. `_id` always
-D. A low-cardinality field such as country
+A. A high-cardinality, low-frequency, non-monotonic field, or a compound or hashed key that achieves the same
+B. A monotonically increasing field such as a timestamp, because it sorts well and range queries on recent data hit just one shard
+C. `_id` always, since it is unique, indexed automatically and so a safe default for every collection that is sharded
+D. A low-cardinality field such as country, because each value maps cleanly to a region and keeps related documents together
 
 <details>
 <summary>Answer</summary>
@@ -69,9 +69,9 @@ D. A low-cardinality field such as country
 **Scenario:** What does the config server replica set store in a sharded cluster?
 
 A. Cluster metadata: the chunk ranges, shard list, and authentication data used to route queries
-B. Application data
-C. Backups
-D. Index data
+B. Application data, meaning the documents of every sharded collection, split across the config servers by chunk range
+C. Backups of each shard's data, taken nightly by the config servers so that a failed shard can be rebuilt
+D. Index data for every shard, so that `mongos` can answer queries without contacting the shards that own the documents
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Index data
 ### Question 5
 **Scenario:** Which backup method gives point-in-time recovery?
 
-A. `mongodump` alone
+A. `mongodump` alone, run every few minutes
 B. Replica set members alone
 C. Continuous oplog-based backup, as in Atlas continuous backups or Ops Manager
-D. A filesystem copy of a running server
+D. A filesystem copy taken with `cp` while writes continue
 
 <details>
 <summary>Answer</summary>
@@ -104,9 +104,9 @@ D. A filesystem copy of a running server
 ### Question 6
 **Scenario:** Authentication must be enabled on a replica set.
 
-A. Enable authorization plus internal cluster authentication, using a keyfile or x.509 certificates between members
-B. Application-level checks only
-C. Firewall rules only
+A. Enable authorization plus internal authentication, using a keyfile or x.509 certificates between members
+B. Application-level checks only, because the application already decides which users may read or write each collection
+C. Firewall rules only, restricting port 27017 to the application servers
 D. No authentication is needed on a private network
 
 <details>
@@ -122,10 +122,10 @@ D. No authentication is needed on a private network
 ### Question 7
 **Scenario:** Which role grants read and write on one database only?
 
-A. `readWrite` scoped to that database
-B. `dbAdmin`
-C. `clusterAdmin`
-D. `root`
+A. `readWrite` scoped to that database, leaving other databases untouched
+B. `dbAdmin` on that database, which grants read and write on its collections along with the index and schema tools
+C. `clusterAdmin` granted on the admin database, which covers reads and writes on every database in the deployment
+D. `root`, limited to one database by naming it in the grant
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. `root`
 ### Question 8
 **Scenario:** The oplog is too small for a secondary's downtime window.
 
-A. Nothing can be done
-B. Add a shard
-C. Restart the secondary
-D. Increase the oplog size, because a secondary whose lag exceeds the oplog window must perform a full initial sync
+A. Nothing can be done, because the oplog size is fixed when the replica set is first created and cannot be changed afterwards
+B. Add a shard to spread the writes
+C. Restart the secondary so it resumes from its last applied entry
+D. Increase the oplog size, since a secondary whose lag exceeds the oplog window must do a full initial sync
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Increase the oplog size, because a secondary whose lag exceeds the oplog wind
 ### Question 9
 **Scenario:** Slow operations must be identified on a running server.
 
-A. Guessing
-B. Adding memory
-C. The database profiler, plus the slow query log threshold and `currentOp` for what is executing now
-D. Restarting the server
+A. Guessing which query is slow from the application logs
+B. Adding memory to the server, which makes slow operations show up
+C. The database profiler, plus the slow query threshold and `currentOp` for what is executing now
+D. Restarting the server to clear the slow operations, then comparing latency before and after to find which query was at fault
 
 <details>
 <summary>Answer</summary>
@@ -176,9 +176,9 @@ D. Restarting the server
 ### Question 10
 **Scenario:** Which storage engine is the default and what concurrency does it provide?
 
-A. No storage engine
-B. In-memory only
-C. MMAPv1 with collection-level locking
+A. No storage engine is used; `mongod` keeps its data files as plain BSON on disk with a single lock held for each database
+B. In-memory only, which is the default engine in current releases and which loses all the data when the server restarts
+C. MMAPv1 with collection-level locking, which is the default engine in current releases and relies on the operating system cache
 D. WiredTiger with document-level concurrency, compression, and checkpointing
 
 <details>
@@ -194,10 +194,10 @@ D. WiredTiger with document-level concurrency, compression, and checkpointing
 ### Question 11
 **Scenario:** Reads must be served from secondaries to offload the primary.
 
-A. Not possible
+A. Not possible, because secondaries refuse every client read
 B. Set a read preference such as `secondaryPreferred`, accepting eventual consistency
-C. Add more primaries
-D. Shard the collection
+C. Add more primaries by raising `priority` on the secondaries
+D. Shard the collection, which moves reads off the primary
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Shard the collection
 ### Question 12
 **Scenario:** Chunks are unevenly distributed across shards.
 
-A. Manual migration only
-B. Nothing can be done
-C. Restart the cluster
-D. The balancer migrates chunks automatically to even out distribution, and it can be scheduled to a maintenance window
+A. Manual migration only, using `moveChunk` for each range, since automatic balancing is not available in sharded clusters
+B. Nothing can be done, because chunk placement is fixed
+C. Restart the cluster so every `mongos` rebuilds its routing table
+D. The balancer migrates chunks automatically, and it can be scheduled to a maintenance window
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. The balancer migrates chunks automatically to even out distribution, and it c
 ### Question 13
 **Scenario:** Data at rest must be encrypted.
 
-A. Application-level encryption only
-B. Encryption at rest via the storage engine's encryption (Enterprise or Atlas), with TLS for data in transit and optional client-side field level encryption for the most sensitive fields
-C. Filesystem permissions
-D. Not supported
+A. Application-level encryption only, since the server cannot encrypt its own files and so the application must handle every field before it is written
+B. Storage engine encryption at rest (Enterprise or Atlas), TLS in transit, and client-side field level encryption for sensitive fields
+C. Filesystem permissions that restrict the data directory to the `mongod` user, which also encrypts the files on disk
+D. Not supported, because the data files are always stored as plain BSON and only the connection between client and server can be protected with TLS
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. Not supported
 ### Question 14
 **Scenario:** A major version upgrade must be performed on a replica set with minimal downtime.
 
-A. Restore from backup
-B. Stop everything and upgrade
+A. Restore from backup into a new replica set built on the new version and cut the application over, accepting that writes made since the backup are lost
+B. Stop every member, upgrade the binaries, and restart them together so that every member runs the same version at the same moment, then check the logs
 C. Rolling upgrade: upgrade secondaries one at a time, step down the primary, upgrade it, then set the feature compatibility version
-D. Upgrade the primary first
+D. Upgrade the primary first, then the secondaries one at a time, so that new writes use the new version straight away
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Upgrade the primary first
 ### Question 15
 **Scenario:** Which metric most directly indicates a working set exceeding RAM?
 
-A. CPU utilization
+A. CPU utilization sitting near 100 percent
 B. A rising cache eviction rate and disk read I/O, with the WiredTiger cache consistently full
-C. Network throughput
-D. Connection count
+C. High network throughput between the application and the primary
+D. Connection count approaching the configured maximum
 
 <details>
 <summary>Answer</summary>

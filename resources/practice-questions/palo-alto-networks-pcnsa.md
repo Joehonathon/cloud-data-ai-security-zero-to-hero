@@ -16,7 +16,7 @@ difficulty: intermediate
 
 A. App-ID, which classifies traffic by application signatures and behavior rather than by port
 B. DNS filtering
-C. Port-based rules
+C. Port-based rules that map well-known ports such as 80 and 443 to applications, which stop working once an application moves to a non-standard port
 D. A stateful ACL
 
 <details>
@@ -32,10 +32,10 @@ D. A stateful ACL
 ### Question 2
 **Scenario:** In what order does PAN-OS evaluate security policy rules?
 
-A. Most specific first
-B. Top to bottom, first match wins, so specific rules must sit above general ones
+A. Most specific first, because the engine automatically ranks rules by how narrow their source, destination and application match is
+B. Top to bottom with the first match winning, so specific rules must be placed before general ones
 C. By rule name
-D. Lowest risk first
+D. Lowest risk first, with the rule that matches the least risky application evaluated before all others in the rule base
 
 <details>
 <summary>Answer</summary>
@@ -50,10 +50,10 @@ D. Lowest risk first
 ### Question 3
 **Scenario:** Traffic from a trust zone to an untrust zone is not matching an intended rule.
 
-A. Zones do not matter
-B. Check the source and destination zones on the rule, since security policy is zone-based and a rule only applies to the zones it names
+A. Zones do not matter because rules match on addresses and applications alone, and the zone fields are only used for logging purposes
+B. Check the source and destination zones on the rule, since a rule only applies to the zones it names
 C. Disable App-ID
-D. Reboot the firewall
+D. Reboot the firewall, because zone and interface bindings are only re-read from the running configuration at boot
 
 <details>
 <summary>Answer</summary>
@@ -70,7 +70,7 @@ D. Reboot the firewall
 
 A. App-ID
 B. User-ID, integrating with directory sources so policy can be written per user or group
-C. NAT
+C. NAT, which rewrites source and destination addresses but does not tie an address to a directory account or group
 D. Content-ID
 
 <details>
@@ -88,8 +88,8 @@ D. Content-ID
 
 A. User-ID
 B. Content-ID, the umbrella for the threat inspection engines applied through security profiles
-C. App-ID
-D. NAT
+C. App-ID, which identifies the application on the wire but does not itself scan the allowed traffic for threats or files
+D. NAT, which translates addresses and ports on matching sessions and has no threat inspection or file blocking role
 
 <details>
 <summary>Answer</summary>
@@ -104,10 +104,10 @@ D. NAT
 ### Question 6
 **Scenario:** How are threat prevention actions applied to a security rule?
 
-A. In the NAT policy
-B. Automatically on all traffic
-C. Through security profiles (antivirus, anti-spyware, vulnerability protection, URL filtering, file blocking) attached to the rule, best managed as a profile group
-D. Globally only
+A. In the NAT policy, where each translation rule carries its own antivirus and vulnerability settings
+B. Automatically on all traffic that crosses the firewall, because threat inspection engines are always active once licensed
+C. Through security profiles such as antivirus and URL filtering, attached to the rule
+D. Globally only, through a single firewall-wide threat setting that covers every rule and cannot be varied per rule or per zone pair
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. Globally only
 ### Question 7
 **Scenario:** Internal hosts on private addresses must reach the internet.
 
-A. A security profile
-B. No translation needed
-C. Destination NAT
-D. A source NAT rule translating the private source to a public address, evaluated separately from security policy
+A. A security profile attached to the rule that permits the hosts to reach the internet
+B. No translation needed, because the security rule that permits the traffic handles the private addresses
+C. Destination NAT, which publishes an internal server on a public address for inbound connections but does nothing for outbound clients
+D. A source NAT rule translating the private source address to a public one
 
 <details>
 <summary>Answer</summary>
@@ -141,9 +141,9 @@ D. A source NAT rule translating the private source to a public address, evaluat
 **Scenario:** An external service must be reachable at a public IP that maps to an internal server.
 
 A. No NAT
-B. Source NAT
+B. Source NAT using the firewall's external interface address, which hides internal clients but cannot publish a server to inbound users
 C. A URL filtering profile
-D. Destination NAT, translating the public destination to the internal address, with a security rule referencing the pre-NAT destination zone
+D. Destination NAT, translating the public destination to the internal address, with a security rule using the pre-NAT address and the post-NAT zone
 
 <details>
 <summary>Answer</summary>
@@ -158,10 +158,10 @@ D. Destination NAT, translating the public destination to the internal address, 
 ### Question 9
 **Scenario:** Which action logs a session but does not block it?
 
-A. Deny
+A. Deny, which blocks the session and, depending on the application, can send a reset or silent drop back to the sender
 B. Allow with a log setting, typically log at session end for completed sessions
-C. Drop
-D. Reset
+C. Drop, which silently discards the packets of the session and sends nothing back to the sender
+D. Reset, which sends a TCP reset to the client or server so the session is torn down at once
 
 <details>
 <summary>Answer</summary>
@@ -176,7 +176,7 @@ D. Reset
 ### Question 10
 **Scenario:** The difference between deny and drop for a blocked session.
 
-A. Drop notifies the sender
+A. Drop sends a TCP reset to both ends of the session so that the client fails fast
 B. Deny allows the traffic
 C. Deny applies the rule's configured action per application; drop silently discards packets; reset sends a TCP reset to tear the connection down
 D. They are identical
@@ -195,7 +195,7 @@ D. They are identical
 **Scenario:** Configuration changes are made but not taking effect.
 
 A. Reboot required
-B. License expired
+B. The licence has expired, so the dataplane has stopped applying new policy until the subscription is renewed
 C. The firewall is broken
 D. Changes are in the candidate configuration and must be committed to become the running configuration
 
@@ -213,9 +213,9 @@ D. Changes are in the candidate configuration and must be committed to become th
 **Scenario:** Which URL filtering action prompts the user before allowing access?
 
 A. Continue, which presents a response page the user must acknowledge to proceed
-B. Allow
+B. Allow, which logs the event and then lets the user through without any warning or acknowledgement page
 C. Block
-D. Alert
+D. Alert, which writes each matching request to the URL filtering log and then lets it through
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Alert
 ### Question 13
 **Scenario:** An application depends on another application to function.
 
-A. Dependencies are irrelevant
-B. Only the primary application is needed in policy
-C. Application dependencies must be allowed too, or the application will not work; the dependency warning on commit indicates which
-D. Use a port-based rule instead
+A. Dependencies are irrelevant because App-ID identifies each application on its own and permits it independently of any other application in the rule base
+B. Only the primary application is needed in policy, as the platform allows dependencies itself
+C. Dependencies must also be allowed, or the application will not work
+D. Use a port-based rule instead, opening every port the application might use
 
 <details>
 <summary>Answer</summary>
@@ -250,7 +250,7 @@ D. Use a port-based rule instead
 
 A. Role-based administrator accounts with least privilege, restricted management interface access, and authentication integrated with an identity source
 B. Default credentials
-C. Open management access
+C. Open management access on every interface so that administrators can reach the firewall from any network during an outage
 D. A shared admin account
 
 <details>
@@ -266,7 +266,7 @@ D. A shared admin account
 ### Question 15
 **Scenario:** Which log would you check to see why a session was allowed or blocked?
 
-A. The system log
+A. The system log, which records device events such as high availability changes and interface state but not per-session rule matches
 B. The configuration log
 C. The traffic log, which records the matched rule, application, zones, action, and bytes per session
 D. The alarm log

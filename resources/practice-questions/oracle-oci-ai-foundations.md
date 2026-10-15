@@ -10,9 +10,9 @@
 **Scenario:** A model must predict whether a customer will churn. What type of problem is this?
 
 A. Regression
-B. Classification
-C. Dimensionality reduction
-D. Clustering
+B. Binary classification
+C. Dimensionality reduction with PCA
+D. Clustering of similar customers
 
 <details>
 <summary>Answer</summary>
@@ -27,9 +27,9 @@ D. Clustering
 ### Question 2
 **Scenario:** A fraud model scores 99.9% accuracy on a dataset where 99.9% of transactions are legitimate, but catches almost no fraud. What metric should be used instead?
 
-A. Mean squared error
-B. Accuracy is fine; the model needs more data
-C. R-squared
+A. Mean squared error, because it penalizes large prediction errors more heavily and so exposes the missed fraud cases
+B. Accuracy is fine, because 99.9% is close to perfect; the model only needs more fraud examples collected over time
+C. R-squared, because it shows how much of the variation in the fraud label the model explains
 D. Recall, or F1, because accuracy is misleading on imbalanced data
 
 <details>
@@ -46,9 +46,9 @@ D. Recall, or F1, because accuracy is misleading on imbalanced data
 **Scenario:** A model performs excellently on training data and poorly on new data. What is happening, and what is one fix?
 
 A. Class imbalance; resample the training set
-B. Data drift; retrain on recent data
+B. Data drift; retrain on the latest production data
 C. Overfitting; use more data, regularization, or early stopping
-D. Underfitting; use a more complex model
+D. Underfitting, where the model is too simple to learn the pattern; switch to a more complex model with more layers
 
 <details>
 <summary>Answer</summary>
@@ -64,9 +64,9 @@ D. Underfitting; use a more complex model
 **Scenario:** A company wants to analyze sentiment in thousands of product reviews. It has no machine learning staff.
 
 A. OCI Data Labeling
-B. OCI Generative AI custom model
-C. OCI Data Science
-D. OCI Language
+B. OCI Generative AI custom fine-tuned model
+C. OCI Data Science with notebook sessions
+D. OCI Language sentiment analysis
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. OCI Language
 ### Question 5
 **Scenario:** A company must extract totals and dates from scanned supplier invoices.
 
-A. OCI Language
-B. OCI Document Understanding
-C. OCI Vision
-D. OCI Speech
+A. OCI Language, which analyzes text for entities and sentiment once the text is extracted
+B. OCI Document Understanding, which extracts key-value fields and tables from invoices and forms
+C. OCI Vision, which classifies images and detects objects
+D. OCI Speech, which transcribes recorded audio into text
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. OCI Speech
 ### Question 6
 **Scenario:** A chatbot must answer employee questions grounded in internal policy documents, with citations.
 
-A. OCI Generative AI Agents
-B. OCI Generative AI base model prompting alone
+A. OCI Generative AI Agents, using a knowledge base built over the policy documents
+B. Base model prompting alone, with the policies pasted into each prompt
 C. Fine-tune a model on the policy documents
-D. OCI Language text classification
+D. OCI Language text classification to route each question to a topic
 
 <details>
 <summary>Answer</summary>
@@ -118,9 +118,9 @@ D. OCI Language text classification
 **Scenario:** What is the difference between a parameter and a hyperparameter?
 
 A. Parameters are learned during training; hyperparameters are set before training
-B. They are synonyms
-C. Hyperparameters are learned and parameters are fixed
-D. Parameters apply to deep learning only
+B. They are synonyms for the model's learned weights
+C. Hyperparameters are learned from the data during training, while parameters are fixed constants chosen up front
+D. Parameters are for deep learning only, hyperparameters for classical
 
 <details>
 <summary>Answer</summary>
@@ -135,10 +135,10 @@ D. Parameters apply to deep learning only
 ### Question 8
 **Scenario:** Which architecture is most appropriate for image classification?
 
-A. CNN
+A. Convolutional neural network
 B. RNN
-C. Transformer decoder
-D. Autoencoder
+C. Transformer decoder with attention layers
+D. Autoencoder with a bottleneck layer
 
 <details>
 <summary>Answer</summary>
@@ -153,10 +153,10 @@ D. Autoencoder
 ### Question 9
 **Scenario:** A model gives a confident, plausible, factually wrong answer. What is this called, and what most reduces it?
 
-A. Drift; retraining
+A. Drift; retraining on newer data
 B. Bias; rebalancing the dataset
 C. Hallucination; grounding the model in retrieved source text
-D. Overfitting; regularization
+D. Overfitting, where the model memorizes noise in its training data; applying regularization to the weights
 
 <details>
 <summary>Answer</summary>
@@ -171,10 +171,10 @@ D. Overfitting; regularization
 ### Question 10
 **Scenario:** A team needs distributed training across many GPUs. Which OCI capability is specifically relevant?
 
-A. OCI Language custom models
+A. OCI Language custom models, which train a text classifier on labeled data using a managed service
 B. RDMA cluster networking on AI infrastructure
-C. Autonomous Database
-D. OCI Data Labeling
+C. Autonomous Database, which provides managed storage and SQL processing for transactional workloads
+D. OCI Data Labeling, which lets people annotate images and text to build supervised training sets
 
 <details>
 <summary>Answer</summary>
@@ -189,10 +189,10 @@ D. OCI Data Labeling
 ### Question 11
 **Scenario:** Which describes unsupervised learning?
 
-A. Learning a policy from reward feedback
-B. Learning to predict a label from labeled examples
-C. Learning from a teacher model
-D. Finding structure in unlabeled data, such as clustering or anomaly detection
+A. Learning a policy from reward feedback, where an agent is scored on each outcome
+B. Learning to predict a label from labeled examples, such as spam
+C. Learning from a teacher model that supplies target outputs
+D. Finding structure in unlabeled data without target labels, such as clustering or anomaly detection
 
 <details>
 <summary>Answer</summary>
@@ -207,10 +207,10 @@ D. Finding structure in unlabeled data, such as clustering or anomaly detection
 ### Question 12
 **Scenario:** Why is a separate test set held back rather than reusing the validation set?
 
-A. Because validation sets cannot be used for classification
-B. To reduce memory use
+A. Because validation sets cannot be used for classification problems, only for regression tasks
+B. To reduce memory use, since the validation set is too large to keep loaded during the final evaluation of the model
 C. Because tuning against a set contaminates it, so an untouched set is needed for an honest final estimate
-D. To speed up training
+D. To speed up training, since the model can stop sooner when it only reports one single final score at the very end
 
 <details>
 <summary>Answer</summary>
@@ -226,9 +226,9 @@ D. To speed up training
 **Scenario:** A team wants semantic search over data that already lives in Oracle Autonomous Database, without operating a separate vector store.
 
 A. AI Vector Search in Autonomous Database
-B. OCI Vision
-C. OCI Speech
-D. OCI Data Science model deployment
+B. OCI Vision, which could index images as vectors but does not store or search your relational rows
+C. OCI Speech, which converts audio to text and so can feed a transcript into a search index
+D. OCI Data Science model deployment, which serves a model endpoint but needs a separate vector store for search
 
 <details>
 <summary>Answer</summary>
@@ -243,10 +243,10 @@ D. OCI Data Science model deployment
 ### Question 14
 **Scenario:** Which responsible AI principle is addressed by being able to explain to a rejected loan applicant why the decision was made?
 
-A. Privacy
-B. Availability
-C. Explainability
-D. Fairness
+A. Privacy, covering personal data protection
+B. Availability, keeping the service up
+C. Explainability of each decision to the applicant
+D. Fairness, which checks that approval rates are equitable across demographic groups of applicants
 
 <details>
 <summary>Answer</summary>
@@ -261,10 +261,10 @@ D. Fairness
 ### Question 15
 **Scenario:** A team wants to train a custom model in a managed notebook environment and serve it as an API endpoint.
 
-A. OCI Document Understanding
+A. OCI Document Understanding, which extracts fields from invoices and forms but is not a place to train your own model
 B. OCI Data Science, using notebook sessions, the model catalog, and model deployment
-C. OCI Language custom models
-D. OCI Generative AI
+C. OCI Language custom models, which train a text classifier through a managed service rather than in a notebook
+D. OCI Generative AI, which hosts and fine-tunes foundation models and serves them through managed endpoints
 
 <details>
 <summary>Answer</summary>

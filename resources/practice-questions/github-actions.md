@@ -33,9 +33,9 @@ D. `on: push`
 **Scenario:** A job must run only after another job succeeds.
 
 A. `needs: <job-id>` on the dependent job
-B. Order them in the file
-C. Separate workflows
-D. `if: success()` alone
+B. Order them in the file, since jobs run top to bottom in the order they are declared in the YAML
+C. Split them into separate workflows that are both triggered by the same push event
+D. `if: success()` alone on the dependent job, with no other keys
 
 <details>
 <summary>Answer</summary>
@@ -70,8 +70,8 @@ D. Six separate jobs written by hand
 
 A. A password in the YAML
 B. OIDC with a cloud provider or registry trust relationship, requesting a token at run time
-C. A long-lived personal access token in a secret
-D. A shared account
+C. A long-lived personal access token in a secret, scoped to the registry and rotated by hand every 90 days
+D. A shared service account whose password every team member stores in a repository secret and rotates by hand
 
 <details>
 <summary>Answer</summary>
@@ -88,7 +88,7 @@ D. A shared account
 
 A. Target an environment with required reviewers configured
 B. Ask in chat
-C. Add a `sleep`
+C. Add a `sleep` step that holds the job for a fixed time while a reviewer inspects the pending deployment
 D. Use a schedule
 
 <details>
@@ -105,9 +105,9 @@ D. Use a schedule
 **Scenario:** Common workflow logic must be shared across many repositories.
 
 A. Documentation
-B. Copy the YAML into each repository
+B. Copy the YAML into each repository and sync changes manually with a scheduled bot pull request
 C. A shell script in each repo
-D. A reusable workflow called with `uses: org/repo/.github/workflows/build.yml@v1`, or a composite action
+D. A reusable workflow called with `uses: org/repo/.github/workflows/build.yml@v1`
 
 <details>
 <summary>Answer</summary>
@@ -122,10 +122,10 @@ D. A reusable workflow called with `uses: org/repo/.github/workflows/build.yml@v
 ### Question 7
 **Scenario:** A third-party action is referenced as `@v3`.
 
-A. This is fully immutable
+A. This is fully immutable, because GitHub locks a release tag once the action's owner publishes it
 B. SHAs are not supported
-C. Only branches can be referenced
-D. Tags are mutable, so pin to a full commit SHA for third-party actions in sensitive workflows
+C. Only branches can be referenced, not tags or commit SHAs of the action's repository
+D. Tags are mutable, so pin third-party actions to a full commit SHA
 
 <details>
 <summary>Answer</summary>
@@ -140,10 +140,10 @@ D. Tags are mutable, so pin to a full commit SHA for third-party actions in sens
 ### Question 8
 **Scenario:** A workflow triggered by `pull_request_target` handles code from a fork.
 
-A. It runs with repository secrets and write access in the base repository context, so never check out and execute untrusted fork code in it
-B. It is safe by default
+A. It runs with secrets and write access in the base repo, so never run untrusted fork code in it
+B. It is safe by default, because GitHub always runs it in a sandbox with a read-only token and no secrets
 C. It cannot access secrets
-D. It has no permissions
+D. It has no permissions at all, because GitHub only ever lets it read the workflow file from the base branch
 
 <details>
 <summary>Answer</summary>
@@ -161,7 +161,7 @@ D. It has no permissions
 A. Nothing can be done
 B. Use a self-hosted runner only
 C. `actions/cache` with a key derived from the lock file hash, plus a restore-keys fallback
-D. Commit `node_modules`
+D. Commit `node_modules` to the repository so the runner finds every dependency already checked out
 
 <details>
 <summary>Answer</summary>
@@ -176,7 +176,7 @@ D. Commit `node_modules`
 ### Question 10
 **Scenario:** The default `GITHUB_TOKEN` permissions must follow least privilege.
 
-A. Leave the defaults
+A. Leave the defaults, because the token is automatically limited to the minimum scopes each step uses
 B. Use a personal access token instead
 C. Set `permissions:` explicitly at workflow or job level, granting only what each job needs
 D. Disable the token
@@ -194,10 +194,10 @@ D. Disable the token
 ### Question 11
 **Scenario:** A self-hosted runner is needed for a workflow that reaches internal systems.
 
-A. Use it on public repositories freely
-B. Use self-hosted runners for private repositories, or with strict controls, because fork pull requests could otherwise execute untrusted code on your infrastructure
+A. Use it on public repositories freely, because each fork pull request gets a fresh isolated virtual machine that is discarded after the job
+B. Use them for private repositories, or with strict controls, since fork PRs could run untrusted code
 C. There is no risk
-D. Self-hosted runners cannot reach internal systems
+D. Self-hosted runners cannot reach internal systems, because they always run inside GitHub's own cloud network space
 
 <details>
 <summary>Answer</summary>
@@ -212,10 +212,10 @@ D. Self-hosted runners cannot reach internal systems
 ### Question 12
 **Scenario:** A custom action must be written in TypeScript.
 
-A. A workflow file
-B. Bash only
-C. Only container actions are supported
-D. A JavaScript or TypeScript action with an `action.yml` declaring inputs, outputs, and the entry point
+A. A workflow YAML file that calls tsc in a run step, with no action.yml file and no declared inputs or outputs
+B. Bash only, because composite and JavaScript actions cannot be written in any other language than shell
+C. Only container actions are supported, so the TypeScript must be built into a Docker image first
+D. A TypeScript action with an `action.yml` declaring inputs, outputs, and the entry point
 
 <details>
 <summary>Answer</summary>
@@ -248,10 +248,10 @@ D. It is not possible
 ### Question 14
 **Scenario:** Actions usage must be governed across an enterprise.
 
-A. Disable Actions
-B. Review after the fact
-C. Organization and enterprise policies restricting which actions may run (verified creators, an allowlist), plus required workflows and runner groups
-D. Trust developers
+A. Disable Actions for the whole enterprise and require every team to use an external CI system instead of it
+B. Review usage after the fact in the audit log each month, and remove any workflow that looks risky or unusual
+C. Org and enterprise policies that restrict which actions run (verified creators, allowlist)
+D. Trust developers to review each action's source code themselves, and rely on pull request approval to catch risky ones
 
 <details>
 <summary>Answer</summary>
@@ -266,10 +266,10 @@ D. Trust developers
 ### Question 15
 **Scenario:** A long-running workflow should be cancelled when a newer commit arrives on the same branch.
 
-A. Reduce the timeout
+A. Reduce the timeout-minutes value so that runs from older commits are stopped sooner by the timer
 B. A `concurrency` group keyed on the ref with `cancel-in-progress: true`
-C. Fewer jobs
-D. Cancel manually
+C. Fewer jobs, so that each run finishes before the next commit arrives and nothing needs cancelling
+D. Cancel manually from the Actions tab each time a newer commit arrives on the branch
 
 <details>
 <summary>Answer</summary>

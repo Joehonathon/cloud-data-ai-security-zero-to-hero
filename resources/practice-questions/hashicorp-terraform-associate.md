@@ -1,6 +1,6 @@
 # HashiCorp Terraform Associate (003) - Practice Questions
 
-15 scenario-based questions for Terraform Associate prep.
+25 scenario-based questions for Terraform Associate prep.
 
 > **Cert page:** [exams/hashicorp/terraform-associate/](../../exams/hashicorp/terraform-associate/)
 
@@ -9,10 +9,10 @@
 ### Question 1
 **Scenario:** A new team member runs `terraform plan` and sees changes they didn't make. The state file is in S3. What's most likely?
 
-A. Drift detection is permanent
-B. Terraform is buggy
-C. Someone made manual changes to resources outside Terraform
-D. The state file is stale
+A. Drift detection is permanent, so plan always reports differences between the code and the cloud
+B. Terraform is buggy and reports differences that do not exist in the real infrastructure
+C. Someone changed resources outside Terraform
+D. The team member's local Terraform CLI is newer than the one that last wrote the state
 
 <details>
 <summary>Answer</summary>
@@ -30,7 +30,7 @@ D. The state file is stale
 A. Remote state with state locking (S3 + DynamoDB, or Terraform Cloud)
 B. Local state with git
 C. Encrypted local state
-D. Terraform Cloud only
+D. Terraform Cloud only, since open-source Terraform has no way to lock a remote backend
 
 <details>
 <summary>Answer</summary>
@@ -66,7 +66,7 @@ D. `import` is destructive
 A. Use `sensitive = true`
 B. Just declare the variable without a `default` - Terraform will require it
 C. Use `validation` block
-D. Set `default = null` and check at runtime
+D. Set `default = null` and check at runtime with a precondition, which makes the variable optional
 
 <details>
 <summary>Answer</summary>
@@ -81,10 +81,10 @@ D. Set `default = null` and check at runtime
 ### Question 5
 **Scenario:** Sensitive output (e.g., a generated password) should be stored in state but not displayed in plan/apply output. How?
 
-A. Use a separate state file
+A. Keep the value in a separate state file that only the pipeline can read
 B. `sensitive = true` on the output declaration
-C. Don't put sensitive data in state
-D. Encrypt the entire state file
+C. Don't put sensitive data in state, because Terraform never stores outputs after an apply completes
+D. Encrypt the entire state file with a customer-managed key before each apply
 
 <details>
 <summary>Answer</summary>
@@ -99,10 +99,10 @@ D. Encrypt the entire state file
 ### Question 6
 **Scenario:** A `count = 3` resource is replaced with `for_each` over 3 named items. After this change, what happens?
 
-A. Terraform recognizes them as the same resources
-B. Terraform errors out
-C. Terraform converts automatically
-D. Terraform plans to destroy 3 and create 3 (the addressing changes from `[0]/[1]/[2]` to `["a"]/["b"]/["c"]`)
+A. Terraform recognizes them as the same three resources and plans no changes at all
+B. Terraform errors out because count and for_each cannot be swapped on an existing resource
+C. Terraform converts the state addresses automatically during the next plan and keeps the resources
+D. Plan to destroy 3 and create 3, because the resource addresses change
 
 <details>
 <summary>Answer</summary>
@@ -119,8 +119,8 @@ D. Terraform plans to destroy 3 and create 3 (the addressing changes from `[0]/[
 
 A. In `terraform { required_providers { ... version = "~> 4.0" } }`
 B. In environment variables
-C. In the state file
-D. In the backend configuration
+C. In the state file, beside the resource attributes that Terraform records after each apply
+D. In the backend configuration block, alongside the bucket and key arguments for remote state
 
 <details>
 <summary>Answer</summary>
@@ -154,8 +154,8 @@ D. Cloud workspaces don't have state
 **Scenario:** What does `terraform fmt` do?
 
 A. Validates syntax
-B. Generates documentation
-C. Tests the configuration
+B. Generates documentation for each module's inputs and outputs as a README file in the repository
+C. Tests the configuration by running its modules against a temporary test environment
 D. Formats `.tf` files to canonical style (whitespace, alignment, ordering)
 
 <details>
@@ -171,17 +171,17 @@ D. Formats `.tf` files to canonical style (whitespace, alignment, ordering)
 ### Question 10
 **Scenario:** A module is published to the Terraform Registry as `myorg/network/aws`. How do you reference it in a config?
 
-A. `source = "myorg/network/aws"`
-B. `source = "registry.terraform.io/myorg/network/aws"`
-C. `module "net" { source = "myorg/network/aws" version = "1.2.3" }`
-D. Both A and C work; B is the explicit form
+A. `module "net" { source = "registry/myorg/network/aws" version = "1.2.3" }`
+B. `module "net" { source = "git::https://registry.terraform.io/myorg/network/aws.git" }`
+C. `module "net" { source = "./modules/myorg/network/aws" version = "1.2.3" }`
+D. `module "net" { source = "myorg/network/aws" version = "1.2.3" }`
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Public registry modules use `<namespace>/<name>/<provider>` and Terraform implicitly resolves to registry.terraform.io. Versions are highly recommended. Explicit registry URL works too.
+**Why:** Public registry modules use `<namespace>/<name>/<provider>` and Terraform implicitly resolves to registry.terraform.io. Versions are highly recommended. A local path, a git URL, or a made-up registry prefix does not reference a registry module this way.
 </details>
 
 ---
@@ -189,7 +189,7 @@ D. Both A and C work; B is the explicit form
 ### Question 11
 **Scenario:** When does Terraform create an implicit dependency between resources?
 
-A. Never; you must use `depends_on`
+A. Never; you must use `depends_on` on every resource, since Terraform cannot infer ordering from attribute references
 B. When one resource references another's attribute (e.g., `aws_subnet.id` referenced by `aws_instance`)
 C. Only within the same module
 D. Only when explicitly declared
@@ -207,17 +207,17 @@ D. Only when explicitly declared
 ### Question 12
 **Scenario:** Backend `partial configuration` with `terraform init -backend-config=...` is useful for what?
 
-A. Switching backends without code changes
-B. Keeping backend secrets out of source control
-C. Per-environment configuration
-D. All of the above
+A. Merging backend blocks from several modules into one combined state file during apply, so that separate teams share a single backend and a single lock
+B. Skipping state locking and state refresh so that init finishes faster in CI pipelines
+C. Downloading provider plugins from a private mirror instead of the public registry
+D. Supplying backend settings such as the bucket or access keys at init time, keeping secrets out of git and varying them per environment
 
 <details>
 <summary>Answer</summary>
 
 **Correct: D**
 
-**Why:** Partial config lets you specify backend at init time via `-backend-config="bucket=mybucket"` or a `.hcl` file. Common for: keeping bucket names per-env, keeping access keys out of git, switching prod/staging buckets.
+**Why:** Partial config lets you specify backend at init time via `-backend-config="bucket=mybucket"` or a `.hcl` file. Common for: keeping bucket names per-env, keeping access keys out of git, switching prod/staging buckets. It does not merge states, disable locking, or change where providers come from.
 </details>
 
 ---
@@ -227,7 +227,7 @@ D. All of the above
 
 A. Marks a resource for replacement on next apply
 B. Locks the resource
-C. Permanently breaks the resource
+C. Permanently breaks the resource so Terraform stops managing it and drops it from the plan
 D. Removes from state
 
 <details>
@@ -245,8 +245,8 @@ D. Removes from state
 
 A. Output blocks in the module
 B. Variables
-C. Provider config
-D. Resource attributes
+C. Provider configuration blocks passed through to the module call
+D. Resource attributes of the parent module, read directly by the child module at plan time
 
 <details>
 <summary>Answer</summary>
@@ -263,7 +263,7 @@ D. Resource attributes
 
 A. Validate, plan, apply, format
 B. Read config, refresh state, plan, prompt for approval, apply, update state
-C. Plan, then apply changes, then update state
+C. Plan, apply, then refresh state from the real infrastructure
 D. Apply changes, then plan
 
 <details>
@@ -281,8 +281,8 @@ D. Apply changes, then plan
 
 A. State locking (preventing concurrent applies)
 B. Audit history
-C. State storage
-D. Encryption keys
+C. State storage - DynamoDB holds the state file contents while S3 stores only the lock record
+D. Encryption keys for the state file stored in S3 and used to decrypt it
 
 <details><summary>Answer</summary>
 
@@ -296,10 +296,10 @@ D. Encryption keys
 ### Question 17
 **Scenario:** You need to import an existing AWS resource (e.g., a manually-created S3 bucket) into Terraform management.
 
-A. Manually edit the state file
-B. `terraform refresh`
-C. Recreate the bucket via Terraform
-D. `terraform import aws_s3_bucket.mybucket bucket-name`
+A. Manually edit the state file to add an entry for the bucket
+B. Run `terraform refresh` so that the existing bucket is detected and added
+C. Recreate the bucket via Terraform with the same name after deleting the manually created one
+D. `terraform import aws_s3_bucket.b bucket-name`
 
 <details><summary>Answer</summary>
 
@@ -347,9 +347,9 @@ D. `count` uses an integer (creates N indexed copies); `for_each` uses a map or 
 ### Question 20
 **Scenario:** Sensitive output value (e.g., DB password) needs to be passed to a downstream module.
 
-A. Commit to git
+A. Commit the value to git in a terraform.tfvars file so the downstream module can read it from the repository
 B. Mark output as `sensitive = true`; pass to downstream module input variable also marked sensitive
-C. Print to console
+C. Print it to the console in the apply output so that the downstream pipeline job can copy the value by hand
 D. Email it
 
 <details><summary>Answer</summary>
@@ -364,10 +364,10 @@ D. Email it
 ### Question 21
 **Scenario:** Workspaces in Terraform - what are they for?
 
-A. Separate state files for the same config (e.g., dev / staging / prod)
-B. Provider versioning
-C. Module isolation
-D. Visual editing
+A. Separate state files for one config (dev, staging, prod)
+B. Provider versioning - pinning a different provider release for each environment of one configuration
+C. Module isolation - hiding the internal resources of a module from the calling configuration
+D. Visual editing - a graphical canvas for drawing resources and wiring them together
 
 <details><summary>Answer</summary>
 
@@ -384,7 +384,7 @@ D. Visual editing
 A. Module syntax
 B. State encryption
 C. Cloud-specific resource and data source types
-D. Backend storage
+D. Backend storage - where state is stored and how locking is performed for the configuration
 
 <details><summary>Answer</summary>
 
@@ -398,10 +398,10 @@ D. Backend storage
 ### Question 23
 **Scenario:** What does `terraform validate` do?
 
-A. Checks syntax + internal consistency without contacting providers
-B. Applies the plan
-C. Refreshes state
-D. Tests in production
+A. Checks syntax and consistency without contacting providers
+B. Applies the plan after confirming the configuration against the real infrastructure first
+C. Refreshes the state file from the real infrastructure and writes the result back
+D. Tests the configuration in production by creating a temporary copy of each resource
 
 <details><summary>Answer</summary>
 
@@ -415,9 +415,9 @@ D. Tests in production
 ### Question 24
 **Scenario:** Best way to handle provider version constraints:
 
-A. Pin globally in environment
+A. Pin the version globally in an environment variable set on each engineer's laptop and in the CI runner
 B. Edit ~/.terraform.d/
-C. Don't pin; use latest
+C. Don't pin; use the latest release so the configuration always picks up the newest provider bug fixes automatically
 D. Pin in `required_providers` in a `terraform { ... }` block; commit `.terraform.lock.hcl`
 
 <details><summary>Answer</summary>

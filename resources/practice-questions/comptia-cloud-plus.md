@@ -17,9 +17,9 @@ Cloud+ is vendor-neutral, so answers describe concepts rather than a specific pr
 **Scenario:** A workload has a predictable baseline plus unpredictable spikes.
 
 A. Provision the minimum
-B. Provision for the peak permanently
+B. Provision for the peak permanently so no spike ever causes a capacity shortfall or latency
 C. Provision the average
-D. Provision the baseline with a committed discount and handle spikes with autoscaling on demand
+D. Provision the baseline with a committed discount and use autoscaling for spikes
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. Provision the baseline with a committed discount and handle spikes with autos
 ### Question 2
 **Scenario:** A migration approach must be chosen for a legacy application.
 
-A. Always retire
+A. Always retire any application older than five years, since legacy systems carry the most technical debt
 B. Assess per application: rehost, replatform, refactor, repurchase, retire, or retain
-C. Always refactor
-D. Always rehost
+C. Always refactor every application into cloud-native microservices before moving anything to the cloud
+D. Always rehost every application as is, so that no code changes are needed before the cutover
 
 <details>
 <summary>Answer</summary>
@@ -52,7 +52,7 @@ D. Always rehost
 ### Question 3
 **Scenario:** A VM template must be produced so every instance starts identically.
 
-A. Copy an existing instance manually
+A. Clone a running production instance and edit its settings by hand after each launch
 B. A documentation page
 C. A golden image built by an automated pipeline, versioned and rebuilt on a patching cadence
 D. Configure each instance by hand
@@ -73,7 +73,7 @@ D. Configure each instance by hand
 A. File storage (NFS or SMB)
 B. Local ephemeral disk
 C. Object storage
-D. Block storage
+D. Block storage attached read-write to every instance, each mounting it with its own local file system
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. Block storage
 ### Question 5
 **Scenario:** Data must survive the loss of a whole availability zone.
 
-A. RAID within one zone
+A. RAID 10 across several disks within one zone, which protects against drive failures and gives fast rebuilds
 B. Replication across zones or regions, plus backups tested by restore
 C. A larger disk
-D. Snapshots in the same zone
+D. Snapshots taken every hour and stored in the same zone as the volume they protect
 
 <details>
 <summary>Answer</summary>
@@ -108,7 +108,7 @@ D. Snapshots in the same zone
 
 A. Estimate from headcount
 B. Reduce all resources
-C. Tag resources consistently, analyze cost by tag and service, then act on the largest contributors and set budget alerts
+C. Tag resources consistently, analyze cost by tag and service, then act on the largest contributors
 D. Cancel unused accounts
 
 <details>
@@ -124,10 +124,10 @@ D. Cancel unused accounts
 ### Question 7
 **Scenario:** An application tier must not be reachable from the internet.
 
-A. A strong password
-B. A firewall rule on the instance
-C. A public IP with an allowlist
-D. A private subnet with no route to an internet gateway, using NAT for outbound only
+A. A strong password on every account, plus key-only SSH login and MFA on each instance
+B. A host firewall rule on each instance that drops inbound traffic except on port 443
+C. A public IP with an allowlist of approved source addresses on the instance's security group
+D. A private subnet with no internet gateway route, using NAT for outbound only
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. A private subnet with no route to an internet gateway, using NAT for outbound
 ### Question 8
 **Scenario:** Identity and access must follow least privilege across teams.
 
-A. Role-based access with groups, per-service scoping, MFA on privileged accounts, and periodic access review
-B. Full access with logging
-C. One shared administrator account
-D. Individual permissions per user
+A. Role-based groups, per-service scoping, MFA on privileged accounts, and periodic review
+B. Full access for every engineer on request, with all activity logged and reviewed after the fact
+C. One shared administrator account whose password the team lead rotates every month and stores in a vault
+D. Individual permissions per user, granted on request by the team lead and recorded in a shared tracking spreadsheet
 
 <details>
 <summary>Answer</summary>
@@ -160,10 +160,10 @@ D. Individual permissions per user
 ### Question 9
 **Scenario:** Encryption keys must be under organizational control.
 
-A. Provider-managed keys only
-B. Customer-managed keys in a key management service, with rotation, access policy, and audit logging
+A. Provider-managed keys only, because the provider rotates them automatically and handles all key storage
+B. Customer-managed keys in a key management service, with rotation and audit logging
 C. Keys in application configuration
-D. No encryption
+D. No encryption, relying on network isolation and access controls to protect the stored data
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. No encryption
 ### Question 10
 **Scenario:** Capacity planning for a growing service.
 
-A. Trend historical utilization, model growth, load test to find the real limit, and account for lead times on anything that cannot be added instantly
-B. Rely entirely on autoscaling
+A. Trend historical utilization, model growth, load test to find the limit, and plan for lead times
+B. Rely entirely on autoscaling, since it adds instances automatically whenever demand rises beyond the current capacity
 C. React when it breaks
-D. Over-provision heavily
+D. Over-provision heavily from day one so that no load test, forecast or lead-time planning is ever required of the team
 
 <details>
 <summary>Answer</summary>
@@ -199,7 +199,7 @@ D. Over-provision heavily
 A. A strategy with a rollback path: blue-green, canary, or rolling with health-gated progression
 B. Deploy and hope
 C. Deploy at night
-D. Notify users first
+D. Notify users first, with a maintenance banner posted a day before
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Notify users first
 ### Question 12
 **Scenario:** An instance is unreachable and the cause is unknown.
 
-A. Restart the network
-B. Rebuild it
-C. Contact the provider first
-D. Work the layers: check instance state and console output, then routing, then network ACLs and security groups, then the host firewall and the application
+A. Restart the instance's network service and the virtual router, then retest from the same client; repeat until it responds
+B. Rebuild the instance from the template and retest, since that is the quickest way to rule out its configuration
+C. Contact the provider first and wait for its support team to diagnose the instance before anyone touches anything
+D. Work the layers: instance state and console output, then routing and security groups, then the app
 
 <details>
 <summary>Answer</summary>
@@ -233,8 +233,8 @@ D. Work the layers: check instance state and console output, then routing, then 
 **Scenario:** Monitoring must detect problems before users do.
 
 A. Log everything with no alerts
-B. Check dashboards daily
-C. Metrics with alerting on user-affecting symptoms, log aggregation, synthetic checks from outside, and a defined escalation path
+B. Check the dashboards at the start of each shift and escalate anything that looks abnormal to the team lead by email
+C. Metrics with alerting on user-affecting symptoms, log aggregation, synthetic checks, and an escalation path
 D. Alert on every metric
 
 <details>
@@ -251,9 +251,9 @@ D. Alert on every metric
 **Scenario:** A compliance requirement mandates data stay within a country.
 
 A. Use a CDN
-B. Select in-region services and restrict replication, backup, and disaster recovery targets to that jurisdiction, then verify support access
+B. Select in-region services and restrict replication, backup, and DR targets to that jurisdiction
 C. Add a policy document
-D. Encrypt the data
+D. Encrypt the data with customer-managed keys, which satisfies residency because only the key holder can read it
 
 <details>
 <summary>Answer</summary>
@@ -269,9 +269,9 @@ D. Encrypt the data
 **Scenario:** Infrastructure must be reproducible across environments.
 
 A. Screenshots
-B. Runbooks with console steps
-C. Infrastructure as code in version control, applied through a pipeline, with environment-specific parameters
-D. A configuration spreadsheet
+B. Runbooks with detailed console steps, reviewed every quarter and kept on the team wiki for each environment
+C. Infrastructure as code in version control, deployed by a pipeline with environment parameters
+D. A configuration spreadsheet listing every setting per environment, kept up to date by hand after each change
 
 <details>
 <summary>Answer</summary>

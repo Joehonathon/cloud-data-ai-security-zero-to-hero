@@ -15,9 +15,9 @@ difficulty: intermediate
 **Scenario:** OCI Functions is based on which open source project?
 
 A. Kubeless
-B. Fn Project
-C. Knative
-D. OpenFaaS
+B. Fn Project, the open source container-native serverless platform
+C. Knative Serving, the Kubernetes-native framework that OCI Functions runs on a managed OKE cluster
+D. OpenFaaS, the self-hosted function framework
 
 <details>
 <summary>Answer</summary>
@@ -32,9 +32,9 @@ D. OpenFaaS
 ### Question 2
 **Scenario:** A function must access an Object Storage bucket without stored credentials.
 
-A. Resource principals: a dynamic group matching the function and a policy granting that group access
-B. A username and password
-C. An API key in the function code
+A. Resource principals: a dynamic group matching the function and a policy for that group
+B. A username and password for a dedicated IAM user, stored in the function configuration and rotated every 90 days
+C. An API key and fingerprint for a service user, loaded from a file inside the function image at start-up
 D. A public bucket
 
 <details>
@@ -50,10 +50,10 @@ D. A public bucket
 ### Question 3
 **Scenario:** A function must run when an object is uploaded to a bucket.
 
-A. Poll the bucket
+A. Poll the bucket from a long-running compute instance every minute and invoke the function for each new object it finds
 B. An Events rule matching the object create event, with the function as the action
 C. A webhook from the client
-D. A scheduled job
+D. A scheduled job that lists the bucket every five minutes, which is simple but runs whether or not anything was uploaded
 
 <details>
 <summary>Answer</summary>
@@ -68,10 +68,10 @@ D. A scheduled job
 ### Question 4
 **Scenario:** Container images must be stored privately for OKE to pull.
 
-A. A file server
+A. A file server inside the VCN holding image tarballs, which nodes copy and load by hand before starting each pod
 B. Local build only
-C. OCI Container Registry (OCIR), with an image pull secret or the appropriate policy for the cluster
-D. Docker Hub public
+C. OCIR, with an image pull secret or the appropriate policy for the cluster
+D. A public Docker Hub repository, since OKE nodes can pull from it without any secret and rate limits do not apply
 
 <details>
 <summary>Answer</summary>
@@ -86,10 +86,10 @@ D. Docker Hub public
 ### Question 5
 **Scenario:** An OKE cluster's worker nodes must be private but still pull images and reach OCI services.
 
-A. No gateways
-B. Private node subnets with a NAT gateway for internet egress and a service gateway for OCI services
+A. No gateways at all, because worker nodes in a private subnet reach OCIR and OCI services over internal DNS
+B. Private node subnets with a NAT gateway for internet egress and a service gateway for OCI services such as OCIR and Object Storage
 C. Public worker nodes
-D. An internet gateway on the node subnet
+D. An internet gateway on the node subnet with security lists that deny all inbound traffic
 
 <details>
 <summary>Answer</summary>
@@ -104,9 +104,9 @@ D. An internet gateway on the node subnet
 ### Question 6
 **Scenario:** A microservice must publish events consumed by several independent services.
 
-A. Direct HTTP calls to each
+A. Direct HTTP calls to each consuming service in turn, with the producer retrying whichever call fails, which keeps every consumer in sync
 B. OCI Streaming (Kafka-compatible), where each consumer group reads independently
-C. A queue with one consumer
+C. A single queue with one consumer service that re-publishes each message to the other services after it has processed it
 D. A shared database table
 
 <details>
@@ -122,10 +122,10 @@ D. A shared database table
 ### Question 7
 **Scenario:** An API must be published with authentication, rate limiting, and request validation.
 
-A. Expose the function directly
-B. A load balancer
+A. Expose the function directly through its invoke endpoint and add checks in the function code, with throttling left to the caller
+B. A load balancer in front with a listener per backend, which spreads traffic but does not validate tokens or limit request rates per client
 C. API Gateway in front, with policies for authentication, rate limiting, and CORS
-D. A security list
+D. A security list on the subnet that allows only the client CIDR ranges, which filters by address but not by caller identity
 
 <details>
 <summary>Answer</summary>
@@ -140,8 +140,8 @@ D. A security list
 ### Question 8
 **Scenario:** A build and deployment pipeline must run in OCI.
 
-A. A shell script on a VM
-B. Manual builds
+A. A shell script on a VM triggered by cron that pulls the repository, builds, and copies files to servers, with no approval stages
+B. Manual builds on a developer workstation, tagged by hand and pushed to the registry once someone has checked the tests passed
 C. OCI DevOps service with build pipelines, an artifact registry, and deployment pipelines supporting rolling, blue-green, and canary strategies
 D. Local deployment
 
@@ -158,9 +158,9 @@ D. Local deployment
 ### Question 9
 **Scenario:** A function is timing out on a long-running task.
 
-A. Increase the timeout indefinitely
-B. Add memory only
-C. Retry forever
+A. Increase the timeout indefinitely, since the function setting has no upper limit and a long task then always completes
+B. Add memory only, because more memory also raises the execution time limit and so lets the long task finish in one run
+C. Retry forever from the caller whenever the call times out, so the task eventually completes on a lucky invocation
 D. Functions have a maximum execution time, so decompose the work, hand it to a queue or a container instance, or use a different compute service for long jobs
 
 <details>
@@ -177,9 +177,9 @@ D. Functions have a maximum execution time, so decompose the work, hand it to a 
 **Scenario:** Application secrets must not appear in the container image or environment.
 
 A. OCI Vault secrets, retrieved at run time using the resource or instance principal
-B. A config file in the repository
-C. Bake them into the image
-D. Command-line arguments
+B. A config file kept in the repository, encrypted with a key that is committed in a separate branch of the same repository
+C. Bake them into the image in a build layer that is deleted before the final stage, so the image history holds no copy
+D. Command-line arguments passed at container start, which keep them out of the image but not out of the process list
 
 <details>
 <summary>Answer</summary>
@@ -194,10 +194,10 @@ D. Command-line arguments
 ### Question 11
 **Scenario:** Application traces must be collected across services.
 
-A. Manual timing
-B. Metrics only
-C. Application Performance Monitoring with tracing, instrumented in the application, plus Logging for events
-D. Logs only
+A. Manual timing added around each call with log statements, then compared by hand between services after each incident
+B. Metrics only, such as CPU and request counts per service, which show that latency rose but not which service caused it
+C. APM with tracing, instrumented in the application, plus Logging for events
+D. Logs only, shipped to one log group, with each service writing its own timestamps and request identifiers
 
 <details>
 <summary>Answer</summary>
@@ -213,9 +213,9 @@ D. Logs only
 **Scenario:** A twelve-factor principle relevant to cloud native development.
 
 A. Store configuration in the environment, keep processes stateless, and treat backing services as attached resources
-B. One deployment per environment build
-C. Store configuration in the code
-D. Use local disk for state
+B. One deployment artifact per environment, with the configuration compiled into each build so nothing varies at run time or changes without a rebuild
+C. Store configuration in the code, committed per environment so every setting is versioned with the app
+D. Use local disk for state, since a container's filesystem persists across restarts and reschedules
 
 <details>
 <summary>Answer</summary>
@@ -230,10 +230,10 @@ D. Use local disk for state
 ### Question 13
 **Scenario:** A Kubernetes deployment on OKE must scale with request load.
 
-A. A larger node
-B. A fixed replica count
-C. Manual scaling
-D. A Horizontal Pod Autoscaler on a suitable metric, with the cluster autoscaler adding nodes when pods cannot be placed
+A. A larger node shape for the pool, which raises capacity per node but does not add pods as request load grows
+B. A fixed replica count sized for the daily peak, which handles load without any autoscaler but pays for it around the clock
+C. Manual scaling by an engineer who runs `kubectl scale` when an alert fires, which reacts only after users see slow responses
+D. An HPA on a suitable metric, with the cluster autoscaler adding nodes when pods cannot be placed
 
 <details>
 <summary>Answer</summary>
@@ -248,9 +248,9 @@ D. A Horizontal Pod Autoscaler on a suitable metric, with the cluster autoscaler
 ### Question 14
 **Scenario:** A function's cold start latency is too high.
 
-A. Nothing can be done
-B. Add more functions
-C. Increase the timeout
+A. Nothing can be done, because cold start is fixed by the platform and is not affected by image size or start-up code
+B. Add more functions to the application, splitting the same code across several so each cold start is shorter overall
+C. Increase the timeout, which gives the first slow invocation more time to finish but does not shorten the start-up itself or the image pull
 D. Reduce image size, minimize initialization work, and use provisioned concurrency where available for latency-sensitive paths
 
 <details>
@@ -266,10 +266,10 @@ D. Reduce image size, minimize initialization work, and use provisioned concurre
 ### Question 15
 **Scenario:** A container must run without managing a Kubernetes cluster.
 
-A. OCI Container Instances, running containers directly as a serverless workload
-B. A function only
-C. OKE only
-D. A compute instance with Docker
+A. OCI Container Instances, running containers directly as a serverless workload with no nodes to manage
+B. A function only, since Functions runs any container for as long as it needs without a time limit on a single invocation
+C. OKE only, because a container can be scheduled only by Kubernetes, so a cluster must be created
+D. Kubernetes built by hand on compute instances, so the team still operates the cluster
 
 <details>
 <summary>Answer</summary>

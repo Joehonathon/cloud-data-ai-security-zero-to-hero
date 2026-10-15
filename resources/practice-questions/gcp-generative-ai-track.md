@@ -16,10 +16,10 @@ This is a self-directed track rather than a Google exam, so these target working
 ### Question 1
 **Scenario:** Which Google Cloud surface provides access to Gemini and other foundation models with enterprise controls?
 
-A. Compute Engine
-B. Vertex AI, including Model Garden and the Gemini API
-C. BigQuery only
-D. Cloud Functions
+A. Compute Engine, where you install and run open-weight models on your own GPU virtual machines
+B. Vertex AI, including Model Garden and the Gemini API, with data residency, VPC Service Controls, and CMEK options
+C. BigQuery only, since its SQL interface is the single entry point for every hosted model
+D. Cloud Functions, which ship with Gemini bundled as a built-in library for every runtime
 
 <details>
 <summary>Answer</summary>
@@ -34,10 +34,10 @@ D. Cloud Functions
 ### Question 2
 **Scenario:** Answers must be grounded in the organization's own documents with citations.
 
-A. Use a larger model
-B. Fine-tune the model
-C. Increase the temperature
-D. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline with Vertex AI Vector Search
+A. Use a larger model, since extra parameters let it memorize the organization's documents and cite them accurately
+B. Fine-tune the model on the documents so it learns their content and can quote the passage it relied on
+C. Increase the temperature so the model explores more of the document text before settling on an answer
+D. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline with Vector Search
 
 <details>
 <summary>Answer</summary>
@@ -52,10 +52,10 @@ D. Grounding with Vertex AI Search over your corpus, or a custom RAG pipeline wi
 ### Question 3
 **Scenario:** A model must return answers grounded in current public web information.
 
-A. Grounding with Google Search
-B. A longer prompt
-C. A larger context window
-D. Higher temperature
+A. Grounding with Google Search, which attaches retrieved web results and links
+B. A longer prompt that tells the model to use only information from the current year
+C. A larger context window, which lets the model hold more recent web pages from its training data
+D. Higher temperature, which makes the model more willing to mention events after its training cutoff
 
 <details>
 <summary>Answer</summary>
@@ -70,10 +70,10 @@ D. Higher temperature
 ### Question 4
 **Scenario:** Which parameter should be adjusted to make responses more focused and less random?
 
-A. `temperature` toward 0 (and optionally `topP`, but not both aggressively)
-B. `maxOutputTokens`
-C. `candidateCount`
-D. `stopSequences`
+A. `temperature` toward 0, optionally with a lower `topP`, tuning one at a time
+B. `maxOutputTokens`, since capping response length forces the model to choose its words more carefully
+C. `candidateCount`, since generating several candidates and returning the first removes the randomness
+D. `stopSequences`, since ending generation at a marker keeps responses focused and removes variation
 
 <details>
 <summary>Answer</summary>
@@ -88,10 +88,10 @@ D. `stopSequences`
 ### Question 5
 **Scenario:** An application needs the model to call an internal API.
 
-A. Function calling: declare the function schema, let the model emit a structured call, execute it in your code, and return the result
-B. Fine-tune on API responses
-C. Paste the API docs in the prompt
-D. Ask the model to describe the API
+A. Function calling: declare the function schema, let the model emit a structured call, run it in your code, return the result
+B. Fine-tune the model on recorded API responses so that it can call the API itself during generation
+C. Paste the API docs in the prompt and let the model send the HTTP request directly from the Vertex AI endpoint
+D. Ask the model to describe the API in plain language, then have it run those described steps against the production endpoint itself
 
 <details>
 <summary>Answer</summary>
@@ -106,10 +106,10 @@ D. Ask the model to describe the API
 ### Question 6
 **Scenario:** Gemini's multimodal capability is used to analyze a video.
 
-A. Extract frames manually and describe each
-B. Convert to text first
-C. Pass the video directly as part of the request, since Gemini accepts video, image, audio, and text natively
-D. It is not supported
+A. Extract frames manually and have the model describe each one, then combine the descriptions by hand in a spreadsheet
+B. Convert the video to a text transcript first, then send the transcript, since Gemini reads only text and cannot see frames
+C. Pass the video directly in the request, since Gemini accepts video, image, audio, and text natively
+D. It is not supported, because Gemini accepts only still images and text, not video or audio
 
 <details>
 <summary>Answer</summary>
@@ -124,10 +124,10 @@ D. It is not supported
 ### Question 7
 **Scenario:** Safety filters block legitimate content in a medical application.
 
-A. Switch providers
-B. Tune the configurable harm category thresholds to the levels the use case justifies, and add your own domain-appropriate checks
-C. Rewrite prompts to avoid medical terms
-D. Disable all safety settings
+A. Switch providers to a model with no safety filtering at all, which removes the blocking in a medical setting
+B. Tune the configurable harm category thresholds to levels the use case justifies, and add domain checks
+C. Rewrite prompts to avoid medical terms, using euphemisms so the classifiers stop flagging it
+D. Disable all safety settings, since the application's users are clinicians
 
 <details>
 <summary>Answer</summary>
@@ -142,10 +142,10 @@ D. Disable all safety settings
 ### Question 8
 **Scenario:** Cost must be reduced for an application with a long, unchanging preamble on every request.
 
-A. More output tokens
-B. More replicas
-C. A larger model
-D. Context caching for the repeated content
+A. More output tokens, so the model can summarize the preamble instead of reading it each time
+B. More replicas of the serving endpoint, which cache the preamble in memory across requests
+C. A larger model, whose bigger context window means the preamble no longer counts toward the bill, however many times it is sent
+D. Context caching for the repeated preamble, so it is processed once and then reused on every later request
 
 <details>
 <summary>Answer</summary>
@@ -161,9 +161,9 @@ D. Context caching for the repeated content
 **Scenario:** Output must conform to a JSON schema every time.
 
 A. Controlled generation with a response schema, then validate the parsed result
-B. Ask for JSON in the prompt
-C. Retry until it works
-D. Parse with regular expressions
+B. Ask for JSON in the prompt and add an example, which guarantees the format on every response
+C. Retry until it works, looping on the parser error and re-sending the same request unchanged
+D. Parse with regular expressions that extract the braces, repairing missing fields afterwards
 
 <details>
 <summary>Answer</summary>
@@ -178,10 +178,10 @@ D. Parse with regular expressions
 ### Question 10
 **Scenario:** An agent must complete multistep tasks using several tools.
 
-A. A single prompt
-B. A fine-tuned model
-C. Vertex AI Agent Builder or an agent framework, with per-tool authorization checked in code and hard limits on loop iterations
-D. Chain prompts manually forever
+A. A single prompt that lists every step, which the model works through in one response without tool calls
+B. A fine-tuned model that has memorized the tool outputs, so no runtime calls or loop are required
+C. Vertex AI Agent Builder or an agent framework, with per-tool authorization in code and hard limits on loop iterations
+D. Chain prompts manually forever, copying each output into the next prompt without any stop condition
 
 <details>
 <summary>Answer</summary>
@@ -196,10 +196,10 @@ D. Chain prompts manually forever
 ### Question 11
 **Scenario:** A RAG system returns irrelevant passages.
 
-A. Increase temperature
+A. Increase temperature, so the model samples more broadly and finds the relevant passages
 B. Improve chunking, add hybrid search and a reranker, and evaluate retrieval separately from generation
-C. Shorten the answers
-D. Use a larger model
+C. Shorten the answers, because long outputs dilute the retrieved passages with irrelevant text
+D. Use a larger model, since extra reasoning capacity lets it fix a retrieval step that returned the wrong passages
 
 <details>
 <summary>Answer</summary>
@@ -214,10 +214,10 @@ D. Use a larger model
 ### Question 12
 **Scenario:** Model quality must be measured before and after a change.
 
-A. Vendor benchmarks
-B. Manual review
-C. The Vertex AI evaluation service with task-appropriate metrics, plus your own dataset representing production traffic
-D. Latency only
+A. Vendor benchmarks, since public leaderboard scores predict quality on any application's own data and domain
+B. Manual review of a handful of outputs by the developer, run once after the change and never repeated afterwards
+C. The Vertex AI evaluation service with task-appropriate metrics and a dataset of production traffic
+D. Latency only, since a faster response always indicates that the model's answers are better
 
 <details>
 <summary>Answer</summary>
@@ -232,10 +232,10 @@ D. Latency only
 ### Question 13
 **Scenario:** Generated images must be identifiable as AI-generated.
 
-A. Metadata only
+A. Metadata only, such as EXIF fields written at generation, which stay attached after screenshots
 B. SynthID watermarking, which embeds an imperceptible, detectable marker in generated media
-C. A filename convention
-D. A caption asking users to be honest
+C. A filename convention, for example prefixing every file with ai-generated, enforced by the storage bucket
+D. A caption asking users to be honest about how the image was made
 
 <details>
 <summary>Answer</summary>
@@ -251,9 +251,9 @@ D. A caption asking users to be honest
 **Scenario:** Model customization is needed for a specific output style with a few hundred examples.
 
 A. Supervised fine-tuning (including parameter-efficient tuning) on the labeled examples
-B. Pretraining
-C. RAG
-D. A longer prompt only
+B. Pretraining a new foundation model on the few hundred examples plus public text, which teaches style quickly
+C. RAG over the examples, which changes the model's weights permanently
+D. A longer prompt only, with all few hundred examples pasted in, which trains the model on them
 
 <details>
 <summary>Answer</summary>
@@ -268,10 +268,10 @@ D. A longer prompt only
 ### Question 15
 **Scenario:** Which describes Google's responsible AI expectation for a launched feature?
 
-A. A terms-of-service update
-B. Accuracy testing alone
-C. Nothing specific
-D. Assess the use case for harms, evaluate performance across affected groups, apply safety controls, document limitations, and provide a human path for contested outcomes
+A. A terms-of-service update that tells users the AI may be wrong, with responsibility for harm moved to the user
+B. Accuracy testing alone, reported as one aggregate score across all users and signed off by the product owner before launch
+C. Nothing specific, since responsible AI guidance applies only to research models, never to launched product features
+D. Assess the use case for harms, test performance across affected groups, add safety controls, document limits, and keep a human path for appeals
 
 <details>
 <summary>Answer</summary>
