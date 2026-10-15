@@ -1,84 +1,66 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-14
 ---
 
-# Google Workspace Administrator - Exam Strategy
+# Associate Google Workspace Administrator - Exam Strategy
 
 ## Format reminder
 
-- ~50 questions, 90 minutes (varies)
-- Pass mark ~70-75%
-- Multiple choice
-- Tests Workspace Admin Console operations, security, mobile management, compliance
+- 2 hours, 50-60 multiple choice and multiple select questions
+- No published pass mark
+- Scenario style: a symptom or requirement, then pick the setting, tool or rule
+- Weight: core services (~23%) is the biggest section, then users and Directory (~20%) and security (~20%)
+
+## How to read a question
+
+1. **Find the verb.** "Restrict", "retain", "recover", "detect", "diagnose" each point at a different tool family (trust rule or DLP, Vault, restore, activity rule, Email Log Search).
+2. **Find the scope.** "Only the Finance team" means an OU or group, and an exception for one domain usually means a trust rule.
+3. **Pick the least-privilege, least-effort answer.** The exam prefers the built-in control scoped as narrowly as the requirement allows.
+4. **Rule out the nuclear options.** Turning a service off for everyone is rarely right when the requirement names a subset.
 
 ## Top traps
 
-1. **Workspace editions**: Business Starter / Standard / Plus / Enterprise Starter / Standard / Plus. Features differ significantly. DLP and Vault require Business Plus or Enterprise. Cloud Identity is the lighter option for identity-only.
+1. **Hold beats retention.** A retention rule never purges held data. Do not hold the top-level OU.
+2. **Suspended users still use a license.** Archived User is the cost answer for retained-data-only users.
+3. **Delete restores for 20 days**, and group memberships do not come back.
+4. **OU vs group.** OUs apply configuration with inheritance, groups cross OUs, and group settings override OU settings for supported services.
+5. **Collaborative Inbox** is the shared mailbox. A shared user account is wrong.
+6. **Secondary domain vs domain alias.** Distinct users vs another name for the same users.
+7. **Gemini app off is not Gemini off.** Features inside Gmail, Docs and Meet are controlled per service.
+8. **Basic mobile management cannot wipe the device.** It wipes the account. Device wipe is advanced.
+9. **DMARC order:** monitor (`none`), `quarantine`, `reject`. SPF alone does not stop spoofing.
+10. **Email Log Search shows status, not content, and only about 30 days.** Messageheader explains authentication failures.
+11. **Trust rules are ownership-based, and block beats allow.**
+12. **Delegation vs forwarding.** Delegation shares access, forwarding copies mail.
+13. **DLP rollout:** audit-only first, then warn or block.
+14. **Check the Status Dashboard first** when many users report the same symptom.
+15. **GCDS is one-way** and does not sync passwords.
 
-2. **Cloud Identity vs Workspace**: Cloud Identity is identity management without the apps. Workspace adds Gmail, Drive, etc. Free Cloud Identity tier exists.
+## Easy-to-miss topics (new to the Associate guide)
 
-3. **GCDS vs SAML/SCIM**: GCDS = Google Cloud Directory Sync, syncs from on-prem AD/LDAP. SAML/SCIM = federation with cloud IdPs (Okta, Azure AD).
-
-4. **OU vs Groups**:
-   - Organizational Units: hierarchical, apply settings/policies (apps enabled, security settings)
-   - Groups: collections for sharing, mailing, permissions
-   Don't confuse - OUs control config, Groups control access.
-
-5. **Context-Aware Access**: zero-trust framework restricting access to apps based on context (IP, device, etc.). Enterprise tier.
-
-6. **2-Step Verification (2SV)**: enforce per-OU. Methods: Security Keys (FIDO2 - strongest), TOTP, SMS, Backup codes. SMS is being deprecated.
-
-7. **Login challenges**: suspicious logins trigger additional verification.
-
-8. **Mobile Management tiers**:
-   - Basic: passcode, remote wipe (free)
-   - Advanced: full MDM, work profile, app whitelisting (Business Standard+)
-
-9. **Vault scope**: retention rules + holds for Gmail, Drive, Chat, Meet, Voice. eDiscovery search and export. Compliance feature.
-
-10. **DLP scope**: Gmail outbound, Drive sharing, Chat, with predefined detectors and custom regex.
-
-## High-yield topics easy to miss
-
-- App management: APIs to manage admins / users / groups (Admin SDK)
-- Security Center / Investigation Tool (for Enterprise)
-- Bulk user upload via CSV
-- Email routing rules (compliance footers, content compliance)
-- Calendar resources (rooms, equipment)
-- Drive trust rules (sharing restrictions)
-- Chat spaces vs DMs vs groups
-- Workspace Migration for Exchange, IMAP, etc.
-- BeyondCorp Enterprise features integrated with Workspace (Context-Aware Access)
+- Gemini controls, extensions and usage reports
+- AppSheet vs Apps Script
+- Drive Labels, target audiences, trust rules
+- Chrome Browser Cloud Management and extension modes
+- HAR files, Admin Toolbox, release calendar
+- Calendar event ownership and unknown-sender invitations
 
 ## Time management
 
-90 / ~50 = ~1.8 min/question.
+- About 2 minutes per question. Flag and move on if a question needs more than 3.
+- Multiple select: the question says how many. Pick exactly that many and check each against the scope in the stem.
 
-## When stuck
+## Patterns cheat list
 
-1. **Identify the edition** - DLP / Vault / Context-Aware Access are higher-tier features.
-2. **OU vs group** - settings → OU, sharing → group.
-3. **Default to Google-native** - Vault over third-party retention.
+- Provisioning from AD means GCDS. From a cloud IdP means IdP provisioning plus SAML.
+- Litigation hold means Vault hold.
+- PII in Gmail or Drive means DLP.
+- Phishing-resistant MFA means security keys or passkeys.
+- Zero-trust app access by device or location means context-aware access.
+- BYOD departure means account wipe.
+- Move Exchange mail means GWMME or migration manager. IMAP means the data migration service.
+- Automate a Google app task means Apps Script. No-code app means AppSheet.
 
-## Day-of logistics
+## After the exam
 
-90 min, ~50 questions.
-
-## After
-
-**Pass:** Cert valid 1 year (Workspace Admin specifics may differ from GCP Professional cycle).
-
-**Fail:** Most failures cluster on Mail Flow / Security or DLP / Vault. Re-review the Admin Console hierarchy.
-
-## Workspace Admin patterns
-
-- "User provisioning at scale" = GCDS (AD) or SAML+SCIM
-- "Group settings" = use OU
-- "Permissions / sharing" = use Group
-- "Email auth" = SPF + DKIM + DMARC
-- "PII protection in Gmail/Drive" = DLP rules
-- "Litigation hold" = Vault
-- "BYOD with selective wipe" = Mobile Management Advanced + work profile
-- "Phishing-resistant MFA" = Security Keys (FIDO2)
-- "Zero-trust app access" = Context-Aware Access
-- "M365 → Workspace migration" = Data Migration Service
+If you do not pass, the score report lists weaker sections. Most misses cluster on mail flow, Vault vs DLP vs trust rules, and the endpoint tiers. Rework those notes and retake with new practice questions.

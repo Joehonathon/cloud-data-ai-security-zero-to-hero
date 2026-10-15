@@ -6,6 +6,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-14] - Workspace Administrator re-levelled to Associate and rebuilt; Cloud Architect gap list
+
+Checked both GCP exams against Google's current official exam guides (read from the PDFs).
+
+### Fixed
+
+- **`exams/gcp/workspace-administrator` described the wrong exam.** It was filed as a Professional exam with five domains at $200 and a 2-year validity. Google's current exam is the **Associate Google Workspace Administrator**: six sections (~20/23/15/20/10/13%), $125, 2 hours, 50-60 questions, English and Japanese, no published validity. README, fact sheet, strategy, practice plan, `certs.json` and the `exams/gcp` table now say so. The folder slug is unchanged so links keep working.
+- **The old notes taught commands that do not exist** (`gcloud identity users create ...`, about 60 lines). Users, OUs and groups are managed in the Admin console, the Directory API, GCDS or an IdP.
+
+### Added
+
+- Seven notes, one per exam section, replacing the three old ones: users and Directory, core services, Gemini and AppSheet, governance, security and access, browsers and endpoints, troubleshooting. New topics: Gemini controls, AppSheet vs Apps Script, Drive Labels, target audiences, trust rules, Chrome Browser Cloud Management, Email Log Search, Admin Toolbox, HAR files.
+- A 243-card `flashcards.csv` (the deck was missing), 23 scenarios (was 6), and 45 practice questions (was 15) with shuffled answer positions.
+
+### Found, not yet fixed
+
+- `exams/gcp/cloud-architect` was written for an older Professional Cloud Architect guide. See TODO.md for the gap list.
+
+---
+
 ## [2026-09-28] - CompTIA A+, every page gets its own search snippet, and search engines hear about changes
 
 GitHub's traffic view for the 14 days to 2026-09-28 showed Google sending 5 visits to a site of 2,041 pages. ChatGPT sent 10. The published site had three defects that explain part of that.

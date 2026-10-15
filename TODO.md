@@ -21,6 +21,18 @@ Read-only fleet audit (9 agents, nothing changed). Each line: effort S (<half da
 - [x] 2026-10-02 🟢 low - README Nobler banner was hotlinked from `Noblerworks/IRONSIGHT`: vendored to `assets/brand/nobler-works-banner.jpg`.
 - [ ] 🟢 **Patrick: decide** whether the bio should carry a cert count again. If yes, add a `{{personal_certs}}` token in `build-site.py` fed from one checked-in value, and update it on 2026-10-21 / 2026-11-05 (lapses) - the private career ledger cannot feed CI.
 
+## GCP exam refresh (2026-10-14)
+
+- [x] 2026-10-14 Workspace Administrator re-levelled to Associate and rebuilt (7 notes, flashcards, 23 scenarios, 45 questions). Strict site build passes; pushed 2026-10-14.
+- [ ] **Cloud Architect refresh** (next batch). Checked against the current exam guide; `exams/gcp/cloud-architect` still follows an older one:
+  - README weights are 24/20/18/18/10/10; current are ~25/17.5/17.5/15/12.5/12.5, and section 6 is now "solution and operations excellence" (Well-Architected operational excellence pillar).
+  - Case studies are now **Altostrat Media, Cymbal Retail, EHR Healthcare, KnightMotives Automotive**. The notes still teach Mountkirk Games, TerramEarth and Helicopter Racing League. Add own-words summaries of the four (link Google's pages, no pasted text); mark the old three as legacy.
+  - Zero coverage of: Gemini Cloud Assist, Migration Center, Agent Builder / Model Garden, AI Hypercomputer, Model Armor, Agent Platform pipelines, NotebookLM / Gemini Enterprise. Add a note.
+  - Add a Well-Architected Framework pillar sheet (six pillars incl. sustainability) and case-study practice questions.
+  - Fix the dead `professional-cloud-architect` guide link already listed under the 2026-10-12 link-rot item.
+- [ ] **By 2026-12-01: re-check both exam guides** (Associate Workspace Administrator and Professional Cloud Architect PDFs) for revisions, and update `last-updated`. The PCA guide already mentions products renamed in 2026 (Agent Platform), so expect churn.
+- [ ] Scenarios for Workspace (`scenarios.md`) still skew to answer B in places; shuffle when next edited (the analysis text names option letters, so edit by hand).
+
 ## Open
 
 ### 🔴 Link rot backlog (added 2026-09-17, cleared 2026-09-18)

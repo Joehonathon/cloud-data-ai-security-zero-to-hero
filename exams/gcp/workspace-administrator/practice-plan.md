@@ -1,208 +1,70 @@
-# Google Workspace Administrator (Professional) Study Plan
+---
+last-updated: 2026-10-14
+---
 
-## 10-Week Study Schedule
+# Associate Google Workspace Administrator Study Plan
 
-> **Time Commitment**: 12-15 hours/week
-> **Difficulty**: Professional
+## 6-Week Schedule
+
+> **Time commitment:** 6-8 hours/week
+> **Difficulty:** Associate
+> **Method:** read the note, then do practice questions on it. No drills. Use the fact sheet for review.
+
+Build a trial Workspace tenant in week 1. Every week below assumes you can click through the Admin console.
 
 ---
 
-## Week 1-2: Organizational Structure and User Management
+## Week 1: Users, domains, Directory (~20%)
 
-### Week 1: Admin Console and Org Units
-- [ ] Study Google Admin Console navigation
-- [ ] Learn organizational unit structure and inheritance
-- [ ] Understand user provisioning workflows
-- [ ] Hands-on: Create OU structure in practice domain
-- [ ] Lab: Bulk user import and management
-- [ ] Review Notes: `org-user-management.md`
+- [ ] Read [01-users-domains-directory](notes/01-users-domains-directory.md)
+- [ ] In your trial tenant: create an OU tree, a Collaborative Inbox, a dynamic group, a building and a room
+- [ ] Add a secondary domain and a domain alias, and note the difference
+- [ ] Suspend, delete and restore a test user. Note the 20-day window
+- [ ] Practice questions: first 10 on users and groups
 
-### Week 2: User Lifecycle and Groups
-- [ ] Study user lifecycle states (active, suspended, deleted)
-- [ ] Learn group management and types
-- [ ] Understand license assignment strategies
-- [ ] Practice password policies and account recovery
-- [ ] Hands-on: Implement automated user provisioning
-- [ ] Lab: Configure groups and distribution lists
+## Week 2: Core services, Gmail and Drive (~23%, part 1)
 
----
+- [ ] Read [02-core-services](notes/02-core-services.md) sections 2.1 and 2.2
+- [ ] Publish SPF, DKIM and DMARC on a test domain and read a message header in the Admin Toolbox
+- [ ] Create a content compliance rule and an attachment rule
+- [ ] Create a trust rule, a target audience and a shared drive
+- [ ] Practice questions on Gmail and Drive
 
-## Week 3-4: Google Workspace Applications
+## Week 3: Core services, Calendar, Meet, Chat, Gemini (~23%, part 2)
 
-### Week 3: Gmail and Calendar
-- [ ] Study Gmail admin settings and policies
-- [ ] Learn email routing and delivery options
-- [ ] Understand Calendar sharing and resource management
-- [ ] Configure Gmail delegation and send-as permissions
-- [ ] Hands-on: Set up email routing rules
-- [ ] Lab: Configure Calendar resources and policies
-- [ ] Review Notes: `workspace-applications.md`
+- [ ] Read 2.3 to 2.5 of the core services note, then [03-gen-ai-and-automation](notes/03-gen-ai-and-automation.md)
+- [ ] Create a resource calendar with booking rules
+- [ ] Toggle Gemini for one OU and note which features remain on in Gmail
+- [ ] Practice questions on Calendar, Meet, Chat and Gemini
 
-### Week 4: Drive, Meet, and Collaboration
-- [ ] Study shared drive vs. My Drive management
-- [ ] Learn Google Meet policies and settings
-- [ ] Understand Google Chat administration
-- [ ] Configure sharing policies and DLP
-- [ ] Hands-on: Create and manage shared drives
-- [ ] Lab: Configure Meet and Chat policies
+## Week 4: Governance and security (~35%)
 
----
+- [ ] Read [04-data-governance-and-compliance](notes/04-data-governance-and-compliance.md) and [05-security-and-access](notes/05-security-and-access.md)
+- [ ] Create a Vault retention rule and a hold on a test matter
+- [ ] Build a DLP rule in audit-only mode
+- [ ] Enforce 2SV on an OU, create a custom admin role scoped to an OU, and write an activity rule
+- [ ] Practice questions on Vault, DLP, 2SV, CAA, roles
 
-## Week 5-6: Security and Access Management
+## Week 5: Endpoints and troubleshooting (~23%)
 
-### Week 5: Authentication and SSO
-- [ ] Study SSO with SAML configuration
-- [ ] Learn multi-factor authentication (MFA/2SV) setup
-- [ ] Understand password policies and requirements
-- [ ] Configure Context-Aware Access policies
-- [ ] Hands-on: Set up SAML SSO with test IdP
-- [ ] Lab: Enforce MFA for organizational units
-- [ ] Review Notes: `security-compliance.md`
+- [ ] Read [06-browsers-and-endpoints](notes/06-browsers-and-endpoints.md) and [07-monitoring-and-troubleshooting](notes/07-monitoring-and-troubleshooting.md)
+- [ ] Enroll a Chrome browser with a token and apply a policy
+- [ ] Search Email Log Search, run Messageheader, generate a HAR file
+- [ ] Review the tool map in the troubleshooting note
+- [ ] Practice questions on mobile, Chrome and troubleshooting
 
-### Week 6: Access Controls and External Users
-- [ ] Study external access and guest user policies
-- [ ] Learn domain whitelisting and sharing controls
-- [ ] Understand API access and OAuth management
-- [ ] Configure admin roles and privileges
-- [ ] Hands-on: Configure external sharing policies
-- [ ] Lab: Manage third-party app access
+## Week 6: Review and exam
 
----
+- [ ] Work through [scenarios.md](scenarios.md)
+- [ ] Take all practice questions again, untimed, then timed
+- [ ] Read [fact-sheet.md](fact-sheet.md) and [strategy.md](strategy.md)
+- [ ] Review flashcards in [flashcards.csv](flashcards.csv) for anything you miss
+- [ ] Re-read the [exam guide](https://services.google.com/fh/files/misc/associate_google_workspace_administrator_exam_guide_english.pdf) for any changes
+- [ ] Book and sit the exam
 
-## Week 7-8: Content Management and Compliance
+## Resources
 
-### Week 7: Data Loss Prevention (DLP)
-- [ ] Study DLP rule creation and management
-- [ ] Learn predefined and custom DLP detectors
-- [ ] Understand content compliance scanning
-- [ ] Configure DLP for Gmail and Drive
-- [ ] Hands-on: Create DLP rules for PII/PHI
-- [ ] Lab: Test and refine DLP policies
-
-### Week 8: Retention and eDiscovery
-- [ ] Study Google Vault for retention
-- [ ] Learn retention rules and holds
-- [ ] Understand eDiscovery and search
-- [ ] Configure audit logging and reporting
-- [ ] Hands-on: Set up retention policies
-- [ ] Lab: Perform eDiscovery search in Vault
-
----
-
-## Week 9: Email Security and Compliance
-
-### Day 57-60: Email Security
-- [ ] Study SPF, DKIM, and DMARC configuration
-- [ ] Learn spam and phishing protection settings
-- [ ] Understand email gateway integration
-- [ ] Configure advanced phishing protection
-- [ ] Hands-on: Set up email authentication (SPF/DKIM/DMARC)
-- [ ] Lab: Configure email security policies
-
-### Day 61-63: Email Routing and Compliance
-- [ ] Study routing and delivery rules
-- [ ] Learn email compliance and archiving
-- [ ] Understand content compliance filters
-- [ ] Configure mail routing for hybrid setups
-- [ ] Hands-on: Set up email routing rules
-- [ ] Lab: Configure compliance and archiving
-
----
-
-## Week 10: Practice and Final Review
-
-### Day 64-66: Practice Exams
-- [ ] Take full-length practice exam #1
-- [ ] Review all incorrect answers
-- [ ] Identify weak domains
-- [ ] Deep dive into weak areas
-
-### Day 67-68: Comprehensive Review
-- [ ] Review all notes and key concepts
-- [ ] Practice Admin Console configurations
-- [ ] Review security best practices
-- [ ] Take practice exam #2 (aim for 85%+)
-
-### Day 69: Final Preparation
-- [ ] Light review of cheat sheets
-- [ ] Review common scenarios
-- [ ] Rest and mental preparation
-
-### Day 70: Exam Day
-- [ ] Quick review (30 min max)
-- [ ] Take exam with confidence 🚀
-
----
-
-## 📚 Study Resources
-
-**👉 [Complete GCP Study Resources Guide](../../../.templates/resources-gcp.md)**
-
-### Quick Links (Workspace Admin Specific)
-- **[Professional Workspace Admin Exam Page](https://cloud.google.com/certification/workspace-administrator)** - Registration
-- **[Google Workspace Admin Help](https://support.google.com/a)** - Official documentation
-- **[Google Cloud Skills Boost](https://www.cloudskillsboost.google/)** - Hands-on labs
-- **[Google Workspace Trial](https://workspace.google.com/business/)** - 14-day free trial
-
-### Recommended Resources
-- **Google Workspace Admin Help (FREE)** - Official documentation
-- **Coursera Google Workspace Admin Course** - Comprehensive training
-- **Practice domain for hands-on** - Essential for preparation
-
----
-
-## 📊 Study Progress Tracker
-
-### Exam Domains
-- [ ] Domain 1: Org Units and Users (25%)
-- [ ] Domain 2: Applications (25%)
-- [ ] Domain 3: Access and Authentication (20%)
-- [ ] Domain 4: Content Management (15%)
-- [ ] Domain 5: Mail Routing and Security (15%)
-
-### Weekly Milestones
-- [ ] Week 1-2: Org and user management ✓
-- [ ] Week 3-4: Applications ✓
-- [ ] Week 5-6: Security and access ✓
-- [ ] Week 7-8: Content and compliance ✓
-- [ ] Week 9: Email security ✓
-- [ ] Week 10: Final review ✓
-
-### Practice Exam Scores
-- [ ] Practice Exam 1 (Week 10): ___% (Target: 75%+)
-- [ ] Practice Exam 2 (Week 10): ___% (Target: 85%+)
-
----
-
-## 🎯 Key Topics to Master
-
-### Critical Areas
-- Admin Console navigation and configuration
-- Organizational unit structure and policies
-- SSO/SAML configuration
-- DLP rule creation and management
-- Google Vault retention and eDiscovery
-- Email authentication (SPF/DKIM/DMARC)
-- Shared drive management
-- Context-Aware Access
-
-### Common Exam Scenarios
-- User onboarding and offboarding
-- External sharing policy configuration
-- DLP for sensitive data
-- Email routing and security
-- SSO implementation
-- Compliance and retention policies
-
----
-
-## 💡 Exam Prep Tips
-
-- Get hands-on with Admin Console extensively
-- Practice with a test/trial domain
-- Know all application admin settings
-- Understand policy inheritance in OUs
-- Master DLP detector types
-- Know email authentication standards
-
-Good luck on your Workspace Administrator certification! 🎉
+- **[📖 Certification page](https://cloud.google.com/learn/certification/google-workspace-administrator)** - registration and prep links.
+- **[📖 Admin Help](https://support.google.com/a/)** - official admin documentation.
+- **[📖 Vault Help](https://support.google.com/vault/)** - retention, holds, search and export.
+- Google Cloud Skills Boost: Google Workspace Administrator learning path.
