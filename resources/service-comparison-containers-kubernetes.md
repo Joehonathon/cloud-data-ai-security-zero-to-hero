@@ -234,8 +234,8 @@ This guide compares container orchestration, managed Kubernetes, container regis
 ## Documentation Links
 
 - AWS EKS: https://docs.aws.amazon.com/eks/latest/userguide/
-- AWS ECS: https://docs.aws.amazon.com/ecs/latest/developerguide/
-- AWS ECR: https://docs.aws.amazon.com/ecr/latest/userguide/
+- AWS ECS: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
+- AWS ECR: https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html
 - Azure AKS: https://learn.microsoft.com/en-us/azure/aks/
 - Azure ACI: https://learn.microsoft.com/en-us/azure/container-instances/
 - Azure ACR: https://learn.microsoft.com/en-us/azure/container-registry/

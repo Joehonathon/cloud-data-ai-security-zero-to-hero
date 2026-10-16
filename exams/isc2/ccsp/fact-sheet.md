@@ -218,7 +218,7 @@ Major providers maintain attestations for: SOC 2, ISO 27001/27017/27018/27701, P
 - **CCM v4:** https://cloudsecurityalliance.org/research/cloud-controls-matrix
 - **NIST SP 800-145:** https://csrc.nist.gov/publications/detail/sp/800-145/final
 - **ISO 27017/27018:** https://www.iso.org/standard/43757.html
-- **CCSP exam outline:** https://www.isc2.org/certifications/ccsp/ccsp-exam-outline
+- **CCSP exam outline:** https://www.isc2.org/certifications/ccsp/ccsp-certification-exam-outline
 
 ## CPE Categories (CCSP)
 

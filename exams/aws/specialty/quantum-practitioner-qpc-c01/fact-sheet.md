@@ -120,7 +120,7 @@ Hardware comes and goes from Braket; always check `device.is_available` and the 
 - Braket SDK: https://github.com/amazon-braket/amazon-braket-sdk-python
 - Braket Tutorials: https://github.com/amazon-braket/amazon-braket-examples
 - AWS Quantum blog: https://aws.amazon.com/blogs/quantum-computing/
-- PennyLane integration: https://docs.pennylane.ai/projects/braket/
+- PennyLane integration: https://amazon-braket-pennylane-plugin-python.readthedocs.io/en/stable/
 - IonQ docs: https://ionq.com/docs
 - Rigetti docs: https://docs.rigetti.com/
 - AWS Center for Quantum Computing

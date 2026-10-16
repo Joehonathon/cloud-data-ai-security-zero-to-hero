@@ -231,7 +231,7 @@ Use this before shipping an agent.
 - **[Tool use and function calling](../../learn/concepts/tool-use-and-function-calling.md)** - the mechanism
 - **[Zero trust architecture](../architecture-patterns/zero-trust-architecture.md)** - the identity model agents belong inside
 
-**[📖 OWASP LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm06-excessive-agency/)** - canonical entry
+**[📖 OWASP LLM06: Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)** - canonical entry
 **[📖 OWASP Agentic AI threats and mitigations](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)** - agent-specific taxonomy
 **[📖 Model Context Protocol specification](https://modelcontextprotocol.io/)** - protocol and security considerations
 **[📖 Anthropic: building effective agents](https://www.anthropic.com/engineering/building-effective-agents)** - design patterns for agent systems

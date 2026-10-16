@@ -22,7 +22,7 @@ last-updated: 2026-05-03
 
 **[📖 Professional Cloud Network Engineer Certification](https://cloud.google.com/learn/certification/cloud-network-engineer)** - Official certification page with exam guide and sample questions
 
-**[📖 Exam Guide PDF](https://cloud.google.com/certification/guides/cloud-network-engineer)** - Detailed exam domains and objectives breakdown
+**[📖 Exam Guide PDF](https://cloud.google.com/learn/certification/cloud-network-engineer)** - Detailed exam domains and objectives breakdown
 
 **Exam Details:**
 - Duration: 2 hours
@@ -700,7 +700,7 @@ gcloud network-management connectivity-tests create TEST_NAME --source-instance=
 
 ## Additional Resources
 
-**[📖 GCP Network Engineer Exam Guide](https://cloud.google.com/certification/guides/cloud-network-engineer)** - Official detailed exam topics
+**[📖 GCP Network Engineer Exam Guide](https://cloud.google.com/learn/certification/cloud-network-engineer)** - Official detailed exam topics
 
 **[📖 Google Cloud Networking Deep Dive](https://cloud.google.com/blog/topics/developers-practitioners)** - Technical blog posts and tutorials
 

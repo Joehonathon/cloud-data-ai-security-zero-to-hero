@@ -507,7 +507,7 @@ last-updated: 2026-05-03
 
 **[📖 Microsoft Learn Training](https://learn.microsoft.com/en-us/training/browse/?products=azure&roles=security-engineer&expanded=azure)** - Free, comprehensive training modules for all AZ-500 exam topics
 
-**[📖 AZ-500 Labs](https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies/)** - Hands-on lab exercises for practical skill development
+**[📖 AZ-500 Study Guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-500)** - Official skills measured; Microsoft retired the public AZ-500 lab repo, so practise in your own subscription
 
 **[📖 Microsoft Docs Home](https://learn.microsoft.com/en-us/docs/)** - Central documentation hub for all Microsoft products
 

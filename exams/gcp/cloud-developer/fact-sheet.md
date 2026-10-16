@@ -608,7 +608,7 @@ last-updated: 2026-05-03
 
 ### Exam Preparation
 
-**[📖 Official Study Guide](https://cloud.google.com/certification/guides/cloud-developer)** - Detailed exam guide
+**[📖 Official Study Guide](https://cloud.google.com/learn/certification/cloud-developer)** - Detailed exam guide
 
 **[📖 Qwiklabs](https://www.cloudskillsboost.google/catalog)** - Hands-on labs
 

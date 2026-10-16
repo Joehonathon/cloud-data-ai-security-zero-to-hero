@@ -226,7 +226,7 @@ Implementation components:
 - Logging: log all access to cardholder data, retain for 12 months
 - Vulnerability management: regular scanning and penetration testing
 - Use tokenization to reduce PCI scope (replace card numbers with tokens)
-- Documentation: https://docs.aws.amazon.com/whitepapers/latest/pci-dss-scoping-on-aws/pci-dss-scoping-on-aws.html
+- Documentation: https://docs.aws.amazon.com/prescriptive-guidance/latest/aws-security-reference-architecture-pci-data-security-standard-dss/introduction.html
 
 ### How Do You Handle GDPR in the Cloud?
 

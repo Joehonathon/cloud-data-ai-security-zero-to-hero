@@ -66,7 +66,7 @@ Recommended lab environment: a free HCP Terraform account, an AWS/Azure/GCP sand
 ## Official Resources
 
 - Exam page: https://developer.hashicorp.com/certifications/infrastructure-automation
-- Exam review guide: https://developer.hashicorp.com/terraform/tutorials/certification-associate-tutorials-003 (associate) and the Professional review page on developer.hashicorp.com
+- Exam review guide: https://developer.hashicorp.com/terraform/tutorials/certification-004 (associate) and the Professional review page on developer.hashicorp.com
 - HCP Terraform documentation: https://developer.hashicorp.com/terraform/cloud-docs
 - Terraform CLI documentation: https://developer.hashicorp.com/terraform/cli
 - Sentinel documentation: https://developer.hashicorp.com/sentinel/docs

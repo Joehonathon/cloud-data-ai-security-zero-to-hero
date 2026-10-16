@@ -28,7 +28,7 @@ Google Cloud provides a structured migration framework organized into four phase
 - Define migration waves and prioritization
 - Design target architecture on GCP
 - Plan networking, identity, and security foundations
-- Documentation: https://cloud.google.com/architecture/migration-to-gcp-building-your-foundation
+- Documentation: https://docs.cloud.google.com/architecture/migration-to-google-cloud-building-your-foundation
 
 ### Phase 3 - Deploy
 
@@ -36,7 +36,7 @@ Google Cloud provides a structured migration framework organized into four phase
 - Execute migration using appropriate tools
 - Validate migrated workloads
 - Perform cutover and decommission source systems
-- Documentation: https://cloud.google.com/architecture/migration-to-gcp-transferring-your-large-datasets
+- Documentation: https://docs.cloud.google.com/architecture/migration-to-google-cloud-transferring-your-large-datasets
 
 ### Phase 4 - Optimize
 
@@ -45,7 +45,7 @@ Google Cloud provides a structured migration framework organized into four phase
 - Optimize storage tiers and lifecycle policies
 - Implement auto-scaling and managed instance groups
 - Continuously improve cost efficiency and performance
-- Documentation: https://cloud.google.com/architecture/migration-to-gcp-optimizing-your-environment
+- Documentation: https://docs.cloud.google.com/architecture/migration-to-google-cloud-optimizing-your-environment
 
 ---
 
@@ -127,7 +127,7 @@ Organization
 
 - Use the Cloud Foundation Toolkit for standardized Terraform modules
 - Modules available for project creation, networking, IAM, and logging
-- Documentation: https://cloud.google.com/docs/terraform/blueprints/terraform-blueprint-factory
+- Documentation: https://docs.cloud.google.com/docs/terraform/blueprints/terraform-blueprints
 
 ---
 
@@ -305,7 +305,7 @@ Organization
 | Database Migration Service | https://cloud.google.com/database-migration/docs/overview |
 | Cloud Interconnect | https://cloud.google.com/network-connectivity/docs/interconnect/concepts/overview |
 | Cloud VPN | https://cloud.google.com/network-connectivity/docs/vpn/concepts/overview |
-| Cloud Foundation Toolkit | https://cloud.google.com/docs/terraform/blueprints/terraform-blueprint-factory |
+| Cloud Foundation Toolkit | https://docs.cloud.google.com/docs/terraform/blueprints/terraform-blueprints |
 
 ---
 

@@ -62,10 +62,17 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
       pennylane braket, aws quantum research, terraform cert tutorial, LF Argo APA, litmuschaos docs, two IBM sdk-core
       example trees. Two side findings: the issue body is cut at GitHub's 65,536-char limit (the list is incomplete),
       and each week opens a NEW issue without closing the last (#6 and #7 both open).
-- [ ] **By 2026-10-12: repair the 29 real 404s** listed in the judge line above (same method as the 09-17 sweep:
+- [x] **By 2026-10-12: repair the 29 real 404s** listed in the judge line above (same method as the 09-17 sweep:
       fetch + title-check each replacement), then close issues #6 and #7. Consider: accept IBM (`--exclude
       cloud.ibm.com` or treat as bot wall), make the workflow close/update the previous week's issue, and attach the
       full lychee report as an artifact since the issue body truncates.
+      ✅ 2026-10-15 done: **32 repaired** (the 29 plus 3 new in the 10-15 lychee report artifact) across 26 content
+      files; each replacement fetched and title-checked, old-to-new list in `docs/link-rot-2026-09-17.md`
+      "Follow-up repairs 2026-10-15". `check-internal-links.py`: 5,106 internal links, 0 broken. Issues #6, #7, #10
+      and #11 closed. The three workflow ideas above are not done - next line.
+- [ ] 🟡 `link-check.yml`: close/update the previous week's issue instead of opening a new one each Monday,
+      and decide on the 44 `cloud.ibm.com` bot-wall "404"s (exclude or accept). The report artifact already exists
+      (`lychee-report`). **Judge 2026-10-19:** the Monday run's issue should list no real 404s beyond IBM. S.
 - [ ] **Spot-check the retired-product replacements (by 2026-10-31).** These links now reach the successor product,
       but the surrounding notes may still teach the retired one: QLDB (`exams/aws/specialty/database-dbs-c01`),
       OpsWorks, LUIS (`exams/azure/ai-102`), PaLM and AutoML (GCP ML notes), IBM Watson and Cloud Foundry

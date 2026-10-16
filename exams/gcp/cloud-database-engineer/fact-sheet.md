@@ -564,7 +564,7 @@ last-updated: 2026-05-03
 **Migration Types:**
 - Continuous migration (minimal downtime)
 - One-time migration (offline)
-- **[📖 Migration Concepts](https://cloud.google.com/database-migration/docs/mysql/concepts)** - Migration types
+- **[📖 Migration Concepts](https://docs.cloud.google.com/database-migration/docs/mysql/migration-types)** - Migration types
 
 ### MySQL Migration
 
@@ -575,13 +575,13 @@ last-updated: 2026-05-03
 - Minimal downtime migration
 - **[📖 MySQL Migration Guide](https://cloud.google.com/database-migration/docs/mysql)** - Complete MySQL guide
 - **[📖 MySQL Migration Prerequisites](https://cloud.google.com/database-migration/docs/mysql/configure-source-database)** - Source preparation
-- **[📖 Creating MySQL Migrations](https://cloud.google.com/database-migration/docs/mysql/configure-connectivity)** - Migration setup
+- **[📖 Creating MySQL Migrations](https://docs.cloud.google.com/database-migration/docs/mysql/create-migration-job)** - Migration setup
 
 **Connectivity Methods:**
 - IP allowlisting
 - Reverse SSH tunnel
 - VPC peering
-- **[📖 MySQL Connectivity](https://cloud.google.com/database-migration/docs/mysql/configure-connectivity)** - Connection options
+- **[📖 MySQL Connectivity](https://docs.cloud.google.com/database-migration/docs/mysql/networking-methods)** - Connection options
 
 ### PostgreSQL Migration
 

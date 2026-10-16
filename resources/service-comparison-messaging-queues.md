@@ -238,7 +238,7 @@ Note: Pricing varies significantly based on message size, retention, and data tr
 
 ## Documentation Links
 
-- AWS SQS: https://docs.aws.amazon.com/sqs/latest/dg/
+- AWS SQS: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html
 - AWS SNS: https://docs.aws.amazon.com/sns/latest/dg/
 - AWS Kinesis: https://docs.aws.amazon.com/streams/latest/dev/
 - AWS EventBridge: https://docs.aws.amazon.com/eventbridge/latest/userguide/

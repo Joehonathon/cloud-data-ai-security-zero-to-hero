@@ -2953,6 +2953,6 @@ gcloud monitoring time-series list
 - [Hub-and-Spoke Network Architecture](https://docs.cloud.google.com/architecture/deploy-hub-spoke-vpc-network-topology)
 
 ### Exam Preparation
-- [Professional Cloud Network Engineer Exam Guide](https://cloud.google.com/certification/guides/cloud-network-engineer)
+- [Professional Cloud Network Engineer Exam Guide](https://cloud.google.com/learn/certification/cloud-network-engineer)
 - [Practice Exam](https://cloud.google.com/certification/practice-exam/cloud-network-engineer)
 - [Network Engineer Learning Path](https://cloud.google.com/training/networking)

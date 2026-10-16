@@ -308,7 +308,7 @@ Code Commit -> Build -> Unit Tests -> Integration Tests -> Deploy to Staging
 
 - AWS Fault Injection Service: https://docs.aws.amazon.com/fis/latest/userguide/
 - Azure Chaos Studio: https://learn.microsoft.com/en-us/azure/chaos-studio/
-- Litmus Chaos: https://litmuschaos.io/docs
+- Litmus Chaos: https://docs.litmuschaos.io/
 - Chaos Mesh: https://chaos-mesh.org/docs/
 - Gremlin: https://www.gremlin.com/docs/
 - Principles of Chaos Engineering: https://principlesofchaos.org/

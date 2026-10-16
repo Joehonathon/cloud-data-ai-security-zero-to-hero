@@ -41,7 +41,7 @@ The notes cover six anticipated domains:
 - Amazon Braket documentation: https://docs.aws.amazon.com/braket/
 - Braket SDK (Python): https://github.com/amazon-braket/amazon-braket-sdk-python
 - AWS Quantum Computing blog: https://aws.amazon.com/blogs/quantum-computing/
-- AWS Center for Quantum Computing: https://aws.amazon.com/research/quantum-computing/
+- AWS Center for Quantum Computing: https://www.amazon.science/tag/aws-center-for-quantum-computing
 - Hardware partner pages: IonQ, Rigetti, IQM, QuEra
 - AWS Training portal (search for quantum learning paths)
 

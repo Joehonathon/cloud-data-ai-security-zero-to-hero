@@ -184,7 +184,7 @@ last-updated: 2026-05-03
 ### Development Tools
 - **[📖 IBM Cloud CLI](https://cloud.ibm.com/docs/cli)**
 - **[📖 kubectl for Kubernetes](https://kubernetes.io/docs/reference/kubectl/)**
-- **[📖 oc CLI for OpenShift](https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html)**
+- **[📖 oc CLI for OpenShift](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/cli_tools/openshift-cli-oc)**
 - **[📖 Docker](https://docs.docker.com/)**
 - **[📖 Git and GitHub](https://docs.github.com/)**
 - **[📖 Terraform on IBM Cloud](https://cloud.ibm.com/docs/ibm-cloud-provider-for-terraform)**
@@ -412,7 +412,7 @@ const assistant = new WatsonAssistantV2({
 ```
 
 **Resources:**
-- **[📖 Node.js SDK Examples](https://github.com/IBM/node-sdk-core/tree/main/examples)**
+- **[📖 Node.js SDK Core](https://github.com/IBM/node-sdk-core)**
 - **[📖 Watson Node.js SDK](https://github.com/watson-developer-cloud/node-sdk)**
 
 ### IBM Cloud SDK Usage (Python)
@@ -429,7 +429,7 @@ assistant.set_service_url(os.environ.get('ASSISTANT_URL'))
 ```
 
 **Resources:**
-- **[📖 Python SDK Examples](https://github.com/IBM/python-sdk-core/tree/main/examples)**
+- **[📖 Python SDK Core](https://github.com/IBM/python-sdk-core)**
 - **[📖 Watson Python SDK](https://github.com/watson-developer-cloud/python-sdk)**
 
 ### Cloudant Database Operations
@@ -598,7 +598,7 @@ assistant.set_service_url(os.environ.get('ASSISTANT_URL'))
 - **[📖 IBM Cloud CLI Installation](https://cloud.ibm.com/docs/cli?topic=cli-getting-started)**
 - **[📖 Docker Desktop](https://www.docker.com/products/docker-desktop)**
 - **[📖 kubectl Installation](https://kubernetes.io/docs/tasks/tools/)**
-- **[📖 oc CLI Installation](https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html)**
+- **[📖 oc CLI Installation](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/cli_tools/openshift-cli-oc)**
 - **[📖 Git Installation](https://git-scm.com/downloads)**
 
 ### CLI Plugin Installation

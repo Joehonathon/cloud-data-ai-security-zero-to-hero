@@ -122,7 +122,7 @@ Unlike CISSP, which is heavy with technical depth, CISM expects you to think and
 - **CISM Review Manual** (ISACA bookstore) - the gold-standard reference
 - **CISM Review Questions, Answers, and Explanations Manual** (ISACA)
 - **ISACA online review course** - instructor-led or self-paced
-- **CPE policy and recertification:** https://www.isaca.org/credentialing/how-to-maintain-your-certification
+- **CPE policy and recertification:** https://www.isaca.org/credentialing/how-to-earn-cpe
 
 ## Recommended Training
 

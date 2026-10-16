@@ -122,11 +122,11 @@ Choose one based on your organization's primary cloud:
 
 ### Phase 6 - GitOps and Advanced (30-36 months)
 
-**Argo Project Associate (APA)**
+**Certified Argo Project Associate (CAPA)**
 - GitOps principles and Argo CD
 - Progressive delivery with Argo Rollouts
 - Cost: ~$250
-- https://training.linuxfoundation.org/certification/argo-project-associate-apa/
+- https://training.linuxfoundation.org/certification/certified-argo-project-associate-capa/
 
 **Prometheus Certified Associate (PCA)**
 - Monitoring, alerting, PromQL

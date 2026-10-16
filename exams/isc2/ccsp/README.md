@@ -104,7 +104,7 @@ CCSP targets practitioners with significant cloud security responsibility. Commo
 ## Official Resources
 
 - **CCSP Certification Page:** https://www.isc2.org/certifications/ccsp
-- **CCSP Exam Outline:** https://www.isc2.org/certifications/ccsp/ccsp-exam-outline
+- **CCSP Exam Outline:** https://www.isc2.org/certifications/ccsp/ccsp-certification-exam-outline
 - **CSA Guidance v5:** https://cloudsecurityalliance.org/research/guidance (free)
 - **Cloud Controls Matrix (CCM) v4:** https://cloudsecurityalliance.org/research/cloud-controls-matrix (free)
 - **NIST SP 800-145:** Cloud computing definition

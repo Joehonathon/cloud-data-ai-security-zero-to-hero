@@ -105,7 +105,7 @@ last-updated: 2026-05-03
 - Framework Capabilities: https://www.finops.org/framework/capabilities/
 - State of FinOps: https://data.finops.org/
 - FinOps for AI: FinOps Foundation project page
-- Sustainability: https://www.finops.org/topics/sustainability/
+- Sustainability: https://www.finops.org/wg/sustainability/
 - Green Software Foundation SCI spec: https://sci.greensoftware.foundation/
 - AWS Customer Carbon Footprint Tool
 - Azure Emissions Impact Dashboard

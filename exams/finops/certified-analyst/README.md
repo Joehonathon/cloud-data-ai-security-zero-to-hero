@@ -34,10 +34,10 @@ See fact-sheet.md for the full blueprint. The six domains cover:
 
 ## Official Resources
 
-- FinOps Foundation certifications: https://www.finops.org/certifications/
+- FinOps Foundation certifications: https://learn.finops.org/
 - FinOps Framework: https://www.finops.org/framework/
 - FOCUS specification: https://focus.finops.org/
-- FinOps Open Cost and Usage Specification (FOCUS) on GitHub: https://github.com/FinOps-Foundation/FOCUS_Spec
+- FinOps Open Cost and Usage Specification (FOCUS) on GitHub: https://github.com/FinOps-Open-Cost-and-Usage-Spec/FOCUS_Spec
 - State of FinOps report: https://data.finops.org/
 - FinOps Foundation Slack and community working groups
 

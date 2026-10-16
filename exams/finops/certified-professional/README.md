@@ -37,10 +37,10 @@ The Professional exam goes deep on seven areas covered in the notes:
 
 ## Official Resources
 
-- FinOps Foundation certifications: https://www.finops.org/certifications/
+- FinOps Foundation certifications: https://learn.finops.org/
 - FinOps Framework: https://www.finops.org/framework/
 - FOCUS specification: https://focus.finops.org/
-- FinOps + Sustainability whitepapers: https://www.finops.org/topics/sustainability/
+- FinOps + Sustainability whitepapers: https://www.finops.org/wg/sustainability/
 - FinOps for AI working group: https://www.finops.org/projects/
 - State of FinOps report: https://data.finops.org/
 - FinOps Foundation Slack and projects

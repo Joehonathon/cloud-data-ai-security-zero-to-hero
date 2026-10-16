@@ -158,7 +158,7 @@ Still yours to control and document:
 - **[EU AI Act](../compliance-guides/eu-ai-act.md)** - technical documentation obligations that an AI-BOM feeds
 - **[ISO/IEC 42001](../compliance-guides/iso-42001.md)** - supplier and resource controls
 
-**[📖 OWASP LLM03: Supply Chain](https://genai.owasp.org/llmrisk/llm03-supply-chain/)** - canonical entry
+**[📖 OWASP LLM03: Supply Chain](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)** - canonical entry
 **[📖 Hugging Face security documentation](https://huggingface.co/docs/hub/security)** - malware scanning, pickle scanning, signed commits
 **[📖 CISA Secure by Design for AI](https://www.cisa.gov/ai)** - US guidance on AI supply chain and deployment
 **[📖 SLSA framework](https://slsa.dev/)** - supply chain levels for software artifacts, applicable to model pipelines

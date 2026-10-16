@@ -15,7 +15,7 @@ last-updated: 2026-05-03
 **Open documentation:** `oc explain`, web console, cluster resources
 
 **[📖 Official EX280 page](https://www.redhat.com/en/services/training/red-hat-certified-openshift-administrator-exam)**
-**[📖 OpenShift 4.14 Documentation](https://docs.openshift.com/container-platform/4.14/welcome/index.html)**
+**[📖 OpenShift 4.14 Documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.14)**
 **[📖 Latest OpenShift Docs](https://docs.openshift.com/)**
 
 ---

@@ -22,7 +22,7 @@ last-updated: 2026-05-03
 
 ### Certification Details
 - **[📖 Professional Cloud DevOps Engineer Certification](https://cloud.google.com/learn/certification/cloud-devops-engineer)** - Official certification page with exam guide and requirements
-- **[📖 Exam Guide](https://cloud.google.com/learn/certification/guides/cloud-devops-engineer)** - Detailed breakdown of exam domains and topics covered
+- **[📖 Exam Guide](https://cloud.google.com/learn/certification/cloud-devops-engineer)** - Detailed breakdown of exam domains and topics covered
 - **Duration**: 2 hours
 - **Format**: Multiple choice and multiple select questions
 - **Cost**: $200 USD

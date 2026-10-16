@@ -112,7 +112,7 @@ Most enterprise migrations are dominated by Rehost (fast, low risk) and Replatfo
 - Provides right-sizing recommendations for AWS
 - Generates projected cost comparison (on-prem vs AWS)
 - Free service - request an assessment through your AWS account team
-- Documentation: https://docs.aws.amazon.com/migrationevaluator/latest/userguide/what-is-me.html
+- Documentation: https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-tools/discovery-migration-evaluator.html
 
 ### AWS Migration Hub
 
@@ -307,7 +307,7 @@ Most enterprise migrations are dominated by Rehost (fast, low risk) and Replatfo
 | AWS SCT | https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html |
 | Control Tower | https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html |
 | Direct Connect | https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html |
-| AWS Prescriptive Guidance | https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-guide/welcome.html |
+| AWS Prescriptive Guidance | https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/introduction.html |
 
 ---
 
