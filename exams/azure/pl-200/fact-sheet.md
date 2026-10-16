@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: PL-200
+exam-retires: 2026-08-31
 ---
 
 # PL-200: Microsoft Power Platform Functional Consultant Associate - Comprehensive Fact Sheet
+
+> ⚠️ **RETIRED August 31, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Exam Information
 

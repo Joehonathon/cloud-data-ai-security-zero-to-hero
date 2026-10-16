@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-16] - Nine retired Azure exams flagged
+
+### Fixed
+
+- Nine Azure guides described exams Microsoft has retired, with no warning: MS-900, DP-100, AI-102, AI-900, AZ-204, AZ-500, PL-200, DP-203 and PL-100. Each README now reads "RETIRED" with the date and a source link, and each fact sheet carries `exam-version:` and `exam-retires:`. The generated status in `docs/certs.json` and the provider tables now shows Retired (the certification total is unchanged, as for the retired AWS certs). Dates come from Microsoft Learn's retired-exams page, except DP-203, which comes from Microsoft Q&A and third-party posts. AI-900's note points to its live successor AI-901.
+
 ## [2026-10-14] (5) - Flagged keys checked against vendor docs; Vertex AI renamed
 
 ### Fixed

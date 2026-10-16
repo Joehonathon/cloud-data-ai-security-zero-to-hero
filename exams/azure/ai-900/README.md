@@ -1,4 +1,12 @@
-# Microsoft Azure AI Fundamentals (AI-900)
+# Microsoft Azure AI Fundamentals (AI-900) - RETIRED
+
+## Important Notice
+
+**The AI-900 exam and its certification were retired on June 30, 2026.** It can no longer be taken and the certification can no longer be earned or renewed. Credentials already earned stay on the holder's Microsoft Learn transcript. This guide is kept as historical reference. The Azure AI Fundamentals certification continues with exam **AI-901** (updated April 15, 2026); this guide has not been rebuilt for it yet.
+
+Source: [Microsoft Learn - exam retirement](https://learn.microsoft.com/en-us/credentials/support/retired-certification-exams)
+
+---
 
 ## Exam Overview
 

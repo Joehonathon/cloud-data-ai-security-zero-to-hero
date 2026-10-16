@@ -1,4 +1,12 @@
-# Microsoft Azure Data Engineer Associate (DP-203)
+# Microsoft Azure Data Engineer Associate (DP-203) - RETIRED
+
+## Important Notice
+
+**The DP-203 exam and its certification were retired on March 31, 2025.** It can no longer be taken and the certification can no longer be earned or renewed. Credentials already earned stay on the holder's Microsoft Learn transcript. This guide is kept as historical reference. The Fabric exam [DP-700](../dp-700/fact-sheet.md) is the closest current data-engineering exam in this repo.
+
+Source: [Microsoft Learn - exam retirement](https://learn.microsoft.com/en-us/credentials/support/retired-certification-exams)
+
+---
 
 ## Exam Overview
 

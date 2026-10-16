@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: AI-900
+exam-retires: 2026-06-30
 ---
 
 # Azure AI-900: Azure AI Fundamentals - Comprehensive Fact Sheet
+
+> ⚠️ **RETIRED June 30, 2026.** No longer available to new candidates. Kept as historical reference. The Azure AI Fundamentals certification continues with exam **AI-901** (updated April 15, 2026); this guide has not been rebuilt for it yet.
 
 ## Table of Contents
 1. [Exam Overview](#exam-overview)

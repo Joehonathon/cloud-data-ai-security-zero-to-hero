@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: MS-900
+exam-retires: 2026-03-31
 ---
 
 # MS-900 Microsoft 365 Fundamentals - Fact Sheet
+
+> ⚠️ **RETIRED March 31, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Quick Reference
 

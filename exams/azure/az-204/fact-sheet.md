@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: AZ-204
+exam-retires: 2026-07-31
 ---
 
 # Azure Developer Associate (AZ-204) Fact Sheet
+
+> ⚠️ **RETIRED July 31, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Quick Reference
 

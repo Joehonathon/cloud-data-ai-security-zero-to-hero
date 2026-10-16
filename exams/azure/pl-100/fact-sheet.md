@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: PL-100
+exam-retires: 2024-06-30
 ---
 
 # Microsoft Power Platform App Maker (PL-100): Comprehensive Fact Sheet
+
+> ⚠️ **RETIRED June 30, 2024.** No longer available to new candidates. Kept as historical reference.
 
 ## Exam Overview
 

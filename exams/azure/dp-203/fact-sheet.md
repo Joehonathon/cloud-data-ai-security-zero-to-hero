@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: DP-203
+exam-retires: 2025-03-31
 ---
 
 # Azure DP-203: Data Engineering on Microsoft Azure - Fact Sheet
+
+> ⚠️ **RETIRED March 31, 2025.** No longer available to new candidates. Kept as historical reference. The Fabric exam [DP-700](../dp-700/fact-sheet.md) is the closest current data-engineering exam in this repo.
 
 ## Exam Overview
 

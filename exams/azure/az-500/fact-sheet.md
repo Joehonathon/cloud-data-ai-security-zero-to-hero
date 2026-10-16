@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: AZ-500
+exam-retires: 2026-08-31
 ---
 
 # Azure AZ-500: Microsoft Azure Security Technologies - Fact Sheet
+
+> ⚠️ **RETIRED August 31, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Exam Overview
 

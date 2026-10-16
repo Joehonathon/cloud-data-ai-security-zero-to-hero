@@ -21,6 +21,21 @@ Read-only fleet audit (9 agents, nothing changed). Each line: effort S (<half da
 - [x] 2026-10-02 🟢 low - README Nobler banner was hotlinked from `Noblerworks/IRONSIGHT`: vendored to `assets/brand/nobler-works-banner.jpg`.
 - [ ] 🟢 **Patrick: decide** whether the bio should carry a cert count again. If yes, add a `{{personal_certs}}` token in `build-site.py` fed from one checked-in value, and update it on 2026-10-21 / 2026-11-05 (lapses) - the private career ledger cannot feed CI.
 
+## Retired-exam sweep (2026-10-16)
+
+- [x] 2026-10-16 Checked every Azure guide against Microsoft's [retired-exams page](https://learn.microsoft.com/en-us/credentials/support/retired-certification-exams): nine were retired but unflagged. Now marked RETIRED with `exam-retires:` (status flips to Retired in `certs.json` and the provider tables): MS-900 (2026-03-31), DP-100 (06-01), AI-102 (06-30), AI-900 (06-30), AZ-204 (07-31), AZ-500 (08-31), PL-200 (08-31), plus DP-203 (2025-03-31, date from Microsoft Q&A and third-party posts, not the page) and PL-100 (2024-06-30). The only Azure exam on Microsoft's "retiring in 12 months" list is MS-102, which the repo does not cover.
+- [ ] **Successors not built or verified.** Microsoft's pages name no replacement except AI-900 -> AI-901 (live, updated 2026-04-15). Third-party posts report AZ-204 -> AI-200, AI-102 -> AI-103 and AZ-500 -> SC-500; confirm on learn.microsoft.com before writing any guide. Retired guides still have practice banks, flashcards and `labs-by-cert` entries; decide whether to keep them as reference or prune.
+- [ ] **Do the same check for the other 26 providers** (AWS, GCP, CompTIA, Cisco, Palo Alto and Salesforce first). Only four AWS certs carried `exam-retires:` before today, and every guide's `last-updated` was a bulk 2026-05-03 stamp. Judge by 2026-11-01.
+
+## Content backlog (gap review 2026-10-16, ranked)
+
+1. **AI governance and AI security certs** (the repo's niche, almost no free guides): IAPP AIGP, ISACA AAISM and AAIA, CSA TAISE. Verify names and codes first.
+2. **Breach postmortems** (all 3 existing postmortems are outages): Capital One 2019, Snowflake customer breaches 2024, SolarWinds, MOVEit; outages CrowdStrike 2024 and the Oct 2025 AWS us-east-1 DNS event.
+3. **Defensive security labs** (106 of 152 certs have no lab): least-privilege IAM, cloud incident response, detection/SIEM pipeline, container scan with SBOM, prompt-injection red team of a RAG app.
+4. **Cert gaps**: observability (Splunk/Elastic/Datadog), GIAC GCLD/GSEC, Google Associate Data Practitioner and Professional Security Operations Engineer, Databricks Spark Developer, CNCF Backstage and Kyverno associates, plus the Linux+/SSCP/CyberOps/AI-901 items below.
+5. **Concept pages**: OAuth/OIDC/SAML, encryption and KMS, logging and SIEM, backup and DR (RPO/RTO), reasoning models, A2A beside the MCP page; day-one Python and environment variables.
+6. **Compliance guides**: NIST CSF 2.0, ISO 27001, NIS2/DORA, CMMC. **Cost of AI** (tokens, caching, batching, model sizing). **AI/ML engineer interview prep.**
+
 ## GCP exam refresh (2026-10-14)
 
 - [x] 2026-10-14 Workspace Administrator re-levelled to Associate and rebuilt (7 notes, flashcards, 23 scenarios, 45 questions). Strict site build passes; pushed 2026-10-14.
@@ -78,7 +93,7 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
       OpsWorks, LUIS (`exams/azure/ai-102`), PaLM and AutoML (GCP ML notes), IBM Watson and Cloud Foundry
       (`exams/ibm`), AWS Data Analytics and SAP specialty exams. The report lists every replacement.
 - [ ] **Content checks the sweep surfaced** (links fixed, content may be stale):
-  - Microsoft now lists **AI-901** "Azure AI Fundamentals" alongside AI-900. Check for an AI-900 retirement date and set `exam-retires:` on `exams/azure/ai-900`.
+  - [x] 2026-10-16 AI-900 retired 2026-06-30; `exam-retires:` set and the guide marked RETIRED (see Retired-exam sweep below). Building an AI-901 guide is still open (listed under the cert gaps).
   - The **PCNSA** exam page is gone (404) and Palo Alto now promotes a Network Security Analyst certification. Check whether PCNSA was retired or renamed.
   - 15 citations of retired IBM services now point at the official successors (listed in the report); the surrounding IBM notes may describe the retired products.
 - [ ] **62 URLs could not be checked** (bot protection or sign-in, mostly vendor cert pages and Cisco docs). Spot-check by hand; listed at the end of the report.

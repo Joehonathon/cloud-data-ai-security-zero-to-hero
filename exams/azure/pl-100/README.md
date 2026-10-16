@@ -1,4 +1,12 @@
-# Microsoft Power Platform App Maker Associate (PL-100)
+# Microsoft Power Platform App Maker Associate (PL-100) - RETIRED
+
+## Important Notice
+
+**The PL-100 exam and its certification were retired on June 30, 2024.** It can no longer be taken and the certification can no longer be earned or renewed. Credentials already earned stay on the holder's Microsoft Learn transcript. This guide is kept as historical reference. 
+
+Source: [Microsoft Learn - exam retirement](https://learn.microsoft.com/en-us/credentials/support/retired-certification-exams)
+
+---
 
 ## Exam Overview
 

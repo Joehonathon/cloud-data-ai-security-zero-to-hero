@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: AI-102
+exam-retires: 2026-06-30
 ---
 
 # Azure AI-102: Designing and Implementing Azure AI Solution - Comprehensive Fact Sheet
+
+> ⚠️ **RETIRED June 30, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Exam Overview
 

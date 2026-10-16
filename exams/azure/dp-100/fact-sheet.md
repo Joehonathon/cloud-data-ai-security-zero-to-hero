@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: DP-100
+exam-retires: 2026-06-01
 ---
 
 # Microsoft Azure Data Scientist Associate (DP-100) - Fact Sheet
+
+> ⚠️ **RETIRED June 1, 2026.** No longer available to new candidates. Kept as historical reference.
 
 ## Quick Reference
 
