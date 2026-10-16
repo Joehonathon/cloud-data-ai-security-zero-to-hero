@@ -94,8 +94,14 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
       (`mkdocs.yml` `extra.google_site_verification`) through the Site Verification API as the `nobler-reporting`
       service account (API enabled on project 822136630919 for this). Owners: that SA and pat@noblerworks.com.
       `sitemap.xml` submitted the same day.
-- [ ] **2026-10-12 check**: Search Console → Sitemaps shows the sitemap as read (not pending) with ~2,000
+- [ ] **2026-11-01 check** (re-dated 2026-10-15 after the FAIL below; was 2026-10-12): Search Console → Sitemaps shows the sitemap as read (not pending) with ~2,000
       discovered URLs, and Pages → Indexed is above zero.
+      ✏️ 2026-10-15 judged: 🟠 HALF - the sitemap (submitted 2026-09-29) is still `isPending: true`, never
+      downloaded, 0 errors, so Google has discovered none of the 2,066 URLs from it. Indexed IS above zero: the home
+      page is "Submitted and indexed" (crawled 2026-09-29), and 1 page had 8 impressions / 1 click 09-15..10-14;
+      `/STUDY-HUB/` is "URL is unknown to Google". The sitemap serves fine (200, `application/xml`). Read via the GSC
+      API as `nobler-reporting`. Next (Pat, 2026-10-28, browser): resubmit the sitemap and Request indexing on
+      `/STUDY-HUB/`; re-check 2026-11-01.
 - [ ] **Patrick: unblock site analytics (2 steps, ~3 min), then hand back to Claude.** The site has no analytics
       at all; the only visitor numbers are GitHub's 14-day repo traffic. Plan agreed 2026-09-28: GA4 behind
       Material's cookie consent banner (feeds the Nobler OS dashboard) **plus** Cloudflare Web Analytics
