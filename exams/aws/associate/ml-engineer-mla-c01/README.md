@@ -1,4 +1,12 @@
-# AWS Certified Machine Learning Engineer - Associate (MLA-C01)
+# AWS Certified Machine Learning Engineer - Associate (MLA-C01) - RETIRED
+
+## Important Notice
+
+**The MLA-C01 exam was retired on September 28, 2026.** It can no longer be taken. Credentials already earned remain valid under the vendor's own terms. This guide is kept as historical reference. The English MLA-C01 exam ended on this date. **MLA-C02** is in beta (general availability not yet announced); this guide has not been rebuilt for it yet.
+
+Source: [AWS Certified Machine Learning Engineer - Associate](https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/)
+
+---
 
 ## Exam Overview
 

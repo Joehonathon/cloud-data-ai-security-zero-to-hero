@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: 003
+exam-retires: 2026-07-15
 ---
 
 # HashiCorp Consul Associate (003) - Fact Sheet
+
+> ⚠️ **RETIRED July 15, 2026.** HashiCorp retired the Consul Associate 003 exam version in July 2026 and no longer lists a Consul certification.
 
 ## Quick Reference
 

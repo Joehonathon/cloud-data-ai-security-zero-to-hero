@@ -1,4 +1,12 @@
-# AWS Certified Security - Specialty (SCS-C02) Exam Guide
+# AWS Certified Security - Specialty (SCS-C02) Exam Guide - RETIRED
+
+## Important Notice
+
+**The SCS-C02 exam was retired on December 1, 2025.** It can no longer be taken. Credentials already earned remain valid under the vendor's own terms. This guide is kept as historical reference. AWS closed SCS-C02 to candidates after this date. The current exam is **SCS-C03**; this guide has not been rebuilt for it yet.
+
+Source: [AWS Certified Security - Specialty](https://aws.amazon.com/certification/certified-security-specialty/)
+
+---
 
 ## Exam Overview
 

@@ -1,5 +1,13 @@
 # CompTIA CySA+ (CS0-003)
 
+## Important Notice
+
+**The CS0-003 exam retires on December 22, 2026.** Until then it can still be taken; after that date this guide describes a withdrawn exam. The English CS0-003 exam retires on this date (translations on March 23, 2027). CompTIA is replacing it with a new CySA+ version; this guide has not been rebuilt for it yet.
+
+Source: [CompTIA CySA+](https://www.comptia.org/en-us/certifications/cybersecurity-analyst/)
+
+---
+
 
 ## Exam Overview
 

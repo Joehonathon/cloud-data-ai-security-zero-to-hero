@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: DVA-C02
+exam-retires: 2026-11-30
 ---
 
 # AWS Certified Developer - Associate (DVA-C02) Fact Sheet
+
+> ⚠️ **RETIRING November 30, 2026.** The last day to sit DVA-C02 is November 30, 2026. **DVA-C03** registration opens October 27, 2026; its outline was not published when this was checked.
 
 ## Quick Reference
 

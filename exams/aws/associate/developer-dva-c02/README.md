@@ -1,5 +1,13 @@
 # AWS Certified Developer - Associate (DVA-C02)
 
+## Important Notice
+
+**The DVA-C02 exam retires on November 30, 2026.** Until then it can still be taken; after that date this guide describes a withdrawn exam. The last day to sit DVA-C02 is November 30, 2026. **DVA-C03** registration opens October 27, 2026; its outline was not published when this was checked.
+
+Source: [AWS Certified Developer - Associate](https://aws.amazon.com/certification/certified-developer-associate/)
+
+---
+
 ## Exam Overview
 
 The AWS Certified Developer - Associate (DVA-C02) exam validates technical expertise in developing and maintaining applications on the AWS platform. This certification demonstrates proficiency in AWS core services, uses, and basic AWS architecture best practices for developers.

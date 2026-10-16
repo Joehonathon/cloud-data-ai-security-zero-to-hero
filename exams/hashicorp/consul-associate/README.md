@@ -1,4 +1,12 @@
-# HashiCorp Consul Associate (003) Certification
+# HashiCorp Consul Associate (003) Certification - RETIRED
+
+## Important Notice
+
+**The 003 exam was retired on July 15, 2026.** It can no longer be taken. Credentials already earned remain valid under the vendor's own terms. This guide is kept as historical reference. HashiCorp retired the Consul Associate 003 exam version in July 2026 and no longer lists a Consul certification.
+
+Source: [HashiCorp certifications](https://developer.hashicorp.com/certifications)
+
+---
 
 ## Exam Overview
 

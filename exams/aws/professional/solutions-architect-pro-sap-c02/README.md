@@ -1,5 +1,13 @@
 # AWS Certified Solutions Architect - Professional (SAP-C02)
 
+## Important Notice
+
+**The SAP-C02 exam retires on November 16, 2026.** Until then it can still be taken; after that date this guide describes a withdrawn exam. The last day to sit SAP-C02 is November 16, 2026. **SAP-C03** registration opens October 27, 2026; its outline was not published when this was checked.
+
+Source: [AWS Certified Solutions Architect - Professional](https://aws.amazon.com/certification/certified-solutions-architect-professional/)
+
+---
+
 ## Exam Overview
 
 The AWS Certified Solutions Architect - Professional certification validates advanced technical skills and experience in designing distributed applications and systems on AWS at the enterprise level.

@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: CS0-003
+exam-retires: 2026-12-22
 ---
 
 # CompTIA CySA+ (CS0-003) Fact Sheet
+
+> ⚠️ **RETIRING December 22, 2026.** The English CS0-003 exam retires on this date (translations on March 23, 2027). CompTIA is replacing it with a new CySA+ version; this guide has not been rebuilt for it yet.
 
 ## Quick Reference
 

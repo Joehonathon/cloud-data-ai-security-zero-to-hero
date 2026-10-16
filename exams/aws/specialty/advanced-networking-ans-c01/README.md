@@ -1,5 +1,13 @@
 # AWS Certified Advanced Networking - Specialty (ANS-C01) Exam Guide
 
+## Important Notice
+
+**The ANS-C01 exam retires on December 31, 2026.** Until then it can still be taken; after that date this guide describes a withdrawn exam. AWS has announced that the exam is being withdrawn after this date and names no replacement.
+
+Source: [AWS Certified Advanced Networking - Specialty](https://aws.amazon.com/certification/certified-advanced-networking-specialty/)
+
+---
+
 ## Exam Overview
 
 The AWS Certified Advanced Networking - Specialty (ANS-C01) exam validates advanced technical skills and experience in designing, implementing, managing, and securing AWS and hybrid network architectures at scale.

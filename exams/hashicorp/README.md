@@ -9,11 +9,13 @@ Study guides for HashiCorp in this repo. For the full picture across every provi
 | Cert | Code | Level | Status | Notes |
 |------|------|-------|--------|------:|
 | [HashiCorp Boundary Associate Certification](boundary-associate/) | - | Associate | Ready | 6 |
-| [HashiCorp Consul Associate (003) Certification](consul-associate/) | Consul Associate (003) | Associate | Ready | 5 |
+| [HashiCorp Consul Associate (003) Certification](consul-associate/) | Consul Associate (003) | Associate | Retired | 5 |
 | [HashiCorp Nomad Associate Certification](nomad-associate/) | - | Associate | Ready | 6 |
 | [HashiCorp Packer Associate (003) Certification](packer-associate/) | - | Associate | Ready | 6 |
 | [HashiCorp Terraform Associate (003) Certification](terraform-associate/) | Terraform Associate (003) | Associate | Ready | 6 |
 | [HashiCorp Vault Associate (003) Certification](vault-associate/) | Vault Associate (003) | Associate | Ready | 5 |
 | [HashiCorp Terraform Authoring and Operations Professional Certification](terraform-authoring-operations-pro/) | - | Professional | Ready | 6 |
+
+**Retired** - the exam is no longer offered. The guide is kept for anyone holding the credential, and points to its replacement.
 
 <!-- END GENERATED: provider-certs -->

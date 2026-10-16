@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [2026-10-16] (2) - Seven more exams flagged from a vendor check of all providers
+
+### Fixed
+
+- Checked the other 26 providers against vendor pages. Three guides describe exams that have ended and are now marked RETIRED: AWS Security Specialty SCS-C02 (ended 2025-12-01, replaced by SCS-C03), AWS Machine Learning Engineer Associate MLA-C01 (English ended 2026-09-28, MLA-C02 in beta) and HashiCorp Consul Associate 003 (retired July 2026). Four more carry `exam-retires:` and a "retires on" notice: AWS SAP-C02 (2026-11-16), DVA-C02 (2026-11-30), ANS-C01 (2026-12-31) and CompTIA CySA+ CS0-003 (2026-12-22). Findings that rest on a search snippet or third-party sites, and those that need a rewrite, are in TODO.md with a confidence level instead of in the guides.
+
 ## [2026-10-16] - Nine retired Azure exams flagged
 
 ### Fixed

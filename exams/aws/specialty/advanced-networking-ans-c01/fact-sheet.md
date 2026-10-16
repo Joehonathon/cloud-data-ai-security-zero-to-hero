@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: ANS-C01
+exam-retires: 2026-12-31
 ---
 
 # AWS Certified Advanced Networking - Specialty (ANS-C01) - Fact Sheet
+
+> ⚠️ **RETIRING December 31, 2026.** AWS has announced that the exam is being withdrawn after this date and names no replacement.
 
 ## Quick Reference
 

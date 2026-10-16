@@ -1,8 +1,12 @@
 ---
-last-updated: 2026-05-03
+last-updated: 2026-10-16
+exam-version: SAP-C02
+exam-retires: 2026-11-16
 ---
 
 # AWS Solutions Architect Professional (SAP-C02) - Fact Sheet
+
+> ⚠️ **RETIRING November 16, 2026.** The last day to sit SAP-C02 is November 16, 2026. **SAP-C03** registration opens October 27, 2026; its outline was not published when this was checked.
 
 ## Quick Reference
 
