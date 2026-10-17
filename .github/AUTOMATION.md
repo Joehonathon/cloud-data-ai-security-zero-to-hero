@@ -50,7 +50,7 @@ GitHub Actions run on PR, push to main, and a weekly schedule. All four are desi
 
 | Workflow | Triggers | What it does | Strict? |
 |---|---|---|---|
-| `link-check.yml` | PR, push, weekly Mondays | Two jobs. **Internal** runs `check-internal-links.py` and blocks the merge. **External** runs lychee and opens an auto-issue on weekly failure. | Internal: yes. External: no (vendor URL rot is not a contributor's fault) |
+| `link-check.yml` | PR, push, weekly Mondays | Two jobs. **Internal** runs `check-internal-links.py` and blocks the merge. **External** runs lychee (`cloud.ibm.com` excluded: its docs answer lychee with bot-wall 404s but load in a browser) and, on the weekly run, opens one rolling auto-issue or updates the open `link-check` issue in place. | Internal: yes. External: no (vendor URL rot is not a contributor's fault) |
 | `markdown-lint.yml` | PR, push | Runs `markdownlint-cli2` against `.markdownlint.json` config | Yes |
 | `structure-validate.yml` | PR, push | Runs `validate-cert-structure.sh`, `validate-frontmatter.sh`, and `--check` on both index generators | Yes (fails on missing required files, malformed frontmatter, or stale generated files; warns are advisory) |
 | `cspell.yml` | PR, push to `**/*.md` | Spell-checks against `.cspell.json` | No (currently non-strict; will flip once dictionary is tuned) |

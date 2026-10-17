@@ -52,6 +52,7 @@ jobs:
             --max-retries 2
             --accept 200,206,403,429
             --exclude-loopback
+            --exclude 'cloud\.ibm\.com'
             --scheme https
             --scheme http
             './**/*.md'
@@ -95,10 +96,24 @@ jobs:
       # Gated on lychee's own exit code, not on job status. The previous version
       # used `failure()`, which `fail: false` guarantees will never be true, so
       # this step could not fire even when links were broken.
-      - name: Open issue on weekly run finding broken links
+      # One rolling issue, not one per Monday. Look for an open issue carrying
+      # the label; if there is one, the next step rewrites it in place with this
+      # week's report, otherwise it opens the first. Close the issue once the
+      # list is clean and the next finding starts a fresh one.
+      - name: Find the open link-check issue
+        id: existing
+        if: github.event_name == 'schedule' && steps.lychee.outputs.exit_code == '2'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh issue list --repo "${{ github.repository }}" --label link-check --state open --limit 1 --json number --jq '.[0].number // empty')
+          echo "number=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the weekly broken-links issue
         if: github.event_name == 'schedule' && steps.lychee.outputs.exit_code == '2'
         uses: peter-evans/create-issue-from-file@v6
         with:
+          issue-number: ${{ steps.existing.outputs.number }}
           title: 'Weekly link check found broken links'
           content-filepath: ./lychee-report.md
           labels: link-check, automated

@@ -90,9 +90,15 @@ all 783 now repaired**, each replacement fetched and title-checked. The old-to-n
       files; each replacement fetched and title-checked, old-to-new list in `docs/link-rot-2026-09-17.md`
       "Follow-up repairs 2026-10-15". `check-internal-links.py`: 5,106 internal links, 0 broken. Issues #6, #7, #10
       and #11 closed. The three workflow ideas above are not done - next line.
-- [ ] 🟡 `link-check.yml`: close/update the previous week's issue instead of opening a new one each Monday,
+- [x] 🟡 `link-check.yml`: close/update the previous week's issue instead of opening a new one each Monday,
       and decide on the 44 `cloud.ibm.com` bot-wall "404"s (exclude or accept). The report artifact already exists
-      (`lychee-report`). **Judge 2026-10-19:** the Monday run's issue should list no real 404s beyond IBM. S.
+      (`lychee-report`). S.
+      ✅ 2026-10-17 `--exclude 'cloud\.ibm\.com'` added to the lychee args; the issue step now looks up the open
+      `link-check` issue (`gh issue list`) and passes it to peter-evans as `issue-number`, so the Monday report
+      rewrites that issue instead of opening a new one (no open issue -> it opens one). YAML parses; NOT run in
+      Actions (nothing pushed).
+- [ ] **Judge 2026-10-19:** the Monday run updates the existing issue (no new one) and lists no real 404s beyond
+      what is already tracked; the workflow change is unproven until that run.
 - [ ] **Spot-check the retired-product replacements (by 2026-10-31).** These links now reach the successor product,
       but the surrounding notes may still teach the retired one: QLDB (`exams/aws/specialty/database-dbs-c01`),
       OpsWorks, LUIS (`exams/azure/ai-102`), PaLM and AutoML (GCP ML notes), IBM Watson and Cloud Foundry
